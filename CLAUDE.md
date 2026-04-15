@@ -49,6 +49,11 @@ Application  ──→  Domain  ←──  Infrastructure
 - Application 層は Domain 層に依存する
 - Infrastructure 層は Domain 層に依存する（Repository interface を実装する）
 
+## IMPORTANT: 外部サービス名の取り扱い
+
+**データ取得元の外部サービス名（API 名・サイト名）をドキュメント・コミットメッセージ・PR 説明に記載しないこと。**
+設計ドキュメントやコード内コメントでは「外部 API」「攻略サイト」等の一般的な表現を使うこと。
+
 ## ポケモンチャンピオンズ固有ルール
 
 - 個体値: 廃止（全ポケモン一律 31 固定、定数 `MAX_IV = 31` として扱う）

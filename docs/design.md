@@ -584,7 +584,404 @@ SpeedComparator
 
 ## 4. データ設計
 
-_（後続で記載予定）_
+### 4.1 データカテゴリ一覧
+
+`@ai-rotom/data` パッケージで管理するデータカテゴリと、ドメインモデルとの対応を以下に示す。
+
+| カテゴリ | データファイル | 対応するドメインモデル | 概要 |
+|---|---|---|---|
+| ポケモン | `pokemon.json` | Pokemon Entity | 種族値・タイプ・特性・覚える技・メガシンカ情報 |
+| 技 | `moves.json` | Move Entity | 技名・タイプ・威力・命中率・分類・優先度 |
+| 特性 | `abilities.json` | Ability Entity | 特性名・効果説明 |
+| タイプ相性 | `type-matchups.json` | TypeMatchup ValueObject | 攻撃タイプ × 防御タイプの倍率マトリクス |
+| 性格 | `natures.json` | Nature ValueObject | 性格名・上昇/下降ステータス |
+| 持ち物 | `items.json` | BattlePokemon Entity の item フィールド | 持ち物名・効果説明 |
+
+### 4.2 JSON スキーマ定義
+
+各データファイルのスキーマを定義する。すべてのデータは日本語名（`nameJa`）と英語名（`nameEn`）の両方を持つ。
+
+#### 4.2.1 pokemon.json
+
+ポケモンの種族データ。配列形式で全ポケモンを格納する。
+
+| フィールド | 型 | 必須 | 説明 |
+|---|---|---|---|
+| `id` | string | Yes | 一意識別子（全国図鑑番号ベース。例: `"0006"`, `"0006-mega-x"`） |
+| `dexNumber` | number | Yes | 全国図鑑番号 |
+| `nameJa` | string | Yes | 日本語名 |
+| `nameEn` | string | Yes | 英語名 |
+| `types` | string[] | Yes | タイプ（1つまたは2つ） |
+| `baseStats` | object | Yes | 種族値 |
+| `baseStats.hp` | number | Yes | HP |
+| `baseStats.attack` | number | Yes | こうげき |
+| `baseStats.defense` | number | Yes | ぼうぎょ |
+| `baseStats.specialAttack` | number | Yes | とくこう |
+| `baseStats.specialDefense` | number | Yes | とくぼう |
+| `baseStats.speed` | number | Yes | すばやさ |
+| `abilityIds` | string[] | Yes | 取りうる特性の ID リスト |
+| `learnableMoveIds` | string[] | Yes | 覚えられる技の ID リスト |
+| `megaEvolutions` | object[] | Yes | メガシンカ先のリスト（メガシンカ不可の場合は空配列） |
+| `megaEvolutions[].id` | string | Yes | メガシンカ先の ID（例: `"0006-mega-x"`） |
+| `megaEvolutions[].nameJa` | string | Yes | メガシンカ先の日本語名 |
+| `megaEvolutions[].nameEn` | string | Yes | メガシンカ先の英語名 |
+| `megaEvolutions[].types` | string[] | Yes | メガシンカ後のタイプ |
+| `megaEvolutions[].baseStats` | object | Yes | メガシンカ後の種族値（構造は `baseStats` と同一） |
+| `megaEvolutions[].abilityId` | string | Yes | メガシンカ後の特性 ID |
+| `megaEvolutions[].requiredItemId` | string | Yes | メガシンカに必要な持ち物の ID |
+
+**例: リザードンのデータ**
+
+```json
+{
+  "id": "0006",
+  "dexNumber": 6,
+  "nameJa": "リザードン",
+  "nameEn": "Charizard",
+  "types": ["ほのお", "ひこう"],
+  "baseStats": {
+    "hp": 78,
+    "attack": 84,
+    "defense": 78,
+    "specialAttack": 109,
+    "specialDefense": 85,
+    "speed": 100
+  },
+  "abilityIds": ["blaze", "solar-power"],
+  "learnableMoveIds": [
+    "flamethrower", "fire-blast", "air-slash", "dragon-pulse",
+    "solar-beam", "focus-blast", "roost", "will-o-wisp"
+  ],
+  "megaEvolutions": [
+    {
+      "id": "0006-mega-x",
+      "nameJa": "メガリザードンX",
+      "nameEn": "Mega Charizard X",
+      "types": ["ほのお", "ドラゴン"],
+      "baseStats": {
+        "hp": 78,
+        "attack": 130,
+        "defense": 111,
+        "specialAttack": 130,
+        "specialDefense": 85,
+        "speed": 100
+      },
+      "abilityId": "tough-claws",
+      "requiredItemId": "charizardite-x"
+    },
+    {
+      "id": "0006-mega-y",
+      "nameJa": "メガリザードンY",
+      "nameEn": "Mega Charizard Y",
+      "types": ["ほのお", "ひこう"],
+      "baseStats": {
+        "hp": 78,
+        "attack": 104,
+        "defense": 78,
+        "specialAttack": 159,
+        "specialDefense": 115,
+        "speed": 100
+      },
+      "abilityId": "drought",
+      "requiredItemId": "charizardite-y"
+    }
+  ]
+}
+```
+
+#### 4.2.2 moves.json
+
+技データ。配列形式で全技を格納する。
+
+| フィールド | 型 | 必須 | 説明 |
+|---|---|---|---|
+| `id` | string | Yes | 一意識別子（英語名のケバブケース。例: `"flamethrower"`） |
+| `nameJa` | string | Yes | 日本語名 |
+| `nameEn` | string | Yes | 英語名 |
+| `type` | string | Yes | タイプ |
+| `category` | string | Yes | 分類（`"physical"` / `"special"` / `"status"`） |
+| `power` | number \| null | Yes | 威力（変化技は `null`） |
+| `accuracy` | number \| null | Yes | 命中率（必中技は `null`） |
+| `priority` | number | Yes | 優先度（通常は `0`、先制技は `+1` 以上） |
+| `descriptionJa` | string | Yes | 効果説明（日本語） |
+| `descriptionEn` | string | Yes | 効果説明（英語） |
+
+**例:**
+
+```json
+[
+  {
+    "id": "flamethrower",
+    "nameJa": "かえんほうしゃ",
+    "nameEn": "Flamethrower",
+    "type": "ほのお",
+    "category": "special",
+    "power": 90,
+    "accuracy": 100,
+    "priority": 0,
+    "descriptionJa": "相手に大量の炎を発射して攻撃する。やけど状態にすることがある。",
+    "descriptionEn": "The target is scorched with an intense blast of fire. This may also leave the target with a burn."
+  },
+  {
+    "id": "protect",
+    "nameJa": "まもる",
+    "nameEn": "Protect",
+    "type": "ノーマル",
+    "category": "status",
+    "power": null,
+    "accuracy": null,
+    "priority": 4,
+    "descriptionJa": "相手の攻撃をまったく受けない。連続で出すと失敗しやすくなる。",
+    "descriptionEn": "This move enables the user to protect itself from all attacks. Its chance of failing rises if it is used in succession."
+  }
+]
+```
+
+#### 4.2.3 abilities.json
+
+特性データ。配列形式で全特性を格納する。
+
+| フィールド | 型 | 必須 | 説明 |
+|---|---|---|---|
+| `id` | string | Yes | 一意識別子（英語名のケバブケース。例: `"blaze"`） |
+| `nameJa` | string | Yes | 日本語名 |
+| `nameEn` | string | Yes | 英語名 |
+| `descriptionJa` | string | Yes | 効果説明（日本語） |
+| `descriptionEn` | string | Yes | 効果説明（英語） |
+
+**例:**
+
+```json
+[
+  {
+    "id": "blaze",
+    "nameJa": "もうか",
+    "nameEn": "Blaze",
+    "descriptionJa": "HPが減ったときほのおタイプの技の威力が上がる。",
+    "descriptionEn": "Powers up Fire-type moves when the Pokémon's HP is low."
+  }
+]
+```
+
+#### 4.2.4 type-matchups.json
+
+タイプ相性の倍率マトリクス。攻撃タイプをキー、防御タイプごとの倍率をマッピングする。
+
+| フィールド | 型 | 必須 | 説明 |
+|---|---|---|---|
+| `[attackType]` | object | Yes | 攻撃タイプをキーとしたオブジェクト |
+| `[attackType][defenseType]` | number | Yes | 倍率（`0`, `0.5`, `1`, `2` のいずれか） |
+
+等倍（`1`）のエントリも省略せずすべて記載する。これにより、データの欠落と等倍を区別でき、バリデーションも容易になる。
+
+**例（一部抜粋）:**
+
+```json
+{
+  "ほのお": {
+    "ノーマル": 1,
+    "ほのお": 0.5,
+    "みず": 0.5,
+    "くさ": 2,
+    "こおり": 2,
+    "むし": 2,
+    "いわ": 0.5,
+    "ドラゴン": 0.5,
+    "はがね": 2
+  }
+}
+```
+
+複合タイプの倍率は TypeMatchupEvaluator（ドメインサービス）側で各タイプの倍率を乗算して算出する。このデータファイルは単タイプ同士の倍率のみを保持する。
+
+#### 4.2.5 natures.json
+
+性格データ。全25種を配列形式で格納する。
+
+| フィールド | 型 | 必須 | 説明 |
+|---|---|---|---|
+| `id` | string | Yes | 一意識別子（英語名のケバブケース。例: `"adamant"`） |
+| `nameJa` | string | Yes | 日本語名 |
+| `nameEn` | string | Yes | 英語名 |
+| `increasedStat` | string \| null | Yes | 上昇するステータス（無補正は `null`） |
+| `decreasedStat` | string \| null | Yes | 下降するステータス（無補正は `null`） |
+
+**例:**
+
+```json
+[
+  {
+    "id": "adamant",
+    "nameJa": "いじっぱり",
+    "nameEn": "Adamant",
+    "increasedStat": "attack",
+    "decreasedStat": "specialAttack"
+  },
+  {
+    "id": "serious",
+    "nameJa": "まじめ",
+    "nameEn": "Serious",
+    "increasedStat": null,
+    "decreasedStat": null
+  }
+]
+```
+
+#### 4.2.6 items.json
+
+持ち物データ。メガストーンを含む対戦に影響する持ち物を配列形式で格納する。
+
+| フィールド | 型 | 必須 | 説明 |
+|---|---|---|---|
+| `id` | string | Yes | 一意識別子（英語名のケバブケース。例: `"life-orb"`） |
+| `nameJa` | string | Yes | 日本語名 |
+| `nameEn` | string | Yes | 英語名 |
+| `category` | string | Yes | 分類（`"mega-stone"` / `"battle-item"` / `"berry"` / `"other"`） |
+| `descriptionJa` | string | Yes | 効果説明（日本語） |
+| `descriptionEn` | string | Yes | 効果説明（英語） |
+
+**例:**
+
+```json
+[
+  {
+    "id": "life-orb",
+    "nameJa": "いのちのたま",
+    "nameEn": "Life Orb",
+    "category": "battle-item",
+    "descriptionJa": "持たせると技の威力が1.3倍になるがHPが減る。",
+    "descriptionEn": "An item to be held by a Pokémon. It boosts the power of moves, but at the cost of some HP on each hit."
+  }
+]
+```
+
+### 4.3 ディレクトリ構成
+
+```
+packages/data/
+├── package.json
+├── tsconfig.json
+├── src/
+│   ├── index.ts                          # 公開 API（全データのエクスポート）
+│   ├── types.ts                          # データの TypeScript 型定義
+│   ├── pokemon/
+│   │   ├── index.ts                      # ポケモンデータのエクスポート・アクセス関数
+│   │   └── pokemon.json                  # ポケモン種族データ
+│   ├── moves/
+│   │   ├── index.ts                      # 技データのエクスポート・アクセス関数
+│   │   └── moves.json                    # 技データ
+│   ├── abilities/
+│   │   ├── index.ts                      # 特性データのエクスポート・アクセス関数
+│   │   └── abilities.json                # 特性データ
+│   ├── types/
+│   │   ├── index.ts                      # タイプ相性データのエクスポート・アクセス関数
+│   │   └── type-matchups.json            # タイプ相性マトリクス
+│   ├── natures/
+│   │   ├── index.ts                      # 性格データのエクスポート・アクセス関数
+│   │   └── natures.json                  # 性格データ
+│   └── items/
+│       ├── index.ts                      # 持ち物データのエクスポート・アクセス関数
+│       └── items.json                    # 持ち物データ
+└── scripts/
+    ├── fetch-base-data.ts                # 外部 API からの基本データ取得スクリプト
+    ├── apply-champions-overrides.ts      # チャンピオンズ固有データの差分適用スクリプト
+    ├── validate-data.ts                  # データ整合性バリデーションスクリプト
+    └── overrides/
+        ├── pokemon-overrides.json        # ポケモンデータの差分定義
+        ├── moves-overrides.json          # 技データの差分定義
+        └── abilities-overrides.json      # 特性データの差分定義
+```
+
+### 4.4 データ収集・更新フロー
+
+データの初期生成とゲームアップデート時の更新は、以下の 3 段階で行う。
+
+```
+外部 API ──→ fetch-base-data.ts ──→ 基本データ（JSON）
+                                          │
+チャンピオンズ差分 ──→ apply-champions-overrides.ts ──→ 最終データ（JSON）
+                                                            │
+                                          validate-data.ts ──→ バリデーション通過後にコミット
+```
+
+#### Stage 1: 基本データ取得（`fetch-base-data.ts`）
+
+外部 API から以下の基本データを取得し、本プロジェクトの JSON スキーマに変換して出力する。
+
+| 取得対象 | 出力先 | 備考 |
+|---|---|---|
+| ポケモン種族データ | `pokemon.json` | 種族値・タイプ・特性・覚える技 |
+| 技データ | `moves.json` | 名前・タイプ・威力・命中率・分類 |
+| 特性データ | `abilities.json` | 名前・効果説明 |
+| タイプ相性 | `type-matchups.json` | 18×18 の倍率マトリクス |
+
+性格データ（`natures.json`）はゲーム間で変わらない固定データのため、手動で作成しスクリプト対象外とする。
+
+#### Stage 2: チャンピオンズ差分適用（`apply-champions-overrides.ts`）
+
+Stage 1 で取得した基本データに、チャンピオンズ固有の差分を上書き適用する。差分は `scripts/overrides/` 配下の JSON ファイルに定義する。
+
+**差分 JSON のフォーマット:**
+
+```json
+{
+  "add": [
+    { "id": "new-pokemon", "...": "新規追加データ" }
+  ],
+  "update": [
+    { "id": "0006", "learnableMoveIds": ["変更後の技リスト"] }
+  ],
+  "remove": ["削除する ID"]
+}
+```
+
+#### Stage 3: バリデーション（`validate-data.ts`）
+
+最終データの整合性を検証する。
+
+| 検証項目 | 内容 |
+|---|---|
+| スキーマ検証 | 各 JSON が定義済みスキーマに適合するか |
+| 参照整合性 | ポケモンの `abilityIds` が `abilities.json` に存在するか |
+| 参照整合性 | ポケモンの `learnableMoveIds` が `moves.json` に存在するか |
+| 参照整合性 | メガシンカの `requiredItemId` が `items.json` に存在するか |
+| タイプ相性の完全性 | 18タイプ × 18タイプの全324エントリが存在するか |
+| 性格データの完全性 | 全25性格が含まれているか |
+
+### 4.5 データのバージョニング
+
+#### 方針
+
+ゲームアップデートへの対応は、データファイルをバージョン管理（Git）で追跡することで実現する。専用のバージョニング機構は設けない。
+
+#### ゲームアップデート時の更新手順
+
+```
+1. fetch-base-data.ts を再実行し、基本データを最新化
+2. overrides/ の差分定義を更新（新たな変更点を反映）
+3. apply-champions-overrides.ts を実行し、差分を適用
+4. validate-data.ts を実行し、整合性を確認
+5. Git diff で変更内容を確認し、コミット
+```
+
+#### データメタ情報
+
+各データファイルの更新日時とゲームバージョンを追跡するため、`src/meta.json` を配置する。
+
+```json
+{
+  "gameVersion": "1.0.0",
+  "lastUpdated": "2026-04-15",
+  "dataSource": {
+    "baseData": "外部 API から自動取得",
+    "overrides": "攻略サイト・ゲーム内検証から手動補完"
+  }
+}
+```
+
+#### データ範囲
+
+チャンピオンズに登場する全ポケモンを対象とする。チャンピオンズに登場しないポケモンのデータは、Stage 2 の差分適用時にフィルタリングして除外する。
 
 ## 5. 機能仕様
 
