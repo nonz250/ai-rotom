@@ -987,15 +987,433 @@ Stage 1 で取得した基本データに、チャンピオンズ固有の差分
 
 ### 5.1 ダメージ計算
 
-_（後続で記載予定）_
+#### 5.1.1 機能概要
+
+攻撃側ポケモンが防御側ポケモンに対して与えるダメージを正確に計算する。3つの粒度を提供し、ユーザーの状況に応じた使い分けを可能にする。
+
+| 粒度 | 用途 | 説明 |
+|---|---|---|
+| Single（1対1の1技） | 特定の技のダメージを知りたい | 攻撃側の1技に対するダメージ計算 |
+| AllMoves（1対1の全技） | 対面での最適な技を比較したい | 攻撃側の全技に対するダメージを一括計算 |
+| PartyMatchup（パーティ対パーティ） | 試合全体の火力関係を把握したい | 両パーティの全組み合わせを一括計算 |
+
+#### 5.1.2 入力
+
+##### Single（1対1の1技）
+
+| パラメータ | 型 | 必須 | 説明 |
+|---|---|---|---|
+| attacker | BattlePokemon | Yes | 攻撃側ポケモン |
+| defender | BattlePokemon | Yes | 防御側ポケモン |
+| move | Move | Yes | 使用する技 |
+| conditions | BattleConditions | No | バトル環境条件（天候・フィールド） |
+
+##### AllMoves（1対1の全技）
+
+| パラメータ | 型 | 必須 | 説明 |
+|---|---|---|---|
+| attacker | BattlePokemon | Yes | 攻撃側ポケモン |
+| defender | BattlePokemon | Yes | 防御側ポケモン |
+| conditions | BattleConditions | No | バトル環境条件（天候・フィールド） |
+
+##### PartyMatchup（パーティ対パーティ）
+
+| パラメータ | 型 | 必須 | 説明 |
+|---|---|---|---|
+| attackerParty | Party | Yes | 攻撃側パーティ |
+| defenderParty | Party | Yes | 防御側パーティ |
+| conditions | BattleConditions | No | バトル環境条件（天候・フィールド） |
+
+##### BattleConditions
+
+バトル環境条件を表す ValueObject。
+
+| 属性 | 型 | デフォルト | 説明 |
+|---|---|---|---|
+| weather | Weather \| null | null | 天候（晴れ / 雨 / 砂嵐 / 雪） |
+| terrain | Terrain \| null | null | フィールド（エレキ / グラス / サイコ / ミスト） |
+
+```typescript
+type Weather = "sunny" | "rainy" | "sandstorm" | "snowy";
+type Terrain = "electric" | "grassy" | "psychic" | "misty";
+```
+
+天候・フィールド補正の倍率:
+
+| 条件 | 対象 | 倍率 |
+|---|---|---|
+| 晴れ（sunny） | ほのお技の威力 | 1.5倍 |
+| 晴れ（sunny） | みず技の威力 | 0.5倍 |
+| 雨（rainy） | みず技の威力 | 1.5倍 |
+| 雨（rainy） | ほのお技の威力 | 0.5倍 |
+| エレキフィールド（electric） | 接地しているポケモンのでんき技の威力 | 1.3倍 |
+| グラスフィールド（grassy） | 接地しているポケモンのくさ技の威力 | 1.3倍 |
+| サイコフィールド（psychic） | 接地しているポケモンのエスパー技の威力 | 1.3倍 |
+| ミストフィールド（misty） | 接地しているポケモンが受けるドラゴン技のダメージ | 0.5倍 |
+
+#### 5.1.3 出力
+
+##### Single の出力: DamageResult
+
+| 属性 | 型 | 説明 |
+|---|---|---|
+| moveName | string | 使用した技名 |
+| moveType | Type | 技のタイプ |
+| attackerName | string | 攻撃側ポケモン名 |
+| defenderName | string | 防御側ポケモン名 |
+| minDamage | number | 最小ダメージ（乱数最低: 0.85） |
+| maxDamage | number | 最大ダメージ（乱数最高: 1.00） |
+| minPercentage | number | 最小ダメージの HP 割合（%） |
+| maxPercentage | number | 最大ダメージの HP 割合（%） |
+| guaranteedKnockouts | number | 確定数（確定1発 = 1、確定2発 = 2、...） |
+| typeEffectiveness | number | タイプ相性倍率 |
+| isStab | boolean | タイプ一致かどうか |
+| appliedConditions | string[] | 適用された補正の説明リスト |
+
+**出力例: リザードン（ひかえめ）のかえんほうしゃ → ギャラドス**
+
+```json
+{
+  "moveName": "かえんほうしゃ",
+  "moveType": "ほのお",
+  "attackerName": "リザードン",
+  "defenderName": "ギャラドス",
+  "minDamage": 55,
+  "maxDamage": 65,
+  "minPercentage": 32.7,
+  "maxPercentage": 38.6,
+  "guaranteedKnockouts": 3,
+  "typeEffectiveness": 0.5,
+  "isStab": true,
+  "appliedConditions": ["タイプ一致（1.5倍）", "タイプ相性: いまひとつ（0.5倍）"]
+}
+```
+
+##### AllMoves の出力: AllMovesResult
+
+| 属性 | 型 | 説明 |
+|---|---|---|
+| attackerName | string | 攻撃側ポケモン名 |
+| defenderName | string | 防御側ポケモン名 |
+| results | DamageResult[] | 各技のダメージ計算結果（変化技を除く） |
+
+##### PartyMatchup の出力: PartyMatchupResult
+
+| 属性 | 型 | 説明 |
+|---|---|---|
+| attackerPartyMembers | string[] | 攻撃側パーティメンバー名リスト |
+| defenderPartyMembers | string[] | 防御側パーティメンバー名リスト |
+| matchups | AllMovesResult[][] | 2次元配列。matchups[i][j] は攻撃側 i 番目 → 防御側 j 番目 |
+
+#### 5.1.4 処理フロー
+
+```
+入力（BattlePokemon, Move, BattleConditions）
+  │
+  ▼
+① StatCalculator で攻撃側・防御側の実数値を計算
+  │  - 攻撃側: 物理技なら「こうげき」、特殊技なら「とくこう」の実数値
+  │  - 防御側: 物理技なら「ぼうぎょ」、特殊技なら「とくぼう」の実数値
+  │
+  ▼
+② ダメージ基本式を適用
+  │  ダメージ = (((レベル × 2 / 5 + 2) × 威力 × 攻撃実数値 / 防御実数値) / 50 + 2)
+  │
+  ▼
+③ 各補正を乗算
+  │  a. タイプ一致ボーナス（STAB: 1.5倍）
+  │  b. タイプ相性倍率（TypeMatchupEvaluator に委譲）
+  │  c. 天候補正（BattleConditions から判定）
+  │  d. フィールド補正（BattleConditions から判定）
+  │  e. 持ち物補正（段階的に実装）
+  │  f. 特性補正（段階的に実装）
+  │
+  ▼
+④ 乱数幅を適用
+  │  - 0.85〜1.00 の16段階（0.85, 0.86, ..., 1.00）
+  │  - 最小ダメージ = ③の結果 × 0.85（小数切り捨て）
+  │  - 最大ダメージ = ③の結果 × 1.00
+  │
+  ▼
+⑤ HP 割合と確定数を算出
+  │  - HP 割合 = ダメージ / 防御側の HP 実数値 × 100
+  │  - 確定数 = ceil(防御側の HP 実数値 / 最小ダメージ)
+  │
+  ▼
+⑥ DamageResult を構築して返却
+```
+
+**AllMoves の処理フロー:**
+- 攻撃側の moves から変化技（category が `"status"`）を除外する
+- 残った攻撃技それぞれに対して Single の処理フローを実行する
+- 結果を配列として返す
+
+**PartyMatchup の処理フロー:**
+- 攻撃側パーティの全メンバーと防御側パーティの全メンバーの全組み合わせに対して AllMoves を実行する
+- 結果を 2 次元配列（attackerIndex × defenderIndex）として返す
+
+#### 5.1.5 AI との連携
+
+AI はダメージ計算ツールの出力を以下の用途に活用する。
+
+| AI の活用方法 | 具体例 |
+|---|---|---|
+| ダメージの解釈 | 「リザードンのかえんほうしゃはギャラドスに対して 32.7%〜38.6% で、確定3発です。タイプ相性がいまひとつのため火力が出ません」 |
+| 最適技の提案 | AllMoves の結果を比較し「ソーラービームであれば 70.2%〜82.6% で確定2発に届きます」と提案 |
+| 対面判断 | 「この対面では相手を倒すのに3発かかりますが、相手のたきのぼりは確定2発なので対面不利です」 |
+| 天候の影響説明 | 「晴れ下であればかえんほうしゃの威力が 1.5 倍になり、49.0%〜57.9% で確定2発圏内に入ります」 |
+| パーティ全体の火力関係の俯瞰 | PartyMatchup の結果から「相手パーティに対して一貫して高打点を出せるのはこのポケモンです」と分析 |
+
+AI はダメージの数値計算を自ら行わず、ツールから返された正確な数値を前提に解釈・説明・提案を行う。
+
+---
 
 ### 5.2 選出アドバイス
 
-_（後続で記載予定）_
+#### 5.2.1 機能概要
+
+自パーティと相手パーティの情報を受け取り、選出判断に必要なデータを一括で提供する。プログラムはスコアリングや順位付けを行わず、タイプ相性・ダメージ計算結果・素早さ比較の生データを構造化して返す。AI がこれらのデータを総合的に解釈し、選出の提案を行う。
+
+#### 5.2.2 入力
+
+| パラメータ | 型 | 必須 | 説明 |
+|---|---|---|---|
+| myParty | Party | Yes | 自分のパーティ |
+| opponentParty | Party | Yes | 相手のパーティ |
+| battleFormat | BattleFormat | Yes | バトル形式（シングル / ダブル） |
+| conditions | BattleConditions | No | バトル環境条件（天候・フィールド） |
+
+```typescript
+type BattleFormat = "singles" | "doubles";
+```
+
+#### 5.2.3 出力: SelectionAnalysis
+
+| 属性 | 型 | 説明 |
+|---|---|---|
+| typeMatchupSummary | TypeMatchupSummary | タイプ相性の要約 |
+| damageAnalysis | PartyMatchupResult | 双方向のダメージ計算結果 |
+| speedComparison | SpeedComparisonResult | 素早さ比較結果 |
+
+##### TypeMatchupSummary
+
+| 属性 | 型 | 説明 |
+|---|---|---|
+| myPartyAnalysis | PartyTypeAnalysis[] | 自パーティ各メンバーの相性分析 |
+| opponentPartyAnalysis | PartyTypeAnalysis[] | 相手パーティ各メンバーの相性分析 |
+
+##### PartyTypeAnalysis
+
+| 属性 | 型 | 説明 |
+|---|---|---|
+| pokemonName | string | ポケモン名 |
+| types | Type[] | タイプ |
+| weaknesses | TypeEffectiveness[] | 弱点一覧（2倍・4倍を区別） |
+| resistances | TypeEffectiveness[] | 耐性一覧（0.5倍・0.25倍を区別） |
+| immunities | Type[] | 無効タイプ一覧 |
+| offensiveMatchups | OffensiveMatchup[] | 相手パーティ各メンバーに対する攻撃面の相性 |
+
+```typescript
+interface TypeEffectiveness {
+  type: Type;
+  multiplier: number;
+}
+
+interface OffensiveMatchup {
+  targetName: string;
+  targetTypes: Type[];
+  bestEffectiveness: number;
+  bestType: Type;
+}
+```
+
+##### SpeedComparisonResult
+
+| 属性 | 型 | 説明 |
+|---|---|---|
+| myPartySpeedTiers | SpeedTier[] | 自パーティの素早さ一覧（実数値降順） |
+| opponentPartySpeedTiers | SpeedTier[] | 相手パーティの素早さ一覧（実数値降順） |
+| headToHead | SpeedComparison[] | 全組み合わせの素早さ比較 |
+
+```typescript
+interface SpeedTier {
+  pokemonName: string;
+  speedStat: number;
+}
+
+interface SpeedComparison {
+  myPokemonName: string;
+  opponentPokemonName: string;
+  mySpeed: number;
+  opponentSpeed: number;
+  isFaster: boolean | null;  // 同速は null
+}
+```
+
+#### 5.2.4 処理フロー
+
+```
+入力（myParty, opponentParty, battleFormat, conditions）
+  │
+  ├──────────────────┬──────────────────┐
+  │                  │                  │
+  ▼                  ▼                  ▼
+① タイプ相性分析  ② ダメージ計算     ③ 素早さ比較
+  │                  │                  │
+  │ TypeMatchup      │ DamageCalculator │ SpeedComparator
+  │ Evaluator        │ .calculateParty  │ + StatCalculator
+  │ を使用           │  Matchup を使用   │ を使用
+  │                  │                  │
+  ▼                  ▼                  ▼
+TypeMatchup       PartyMatchup      SpeedComparison
+Summary           Result            Result
+  │                  │                  │
+  └──────────────────┴──────────────────┘
+                     │
+                     ▼
+             SelectionAnalysis として統合・返却
+```
+
+#### 5.2.5 AI との連携
+
+| AI の活用方法 | 具体例 |
+|---|---|---|
+| 選出の提案 | 「相手のパーティにみず・じめんタイプが多いため、くさ技で一貫性のあるポケモンの選出を推奨します」 |
+| 対面の有利不利の判断 | ダメージ計算結果と素早さ比較を組み合わせて「先制でき、かつ確定2発で倒せるため有利です」と判断 |
+| 裏の考慮 | タイプ相性と素早さから「初手で不利な対面になった場合に引き先として機能するポケモン」を提案 |
+| 相手の型の推測と助言 | AI 自身の知識で「このポケモンはスカーフ型が多いため、素早さで上を取られる可能性があります」と補足 |
+| ダブルバトルの並び提案 | battleFormat が `"doubles"` の場合、横の相性も考慮した並びを提案 |
+
+プログラムは「よくある型（テンプレート）」のデータを持たない。型情報や環境メタゲームに関する知識は AI 側が持つ。AI はツールが提供する客観的データと自身のゲーム知識を組み合わせて選出提案を行う。
+
+---
 
 ### 5.3 パーティ構築支援
 
-_（後続で記載予定）_
+#### 5.3.1 機能概要
+
+ユーザーのパーティ構成を受け取り、タイプ相性の観点からパーティの弱点を分析する。プログラムは弱点の洗い出しのみを行い、具体的な構築案の提案は AI に委ねる。
+
+#### 5.3.2 入力
+
+| パラメータ | 型 | 必須 | 説明 |
+|---|---|---|---|
+| party | Party | Yes | 分析対象のパーティ（1〜6体） |
+
+#### 5.3.3 出力: PartyWeaknessAnalysis
+
+| 属性 | 型 | 説明 |
+|---|---|---|
+| memberAnalysis | MemberTypeProfile[] | 各メンバーのタイプ相性プロファイル |
+| partyWeaknessSummary | PartyWeaknessSummary | パーティ全体の弱点要約 |
+| offensiveCoverage | OffensiveCoverage | パーティ全体の攻撃範囲分析 |
+
+##### MemberTypeProfile
+
+| 属性 | 型 | 説明 |
+|---|---|---|
+| pokemonName | string | ポケモン名 |
+| types | Type[] | タイプ |
+| weaknesses | TypeEffectiveness[] | 弱点一覧（倍率つき） |
+| resistances | TypeEffectiveness[] | 耐性一覧（倍率つき） |
+| immunities | Type[] | 無効タイプ一覧 |
+| moveTypes | Type[] | 所持する攻撃技のタイプ一覧 |
+
+##### PartyWeaknessSummary
+
+| 属性 | 型 | 説明 |
+|---|---|---|
+| weaknessCount | TypeCount[] | 各タイプに弱点を持つメンバー数 |
+| resistanceCount | TypeCount[] | 各タイプに耐性を持つメンバー数 |
+| immunityCount | TypeCount[] | 各タイプを無効にできるメンバー数 |
+| unresisted | Type[] | パーティ内に半減以下で受けられるメンバーがいないタイプ |
+| criticalWeaknesses | CriticalWeakness[] | 3体以上が弱点を突かれるタイプ（パーティの致命的な穴） |
+
+```typescript
+interface TypeCount {
+  type: Type;
+  count: number;
+  members: string[];
+}
+
+interface CriticalWeakness {
+  type: Type;
+  weakMembers: string[];
+  resistMembers: string[];
+}
+```
+
+##### OffensiveCoverage
+
+| 属性 | 型 | 説明 |
+|---|---|---|
+| coveredTypes | CoverageEntry[] | 各タイプに対する打点の有無 |
+| uncoveredTypes | Type[] | パーティ全体で抜群を取れないタイプ |
+
+```typescript
+interface CoverageEntry {
+  targetType: Type;
+  superEffectiveMembers: string[];
+}
+```
+
+**出力例（一部抜粋）: リザードン + ギャラドス + ガブリアス のパーティ**
+
+```json
+{
+  "partyWeaknessSummary": {
+    "criticalWeaknesses": [
+      {
+        "type": "いわ",
+        "weakMembers": ["リザードン", "ギャラドス"],
+        "resistMembers": ["ガブリアス"]
+      }
+    ],
+    "unresisted": ["フェアリー"]
+  },
+  "offensiveCoverage": {
+    "uncoveredTypes": ["フェアリー"]
+  }
+}
+```
+
+#### 5.3.4 処理フロー
+
+```
+入力（Party）
+  │
+  ▼
+① 各メンバーのタイプ相性プロファイルを作成
+  │  - TypeMatchupEvaluator で弱点・耐性・無効を算出
+  │  - 所持する攻撃技のタイプを抽出
+  │
+  ▼
+② パーティ全体の弱点を集計
+  │  - 全18タイプについて、弱点を持つメンバー数を集計
+  │  - 全18タイプについて、耐性を持つメンバー数を集計
+  │  - 3体以上が弱点を突かれるタイプを criticalWeaknesses として抽出
+  │  - 半減以下で受けられるメンバーがいないタイプを unresisted として抽出
+  │
+  ▼
+③ 攻撃範囲を分析
+  │  - 各メンバーの攻撃技タイプから、全18タイプへの抜群の有無を判定
+  │  - パーティ全体で抜群を取れないタイプを uncoveredTypes として抽出
+  │
+  ▼
+④ PartyWeaknessAnalysis を構築して返却
+```
+
+#### 5.3.5 AI との連携
+
+| AI の活用方法 | 具体例 |
+|---|---|---|
+| 弱点の指摘 | 「パーティ全体でいわタイプが重い（3体が弱点を突かれる）ため、いわ技への耐性がある枠が必要です」 |
+| 穴埋めの提案 | unresisted と uncoveredTypes を踏まえ「フェアリーに対して半減で受けられて、かつ抜群を取れるはがねタイプのポケモンを推奨します」 |
+| 構築コンセプトに沿った助言 | ユーザーとの会話で把握した構築の方向性に合わせて「天候パーティであれば、この弱点は天候エースの火力で押し切れるため許容範囲です」と判断 |
+| 段階的な構築サポート | パーティが未完成（6体未満）の場合、現状の穴を示して「残り枠で補うべき要素」を提案 |
+| メガシンカの考慮 | メガシンカ前後でタイプが変わるポケモンがいる場合、両方の状態での分析を踏まえて助言 |
+
+プログラムは環境の流行や特定の構築テンプレートに関する知識を持たない。メタゲームを踏まえた構築判断は AI が自身の知識に基づいて行う。
 
 ## 6. MCP サーバー インターフェース設計
 
