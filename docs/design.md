@@ -247,7 +247,340 @@ web-ui      ──→  core  ──→  data     （将来追加）
 
 ## 3. ドメインモデル設計
 
-_（後続で記載予定）_
+### 3.1 基本思想
+
+**「プログラムは正確なデータを出す。AI はデータを元に考える。」**
+
+ai-rotom の設計において、プログラム（MCP ツール）と AI（LLM）の責務を明確に分離する。プログラムは計算やデータの提供に徹し、解釈・判断・提案は AI に委ねる。
+
+| 機能 | プログラム（ツール）の責務 | AI の責務 |
+|---|---|---|
+| ダメージ計算 | 正確な数値計算（3粒度：1対1の1技、1対1の全技、パーティ対パーティ） | 結果の解釈・説明 |
+| 選出アドバイス | タイプ相性・ダメ計・素早さ等のデータ提供 | データを総合して選出を判断・提案 |
+| パーティ構築 | パーティの弱点分析（タイプ相性の穴の洗い出し） | 弱点を踏まえた構築案の提案 |
+
+この分離により、プログラムは「正確さ」に集中し、AI は「思考の質」に集中できる。
+
+### 3.2 ドメインモデル一覧
+
+#### ValueObject
+
+| ValueObject | 配置先 | 概要 |
+|---|---|---|
+| Type | `domain/model/pokemon/` | タイプ（ほのお、みず等の18種） |
+| TypeMatchup | `domain/model/battle/` | タイプ相性（攻撃タイプ → 防御タイプ → 倍率） |
+| Stats | `domain/model/pokemon/` | 種族値（HP, こうげき, ぼうぎょ, とくこう, とくぼう, すばやさ） |
+| AbilityPoints | `domain/model/battle/` | 能力ポイント配分（各ステータスへの加算値） |
+| Nature | `domain/model/pokemon/` | 性格（上昇ステータス、下降ステータス） |
+| DamageResult | `domain/model/battle/` | ダメージ計算結果（最小ダメージ、最大ダメージ、割合、確定数） |
+
+#### Entity
+
+| Entity | 配置先 | 概要 |
+|---|---|---|
+| Pokemon | `domain/model/pokemon/` | ポケモンの種族データ（種族値、タイプ、特性、覚える技リスト等） |
+| Move | `domain/model/move/` | 技（名前、タイプ、威力、命中率、分類） |
+| Ability | `domain/model/pokemon/` | 特性（名前、効果） |
+| BattlePokemon | `domain/model/battle/` | 対戦用ポケモン（種族データ + 育成データ + 構成） |
+| Party | `domain/model/party/` | パーティ（BattlePokemon の集合、最大6体） |
+
+#### DomainService
+
+| DomainService | 配置先 | 概要 |
+|---|---|---|
+| DamageCalculator | `domain/service/` | ダメージ計算（乱数幅を含む正確な数値計算） |
+| TypeMatchupEvaluator | `domain/service/` | タイプ相性の評価（複合タイプ対応） |
+| StatCalculator | `domain/service/` | 実数値計算（種族値 + 個体値[固定31] + 能力ポイント + 性格補正） |
+| SpeedComparator | `domain/service/` | 素早さ比較（実数値に基づく行動順の判定） |
+
+### 3.3 ValueObject 詳細
+
+#### Type
+
+ポケモンのタイプを表す。全18種を列挙型として定義する。
+
+| 属性 | 型 | 説明 |
+|---|---|---|
+| value | string（列挙） | タイプ名（ノーマル, ほのお, みず, でんき, くさ, こおり, かくとう, どく, じめん, ひこう, エスパー, むし, いわ, ゴースト, ドラゴン, あく, はがね, フェアリー） |
+
+- 不変（イミュータブル）
+- 等価性はタイプ名で判定する
+
+#### TypeMatchup
+
+攻撃タイプと防御タイプの組み合わせに対する倍率を表す。
+
+| 属性 | 型 | 説明 |
+|---|---|---|
+| attackType | Type | 攻撃側のタイプ |
+| defenseType | Type | 防御側のタイプ |
+| multiplier | number | 倍率（0, 0.25, 0.5, 1, 2, 4） |
+
+- 防御側が複合タイプの場合、各タイプの倍率を乗算して最終倍率を算出する
+- チャンピオンズ固有の表記との対応：
+
+| 倍率 | 表記 |
+|---|---|
+| 4 | こうかちょうバツグン |
+| 2 | こうかはバツグンだ |
+| 1 | 等倍 |
+| 0.5 | こうかはいまひとつ |
+| 0.25 | かなりいまひとつ |
+| 0 | こうかがないみたい |
+
+#### Stats
+
+ポケモンの種族値を表す。6つのステータスを持つ。
+
+| 属性 | 型 | 説明 |
+|---|---|---|
+| hp | number | HP |
+| attack | number | こうげき |
+| defense | number | ぼうぎょ |
+| specialAttack | number | とくこう |
+| specialDefense | number | とくぼう |
+| speed | number | すばやさ |
+
+- 不変（イミュータブル）
+- 各値は正の整数
+
+#### AbilityPoints
+
+能力ポイントの配分を表す。チャンピオンズ固有の仕様として、実数値に直接加算される。
+
+| 属性 | 型 | 説明 |
+|---|---|---|
+| hp | number | HP への加算値 |
+| attack | number | こうげきへの加算値 |
+| defense | number | ぼうぎょへの加算値 |
+| specialAttack | number | とくこうへの加算値 |
+| specialDefense | number | とくぼうへの加算値 |
+| speed | number | すばやさへの加算値 |
+
+- 不変（イミュータブル）
+- 各値は 0 以上の整数
+- 配分の上限ルールはゲーム仕様確定後に制約として追加する
+
+#### Nature
+
+ポケモンの性格を表す。上昇するステータスと下降するステータスを持つ。
+
+| 属性 | 型 | 説明 |
+|---|---|---|
+| name | string | 性格名（いじっぱり、ひかえめ等） |
+| increasedStat | StatType \| null | 上昇するステータス（HP 以外の5種、無補正の場合は null） |
+| decreasedStat | StatType \| null | 下降するステータス（HP 以外の5種、無補正の場合は null） |
+
+- 上昇・下降ステータスの補正倍率は 1.1 倍 / 0.9 倍
+- 無補正性格（まじめ、がんばりや等）は increasedStat, decreasedStat がともに null
+
+#### DamageResult
+
+ダメージ計算の結果を表す。
+
+| 属性 | 型 | 説明 |
+|---|---|---|
+| minDamage | number | 最小ダメージ（乱数最低） |
+| maxDamage | number | 最大ダメージ（乱数最高） |
+| minPercentage | number | 最小ダメージの HP 割合（%） |
+| maxPercentage | number | 最大ダメージの HP 割合（%） |
+| guaranteedKnockouts | number | 確定数（確定1発 = 1、確定2発 = 2、...） |
+
+- HP 割合はパーセンテージで表現する（ゲーム内表示と合わせるため）
+- 確定数は最小ダメージ基準で算出する
+
+### 3.4 Entity 詳細
+
+#### Pokemon
+
+ポケモンの種族データを表す。図鑑データに相当し、個体の育成状態は含まない。
+
+| 属性 | 型 | 説明 |
+|---|---|---|
+| id | string | ポケモンの一意識別子（全国図鑑番号ベース） |
+| name | string | ポケモン名 |
+| types | Type[] | タイプ（1つまたは2つ） |
+| baseStats | Stats | 種族値 |
+| abilities | AbilityId[] | 取りうる特性の ID リスト |
+| learnableMoveIds | MoveId[] | 覚えられる技の ID リスト |
+| megaEvolutions | MegaEvolution[] | メガシンカ先のリスト（メガシンカ不可の場合は空配列） |
+
+- 識別子は全国図鑑番号をベースにする（フォルム違いはサフィックスで区別）
+- メガシンカ先はタイプ・種族値・特性が変化するため、別途 MegaEvolution 型で保持する
+
+#### Move
+
+技を表す。
+
+| 属性 | 型 | 説明 |
+|---|---|---|
+| id | string | 技の一意識別子 |
+| name | string | 技名 |
+| type | Type | タイプ |
+| category | MoveCategory | 分類（物理 / 特殊 / 変化） |
+| power | number \| null | 威力（変化技は null） |
+| accuracy | number \| null | 命中率（必中技は null） |
+| priority | number | 優先度（先制技は +1 以上） |
+
+- MoveCategory は「physical（物理）」「special（特殊）」「status（変化）」の3値の列挙型
+- 変化技はダメージ計算の対象外とする
+
+#### Ability
+
+ポケモンの特性を表す。
+
+| 属性 | 型 | 説明 |
+|---|---|---|
+| id | string | 特性の一意識別子 |
+| name | string | 特性名 |
+| description | string | 特性の効果説明 |
+
+- ダメージ計算に影響する特性（もらいび、かんそうはだ等）は DamageCalculator 側で個別にハンドリングする
+- 特性の効果ロジックは段階的に実装する
+
+#### BattlePokemon
+
+対戦で使用する個体を表す。種族データに育成状態と構成を加えたもの。
+
+| 属性 | 型 | 説明 |
+|---|---|---|
+| id | string | 対戦用ポケモンの一意識別子 |
+| pokemon | Pokemon | ベースとなる種族データ |
+| nature | Nature | 性格 |
+| abilityPoints | AbilityPoints | 能力ポイント配分 |
+| ability | Ability | 選択した特性 |
+| moves | Move[] | 技構成（最大4つ） |
+| item | string \| null | 持ち物（未設定の場合は null） |
+| isMegaEvolved | boolean | メガシンカ状態かどうか |
+
+- 個体値は全ポケモン一律31固定のため、フィールドとして持たない（StatCalculator 内で定数 `MAX_IV = 31` として扱う）
+- メガシンカ時は pokemon のタイプ・種族値・特性が変化する
+- 技は1〜4つ（空は許可しない）
+
+#### Party
+
+対戦パーティを表す。BattlePokemon の集合。
+
+| 属性 | 型 | 説明 |
+|---|---|---|
+| id | string | パーティの一意識別子 |
+| members | BattlePokemon[] | パーティメンバー（1〜6体） |
+
+- メンバー数の制約：最小1体、最大6体
+- 同一ポケモンの重複ルールはゲーム仕様に準拠する
+- パーティ内でメガシンカできるのは1体のみ（ビジネスルールとしてバリデーション）
+
+### 3.5 DomainService 詳細
+
+#### DamageCalculator
+
+ダメージ計算を行う。3つの粒度で計算を提供する。
+
+| メソッド | 入力 | 出力 | 説明 |
+|---|---|---|---|
+| calculateSingle | 攻撃側 BattlePokemon, 防御側 BattlePokemon, Move | DamageResult | 1対1の1技ダメージ |
+| calculateAllMoves | 攻撃側 BattlePokemon, 防御側 BattlePokemon | DamageResult[] | 1対1の全技ダメージ |
+| calculatePartyMatchup | 攻撃側 Party, 防御側 Party | DamageResult[][] | パーティ対パーティの全組み合わせ |
+
+計算要素：
+- タイプ一致ボーナス（STAB: 1.5倍）
+- タイプ相性倍率（TypeMatchupEvaluator に委譲）
+- 攻撃側の実数値（StatCalculator に委譲）
+- 防御側の実数値（StatCalculator に委譲）
+- 乱数幅（0.85〜1.00 の16段階）
+- 持ち物・特性による補正（段階的に実装）
+
+#### TypeMatchupEvaluator
+
+タイプ相性の評価を行う。
+
+| メソッド | 入力 | 出力 | 説明 |
+|---|---|---|---|
+| evaluate | 攻撃 Type, 防御 Type[] | number | 攻撃タイプに対する防御側（複合タイプ対応）の倍率 |
+| getWeaknesses | Type[] | Type[] | 弱点タイプの一覧 |
+| getResistances | Type[] | Type[] | 耐性タイプの一覧 |
+| getImmunities | Type[] | Type[] | 無効タイプの一覧 |
+
+- 複合タイプの場合は各タイプの倍率を乗算する
+- 特性による相性変更（ふゆう等）は本サービスでは扱わない（DamageCalculator 側で補正）
+
+#### StatCalculator
+
+実数値の計算を行う。チャンピオンズ固有の計算式を使用する。
+
+| メソッド | 入力 | 出力 | 説明 |
+|---|---|---|---|
+| calculate | baseStats: Stats, abilityPoints: AbilityPoints, nature: Nature, level: number | Stats | 全ステータスの実数値を計算 |
+| calculateSingle | baseStat: number, abilityPoint: number, natureMultiplier: number, level: number, isHp: boolean | number | 単一ステータスの実数値を計算 |
+
+定数：
+- `MAX_IV = 31`（個体値は全ポケモン一律固定）
+- `DEFAULT_LEVEL = 50`（対戦レベル）
+
+計算式（HP）：
+```
+HP実数値 = (種族値 × 2 + 個体値) × レベル / 100 + レベル + 10 + 能力ポイント
+```
+
+計算式（HP 以外）：
+```
+実数値 = ((種族値 × 2 + 個体値) × レベル / 100 + 5) × 性格補正 + 能力ポイント
+```
+
+※ 計算式はゲーム仕様確定後に検証・修正する可能性がある。
+
+#### SpeedComparator
+
+素早さの比較を行い、行動順を判定する。
+
+| メソッド | 入力 | 出力 | 説明 |
+|---|---|---|---|
+| compare | BattlePokemon, BattlePokemon | CompareResult | 2体の素早さを比較 |
+| sortBySpeed | BattlePokemon[] | BattlePokemon[] | 素早さ順にソート |
+
+- 実数値の計算は StatCalculator に委譲する
+- 素早さが同値の場合はランダム（結果に「同速」として明示する）
+- 先制技・後攻技の優先度は Move の priority を参照する
+- トリックルーム等の状態異常による順序反転は将来対応とする
+
+### 3.6 テラスタル対応の拡張設計
+
+テラスタルは現時点で未実装だが、将来追加予定である。以下の拡張ポイントを考慮した設計にする。
+
+| 拡張箇所 | 対応方針 |
+|---|---|
+| BattlePokemon | テラスタイプ（Type \| null）を追加 |
+| DamageCalculator | テラスタル時のタイプ一致ボーナス計算を追加 |
+| TypeMatchupEvaluator | テラスタル時の防御側タイプ変更を考慮 |
+
+現時点ではこれらのフィールド・ロジックは実装しない。テラスタルに関わるインターフェースを今の段階で追加することは YAGNI 原則に反するため、拡張箇所の認識のみ記録に留める。
+
+### 3.7 ドメインモデル間の関係
+
+```
+Party
+ └── members: BattlePokemon[]
+       ├── pokemon: Pokemon
+       │    ├── types: Type[]
+       │    ├── baseStats: Stats
+       │    ├── abilities: AbilityId[]
+       │    ├── learnableMoveIds: MoveId[]
+       │    └── megaEvolutions: MegaEvolution[]
+       ├── nature: Nature
+       ├── abilityPoints: AbilityPoints
+       ├── ability: Ability
+       └── moves: Move[]
+             ├── type: Type
+             └── category: MoveCategory
+
+DamageCalculator
+ ├── uses: TypeMatchupEvaluator
+ ├── uses: StatCalculator
+ └── produces: DamageResult
+
+SpeedComparator
+ └── uses: StatCalculator
+```
 
 ## 4. データ設計
 
