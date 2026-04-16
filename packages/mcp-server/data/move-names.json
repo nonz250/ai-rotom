@@ -1,0 +1,1982 @@
+[
+  {
+    "ja": "アクセルロック",
+    "en": "Accelerock"
+  },
+  {
+    "ja": "とける",
+    "en": "Acid Armor"
+  },
+  {
+    "ja": "アシッドボム",
+    "en": "Acid Spray"
+  },
+  {
+    "ja": "アクロバット",
+    "en": "Acrobatics"
+  },
+  {
+    "ja": "つぼをつく",
+    "en": "Acupressure"
+  },
+  {
+    "ja": "つばめがえし",
+    "en": "Aerial Ace"
+  },
+  {
+    "ja": "おさきにどうぞ",
+    "en": "After You"
+  },
+  {
+    "ja": "こうそくいどう",
+    "en": "Agility"
+  },
+  {
+    "ja": "エアカッター",
+    "en": "Air Cutter"
+  },
+  {
+    "ja": "エアスラッシュ",
+    "en": "Air Slash"
+  },
+  {
+    "ja": "みわくのボイス",
+    "en": "Alluring Voice"
+  },
+  {
+    "ja": "サイドチェンジ",
+    "en": "Ally Switch"
+  },
+  {
+    "ja": "ドわすれ",
+    "en": "Amnesia"
+  },
+  {
+    "ja": "げんしのちから",
+    "en": "Ancient Power"
+  },
+  {
+    "ja": "りんごさん",
+    "en": "Apple Acid"
+  },
+  {
+    "ja": "アクアカッター",
+    "en": "Aqua Cutter"
+  },
+  {
+    "ja": "アクアジェット",
+    "en": "Aqua Jet"
+  },
+  {
+    "ja": "アクアリング",
+    "en": "Aqua Ring"
+  },
+  {
+    "ja": "アクアステップ",
+    "en": "Aqua Step"
+  },
+  {
+    "ja": "アクアテール",
+    "en": "Aqua Tail"
+  },
+  {
+    "ja": "アーマーキャノン",
+    "en": "Armor Cannon"
+  },
+  {
+    "ja": "アロマミスト",
+    "en": "Aromatic Mist"
+  },
+  {
+    "ja": "ダメおし",
+    "en": "Assurance"
+  },
+  {
+    "ja": "メロメロ",
+    "en": "Attract"
+  },
+  {
+    "ja": "はどうだん",
+    "en": "Aura Sphere"
+  },
+  {
+    "ja": "オーラぐるま",
+    "en": "Aura Wheel"
+  },
+  {
+    "ja": "オーロラベール",
+    "en": "Aurora Veil"
+  },
+  {
+    "ja": "ゆきなだれ",
+    "en": "Avalanche"
+  },
+  {
+    "ja": "かかとおとし",
+    "en": "Axe Kick"
+  },
+  {
+    "ja": "つぶらなひとみ",
+    "en": "Baby-Doll Eyes"
+  },
+  {
+    "ja": "トーチカ",
+    "en": "Baneful Bunker"
+  },
+  {
+    "ja": "バトンタッチ",
+    "en": "Baton Pass"
+  },
+  {
+    "ja": "くちばしキャノン",
+    "en": "Beak Blast"
+  },
+  {
+    "ja": "ふくろだたき",
+    "en": "Beat Up"
+  },
+  {
+    "ja": "ゲップ",
+    "en": "Belch"
+  },
+  {
+    "ja": "はらだいこ",
+    "en": "Belly Drum"
+  },
+  {
+    "ja": "しめつける",
+    "en": "Bind"
+  },
+  {
+    "ja": "かみつく",
+    "en": "Bite"
+  },
+  {
+    "ja": "むねんのつるぎ",
+    "en": "Bitter Blade"
+  },
+  {
+    "ja": "うらみつらみ",
+    "en": "Bitter Malice"
+  },
+  {
+    "ja": "ブラストバーン",
+    "en": "Blast Burn"
+  },
+  {
+    "ja": "ブレイズキック",
+    "en": "Blaze Kick"
+  },
+  {
+    "ja": "ふぶき",
+    "en": "Blizzard"
+  },
+  {
+    "ja": "とおせんぼう",
+    "en": "Block"
+  },
+  {
+    "ja": "ボディプレス",
+    "en": "Body Press"
+  },
+  {
+    "ja": "のしかかり",
+    "en": "Body Slam"
+  },
+  {
+    "ja": "ボーンラッシュ",
+    "en": "Bone Rush"
+  },
+  {
+    "ja": "ばくおんぱ",
+    "en": "Boomburst"
+  },
+  {
+    "ja": "とびはねる",
+    "en": "Bounce"
+  },
+  {
+    "ja": "ブレイブバード",
+    "en": "Brave Bird"
+  },
+  {
+    "ja": "ワイドブレイカー",
+    "en": "Breaking Swipe"
+  },
+  {
+    "ja": "かわらわり",
+    "en": "Brick Break"
+  },
+  {
+    "ja": "ぶんまわす",
+    "en": "Brutal Swing"
+  },
+  {
+    "ja": "むしくい",
+    "en": "Bug Bite"
+  },
+  {
+    "ja": "むしのさざめき",
+    "en": "Bug Buzz"
+  },
+  {
+    "ja": "ビルドアップ",
+    "en": "Bulk Up"
+  },
+  {
+    "ja": "じならし",
+    "en": "Bulldoze"
+  },
+  {
+    "ja": "バレットパンチ",
+    "en": "Bullet Punch"
+  },
+  {
+    "ja": "タネマシンガン",
+    "en": "Bullet Seed"
+  },
+  {
+    "ja": "もえつきる",
+    "en": "Burn Up"
+  },
+  {
+    "ja": "しっとのほのお",
+    "en": "Burning Jealousy"
+  },
+  {
+    "ja": "めいそう",
+    "en": "Calm Mind"
+  },
+  {
+    "ja": "ひけん・ちえなみ",
+    "en": "Ceaseless Edge"
+  },
+  {
+    "ja": "じゅうでん",
+    "en": "Charge"
+  },
+  {
+    "ja": "チャージビーム",
+    "en": "Charge Beam"
+  },
+  {
+    "ja": "あまえる",
+    "en": "Charm"
+  },
+  {
+    "ja": "ひやみず",
+    "en": "Chilling Water"
+  },
+  {
+    "ja": "さむいギャグ",
+    "en": "Chilly Reception"
+  },
+  {
+    "ja": "ともえなげ",
+    "en": "Circle Throw"
+  },
+  {
+    "ja": "スケイルノイズ",
+    "en": "Clanging Scales"
+  },
+  {
+    "ja": "ソウルビート",
+    "en": "Clangorous Soul"
+  },
+  {
+    "ja": "クリアスモッグ",
+    "en": "Clear Smog"
+  },
+  {
+    "ja": "インファイト",
+    "en": "Close Combat"
+  },
+  {
+    "ja": "コーチング",
+    "en": "Coaching"
+  },
+  {
+    "ja": "とぐろをまく",
+    "en": "Coil"
+  },
+  {
+    "ja": "ほうふく",
+    "en": "Comeuppance"
+  },
+  {
+    "ja": "あやしいひかり",
+    "en": "Confuse Ray"
+  },
+  {
+    "ja": "まねっこ",
+    "en": "Copycat"
+  },
+  {
+    "ja": "ふしょくガス",
+    "en": "Corrosive Gas"
+  },
+  {
+    "ja": "コスモパワー",
+    "en": "Cosmic Power"
+  },
+  {
+    "ja": "コットンガード",
+    "en": "Cotton Guard"
+  },
+  {
+    "ja": "わたほうし",
+    "en": "Cotton Spore"
+  },
+  {
+    "ja": "カウンター",
+    "en": "Counter"
+  },
+  {
+    "ja": "ほしがる",
+    "en": "Covet"
+  },
+  {
+    "ja": "クラブハンマー",
+    "en": "Crabhammer"
+  },
+  {
+    "ja": "クロスチョップ",
+    "en": "Cross Chop"
+  },
+  {
+    "ja": "クロスポイズン",
+    "en": "Cross Poison"
+  },
+  {
+    "ja": "かみくだく",
+    "en": "Crunch"
+  },
+  {
+    "ja": "ブレイククロー",
+    "en": "Crush Claw"
+  },
+  {
+    "ja": "のろい",
+    "en": "Curse"
+  },
+  {
+    "ja": "あくのはどう",
+    "en": "Dark Pulse"
+  },
+  {
+    "ja": "ＤＤラリアット",
+    "en": "Darkest Lariat"
+  },
+  {
+    "ja": "マジカルシャイン",
+    "en": "Dazzling Gleam"
+  },
+  {
+    "ja": "デコレーション",
+    "en": "Decorate"
+  },
+  {
+    "ja": "きりばらい",
+    "en": "Defog"
+  },
+  {
+    "ja": "みちづれ",
+    "en": "Destiny Bond"
+  },
+  {
+    "ja": "みきり",
+    "en": "Detect"
+  },
+  {
+    "ja": "あなをほる",
+    "en": "Dig"
+  },
+  {
+    "ja": "フェイタルクロー",
+    "en": "Dire Claw"
+  },
+  {
+    "ja": "かなしばり",
+    "en": "Disable"
+  },
+  {
+    "ja": "ほうでん",
+    "en": "Discharge"
+  },
+  {
+    "ja": "ダイビング",
+    "en": "Dive"
+  },
+  {
+    "ja": "ダブルアタック",
+    "en": "Double Hit"
+  },
+  {
+    "ja": "かげぶんしん",
+    "en": "Double Team"
+  },
+  {
+    "ja": "すてみタックル",
+    "en": "Double-Edge"
+  },
+  {
+    "ja": "りゅうせいぐん",
+    "en": "Draco Meteor"
+  },
+  {
+    "ja": "ドラゴンエール",
+    "en": "Dragon Cheer"
+  },
+  {
+    "ja": "ドラゴンクロー",
+    "en": "Dragon Claw"
+  },
+  {
+    "ja": "りゅうのまい",
+    "en": "Dragon Dance"
+  },
+  {
+    "ja": "ドラゴンアロー",
+    "en": "Dragon Darts"
+  },
+  {
+    "ja": "りゅうのはどう",
+    "en": "Dragon Pulse"
+  },
+  {
+    "ja": "ドラゴンダイブ",
+    "en": "Dragon Rush"
+  },
+  {
+    "ja": "ドラゴンテール",
+    "en": "Dragon Tail"
+  },
+  {
+    "ja": "ドレインパンチ",
+    "en": "Drain Punch"
+  },
+  {
+    "ja": "ドレインキッス",
+    "en": "Draining Kiss"
+  },
+  {
+    "ja": "ドリルくちばし",
+    "en": "Drill Peck"
+  },
+  {
+    "ja": "ドリルライナー",
+    "en": "Drill Run"
+  },
+  {
+    "ja": "ダブルウイング",
+    "en": "Dual Wingbeat"
+  },
+  {
+    "ja": "ばくれつパンチ",
+    "en": "Dynamic Punch"
+  },
+  {
+    "ja": "だいちのちから",
+    "en": "Earth Power"
+  },
+  {
+    "ja": "じしん",
+    "en": "Earthquake"
+  },
+  {
+    "ja": "かいでんぱ",
+    "en": "Eerie Impulse"
+  },
+  {
+    "ja": "ぶきみなじゅもん",
+    "en": "Eerie Spell"
+  },
+  {
+    "ja": "エレキフィールド",
+    "en": "Electric Terrain"
+  },
+  {
+    "ja": "そうでん",
+    "en": "Electrify"
+  },
+  {
+    "ja": "エレキボール",
+    "en": "Electro Ball"
+  },
+  {
+    "ja": "エレクトロビーム",
+    "en": "Electro Shot"
+  },
+  {
+    "ja": "エレキネット",
+    "en": "Electroweb"
+  },
+  {
+    "ja": "アンコール",
+    "en": "Encore"
+  },
+  {
+    "ja": "がむしゃら",
+    "en": "Endeavor"
+  },
+  {
+    "ja": "こらえる",
+    "en": "Endure"
+  },
+  {
+    "ja": "エナジーボール",
+    "en": "Energy Ball"
+  },
+  {
+    "ja": "なかまづくり",
+    "en": "Entrainment"
+  },
+  {
+    "ja": "ふんか",
+    "en": "Eruption"
+  },
+  {
+    "ja": "ワイドフォース",
+    "en": "Expanding Force"
+  },
+  {
+    "ja": "だいばくはつ",
+    "en": "Explosion"
+  },
+  {
+    "ja": "じんつうりき",
+    "en": "Extrasensory"
+  },
+  {
+    "ja": "しんそく",
+    "en": "Extreme Speed"
+  },
+  {
+    "ja": "からげんき",
+    "en": "Facade"
+  },
+  {
+    "ja": "フェアリーロック",
+    "en": "Fairy Lock"
+  },
+  {
+    "ja": "ねこだまし",
+    "en": "Fake Out"
+  },
+  {
+    "ja": "うそなき",
+    "en": "Fake Tears"
+  },
+  {
+    "ja": "フェザーダンス",
+    "en": "Feather Dance"
+  },
+  {
+    "ja": "フェイント",
+    "en": "Feint"
+  },
+  {
+    "ja": "とどめばり",
+    "en": "Fell Stinger"
+  },
+  {
+    "ja": "きまぐレーザー",
+    "en": "Fickle Beam"
+  },
+  {
+    "ja": "ほのおのまい",
+    "en": "Fiery Dance"
+  },
+  {
+    "ja": "いのちがけ",
+    "en": "Final Gambit"
+  },
+  {
+    "ja": "だいもんじ",
+    "en": "Fire Blast"
+  },
+  {
+    "ja": "ほのおのキバ",
+    "en": "Fire Fang"
+  },
+  {
+    "ja": "ほのおのムチ",
+    "en": "Fire Lash"
+  },
+  {
+    "ja": "ほのおのパンチ",
+    "en": "Fire Punch"
+  },
+  {
+    "ja": "ほのおのうず",
+    "en": "Fire Spin"
+  },
+  {
+    "ja": "であいがしら",
+    "en": "First Impression"
+  },
+  {
+    "ja": "じわれ",
+    "en": "Fissure"
+  },
+  {
+    "ja": "じたばた",
+    "en": "Flail"
+  },
+  {
+    "ja": "ニトロチャージ",
+    "en": "Flame Charge"
+  },
+  {
+    "ja": "かえんほうしゃ",
+    "en": "Flamethrower"
+  },
+  {
+    "ja": "フレアドライブ",
+    "en": "Flare Blitz"
+  },
+  {
+    "ja": "ラスターカノン",
+    "en": "Flash Cannon"
+  },
+  {
+    "ja": "おだてる",
+    "en": "Flatter"
+  },
+  {
+    "ja": "なげつける",
+    "en": "Fling"
+  },
+  {
+    "ja": "クイックターン",
+    "en": "Flip Turn"
+  },
+  {
+    "ja": "トリックフラワー",
+    "en": "Flower Trick"
+  },
+  {
+    "ja": "そらをとぶ",
+    "en": "Fly"
+  },
+  {
+    "ja": "フライングプレス",
+    "en": "Flying Press"
+  },
+  {
+    "ja": "きあいだま",
+    "en": "Focus Blast"
+  },
+  {
+    "ja": "きあいだめ",
+    "en": "Focus Energy"
+  },
+  {
+    "ja": "きあいパンチ",
+    "en": "Focus Punch"
+  },
+  {
+    "ja": "このゆびとまれ",
+    "en": "Follow Me"
+  },
+  {
+    "ja": "もりののろい",
+    "en": "Forest's Curse"
+  },
+  {
+    "ja": "イカサマ",
+    "en": "Foul Play"
+  },
+  {
+    "ja": "フリーズドライ",
+    "en": "Freeze-Dry"
+  },
+  {
+    "ja": "ハードプラント",
+    "en": "Frenzy Plant"
+  },
+  {
+    "ja": "こおりのいぶき",
+    "en": "Frost Breath"
+  },
+  {
+    "ja": "みらいよち",
+    "en": "Future Sight"
+  },
+  {
+    "ja": "いえき",
+    "en": "Gastro Acid"
+  },
+  {
+    "ja": "ギガドレイン",
+    "en": "Giga Drain"
+  },
+  {
+    "ja": "ギガインパクト",
+    "en": "Giga Impact"
+  },
+  {
+    "ja": "デカハンマー",
+    "en": "Gigaton Hammer"
+  },
+  {
+    "ja": "へびにらみ",
+    "en": "Glare"
+  },
+  {
+    "ja": "くさむすび",
+    "en": "Grass Knot"
+  },
+  {
+    "ja": "グラススライダー",
+    "en": "Grassy Glide"
+  },
+  {
+    "ja": "グラスフィールド",
+    "en": "Grassy Terrain"
+  },
+  {
+    "ja": "Ｇのちから",
+    "en": "Grav Apple"
+  },
+  {
+    "ja": "じゅうりょく",
+    "en": "Gravity"
+  },
+  {
+    "ja": "せいちょう",
+    "en": "Growth"
+  },
+  {
+    "ja": "ガードシェア",
+    "en": "Guard Split"
+  },
+  {
+    "ja": "ガードスワップ",
+    "en": "Guard Swap"
+  },
+  {
+    "ja": "ハサミギロチン",
+    "en": "Guillotine"
+  },
+  {
+    "ja": "ダストシュート",
+    "en": "Gunk Shot"
+  },
+  {
+    "ja": "ジャイロボール",
+    "en": "Gyro Ball"
+  },
+  {
+    "ja": "アームハンマー",
+    "en": "Hammer Arm"
+  },
+  {
+    "ja": "ハードプレス",
+    "en": "Hard Press"
+  },
+  {
+    "ja": "くろいきり",
+    "en": "Haze"
+  },
+  {
+    "ja": "もろはのずつき",
+    "en": "Head Smash"
+  },
+  {
+    "ja": "ぶちかまし",
+    "en": "Headlong Rush"
+  },
+  {
+    "ja": "いやしのすず",
+    "en": "Heal Bell"
+  },
+  {
+    "ja": "いやしのはどう",
+    "en": "Heal Pulse"
+  },
+  {
+    "ja": "いやしのねがい",
+    "en": "Healing Wish"
+  },
+  {
+    "ja": "ヒートスタンプ",
+    "en": "Heat Crash"
+  },
+  {
+    "ja": "ねっぷう",
+    "en": "Heat Wave"
+  },
+  {
+    "ja": "ヘビーボンバー",
+    "en": "Heavy Slam"
+  },
+  {
+    "ja": "てだすけ",
+    "en": "Helping Hand"
+  },
+  {
+    "ja": "たたりめ",
+    "en": "Hex"
+  },
+  {
+    "ja": "１０まんばりき",
+    "en": "High Horsepower"
+  },
+  {
+    "ja": "とびひざげり",
+    "en": "High Jump Kick"
+  },
+  {
+    "ja": "つのドリル",
+    "en": "Horn Drill"
+  },
+  {
+    "ja": "ウッドホーン",
+    "en": "Horn Leech"
+  },
+  {
+    "ja": "とおぼえ",
+    "en": "Howl"
+  },
+  {
+    "ja": "ぼうふう",
+    "en": "Hurricane"
+  },
+  {
+    "ja": "ハイドロカノン",
+    "en": "Hydro Cannon"
+  },
+  {
+    "ja": "ハイドロポンプ",
+    "en": "Hydro Pump"
+  },
+  {
+    "ja": "はかいこうせん",
+    "en": "Hyper Beam"
+  },
+  {
+    "ja": "ハイパーボイス",
+    "en": "Hyper Voice"
+  },
+  {
+    "ja": "さいみんじゅつ",
+    "en": "Hypnosis"
+  },
+  {
+    "ja": "れいとうビーム",
+    "en": "Ice Beam"
+  },
+  {
+    "ja": "こおりのキバ",
+    "en": "Ice Fang"
+  },
+  {
+    "ja": "アイスハンマー",
+    "en": "Ice Hammer"
+  },
+  {
+    "ja": "れいとうパンチ",
+    "en": "Ice Punch"
+  },
+  {
+    "ja": "こおりのつぶて",
+    "en": "Ice Shard"
+  },
+  {
+    "ja": "アイススピナー",
+    "en": "Ice Spinner"
+  },
+  {
+    "ja": "つららおとし",
+    "en": "Icicle Crash"
+  },
+  {
+    "ja": "つららばり",
+    "en": "Icicle Spear"
+  },
+  {
+    "ja": "こごえるかぜ",
+    "en": "Icy Wind"
+  },
+  {
+    "ja": "ふういん",
+    "en": "Imprison"
+  },
+  {
+    "ja": "ひゃっきやこう",
+    "en": "Infernal Parade"
+  },
+  {
+    "ja": "れんごく",
+    "en": "Inferno"
+  },
+  {
+    "ja": "まとわりつく",
+    "en": "Infestation"
+  },
+  {
+    "ja": "ねをはる",
+    "en": "Ingrain"
+  },
+  {
+    "ja": "さいはい",
+    "en": "Instruct"
+  },
+  {
+    "ja": "てっぺき",
+    "en": "Iron Defense"
+  },
+  {
+    "ja": "アイアンヘッド",
+    "en": "Iron Head"
+  },
+  {
+    "ja": "アイアンテール",
+    "en": "Iron Tail"
+  },
+  {
+    "ja": "ジェットパンチ",
+    "en": "Jet Punch"
+  },
+  {
+    "ja": "キングシールド",
+    "en": "King's Shield"
+  },
+  {
+    "ja": "はたきおとす",
+    "en": "Knock Off"
+  },
+  {
+    "ja": "ドゲザン",
+    "en": "Kowtow Cleave"
+  },
+  {
+    "ja": "うっぷんばらし",
+    "en": "Lash Out"
+  },
+  {
+    "ja": "とっておき",
+    "en": "Last Resort"
+  },
+  {
+    "ja": "おはかまいり",
+    "en": "Last Respects"
+  },
+  {
+    "ja": "ふんえん",
+    "en": "Lava Plume"
+  },
+  {
+    "ja": "リーフブレード",
+    "en": "Leaf Blade"
+  },
+  {
+    "ja": "リーフストーム",
+    "en": "Leaf Storm"
+  },
+  {
+    "ja": "きゅうけつ",
+    "en": "Leech Life"
+  },
+  {
+    "ja": "やどりぎのタネ",
+    "en": "Leech Seed"
+  },
+  {
+    "ja": "いのちのしずく",
+    "en": "Life Dew"
+  },
+  {
+    "ja": "はめつのひかり",
+    "en": "Light of Ruin"
+  },
+  {
+    "ja": "ひかりのかべ",
+    "en": "Light Screen"
+  },
+  {
+    "ja": "アクアブレイク",
+    "en": "Liquidation"
+  },
+  {
+    "ja": "ロックオン",
+    "en": "Lock-On"
+  },
+  {
+    "ja": "けたぐり",
+    "en": "Low Kick"
+  },
+  {
+    "ja": "ローキック",
+    "en": "Low Sweep"
+  },
+  {
+    "ja": "ルミナコリジョン",
+    "en": "Lumina Crash"
+  },
+  {
+    "ja": "とびかかる",
+    "en": "Lunge"
+  },
+  {
+    "ja": "マッハパンチ",
+    "en": "Mach Punch"
+  },
+  {
+    "ja": "まほうのこな",
+    "en": "Magic Powder"
+  },
+  {
+    "ja": "マジックルーム",
+    "en": "Magic Room"
+  },
+  {
+    "ja": "でんじふゆう",
+    "en": "Magnet Rise"
+  },
+  {
+    "ja": "じばそうさ",
+    "en": "Magnetic Flux"
+  },
+  {
+    "ja": "シャカシャカほう",
+    "en": "Matcha Gotcha"
+  },
+  {
+    "ja": "くろいまなざし",
+    "en": "Mean Look"
+  },
+  {
+    "ja": "メガトンキック",
+    "en": "Mega Kick"
+  },
+  {
+    "ja": "メガホーン",
+    "en": "Megahorn"
+  },
+  {
+    "ja": "おきみやげ",
+    "en": "Memento"
+  },
+  {
+    "ja": "メタルバースト",
+    "en": "Metal Burst"
+  },
+  {
+    "ja": "きんぞくおん",
+    "en": "Metal Sound"
+  },
+  {
+    "ja": "メテオビーム",
+    "en": "Meteor Beam"
+  },
+  {
+    "ja": "コメットパンチ",
+    "en": "Meteor Mash"
+  },
+  {
+    "ja": "ミルクのみ",
+    "en": "Milk Drink"
+  },
+  {
+    "ja": "ちいさくなる",
+    "en": "Minimize"
+  },
+  {
+    "ja": "ミラーコート",
+    "en": "Mirror Coat"
+  },
+  {
+    "ja": "ミストバースト",
+    "en": "Misty Explosion"
+  },
+  {
+    "ja": "ミストフィールド",
+    "en": "Misty Terrain"
+  },
+  {
+    "ja": "ムーンフォース",
+    "en": "Moonblast"
+  },
+  {
+    "ja": "つきのひかり",
+    "en": "Moonlight"
+  },
+  {
+    "ja": "あさのひざし",
+    "en": "Morning Sun"
+  },
+  {
+    "ja": "キラースピン",
+    "en": "Mortal Spin"
+  },
+  {
+    "ja": "ひょうざんおろし",
+    "en": "Mountain Gale"
+  },
+  {
+    "ja": "マッドショット",
+    "en": "Mud Shot"
+  },
+  {
+    "ja": "どろかけ",
+    "en": "Mud-Slap"
+  },
+  {
+    "ja": "だくりゅう",
+    "en": "Muddy Water"
+  },
+  {
+    "ja": "マジカルフレイム",
+    "en": "Mystical Fire"
+  },
+  {
+    "ja": "わるだくみ",
+    "en": "Nasty Plot"
+  },
+  {
+    "ja": "ナイトバースト",
+    "en": "Night Daze"
+  },
+  {
+    "ja": "ナイトヘッド",
+    "en": "Night Shade"
+  },
+  {
+    "ja": "つじぎり",
+    "en": "Night Slash"
+  },
+  {
+    "ja": "おたけび",
+    "en": "Noble Roar"
+  },
+  {
+    "ja": "ほっぺすりすり",
+    "en": "Nuzzle"
+  },
+  {
+    "ja": "げきりん",
+    "en": "Outrage"
+  },
+  {
+    "ja": "オーバーヒート",
+    "en": "Overheat"
+  },
+  {
+    "ja": "いたみわけ",
+    "en": "Pain Split"
+  },
+  {
+    "ja": "パラボラチャージ",
+    "en": "Parabolic Charge"
+  },
+  {
+    "ja": "すてゼリフ",
+    "en": "Parting Shot"
+  },
+  {
+    "ja": "しっぺがえし",
+    "en": "Payback"
+  },
+  {
+    "ja": "ほろびのうた",
+    "en": "Perish Song"
+  },
+  {
+    "ja": "はなふぶき",
+    "en": "Petal Blizzard"
+  },
+  {
+    "ja": "はなびらのまい",
+    "en": "Petal Dance"
+  },
+  {
+    "ja": "ゴーストダイブ",
+    "en": "Phantom Force"
+  },
+  {
+    "ja": "ミサイルばり",
+    "en": "Pin Missile"
+  },
+  {
+    "ja": "じゃれつく",
+    "en": "Play Rough"
+  },
+  {
+    "ja": "ついばむ",
+    "en": "Pluck"
+  },
+  {
+    "ja": "どくどくのキバ",
+    "en": "Poison Fang"
+  },
+  {
+    "ja": "どくづき",
+    "en": "Poison Jab"
+  },
+  {
+    "ja": "どくのこな",
+    "en": "Poison Powder"
+  },
+  {
+    "ja": "かふんだんご",
+    "en": "Pollen Puff"
+  },
+  {
+    "ja": "ポルターガイスト",
+    "en": "Poltergeist"
+  },
+  {
+    "ja": "ネズミざん",
+    "en": "Population Bomb"
+  },
+  {
+    "ja": "とびつく",
+    "en": "Pounce"
+  },
+  {
+    "ja": "はたく",
+    "en": "Pound"
+  },
+  {
+    "ja": "パワージェム",
+    "en": "Power Gem"
+  },
+  {
+    "ja": "パワーシフト",
+    "en": "Power Shift"
+  },
+  {
+    "ja": "パワーシェア",
+    "en": "Power Split"
+  },
+  {
+    "ja": "パワースワップ",
+    "en": "Power Swap"
+  },
+  {
+    "ja": "パワートリック",
+    "en": "Power Trick"
+  },
+  {
+    "ja": "つけあがる",
+    "en": "Power Trip"
+  },
+  {
+    "ja": "パワーウィップ",
+    "en": "Power Whip"
+  },
+  {
+    "ja": "まもる",
+    "en": "Protect"
+  },
+  {
+    "ja": "じこあんじ",
+    "en": "Psych Up"
+  },
+  {
+    "ja": "サイコキネシス",
+    "en": "Psychic"
+  },
+  {
+    "ja": "サイコファング",
+    "en": "Psychic Fangs"
+  },
+  {
+    "ja": "サイコノイズ",
+    "en": "Psychic Noise"
+  },
+  {
+    "ja": "サイコフィールド",
+    "en": "Psychic Terrain"
+  },
+  {
+    "ja": "サイコカッター",
+    "en": "Psycho Cut"
+  },
+  {
+    "ja": "バリアーラッシュ",
+    "en": "Psyshield Bash"
+  },
+  {
+    "ja": "サイコショック",
+    "en": "Psyshock"
+  },
+  {
+    "ja": "さきおくり",
+    "en": "Quash"
+  },
+  {
+    "ja": "でんこうせっか",
+    "en": "Quick Attack"
+  },
+  {
+    "ja": "ファストガード",
+    "en": "Quick Guard"
+  },
+  {
+    "ja": "ちょうのまい",
+    "en": "Quiver Dance"
+  },
+  {
+    "ja": "いかりのこな",
+    "en": "Rage Powder"
+  },
+  {
+    "ja": "レイジングブル",
+    "en": "Raging Bull"
+  },
+  {
+    "ja": "だいふんげき",
+    "en": "Raging Fury"
+  },
+  {
+    "ja": "あまごい",
+    "en": "Rain Dance"
+  },
+  {
+    "ja": "こうそくスピン",
+    "en": "Rapid Spin"
+  },
+  {
+    "ja": "シェルブレード",
+    "en": "Razor Shell"
+  },
+  {
+    "ja": "じこさいせい",
+    "en": "Recover"
+  },
+  {
+    "ja": "リサイクル",
+    "en": "Recycle"
+  },
+  {
+    "ja": "リフレクター",
+    "en": "Reflect"
+  },
+  {
+    "ja": "ミラータイプ",
+    "en": "Reflect Type"
+  },
+  {
+    "ja": "ねむる",
+    "en": "Rest"
+  },
+  {
+    "ja": "きしかいせい",
+    "en": "Reversal"
+  },
+  {
+    "ja": "ライジングボルト",
+    "en": "Rising Voltage"
+  },
+  {
+    "ja": "ほえる",
+    "en": "Roar"
+  },
+  {
+    "ja": "ロックブラスト",
+    "en": "Rock Blast"
+  },
+  {
+    "ja": "ロックカット",
+    "en": "Rock Polish"
+  },
+  {
+    "ja": "いわなだれ",
+    "en": "Rock Slide"
+  },
+  {
+    "ja": "がんせきふうじ",
+    "en": "Rock Tomb"
+  },
+  {
+    "ja": "がんせきほう",
+    "en": "Rock Wrecker"
+  },
+  {
+    "ja": "なりきり",
+    "en": "Role Play"
+  },
+  {
+    "ja": "はねやすめ",
+    "en": "Roost"
+  },
+  {
+    "ja": "りんしょう",
+    "en": "Round"
+  },
+  {
+    "ja": "せいなるつるぎ",
+    "en": "Sacred Sword"
+  },
+  {
+    "ja": "しんぴのまもり",
+    "en": "Safeguard"
+  },
+  {
+    "ja": "しおづけ",
+    "en": "Salt Cure"
+  },
+  {
+    "ja": "すなじごく",
+    "en": "Sand Tomb"
+  },
+  {
+    "ja": "すなあらし",
+    "en": "Sandstorm"
+  },
+  {
+    "ja": "ねっとう",
+    "en": "Scald"
+  },
+  {
+    "ja": "スケイルショット",
+    "en": "Scale Shot"
+  },
+  {
+    "ja": "こわいかお",
+    "en": "Scary Face"
+  },
+  {
+    "ja": "ねっさのだいち",
+    "en": "Scorching Sands"
+  },
+  {
+    "ja": "いやなおと",
+    "en": "Screech"
+  },
+  {
+    "ja": "タネばくだん",
+    "en": "Seed Bomb"
+  },
+  {
+    "ja": "ちきゅうなげ",
+    "en": "Seismic Toss"
+  },
+  {
+    "ja": "じばく",
+    "en": "Self-Destruct"
+  },
+  {
+    "ja": "シャドーボール",
+    "en": "Shadow Ball"
+  },
+  {
+    "ja": "シャドークロー",
+    "en": "Shadow Claw"
+  },
+  {
+    "ja": "シャドーパンチ",
+    "en": "Shadow Punch"
+  },
+  {
+    "ja": "かげうち",
+    "en": "Shadow Sneak"
+  },
+  {
+    "ja": "しっぽきり",
+    "en": "Shed Tail"
+  },
+  {
+    "ja": "ぜったいれいど",
+    "en": "Sheer Cold"
+  },
+  {
+    "ja": "シェルアームズ",
+    "en": "Shell Side Arm"
+  },
+  {
+    "ja": "からをやぶる",
+    "en": "Shell Smash"
+  },
+  {
+    "ja": "たてこもる",
+    "en": "Shelter"
+  },
+  {
+    "ja": "シンプルビーム",
+    "en": "Simple Beam"
+  },
+  {
+    "ja": "うたう",
+    "en": "Sing"
+  },
+  {
+    "ja": "スキルスワップ",
+    "en": "Skill Swap"
+  },
+  {
+    "ja": "はいよるいちげき",
+    "en": "Skitter Smack"
+  },
+  {
+    "ja": "ゴッドバード",
+    "en": "Sky Attack"
+  },
+  {
+    "ja": "なまける",
+    "en": "Slack Off"
+  },
+  {
+    "ja": "ねむりごな",
+    "en": "Sleep Powder"
+  },
+  {
+    "ja": "ねごと",
+    "en": "Sleep Talk"
+  },
+  {
+    "ja": "ヘドロばくだん",
+    "en": "Sludge Bomb"
+  },
+  {
+    "ja": "ヘドロウェーブ",
+    "en": "Sludge Wave"
+  },
+  {
+    "ja": "うちおとす",
+    "en": "Smack Down"
+  },
+  {
+    "ja": "スマートホーン",
+    "en": "Smart Strike"
+  },
+  {
+    "ja": "トラバサミ",
+    "en": "Snap Trap"
+  },
+  {
+    "ja": "バークアウト",
+    "en": "Snarl"
+  },
+  {
+    "ja": "いびき",
+    "en": "Snore"
+  },
+  {
+    "ja": "ゆきげしき",
+    "en": "Snowscape"
+  },
+  {
+    "ja": "みずびたし",
+    "en": "Soak"
+  },
+  {
+    "ja": "タマゴうみ",
+    "en": "Soft-Boiled"
+  },
+  {
+    "ja": "ソーラービーム",
+    "en": "Solar Beam"
+  },
+  {
+    "ja": "ソーラーブレード",
+    "en": "Solar Blade"
+  },
+  {
+    "ja": "うたかたのアリア",
+    "en": "Sparkling Aria"
+  },
+  {
+    "ja": "スピードスワップ",
+    "en": "Speed Swap"
+  },
+  {
+    "ja": "ハバネロエキス",
+    "en": "Spicy Extract"
+  },
+  {
+    "ja": "まきびし",
+    "en": "Spikes"
+  },
+  {
+    "ja": "ニードルガード",
+    "en": "Spiky Shield"
+  },
+  {
+    "ja": "かげぬい",
+    "en": "Spirit Shackle"
+  },
+  {
+    "ja": "はきだす",
+    "en": "Spit Up"
+  },
+  {
+    "ja": "うらみ",
+    "en": "Spite"
+  },
+  {
+    "ja": "キノコのほうし",
+    "en": "Spore"
+  },
+  {
+    "ja": "ステルスロック",
+    "en": "Stealth Rock"
+  },
+  {
+    "ja": "てっていこうせん",
+    "en": "Steel Beam"
+  },
+  {
+    "ja": "アイアンローラー",
+    "en": "Steel Roller"
+  },
+  {
+    "ja": "はがねのつばさ",
+    "en": "Steel Wing"
+  },
+  {
+    "ja": "ねばねばネット",
+    "en": "Sticky Web"
+  },
+  {
+    "ja": "たくわえる",
+    "en": "Stockpile"
+  },
+  {
+    "ja": "じだんだ",
+    "en": "Stomping Tantrum"
+  },
+  {
+    "ja": "がんせきアックス",
+    "en": "Stone Axe"
+  },
+  {
+    "ja": "ストーンエッジ",
+    "en": "Stone Edge"
+  },
+  {
+    "ja": "アシストパワー",
+    "en": "Stored Power"
+  },
+  {
+    "ja": "やまあらし",
+    "en": "Storm Throw"
+  },
+  {
+    "ja": "ちからをすいとる",
+    "en": "Strength Sap"
+  },
+  {
+    "ja": "いとをはく",
+    "en": "String Shot"
+  },
+  {
+    "ja": "わるあがき",
+    "en": "Struggle"
+  },
+  {
+    "ja": "むしのていこう",
+    "en": "Struggle Bug"
+  },
+  {
+    "ja": "ほおばる",
+    "en": "Stuff Cheeks"
+  },
+  {
+    "ja": "しびれごな",
+    "en": "Stun Spore"
+  },
+  {
+    "ja": "みがわり",
+    "en": "Substitute"
+  },
+  {
+    "ja": "ふいうち",
+    "en": "Sucker Punch"
+  },
+  {
+    "ja": "にほんばれ",
+    "en": "Sunny Day"
+  },
+  {
+    "ja": "いかりのまえば",
+    "en": "Super Fang"
+  },
+  {
+    "ja": "サンダーダイブ",
+    "en": "Supercell Slam"
+  },
+  {
+    "ja": "ばかぢから",
+    "en": "Superpower"
+  },
+  {
+    "ja": "なみのり",
+    "en": "Surf"
+  },
+  {
+    "ja": "いばる",
+    "en": "Swagger"
+  },
+  {
+    "ja": "のみこむ",
+    "en": "Swallow"
+  },
+  {
+    "ja": "てんしのキッス",
+    "en": "Sweet Kiss"
+  },
+  {
+    "ja": "あまいかおり",
+    "en": "Sweet Scent"
+  },
+  {
+    "ja": "すりかえ",
+    "en": "Switcheroo"
+  },
+  {
+    "ja": "つるぎのまい",
+    "en": "Swords Dance"
+  },
+  {
+    "ja": "こうごうせい",
+    "en": "Synthesis"
+  },
+  {
+    "ja": "みずあめボム",
+    "en": "Syrup Bomb"
+  },
+  {
+    "ja": "スイープビンタ",
+    "en": "Tail Slap"
+  },
+  {
+    "ja": "おいかぜ",
+    "en": "Tailwind"
+  },
+  {
+    "ja": "ちょうはつ",
+    "en": "Taunt"
+  },
+  {
+    "ja": "なみだめ",
+    "en": "Tearful Look"
+  },
+  {
+    "ja": "おちゃかい",
+    "en": "Teatime"
+  },
+  {
+    "ja": "フラフラダンス",
+    "en": "Teeter Dance"
+  },
+  {
+    "ja": "やけっぱち",
+    "en": "Temper Flare"
+  },
+  {
+    "ja": "だいちのはどう",
+    "en": "Terrain Pulse"
+  },
+  {
+    "ja": "どろぼう",
+    "en": "Thief"
+  },
+  {
+    "ja": "あばれる",
+    "en": "Thrash"
+  },
+  {
+    "ja": "じごくづき",
+    "en": "Throat Chop"
+  },
+  {
+    "ja": "かみなり",
+    "en": "Thunder"
+  },
+  {
+    "ja": "かみなりのキバ",
+    "en": "Thunder Fang"
+  },
+  {
+    "ja": "かみなりパンチ",
+    "en": "Thunder Punch"
+  },
+  {
+    "ja": "でんじは",
+    "en": "Thunder Wave"
+  },
+  {
+    "ja": "１０まんボルト",
+    "en": "Thunderbolt"
+  },
+  {
+    "ja": "くすぐる",
+    "en": "Tickle"
+  },
+  {
+    "ja": "おかたづけ",
+    "en": "Tidy Up"
+  },
+  {
+    "ja": "フレアソング",
+    "en": "Torch Song"
+  },
+  {
+    "ja": "いちゃもん",
+    "en": "Torment"
+  },
+  {
+    "ja": "どくどく",
+    "en": "Toxic"
+  },
+  {
+    "ja": "どくびし",
+    "en": "Toxic Spikes"
+  },
+  {
+    "ja": "どくのいと",
+    "en": "Toxic Thread"
+  },
+  {
+    "ja": "くさわけ",
+    "en": "Trailblaze"
+  },
+  {
+    "ja": "へんしん",
+    "en": "Transform"
+  },
+  {
+    "ja": "トライアタック",
+    "en": "Tri Attack"
+  },
+  {
+    "ja": "トリック",
+    "en": "Trick"
+  },
+  {
+    "ja": "トリックルーム",
+    "en": "Trick Room"
+  },
+  {
+    "ja": "ハロウィン",
+    "en": "Trick-or-Treat"
+  },
+  {
+    "ja": "３ぼんのや",
+    "en": "Triple Arrows"
+  },
+  {
+    "ja": "トリプルアクセル",
+    "en": "Triple Axel"
+  },
+  {
+    "ja": "トロピカルキック",
+    "en": "Trop Kick"
+  },
+  {
+    "ja": "ツインビーム",
+    "en": "Twin Beam"
+  },
+  {
+    "ja": "とんぼがえり",
+    "en": "U-turn"
+  },
+  {
+    "ja": "はやてがえし",
+    "en": "Upper Hand"
+  },
+  {
+    "ja": "さわぐ",
+    "en": "Uproar"
+  },
+  {
+    "ja": "しんくうは",
+    "en": "Vacuum Wave"
+  },
+  {
+    "ja": "ベノムショック",
+    "en": "Venoshock"
+  },
+  {
+    "ja": "ボルトチェンジ",
+    "en": "Volt Switch"
+  },
+  {
+    "ja": "ボルテッカー",
+    "en": "Volt Tackle"
+  },
+  {
+    "ja": "みずのはどう",
+    "en": "Water Pulse"
+  },
+  {
+    "ja": "みずしゅりけん",
+    "en": "Water Shuriken"
+  },
+  {
+    "ja": "しおふき",
+    "en": "Water Spout"
+  },
+  {
+    "ja": "たきのぼり",
+    "en": "Waterfall"
+  },
+  {
+    "ja": "ウェーブタックル",
+    "en": "Wave Crash"
+  },
+  {
+    "ja": "ウェザーボール",
+    "en": "Weather Ball"
+  },
+  {
+    "ja": "うずしお",
+    "en": "Whirlpool"
+  },
+  {
+    "ja": "ふきとばし",
+    "en": "Whirlwind"
+  },
+  {
+    "ja": "ワイドガード",
+    "en": "Wide Guard"
+  },
+  {
+    "ja": "ワイルドボルト",
+    "en": "Wild Charge"
+  },
+  {
+    "ja": "おにび",
+    "en": "Will-O-Wisp"
+  },
+  {
+    "ja": "ねがいごと",
+    "en": "Wish"
+  },
+  {
+    "ja": "ワンダールーム",
+    "en": "Wonder Room"
+  },
+  {
+    "ja": "ウッドハンマー",
+    "en": "Wood Hammer"
+  },
+  {
+    "ja": "なやみのタネ",
+    "en": "Worry Seed"
+  },
+  {
+    "ja": "まきつく",
+    "en": "Wrap"
+  },
+  {
+    "ja": "シザークロス",
+    "en": "X-Scissor"
+  },
+  {
+    "ja": "あくび",
+    "en": "Yawn"
+  },
+  {
+    "ja": "でんじほう",
+    "en": "Zap Cannon"
+  },
+  {
+    "ja": "しねんのずつき",
+    "en": "Zen Headbutt"
+  }
+]
