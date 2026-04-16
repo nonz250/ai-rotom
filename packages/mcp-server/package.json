@@ -13,7 +13,7 @@
   "dependencies": {
     "@ai-rotom/shared": "*",
     "@modelcontextprotocol/sdk": "1.29.0",
-    "@smogon/calc": "file:../../../../../../private/tmp/smogon-damage-calc/calc"
+    "@smogon/calc": "file:vendor/smogon-calc-0.11.0.tgz"
   },
   "devDependencies": {
     "tsdown": "0.21.8"
