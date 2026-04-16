@@ -1,2 +1,2 @@
-// @ai-rotom/shared - 共有する型定義・ドメインロジック
-export {};
+export { NameResolver } from "./utils/name-resolver";
+export type { NameEntry } from "./utils/name-resolver";
