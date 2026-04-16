@@ -26,23 +26,47 @@
 
 ```
 packages/
-├── data/           # ポケモンデータ（JSON/TS）
-├── core/           # ドメインロジック
-└── mcp-server/     # MCP サーバー実装
+├── shared/         # 共有する型定義・ドメインロジック（Domain層 + Application層）
+└── mcp-server/     # MCP サーバー実装 + Infrastructure層 + データ（JSON）
 ```
+
+| パッケージ | npm パッケージ名 | npm publish |
+|---|---|---|
+| `packages/shared` | `@ai-rotom/shared` | しない（内部用） |
+| `packages/mcp-server` | `ai-rotom` | する（`npx ai-rotom`） |
 
 ### 依存方向
 
+**MVP:**
+
 ```
-mcp-server  ──→  core  ──→  data
+mcp-server（データ内包） ──→  shared
+```
+
+**将来（API サーバー追加時）:**
+
+```
+mcp-server  ──HTTP──→  api-server  ──→  DB
+     │                      │
+     └──depends──→  shared  ←──depends──┘
 ```
 
 逆方向の依存は禁止。
 
-### core パッケージのレイヤー構成
+### 配布方法
+
+- `npx ai-rotom` で MCP サーバーを起動できる
+- データは npm パッケージに同梱する
+- データ更新時はバージョンを上げて publish する
+
+### レイヤー構成
+
+- **shared パッケージ**: Domain 層（model, service, repository interface）+ Application 層（use-case, dto）
+- **mcp-server パッケージ**: Infrastructure 層（Repository 実装）+ server（MCP ツール）+ data（JSON）
+- **将来の api-server パッケージ**: Infrastructure 層（DB Repository 実装）+ routes
 
 ```
-Application  ──→  Domain  ←──  Infrastructure
+各サーバーパッケージ（Infrastructure 層）──→  shared（Application 層  ──→  Domain 層）
 ```
 
 - **Domain 層はどのレイヤーにも依存しない**
