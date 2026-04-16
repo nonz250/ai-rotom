@@ -10,7 +10,7 @@ const statPointValueSchema = z
   .finite()
   .min(0, { message: "能力ポイント(SP)は 0 以上で指定してください。" })
   .max(MAX_STAT_POINT_PER_STAT, {
-    message: `能力ポイント(SP)は各ステータス ${MAX_STAT_POINT_PER_STAT} 以下でなければなりません (ポケモンチャンピオンズ仕様)。従来の努力値(EV)の 252 上限ではありません。`,
+    message: `能力ポイント(SP)は各ステータス ${MAX_STAT_POINT_PER_STAT} 以下です (ポケモンチャンピオンズ仕様)。`,
   });
 
 /**
@@ -31,13 +31,10 @@ export const evsSchema = z
   })
   .refine(
     (evs) => {
-      const total =
-        (evs.hp ?? 0) +
-        (evs.atk ?? 0) +
-        (evs.def ?? 0) +
-        (evs.spa ?? 0) +
-        (evs.spd ?? 0) +
-        (evs.spe ?? 0);
+      const total = Object.values(evs).reduce<number>(
+        (sum, v) => sum + (v ?? 0),
+        0,
+      );
       return total <= MAX_STAT_POINT_TOTAL;
     },
     {

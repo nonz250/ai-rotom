@@ -20,4 +20,22 @@ describe("SERVER_INSTRUCTIONS", () => {
     expect(SERVER_INSTRUCTIONS).toContain("EV");
     expect(SERVER_INSTRUCTIONS).toContain("252");
   });
+
+  it("documents IV is fixed to 31", () => {
+    expect(SERVER_INSTRUCTIONS).toContain("個体値");
+    expect(SERVER_INSTRUCTIONS).toContain("31");
+  });
+
+  it("documents battle level 50", () => {
+    expect(SERVER_INSTRUCTIONS).toContain("レベル");
+    expect(SERVER_INSTRUCTIONS).toContain("50");
+  });
+
+  it("documents mega evolution once per battle", () => {
+    expect(SERVER_INSTRUCTIONS).toContain("メガシンカ");
+  });
+
+  it("documents terastal not supported", () => {
+    expect(SERVER_INSTRUCTIONS).toContain("テラスタル");
+  });
 });

@@ -1,4 +1,8 @@
 import { describe, it, expect } from "vitest";
+import {
+  MAX_STAT_POINT_PER_STAT,
+  MAX_STAT_POINT_TOTAL,
+} from "@ai-rotom/shared";
 import { evsSchema, boostsSchema } from "./stats";
 
 describe("boostsSchema", () => {
@@ -33,13 +37,19 @@ describe("boostsSchema", () => {
 });
 
 describe("evsSchema (single-stat range)", () => {
-  it.each([0, 1, 31, 32])("accepts single stat value %s", (value) => {
-    expect(evsSchema.safeParse({ hp: value }).success).toBe(true);
-  });
+  it.each([0, 1, MAX_STAT_POINT_PER_STAT - 1, MAX_STAT_POINT_PER_STAT])(
+    "accepts single stat value %s",
+    (value) => {
+      expect(evsSchema.safeParse({ hp: value }).success).toBe(true);
+    },
+  );
 
-  it.each([33, 252, -1])("rejects out-of-range integer value %s", (value) => {
-    expect(evsSchema.safeParse({ hp: value }).success).toBe(false);
-  });
+  it.each([MAX_STAT_POINT_PER_STAT + 1, 252, -1])(
+    "rejects out-of-range integer value %s",
+    (value) => {
+      expect(evsSchema.safeParse({ hp: value }).success).toBe(false);
+    },
+  );
 
   it("rejects non-integer values", () => {
     expect(evsSchema.safeParse({ hp: 32.5 }).success).toBe(false);
@@ -52,7 +62,7 @@ describe("evsSchema (single-stat range)", () => {
   });
 
   it("rejects string-typed values", () => {
-    expect(evsSchema.safeParse({ hp: "32" }).success).toBe(false);
+    expect(evsSchema.safeParse({ hp: String(MAX_STAT_POINT_PER_STAT) }).success).toBe(false);
   });
 
   it("rejects null-typed values", () => {
@@ -66,48 +76,69 @@ describe("evsSchema (single-stat range)", () => {
 });
 
 describe("evsSchema (total sum)", () => {
-  it("accepts total exactly at the upper bound (66)", () => {
-    expect(evsSchema.safeParse({ hp: 32, atk: 32, spe: 2 }).success).toBe(true);
+  it(`accepts total exactly at the upper bound (${MAX_STAT_POINT_TOTAL})`, () => {
+    expect(
+      evsSchema.safeParse({
+        hp: MAX_STAT_POINT_PER_STAT,
+        atk: MAX_STAT_POINT_PER_STAT,
+        spe: MAX_STAT_POINT_TOTAL - MAX_STAT_POINT_PER_STAT * 2,
+      }).success,
+    ).toBe(true);
     expect(
       evsSchema.safeParse({ hp: 11, atk: 11, def: 11, spa: 11, spd: 11, spe: 11 }).success,
     ).toBe(true);
   });
 
-  it("rejects total 67 (over by 1)", () => {
-    expect(evsSchema.safeParse({ hp: 32, atk: 32, spe: 3 }).success).toBe(false);
+  it(`rejects total ${MAX_STAT_POINT_TOTAL + 1} (over by 1)`, () => {
+    expect(
+      evsSchema.safeParse({
+        hp: MAX_STAT_POINT_PER_STAT,
+        atk: MAX_STAT_POINT_PER_STAT,
+        spe: MAX_STAT_POINT_TOTAL - MAX_STAT_POINT_PER_STAT * 2 + 1,
+      }).success,
+    ).toBe(false);
   });
 
   it("rejects clearly over-budget totals", () => {
     expect(
-      evsSchema.safeParse({ hp: 32, atk: 32, def: 32, spa: 32, spd: 32, spe: 32 }).success,
+      evsSchema.safeParse({
+        hp: MAX_STAT_POINT_PER_STAT,
+        atk: MAX_STAT_POINT_PER_STAT,
+        def: MAX_STAT_POINT_PER_STAT,
+        spa: MAX_STAT_POINT_PER_STAT,
+        spd: MAX_STAT_POINT_PER_STAT,
+        spe: MAX_STAT_POINT_PER_STAT,
+      }).success,
     ).toBe(false);
   });
 });
 
 describe("evsSchema error messages", () => {
-  it("single-stat over-limit message mentions Champions spec and 32/252/EV", () => {
-    const result = evsSchema.safeParse({ hp: 33 });
+  it("single-stat over-limit message mentions Champions spec and per-stat upper bound", () => {
+    const result = evsSchema.safeParse({ hp: MAX_STAT_POINT_PER_STAT + 1 });
     expect(result.success).toBe(false);
     if (result.success) {
       return;
     }
     const message = result.error.issues.map((i) => i.message).join("\n");
     expect(message).toContain("チャンピオンズ");
-    expect(message).toContain("32");
-    expect(message).toContain("EV");
-    expect(message).toContain("252");
+    expect(message).toContain(String(MAX_STAT_POINT_PER_STAT));
   });
 
-  it("total over-limit message mentions 66/32/252 and Champions spec", () => {
-    const result = evsSchema.safeParse({ hp: 32, atk: 32, spe: 3 });
+  it("total over-limit message mentions totals, Champions spec, and legacy EV (252) to guard against legacy knowledge", () => {
+    const result = evsSchema.safeParse({
+      hp: MAX_STAT_POINT_PER_STAT,
+      atk: MAX_STAT_POINT_PER_STAT,
+      spe: MAX_STAT_POINT_TOTAL - MAX_STAT_POINT_PER_STAT * 2 + 1,
+    });
     expect(result.success).toBe(false);
     if (result.success) {
       return;
     }
     const message = result.error.issues.map((i) => i.message).join("\n");
     expect(message).toContain("チャンピオンズ");
-    expect(message).toContain("66");
-    expect(message).toContain("32");
+    expect(message).toContain(String(MAX_STAT_POINT_TOTAL));
+    expect(message).toContain(String(MAX_STAT_POINT_PER_STAT));
     expect(message).toContain("EV");
     expect(message).toContain("252");
   });
