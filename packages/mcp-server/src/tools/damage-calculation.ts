@@ -8,23 +8,15 @@ import {
   itemNameResolver,
   natureNameResolver,
 } from "../name-resolvers.js";
-
-const statsSchema = z.object({
-  hp: z.number().optional(),
-  atk: z.number().optional(),
-  def: z.number().optional(),
-  spa: z.number().optional(),
-  spd: z.number().optional(),
-  spe: z.number().optional(),
-});
+import { evsSchema, boostsSchema } from "./schemas/stats.js";
 
 const pokemonSchema = z.object({
   name: z.string().describe("ポケモン名（日本語 or 英語）"),
   nature: z.string().optional().describe("性格名（省略時: まじめ）"),
-  evs: statsSchema.optional().describe("能力ポイント（省略時: 全0）"),
+  evs: evsSchema.optional().describe("能力ポイント（省略時: 全0）"),
   ability: z.string().optional().describe("特性名"),
   item: z.string().optional().describe("持ち物名"),
-  boosts: statsSchema.optional().describe("ランク補正（省略時: 全0）"),
+  boosts: boostsSchema.optional().describe("ランク補正（省略時: 全0）"),
   status: z.string().optional().describe("状態異常"),
 });
 
