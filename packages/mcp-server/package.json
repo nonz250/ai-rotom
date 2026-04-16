@@ -1,0 +1,19 @@
+{
+  "name": "ai-rotom",
+  "version": "0.0.1",
+  "private": false,
+  "type": "module",
+  "bin": {
+    "ai-rotom": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch"
+  },
+  "dependencies": {
+    "@ai-rotom/shared": "*"
+  },
+  "devDependencies": {
+    "tsdown": "0.21.8"
+  }
+}

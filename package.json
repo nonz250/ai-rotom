@@ -1,0 +1,20 @@
+{
+  "name": "ai-rotom",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "devDependencies": {
+    "tsdown": "0.21.8",
+    "typescript": "6.0.2",
+    "vitest": "4.1.4"
+  }
+}

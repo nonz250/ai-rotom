@@ -18,9 +18,21 @@
 
 ## 技術スタック
 
-- 言語: TypeScript
+- 言語: TypeScript 6
 - パッケージ管理: npm workspaces
+- ビルド: tsdown
+- テスト: Vitest
+- Node.js: >= 24
 - 設計方針: DDD ライク
+
+## 開発コマンド
+
+```bash
+npm install          # 依存関係インストール
+npm run build        # 全パッケージビルド
+npm test             # テスト実行
+npm run test:watch   # テスト監視モード
+```
 
 ## パッケージ構成
 
