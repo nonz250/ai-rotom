@@ -128,6 +128,10 @@
     "en": "Disguise"
   },
   {
+    "ja": "ドラゴナイズ",
+    "en": "Dragonize"
+  },
+  {
     "ja": "あめふらし",
     "en": "Drizzle"
   },
@@ -364,6 +368,10 @@
     "en": "Mega Launcher"
   },
   {
+    "ja": "メガソル",
+    "en": "Mega Sol"
+  },
+  {
     "ja": "ひとでなし",
     "en": "Merciless"
   },
@@ -390,6 +398,10 @@
   {
     "ja": "でんきエンジン",
     "en": "Motor Drive"
+  },
+  {
+    "ja": "やまのぼり",
+    "en": "Mountaineer"
   },
   {
     "ja": "じしんかじょう",
@@ -440,12 +452,20 @@
     "en": "Parental Bond"
   },
   {
+    "ja": "じぞくりょく",
+    "en": "Persistent"
+  },
+  {
     "ja": "わるいてぐせ",
     "en": "Pickpocket"
   },
   {
     "ja": "ものひろい",
     "en": "Pickup"
+  },
+  {
+    "ja": "せんこうドリル",
+    "en": "Piercing Drill"
   },
   {
     "ja": "フェアリースキン",
@@ -510,6 +530,10 @@
   {
     "ja": "びびり",
     "en": "Rattled"
+  },
+  {
+    "ja": "はねかえし",
+    "en": "Rebound"
   },
   {
     "ja": "レシーバー",
@@ -644,6 +668,10 @@
     "en": "Speed Boost"
   },
   {
+    "ja": "スパイシースプレー",
+    "en": "Spicy Spray"
+  },
+  {
     "ja": "あとだし",
     "en": "Stall"
   },
@@ -690,6 +718,10 @@
   {
     "ja": "きょううん",
     "en": "Super Luck"
+  },
+  {
+    "ja": "あまいシロップ",
+    "en": "Supersweet Syrup"
   },
   {
     "ja": "そうだいしょう",

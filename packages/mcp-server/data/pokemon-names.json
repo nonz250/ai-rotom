@@ -132,6 +132,10 @@
     "en": "Basculegion"
   },
   {
+    "ja": "イダイトウ(メスのすがた)",
+    "en": "Basculegion-F"
+  },
+  {
     "ja": "トリデプス",
     "en": "Bastiodon"
   },
@@ -244,6 +248,14 @@
     "en": "Crabominable-Mega"
   },
   {
+    "ja": "ウッウ(うのみのすがた)",
+    "en": "Cramorant-Gorging"
+  },
+  {
+    "ja": "ウッウ(まるのみのすがた)",
+    "en": "Cramorant-Gulping"
+  },
+  {
     "ja": "ジュナイパー",
     "en": "Decidueye"
   },
@@ -290,6 +302,10 @@
   {
     "ja": "メガジジーロン",
     "en": "Drampa-Mega"
+  },
+  {
+    "ja": "コオリッポ(ナイスフェイス)",
+    "en": "Eiscue-Noice"
   },
   {
     "ja": "エンブオー",
@@ -342,6 +358,10 @@
   {
     "ja": "ブースター",
     "en": "Flareon"
+  },
+  {
+    "ja": "フラエッテ(えいえんのはな)",
+    "en": "Floette-Eternal"
   },
   {
     "ja": "メガフラエッテ",
@@ -450,6 +470,18 @@
   {
     "ja": "パンプジン",
     "en": "Gourgeist"
+  },
+  {
+    "ja": "パンプジン(おおきいサイズ)",
+    "en": "Gourgeist-Large"
+  },
+  {
+    "ja": "パンプジン(ちいさいサイズ)",
+    "en": "Gourgeist-Small"
+  },
+  {
+    "ja": "パンプジン(とくだいサイズ)",
+    "en": "Gourgeist-Super"
   },
   {
     "ja": "ゲッコウガ",
@@ -584,6 +616,14 @@
     "en": "Lycanroc"
   },
   {
+    "ja": "ルガルガン(たそがれのすがた)",
+    "en": "Lycanroc-Dusk"
+  },
+  {
+    "ja": "ルガルガン(まよなかのすがた)",
+    "en": "Lycanroc-Midnight"
+  },
+  {
     "ja": "カイリキー",
     "en": "Machamp"
   },
@@ -604,6 +644,10 @@
     "en": "Maushold"
   },
   {
+    "ja": "イッカネズミ(4ひきかぞく)",
+    "en": "Maushold-Four"
+  },
+  {
     "ja": "チャーレム",
     "en": "Medicham"
   },
@@ -620,12 +664,28 @@
     "en": "Meganium-Mega"
   },
   {
+    "ja": "メロエッタ(ステップフォルム)",
+    "en": "Meloetta-Pirouette"
+  },
+  {
     "ja": "マスカーニャ",
     "en": "Meowscarada"
   },
   {
     "ja": "ニャオニクス",
     "en": "Meowstic"
+  },
+  {
+    "ja": "ニャオニクス♀",
+    "en": "Meowstic-F"
+  },
+  {
+    "ja": "メガニャオニクス♀",
+    "en": "Meowstic-F-Mega"
+  },
+  {
+    "ja": "メガニャオニクス♂",
+    "en": "Meowstic-M-Mega"
   },
   {
     "ja": "ミロカロス",
@@ -636,8 +696,20 @@
     "en": "Mimikyu"
   },
   {
+    "ja": "ミミッキュ(ばれたすがた)",
+    "en": "Mimikyu-Busted"
+  },
+  {
+    "ja": "メテノ(りゅうせいのすがた)",
+    "en": "Minior-Meteor"
+  },
+  {
     "ja": "モルペコ",
     "en": "Morpeko"
+  },
+  {
+    "ja": "モルペコ(はらぺこもよう)",
+    "en": "Morpeko-Hangry"
   },
   {
     "ja": "バリコオル",
@@ -660,6 +732,22 @@
     "en": "Noivern"
   },
   {
+    "ja": "オーガポン(いしずえのめん・テラスタル)",
+    "en": "Ogerpon-Cornerstone-Tera"
+  },
+  {
+    "ja": "オーガポン(かまどのめん・テラスタル)",
+    "en": "Ogerpon-Hearthflame-Tera"
+  },
+  {
+    "ja": "オーガポン(みどりのめん・テラスタル)",
+    "en": "Ogerpon-Teal-Tera"
+  },
+  {
+    "ja": "オーガポン(いどのめん・テラスタル)",
+    "en": "Ogerpon-Wellspring-Tera"
+  },
+  {
     "ja": "ヤレユータン",
     "en": "Oranguru"
   },
@@ -670,6 +758,10 @@
   {
     "ja": "イルカマン",
     "en": "Palafin"
+  },
+  {
+    "ja": "イルカマン(ヒーローフォルム)",
+    "en": "Palafin-Hero"
   },
   {
     "ja": "ゴロンダ",
@@ -712,6 +804,10 @@
     "en": "Polteageist"
   },
   {
+    "ja": "ポットデス(しんさくフォルム)",
+    "en": "Polteageist-Antique"
+  },
+  {
     "ja": "アシレーヌ",
     "en": "Primarina"
   },
@@ -746,6 +842,26 @@
   {
     "ja": "ロトム",
     "en": "Rotom"
+  },
+  {
+    "ja": "スピンロトム",
+    "en": "Rotom-Fan"
+  },
+  {
+    "ja": "フロストロトム",
+    "en": "Rotom-Frost"
+  },
+  {
+    "ja": "ヒートロトム",
+    "en": "Rotom-Heat"
+  },
+  {
+    "ja": "カットロトム",
+    "en": "Rotom-Mow"
+  },
+  {
+    "ja": "ウォッシュロトム",
+    "en": "Rotom-Wash"
   },
   {
     "ja": "デスバーン",
@@ -818,6 +934,10 @@
   {
     "ja": "ヤバソチャ",
     "en": "Sinistcha"
+  },
+  {
+    "ja": "ヤバソチャ(けっさくフォルム)",
+    "en": "Sinistcha-Masterpiece"
   },
   {
     "ja": "エアームド",
@@ -904,6 +1024,22 @@
     "en": "Tauros"
   },
   {
+    "ja": "ケンタロス(パルデア・みず)",
+    "en": "Tauros-Paldea-Aqua"
+  },
+  {
+    "ja": "ケンタロス(パルデア・ほのお)",
+    "en": "Tauros-Paldea-Blaze"
+  },
+  {
+    "ja": "ケンタロス(パルデア・かくとう)",
+    "en": "Tauros-Paldea-Combat"
+  },
+  {
+    "ja": "テラパゴス(テラスタルフォルム)",
+    "en": "Terapagos-Terastal"
+  },
+  {
     "ja": "デカヌチャン",
     "en": "Tinkaton"
   },
@@ -986,6 +1122,14 @@
   {
     "ja": "ビビヨン",
     "en": "Vivillon"
+  },
+  {
+    "ja": "ビビヨン(ファンシーなもよう)",
+    "en": "Vivillon-Fancy"
+  },
+  {
+    "ja": "ビビヨン(モンスターボールもよう)",
+    "en": "Vivillon-Pokeball"
   },
   {
     "ja": "ウルガモス",
