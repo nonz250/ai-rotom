@@ -11,7 +11,8 @@
     "dev": "tsdown --watch"
   },
   "dependencies": {
-    "@ai-rotom/shared": "*"
+    "@ai-rotom/shared": "*",
+    "@smogon/calc": "file:../../../../../../private/tmp/smogon-damage-calc/calc"
   },
   "devDependencies": {
     "tsdown": "0.21.8"
