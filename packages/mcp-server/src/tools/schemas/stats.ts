@@ -1,18 +1,49 @@
 import { z } from "zod";
+import {
+  MAX_STAT_POINT_PER_STAT,
+  MAX_STAT_POINT_TOTAL,
+} from "@ai-rotom/shared";
+
+const statPointValueSchema = z
+  .number({ message: "能力ポイント(SP)は数値で指定してください。" })
+  .int({ message: "能力ポイント(SP)は整数で指定してください。" })
+  .finite()
+  .min(0, { message: "能力ポイント(SP)は 0 以上で指定してください。" })
+  .max(MAX_STAT_POINT_PER_STAT, {
+    message: `能力ポイント(SP)は各ステータス ${MAX_STAT_POINT_PER_STAT} 以下でなければなりません (ポケモンチャンピオンズ仕様)。従来の努力値(EV)の 252 上限ではありません。`,
+  });
 
 /**
  * 能力ポイント(SP) のスキーマ。
- * この段階では値域の厳格化はせず、純粋に evs と boosts を分離する目的のみ。
- * SP の範囲・合計バリデーションは後続コミットで追加する。
+ * ポケモンチャンピオンズ仕様: 各ステ 0〜MAX_STAT_POINT_PER_STAT、
+ * 合計 0〜MAX_STAT_POINT_TOTAL の範囲。
+ * 従来の EV (各 252 / 合計 510) とは別仕様なので AI クライアントが
+ * 旧知識で 252 等を渡してきた場合に弾く。
  */
-export const evsSchema = z.object({
-  hp: z.number().optional(),
-  atk: z.number().optional(),
-  def: z.number().optional(),
-  spa: z.number().optional(),
-  spd: z.number().optional(),
-  spe: z.number().optional(),
-});
+export const evsSchema = z
+  .object({
+    hp: statPointValueSchema.optional(),
+    atk: statPointValueSchema.optional(),
+    def: statPointValueSchema.optional(),
+    spa: statPointValueSchema.optional(),
+    spd: statPointValueSchema.optional(),
+    spe: statPointValueSchema.optional(),
+  })
+  .refine(
+    (evs) => {
+      const total =
+        (evs.hp ?? 0) +
+        (evs.atk ?? 0) +
+        (evs.def ?? 0) +
+        (evs.spa ?? 0) +
+        (evs.spd ?? 0) +
+        (evs.spe ?? 0);
+      return total <= MAX_STAT_POINT_TOTAL;
+    },
+    {
+      message: `能力ポイント(SP)の合計は ${MAX_STAT_POINT_TOTAL} 以下でなければなりません (ポケモンチャンピオンズ仕様)。各ステ ${MAX_STAT_POINT_PER_STAT} 上限・合計 ${MAX_STAT_POINT_TOTAL} 上限です。従来の努力値(EV)の 252/510 上限ではありません。`,
+    },
+  );
 
 const MAX_STAT_BOOST = 6;
 const MIN_STAT_BOOST = -6;

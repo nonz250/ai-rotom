@@ -32,14 +32,83 @@ describe("boostsSchema", () => {
   });
 });
 
-describe("evsSchema (pre-validation stage)", () => {
-  it("accepts typical values without range enforcement yet", () => {
-    // NOTE: 値域の厳格化は後続コミットで追加する。
-    // ここでは evs と boosts の型が別物になっていることのみを確認する。
-    expect(evsSchema.safeParse({ hp: 32, atk: 32 }).success).toBe(true);
+describe("evsSchema (single-stat range)", () => {
+  it.each([0, 1, 31, 32])("accepts single stat value %s", (value) => {
+    expect(evsSchema.safeParse({ hp: value }).success).toBe(true);
   });
 
-  it("accepts empty object", () => {
+  it.each([33, 252, -1])("rejects out-of-range integer value %s", (value) => {
+    expect(evsSchema.safeParse({ hp: value }).success).toBe(false);
+  });
+
+  it("rejects non-integer values", () => {
+    expect(evsSchema.safeParse({ hp: 32.5 }).success).toBe(false);
+    expect(evsSchema.safeParse({ hp: 0.1 }).success).toBe(false);
+  });
+
+  it("rejects non-finite values", () => {
+    expect(evsSchema.safeParse({ hp: Number.NaN }).success).toBe(false);
+    expect(evsSchema.safeParse({ hp: Number.POSITIVE_INFINITY }).success).toBe(false);
+  });
+
+  it("rejects string-typed values", () => {
+    expect(evsSchema.safeParse({ hp: "32" }).success).toBe(false);
+  });
+
+  it("rejects null-typed values", () => {
+    expect(evsSchema.safeParse({ hp: null }).success).toBe(false);
+  });
+
+  it("accepts undefined / omitted fields", () => {
+    expect(evsSchema.safeParse({ hp: undefined }).success).toBe(true);
     expect(evsSchema.safeParse({}).success).toBe(true);
+  });
+});
+
+describe("evsSchema (total sum)", () => {
+  it("accepts total exactly at the upper bound (66)", () => {
+    expect(evsSchema.safeParse({ hp: 32, atk: 32, spe: 2 }).success).toBe(true);
+    expect(
+      evsSchema.safeParse({ hp: 11, atk: 11, def: 11, spa: 11, spd: 11, spe: 11 }).success,
+    ).toBe(true);
+  });
+
+  it("rejects total 67 (over by 1)", () => {
+    expect(evsSchema.safeParse({ hp: 32, atk: 32, spe: 3 }).success).toBe(false);
+  });
+
+  it("rejects clearly over-budget totals", () => {
+    expect(
+      evsSchema.safeParse({ hp: 32, atk: 32, def: 32, spa: 32, spd: 32, spe: 32 }).success,
+    ).toBe(false);
+  });
+});
+
+describe("evsSchema error messages", () => {
+  it("single-stat over-limit message mentions Champions spec and 32/252/EV", () => {
+    const result = evsSchema.safeParse({ hp: 33 });
+    expect(result.success).toBe(false);
+    if (result.success) {
+      return;
+    }
+    const message = result.error.issues.map((i) => i.message).join("\n");
+    expect(message).toContain("チャンピオンズ");
+    expect(message).toContain("32");
+    expect(message).toContain("EV");
+    expect(message).toContain("252");
+  });
+
+  it("total over-limit message mentions 66/32/252 and Champions spec", () => {
+    const result = evsSchema.safeParse({ hp: 32, atk: 32, spe: 3 });
+    expect(result.success).toBe(false);
+    if (result.success) {
+      return;
+    }
+    const message = result.error.issues.map((i) => i.message).join("\n");
+    expect(message).toContain("チャンピオンズ");
+    expect(message).toContain("66");
+    expect(message).toContain("32");
+    expect(message).toContain("EV");
+    expect(message).toContain("252");
   });
 });
