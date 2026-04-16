@@ -46,7 +46,7 @@ const damageCalcInputSchema = {
 
 const TOOL_NAME = "calculate_damage_single";
 const TOOL_DESCRIPTION =
-  "1対1の1技のダメージ計算を行う。攻撃側ポケモンの指定した1技が防御側ポケモンに与えるダメージを計算する。";
+  "ポケモンのダメージ計算を行うツール。ポケモン対戦において、攻撃側ポケモンの指定した1技が防御側ポケモンに与えるダメージを計算する。ポケモンチャンピオンズ（Pokemon Champions）の対戦仕様に対応。パーティ構築やバトル戦略の検討に活用できる。";
 
 export function registerDamageCalculationTool(server: McpServer): void {
   const calculator = new DamageCalculatorAdapter({
