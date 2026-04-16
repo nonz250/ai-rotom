@@ -1417,12 +1417,407 @@ interface CoverageEntry {
 
 ## 6. MCP サーバー インターフェース設計
 
-_（後続で記載予定）_
+### 6.1 設計方針
+
+MCP ツールの入力は、AI（Claude 等）が会話の文脈からパラメータを組み立てやすい形で設計する。
+
+| 方針 | 説明 |
+|---|---|
+| 名前ベースの指定 | ポケモン名・技名・特性名・性格名・持ち物名は日本語名で指定する。内部 ID への解決はプログラム側が行う |
+| 省略可能なパラメータ | 育成データ（性格・能力ポイント・特性・技構成・持ち物）は省略可能。省略時はデフォルト値を適用する |
+| フラットな入力構造 | ドメインモデルの深いネストを MCP ツールの入力に露出させない |
+| 日本語フレンドリー | ツール名は英語（MCP 規約）だが、パラメータ値はすべて日本語で受け付ける |
+
+#### デフォルト値一覧
+
+| パラメータ | デフォルト値 | 根拠 |
+|---|---|---|
+| nature（性格） | `"まじめ"`（無補正） | 性格不明の場合に最もニュートラルな前提 |
+| abilityPoints（能力ポイント） | 全ステータス `0` | 能力ポイント不明の場合は無振りとして計算 |
+| ability（特性） | そのポケモンの特性リストの先頭 | 最も代表的な特性を仮定 |
+| moves（技構成） | そのポケモンの覚える技リストから最初の4つ | AllMoves / PartyMatchup の場合は全覚え技を対象にする選択肢もある |
+| item（持ち物） | `null`（持ち物なし） | 持ち物不明の場合は補正なしで計算 |
+
+### 6.2 MCP ツール一覧
+
+| # | ツール名 | 概要 | 対応するユースケース |
+|---|---|---|---|
+| 1 | `calculate_damage_single` | 1対1の1技のダメージ計算 | 5.1 ダメージ計算（Single） |
+| 2 | `calculate_damage_all_moves` | 1対1の全技のダメージ計算 | 5.1 ダメージ計算（AllMoves） |
+| 3 | `calculate_damage_party_matchup` | パーティ対パーティの全組み合わせダメージ計算 | 5.1 ダメージ計算（PartyMatchup） |
+| 4 | `analyze_selection` | 選出判断に必要なデータの一括分析 | 5.2 選出アドバイス |
+| 5 | `analyze_party_weakness` | パーティの弱点分析 | 5.3 パーティ構築支援 |
+
+### 6.3 共通の入力型定義
+
+#### PokemonInput
+
+AI が会話から組み立てる「対戦用ポケモン」の入力表現。
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "ポケモン名（日本語）。例: \"リザードン\""
+    },
+    "nature": {
+      "type": "string",
+      "description": "性格名（日本語）。省略時は \"まじめ\"（無補正）。例: \"ひかえめ\""
+    },
+    "abilityPoints": {
+      "type": "object",
+      "description": "能力ポイント配分。省略時は全ステータス 0。",
+      "properties": {
+        "hp": { "type": "number" },
+        "attack": { "type": "number" },
+        "defense": { "type": "number" },
+        "specialAttack": { "type": "number" },
+        "specialDefense": { "type": "number" },
+        "speed": { "type": "number" }
+      }
+    },
+    "ability": {
+      "type": "string",
+      "description": "特性名（日本語）。省略時はそのポケモンの代表特性。例: \"もうか\""
+    },
+    "moves": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "技名の配列（日本語、最大4つ）。省略時はデフォルトの技構成。例: [\"かえんほうしゃ\", \"エアスラッシュ\"]"
+    },
+    "item": {
+      "type": "string",
+      "description": "持ち物名（日本語）。省略時は持ち物なし。例: \"いのちのたま\""
+    },
+    "isMegaEvolved": {
+      "type": "boolean",
+      "description": "メガシンカ状態かどうか。省略時は false"
+    },
+    "megaForm": {
+      "type": "string",
+      "description": "メガシンカ先の名前（日本語）。メガシンカ先が複数ある場合のみ使用。例: \"メガリザードンY\""
+    }
+  },
+  "required": ["name"]
+}
+```
+
+#### PartyInput
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "members": {
+      "type": "array",
+      "items": { "$ref": "#/PokemonInput" },
+      "minItems": 1,
+      "maxItems": 6,
+      "description": "パーティメンバー（1〜6体）"
+    }
+  },
+  "required": ["members"]
+}
+```
+
+#### BattleConditionsInput
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "weather": {
+      "type": "string",
+      "enum": ["sunny", "rainy", "sandstorm", "snowy"],
+      "description": "天候。省略時は天候なし"
+    },
+    "terrain": {
+      "type": "string",
+      "enum": ["electric", "grassy", "psychic", "misty"],
+      "description": "フィールド。省略時はフィールドなし"
+    }
+  }
+}
+```
+
+### 6.4 各ツールの入力スキーマと出力形式
+
+#### 6.4.1 calculate_damage_single
+
+**入力:**
+
+| パラメータ | 型 | 必須 | 説明 |
+|---|---|---|---|
+| attacker | PokemonInput | Yes | 攻撃側ポケモン |
+| defender | PokemonInput | Yes | 防御側ポケモン |
+| moveName | string | Yes | 使用する技名（日本語） |
+| conditions | BattleConditionsInput | No | バトル環境条件 |
+
+**出力:** セクション 5.1.3 の DamageResult と同一構造。
+
+#### 6.4.2 calculate_damage_all_moves
+
+**入力:**
+
+| パラメータ | 型 | 必須 | 説明 |
+|---|---|---|---|
+| attacker | PokemonInput | Yes | 攻撃側ポケモン |
+| defender | PokemonInput | Yes | 防御側ポケモン |
+| conditions | BattleConditionsInput | No | バトル環境条件 |
+
+**出力:** セクション 5.1.3 の AllMovesResult と同一構造。
+
+#### 6.4.3 calculate_damage_party_matchup
+
+**入力:**
+
+| パラメータ | 型 | 必須 | 説明 |
+|---|---|---|---|
+| attackerParty | PartyInput | Yes | 攻撃側パーティ |
+| defenderParty | PartyInput | Yes | 防御側パーティ |
+| conditions | BattleConditionsInput | No | バトル環境条件 |
+
+**出力:** セクション 5.1.3 の PartyMatchupResult と同一構造。
+
+#### 6.4.4 analyze_selection
+
+**入力:**
+
+| パラメータ | 型 | 必須 | 説明 |
+|---|---|---|---|
+| myParty | PartyInput | Yes | 自分のパーティ |
+| opponentParty | PartyInput | Yes | 相手のパーティ |
+| battleFormat | string | Yes | `"singles"` または `"doubles"` |
+| conditions | BattleConditionsInput | No | バトル環境条件 |
+
+**出力:** セクション 5.2.3 の SelectionAnalysis と同一構造。
+
+#### 6.4.5 analyze_party_weakness
+
+**入力:**
+
+| パラメータ | 型 | 必須 | 説明 |
+|---|---|---|---|
+| party | PartyInput | Yes | 分析対象のパーティ |
+
+**出力:** セクション 5.3.3 の PartyWeaknessAnalysis と同一構造。
+
+### 6.5 ツール間の使い分けガイド
+
+```
+ユーザーの質問
+  │
+  ├─ 「○○の△△で××にどれくらいダメージ入る？」
+  │   → calculate_damage_single
+  │
+  ├─ 「○○で××に一番効く技は？」
+  │   → calculate_damage_all_moves
+  │
+  ├─ 「このパーティで相手パーティに火力足りる？」
+  │   → calculate_damage_party_matchup
+  │
+  ├─ 「相手のパーティに対して何を選出すればいい？」
+  │   → analyze_selection
+  │
+  └─ 「このパーティの弱点は？」「残り枠何がいい？」
+      → analyze_party_weakness
+```
+
+| シチュエーション | 推奨ツール | 理由 |
+|---|---|---|
+| 特定の対面で特定の技のダメージを知りたい | `calculate_damage_single` | 最も軽量。ピンポイントの疑問に即答 |
+| 対面でどの技が最も有効か比較したい | `calculate_damage_all_moves` | 全技の火力を並べて比較 |
+| 試合開始前にパーティ同士の火力関係を俯瞰したい | `calculate_damage_party_matchup` | 全組み合わせを一括計算 |
+| 選出を決めたい | `analyze_selection` | タイプ相性・ダメージ・素早さを統合分析 |
+| パーティ構築中に弱点を確認したい | `analyze_party_weakness` | タイプ相性の穴を洗い出す |
+
+### 6.6 エラーハンドリング
+
+| エラー種別 | 例 | レスポンス |
+|---|---|---|
+| ポケモン名が見つからない | `"リザードソ"`（タイポ） | 類似名を含むエラーメッセージ（「"リザードン" ですか？」） |
+| 技名が見つからない | `"かえんほうしゅ"` | 同上 |
+| そのポケモンが覚えない技 | リザードンに `"ハイドロポンプ"` | 覚えない旨を明示 |
+| パーティメンバー数超過 | 7体以上 | 最大6体である旨を明示 |
+| 変化技でのダメージ計算 | `"まもる"` | 変化技はダメージ計算の対象外である旨を明示 |
+
+名前の解決（名前 → 内部 ID）は mcp-server 層で行い、名前が見つからない場合は類似名のサジェストを含むエラーメッセージを返す。
 
 ## 7. テスト戦略
 
-_（後続で記載予定）_
+### 7.1 テスト方針
+
+| 方針 | 説明 |
+|---|---|
+| テストフレームワーク | Vitest |
+| テストファイル配置 | ソースファイルと同階層に `*.test.ts` を配置する（コロケーション） |
+| カバレッジ目標 | Domain 層: 90% 以上、Application 層: 80% 以上、それ以外: 機能テスト中心 |
+| テストの独立性 | 各テストケースは他のテストに依存しない |
+
+#### パッケージごとのテスト対象
+
+| パッケージ | 主なテスト対象 | テストの性質 |
+|---|---|---|
+| `@ai-rotom/data` | データの整合性・スキーマ適合 | 静的検証 |
+| `@ai-rotom/core` | ドメインロジック・ユースケース | ユニットテスト中心 |
+| `@ai-rotom/mcp-server` | ツール定義・入力バリデーション・名前解決 | 結合テスト中心 |
+
+### 7.2 各レイヤーのテスト戦略
+
+#### 7.2.1 data パッケージ
+
+| テスト対象 | テスト内容 |
+|---|---|
+| スキーマ適合 | 各 JSON が定義済みスキーマに適合するか |
+| 参照整合性 | ポケモンの `abilityIds` が `abilities.json` に存在するか等 |
+| データ完全性 | タイプ相性マトリクスが 18×18 の全 324 エントリあるか |
+| 値の妥当性 | 種族値が正の整数か、技の威力が適切な範囲内か |
+
+#### 7.2.2 core パッケージ: Domain 層
+
+Domain 層はビジネスロジックの核であり、最も厚くテストする。
+
+**DamageCalculator のテスト項目:**
+
+| テスト対象 | テスト内容 |
+|---|---|
+| 基本計算 | ダメージ基本式の正確性 |
+| タイプ一致 | STAB 補正（1.5倍）の適用 |
+| タイプ相性 | 抜群・いまひとつ・無効の各ケース |
+| 複合タイプ | ちょうバツグン（4倍）・かなりいまひとつ（0.25倍） |
+| 乱数幅 | 最小（×0.85）と最大（×1.00）の正確性 |
+| 確定数 | 確定数の境界値 |
+| 天候補正 | 晴れ/雨でのほのお/みず技補正 |
+| フィールド補正 | 各フィールドでの技威力補正 |
+| メガシンカ | メガシンカ後の種族値・タイプでの計算 |
+
+**StatCalculator のテスト項目:**
+
+| テスト対象 | テスト内容 |
+|---|---|
+| HP 実数値 | HP の計算式の正確性 |
+| HP 以外の実数値 | 性格補正を含む計算の正確性 |
+| 能力ポイント | 実数値への正しい加算 |
+
+#### 7.2.3 core パッケージ: Application 層
+
+Repository をモックし、ユースケースのオーケストレーションが正しいことを検証する。
+
+#### 7.2.4 mcp-server パッケージ
+
+| テスト対象 | テスト内容 |
+|---|---|
+| 名前解決 | ポケモン名・技名から正しく内部 ID に解決されるか |
+| 入力バリデーション | 不正な入力に対して適切なエラーメッセージが返されるか |
+| デフォルト値適用 | 省略されたパラメータにデフォルト値が正しく適用されるか |
+| 類似名サジェスト | タイポ時に類似する名前が提案されるか |
+
+### 7.3 テストの優先度
+
+| 優先度 | 対象 | 理由 |
+|---|---|---|
+| **P0** | DamageCalculator | ダメージ計算の正確性がプロダクトの核心価値 |
+| **P0** | StatCalculator | 実数値計算はダメージ計算の前提 |
+| **P0** | TypeMatchupEvaluator | タイプ相性は全機能の基盤 |
+| **P1** | data パッケージのデータ整合性 | データの欠落は計算結果の誤りに直結 |
+| **P1** | ValueObject の生成制約 | 不正なドメインオブジェクトの生成を防ぐ |
+| **P2** | Application 層のユースケース | ドメインロジックが正しければ影響は限定的 |
+| **P2** | mcp-server の名前解決・バリデーション | ユーザー体験に影響 |
+| **P3** | Infrastructure 層の Repository 実装 | データ変換のロジックが単純 |
+
+### 7.4 テストデータの管理方針
+
+| 種類 | 管理場所 | 用途 |
+|---|---|---|
+| フィクスチャ | `__fixtures__/` | 実在のポケモンデータに基づくテストデータ |
+| ファクトリ関数 | `__helpers__/` | テスト用の BattlePokemon / Party を簡潔に生成 |
+| インラインデータ | 各テストファイル内 | テスト固有のデータ |
+
+ダメージ計算の検証には、ゲーム内で確認した実測値をコメントとして併記する。
 
 ## 8. 拡張計画
 
-_（後続で記載予定）_
+### 8.1 拡張ロードマップ
+
+| # | 拡張項目 | 優先度 | 依存先 | 概要 |
+|---|---|---|---|---|
+| 1 | テラスタル対応 | 高 | core パッケージ | ゲームアップデートで追加予定のテラスタル機能への対応 |
+| 2 | API サーバー | 中 | core パッケージ | 一般ユーザー向けの REST API サーバー |
+| 3 | Web UI | 低 | API サーバー | ブラウザで利用できるフロントエンド |
+
+```
+現在:
+  mcp-server  ──→  core  ──→  data
+
+拡張後:
+  mcp-server  ──→  core  ──→  data
+  api-server  ──→  core  ──→  data    ← 拡張 #2
+  web-ui      ──→  api-server          ← 拡張 #3
+
+テラスタル対応: core / data パッケージの内部拡張  ← 拡張 #1
+```
+
+### 8.2 テラスタル対応
+
+#### 影響範囲
+
+| パッケージ/レイヤー | 変更内容 |
+|---|---|
+| Domain: BattlePokemon | `teraType: Type \| null` フィールドを追加 |
+| Domain: DamageCalculator | テラスタル時のタイプ一致ボーナス計算ロジックを追加 |
+| Domain: TypeMatchupEvaluator | テラスタル時の防御側タイプ変更を考慮 |
+| Application: UseCase | BattlePokemon の入力に teraType を追加 |
+| mcp-server | PokemonInput に `teraType` パラメータを追加 |
+
+#### テラスタルのドメインルール（予定）
+
+| ルール | 説明 |
+|---|---|
+| タイプ変更 | テラスタル中はテラスタイプ単体になる |
+| STAB 変更 | テラスタイプがタイプ一致に追加される |
+| 1試合1回 | メガシンカと同様、1試合につき1回のみ |
+
+※ ゲーム仕様確定後にドメインルールを精緻化する。現時点では YAGNI 原則に従い実装しない。
+
+### 8.3 API サーバー構想
+
+| 項目 | 方針 |
+|---|---|
+| API 形式 | REST API |
+| エンドポイント設計 | MCP ツールと 1:1 に対応 |
+| core の再利用 | Application 層の UseCase をそのまま呼び出す |
+| 認証 | 初期はなし。公開範囲に応じて段階的に追加 |
+
+#### エンドポイント一覧（予定）
+
+| メソッド | パス | 対応する MCP ツール |
+|---|---|---|
+| POST | `/api/damage/single` | `calculate_damage_single` |
+| POST | `/api/damage/all-moves` | `calculate_damage_all_moves` |
+| POST | `/api/damage/party-matchup` | `calculate_damage_party_matchup` |
+| POST | `/api/selection/analyze` | `analyze_selection` |
+| POST | `/api/party/analyze-weakness` | `analyze_party_weakness` |
+
+入出力は MCP ツールと同一構造にし、ドキュメントやクライアントの知識を共有できるようにする。
+
+### 8.4 Web UI 構想
+
+| 項目 | 方針 |
+|---|---|
+| 依存先 | api-server のみに依存（core を直接参照しない） |
+| フレームワーク | 未定（React 系を想定） |
+| 機能スコープ | ダメージ計算・パーティ弱点分析が中心 |
+
+選出アドバイスは AI の思考が必要なため、Web UI 単体での提供は限定的とする。
+
+### 8.5 優先度と実施判断
+
+| 拡張項目 | 実施タイミング | 実施条件 |
+|---|---|---|
+| テラスタル対応 | ゲームアップデート後 | テラスタルの仕様が確定した時点 |
+| API サーバー | MCP サーバーの安定稼働後 | 広いユーザー層への提供需要が生まれた時点 |
+| Web UI | API サーバーの実装後 | ブラウザ向け UI の需要が確認された時点 |
+
+いずれの拡張も、core パッケージのドメインロジックには手を加えず、新しいインターフェース層を追加する形で実現する（テラスタル対応を除く）。

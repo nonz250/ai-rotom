@@ -54,6 +54,26 @@ Application  ──→  Domain  ←──  Infrastructure
 **データ取得元の外部サービス名（API 名・サイト名）をドキュメント・コミットメッセージ・PR 説明に記載しないこと。**
 設計ドキュメントやコード内コメントでは「外部 API」「攻略サイト」等の一般的な表現を使うこと。
 
+## MCP ツール
+
+| ツール名 | 概要 |
+|---|---|
+| `calculate_damage_single` | 1対1の1技のダメージ計算 |
+| `calculate_damage_all_moves` | 1対1の全技のダメージ計算 |
+| `calculate_damage_party_matchup` | パーティ対パーティのダメージ計算 |
+| `analyze_selection` | 選出判断の一括分析 |
+| `analyze_party_weakness` | パーティの弱点分析 |
+
+- MCP SDK: `@modelcontextprotocol/sdk`
+- 入力は日本語名ベース（内部 ID への解決はプログラム側）
+- 育成データは省略可能（デフォルト値あり）
+
+## テスト
+
+- テストフレームワーク: Vitest
+- テストファイル配置: コロケーション（`*.test.ts`）
+- テスト優先度 P0: DamageCalculator, StatCalculator, TypeMatchupEvaluator
+
 ## ポケモンチャンピオンズ固有ルール
 
 - 個体値: 廃止（全ポケモン一律 31 固定、定数 `MAX_IV = 31` として扱う）
