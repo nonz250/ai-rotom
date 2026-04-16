@@ -1,2 +1,3 @@
-// ai-rotom MCP サーバー
-console.log("ai-rotom MCP server starting...");
+import { startServer } from "./server.js";
+
+startServer().catch(console.error);
