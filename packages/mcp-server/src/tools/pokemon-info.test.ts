@@ -4,6 +4,7 @@ import {
   pokemonNameResolver,
   abilityNameResolver,
 } from "../name-resolvers";
+import { championsLearnsets, toDataId } from "../data-store";
 
 const CHAMPIONS_GEN_NUM = 0;
 
@@ -53,6 +54,13 @@ describe("get_pokemon_info", () => {
       expect(species.otherFormes).toBeDefined();
       expect(species.otherFormes).toContain("Charizard-Mega-X");
       expect(species.otherFormes).toContain("Charizard-Mega-Y");
+    });
+
+    it("learnableMoveCount が learnset の件数と一致する", () => {
+      const englishName = pokemonNameResolver.toEnglish("リザードン")!;
+      const learnset = championsLearnsets[toDataId(englishName)];
+      expect(learnset).toBeDefined();
+      expect(learnset.length).toBeGreaterThan(0);
     });
   });
 
