@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { calculate, Generations, Pokemon, Move, Field } from "@smogon/calc";
 import { DamageCalculatorAdapter } from "./damage-calculator";
+import type { DamageCalcResult } from "./damage-calculator";
 import {
   pokemonNameResolver,
   moveNameResolver,
@@ -240,5 +241,122 @@ describe("DamageCalculatorAdapter", () => {
 
     const DAMAGE_ROLL_COUNT = 16;
     expect(result.damage).toHaveLength(DAMAGE_ROLL_COUNT);
+  });
+});
+
+describe("DamageCalculatorAdapter.calculateAllMoves", () => {
+  const adapter = new DamageCalculatorAdapter({
+    pokemon: pokemonNameResolver,
+    move: moveNameResolver,
+    ability: abilityNameResolver,
+    item: itemNameResolver,
+    nature: natureNameResolver,
+  });
+
+  it("should return multiple damage results for Japanese names", () => {
+    const results = adapter.calculateAllMoves({
+      attacker: { name: "リザードン" },
+      defender: { name: "ギャラドス" },
+    });
+
+    expect(results.length).toBeGreaterThan(0);
+    expect(results[0].attacker).toBe("Charizard");
+    expect(results[0].defender).toBe("Gyarados");
+  });
+
+  it("should sort results by max damage descending", () => {
+    const results = adapter.calculateAllMoves({
+      attacker: { name: "リザードン" },
+      defender: { name: "ギャラドス" },
+    });
+
+    for (let i = 1; i < results.length; i++) {
+      expect(results[i - 1].max).toBeGreaterThanOrEqual(results[i].max);
+    }
+  });
+
+  it("should only include moves that deal damage", () => {
+    const results = adapter.calculateAllMoves({
+      attacker: { name: "リザードン" },
+      defender: { name: "ギャラドス" },
+    });
+
+    for (const result of results) {
+      expect(result.max).toBeGreaterThan(0);
+    }
+  });
+
+  it("should throw error for non-existent Pokemon name", () => {
+    expect(() =>
+      adapter.calculateAllMoves({
+        attacker: { name: "ソニック" },
+        defender: { name: "ギャラドス" },
+      }),
+    ).toThrow("ポケモン「ソニック」が見つかりません。");
+  });
+
+  it("should apply nature and EVs to calculation", () => {
+    const resultsDefault = adapter.calculateAllMoves({
+      attacker: { name: "リザードン" },
+      defender: { name: "ギャラドス" },
+    });
+
+    const resultsModest = adapter.calculateAllMoves({
+      attacker: { name: "リザードン", nature: "ひかえめ", evs: { spa: 32 } },
+      defender: { name: "ギャラドス" },
+    });
+
+    // ひかえめ + 特攻振りなら特殊技のダメージが上がるはず
+    // 同じ技で比較
+    const defaultFlamethrower = resultsDefault.find(
+      (r) => r.move === "Flamethrower",
+    );
+    const modestFlamethrower = resultsModest.find(
+      (r) => r.move === "Flamethrower",
+    );
+
+    expect(defaultFlamethrower).toBeDefined();
+    expect(modestFlamethrower).toBeDefined();
+    expect(modestFlamethrower!.max).toBeGreaterThan(defaultFlamethrower!.max);
+  });
+});
+
+describe("DamageCalculatorAdapter.createPokemonObject", () => {
+  const adapter = new DamageCalculatorAdapter({
+    pokemon: pokemonNameResolver,
+    move: moveNameResolver,
+    ability: abilityNameResolver,
+    item: itemNameResolver,
+    nature: natureNameResolver,
+  });
+
+  it("should create Pokemon object with Japanese name", () => {
+    const { pokemon, resolvedName } = adapter.createPokemonObject({
+      name: "リザードン",
+    });
+
+    expect(resolvedName).toBe("Charizard");
+    expect(pokemon.stats.hp).toBeGreaterThan(0);
+    expect(pokemon.stats.spe).toBeGreaterThan(0);
+  });
+
+  it("should create Pokemon object with nature and EVs", () => {
+    const { pokemon: pDefault } = adapter.createPokemonObject({
+      name: "リザードン",
+    });
+
+    const { pokemon: pModest } = adapter.createPokemonObject({
+      name: "リザードン",
+      nature: "ひかえめ",
+      evs: { spe: 32 },
+    });
+
+    expect(pModest.stats.spe).toBeGreaterThan(pDefault.stats.spe);
+  });
+
+  it("should throw error for non-existent Pokemon name", () => {
+    expect(() =>
+      adapter.createPokemonObject({ name: "ソニック" }),
+    ).toThrow("ポケモン「ソニック」が見つかりません。");
   });
 });

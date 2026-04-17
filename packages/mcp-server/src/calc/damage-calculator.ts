@@ -39,6 +39,12 @@ export interface DamageCalcInput {
   conditions?: ConditionsInput;
 }
 
+export interface AllMovesCalcInput {
+  attacker: PokemonInput;
+  defender: PokemonInput;
+  conditions?: ConditionsInput;
+}
+
 export interface DamageCalcResult {
   attacker: string;
   defender: string;
@@ -114,6 +120,7 @@ function toSmogonBoosts(
 }
 
 const PERCENT_MULTIPLIER = 100;
+const PERCENT_DECIMAL_PRECISION = 10;
 
 function flattenDamage(damage: number | number[] | number[][]): number[] {
   if (typeof damage === "number") {
@@ -205,9 +212,11 @@ export class DamageCalculatorAdapter {
     const [min, max] = result.range();
     const defenderMaxHP = defender.maxHP();
     const minPercent =
-      Math.round((min / defenderMaxHP) * PERCENT_MULTIPLIER * 10) / 10;
+      Math.round((min / defenderMaxHP) * PERCENT_MULTIPLIER * PERCENT_DECIMAL_PRECISION) /
+      PERCENT_DECIMAL_PRECISION;
     const maxPercent =
-      Math.round((max / defenderMaxHP) * PERCENT_MULTIPLIER * 10) / 10;
+      Math.round((max / defenderMaxHP) * PERCENT_MULTIPLIER * PERCENT_DECIMAL_PRECISION) /
+      PERCENT_DECIMAL_PRECISION;
 
     const koResult = result.kochance();
     const damageArray = flattenDamage(result.damage);
@@ -224,6 +233,169 @@ export class DamageCalculatorAdapter {
       koChance: koResult.text,
       description: result.fullDesc(),
     };
+  }
+
+  calculateAllMoves(input: AllMovesCalcInput): DamageCalcResult[] {
+    const gen = Generations.get(CHAMPIONS_GEN_NUM);
+
+    const attackerName = resolveNameWithFallback(
+      this.resolvers.pokemon,
+      input.attacker.name,
+      "ポケモン",
+    );
+    const defenderName = resolveNameWithFallback(
+      this.resolvers.pokemon,
+      input.defender.name,
+      "ポケモン",
+    );
+
+    const attackerNature = this.resolveNature(input.attacker.nature);
+    const defenderNature = this.resolveNature(input.defender.nature);
+
+    const attackerAbility = resolveOptionalName(
+      this.resolvers.ability,
+      input.attacker.ability,
+      "特性",
+    );
+    const defenderAbility = resolveOptionalName(
+      this.resolvers.ability,
+      input.defender.ability,
+      "特性",
+    );
+
+    const attackerItem = resolveOptionalName(
+      this.resolvers.item,
+      input.attacker.item,
+      "持ち物",
+    );
+    const defenderItem = resolveOptionalName(
+      this.resolvers.item,
+      input.defender.item,
+      "持ち物",
+    );
+
+    const attacker = new Pokemon(gen, attackerName, {
+      nature: attackerNature,
+      evs: toSmogonEvs(input.attacker.evs),
+      boosts: toSmogonBoosts(input.attacker.boosts),
+      ability: attackerAbility,
+      item: attackerItem,
+      status: (input.attacker.status ?? "") as "" | "psn" | "tox" | "brn" | "par" | "slp" | "frz",
+    });
+
+    const defender = new Pokemon(gen, defenderName, {
+      nature: defenderNature,
+      evs: toSmogonEvs(input.defender.evs),
+      boosts: toSmogonBoosts(input.defender.boosts),
+      ability: defenderAbility,
+      item: defenderItem,
+      status: (input.defender.status ?? "") as "" | "psn" | "tox" | "brn" | "par" | "slp" | "frz",
+    });
+
+    const field = this.buildField(input.conditions);
+    const defenderMaxHP = defender.maxHP();
+
+    const results: DamageCalcResult[] = [];
+
+    for (const moveData of gen.moves) {
+      if (!moveData.basePower || moveData.basePower <= 0) {
+        continue;
+      }
+
+      try {
+        const move = new Move(gen, moveData.name, {
+          isCrit: input.conditions?.isCriticalHit,
+        });
+
+        const result = calculate(gen, attacker, defender, move, field);
+        const [min, max] = result.range();
+
+        if (max <= 0) {
+          continue;
+        }
+
+        const minPercent =
+          Math.round((min / defenderMaxHP) * PERCENT_MULTIPLIER * PERCENT_DECIMAL_PRECISION) /
+          PERCENT_DECIMAL_PRECISION;
+        const maxPercent =
+          Math.round((max / defenderMaxHP) * PERCENT_MULTIPLIER * PERCENT_DECIMAL_PRECISION) /
+          PERCENT_DECIMAL_PRECISION;
+
+        const koResult = result.kochance();
+        const damageArray = flattenDamage(result.damage);
+
+        results.push({
+          attacker: attackerName,
+          defender: defenderName,
+          move: moveData.name,
+          damage: damageArray,
+          min,
+          max,
+          minPercent,
+          maxPercent,
+          koChance: koResult.text,
+          description: result.fullDesc(),
+        });
+      } catch {
+        // 計算不可能な技はスキップする
+      }
+    }
+
+    results.sort((a, b) => b.max - a.max);
+
+    return results;
+  }
+
+  createPokemonObject(input: PokemonInput): {
+    pokemon: Pokemon;
+    resolvedName: string;
+  } {
+    const gen = Generations.get(CHAMPIONS_GEN_NUM);
+
+    const resolvedName = resolveNameWithFallback(
+      this.resolvers.pokemon,
+      input.name,
+      "ポケモン",
+    );
+
+    const nature = this.resolveNature(input.nature);
+    const ability = resolveOptionalName(
+      this.resolvers.ability,
+      input.ability,
+      "特性",
+    );
+    const item = resolveOptionalName(
+      this.resolvers.item,
+      input.item,
+      "持ち物",
+    );
+
+    const pokemon = new Pokemon(gen, resolvedName, {
+      nature,
+      evs: toSmogonEvs(input.evs),
+      boosts: toSmogonBoosts(input.boosts),
+      ability,
+      item,
+      status: (input.status ?? "") as "" | "psn" | "tox" | "brn" | "par" | "slp" | "frz",
+    });
+
+    return { pokemon, resolvedName };
+  }
+
+  getGen(): ReturnType<typeof Generations.get> {
+    return Generations.get(CHAMPIONS_GEN_NUM);
+  }
+
+  get pokemonResolver(): NameResolver {
+    return this.resolvers.pokemon;
+  }
+
+  get moveResolver(): NameResolver {
+    return this.resolvers.move;
+  }
+
+  get natureResolver(): NameResolver {
+    return this.resolvers.nature;
   }
 
   private resolveNature(nature: string | undefined): string {
