@@ -252,26 +252,6 @@
     "shortDesc": "Raises the user's Sp. Def by 2."
   },
   {
-    "id": "anchorshot",
-    "name": "Anchor Shot",
-    "nameJa": null,
-    "type": "Steel",
-    "category": "Physical",
-    "basePower": 90,
-    "accuracy": 100,
-    "pp": 20,
-    "priority": 0,
-    "target": "normal",
-    "flags": [
-      "contact",
-      "metronome",
-      "mirror",
-      "protect"
-    ],
-    "desc": "Prevents the target from switching out. The target can still switch out if it is holding Shed Shell or uses Baton Pass, Flip Turn, Parting Shot, Teleport, U-turn, or Volt Switch. The effect ends if either the user or the target leaves the field.",
-    "shortDesc": "Prevents the target from switching out."
-  },
-  {
     "id": "ancientpower",
     "name": "Ancient Power",
     "nameJa": "げんしのちから",
@@ -551,7 +531,7 @@
     "basePower": 60,
     "accuracy": 100,
     "pp": 10,
-    "priority": -4,
+    "priority": 0,
     "target": "normal",
     "flags": [
       "contact",
@@ -647,7 +627,7 @@
     "basePower": 120,
     "accuracy": 100,
     "pp": 5,
-    "priority": -3,
+    "priority": 0,
     "target": "normal",
     "flags": [
       "bullet",
@@ -922,26 +902,6 @@
     ],
     "desc": "Has a 30% chance to paralyze the target. Damage doubles and no accuracy check is done if the target has used Minimize while active.",
     "shortDesc": "30% chance to paralyze the target."
-  },
-  {
-    "id": "boltbeak",
-    "name": "Bolt Beak",
-    "nameJa": null,
-    "type": "Electric",
-    "category": "Physical",
-    "basePower": 80,
-    "accuracy": 100,
-    "pp": 10,
-    "priority": 0,
-    "target": "normal",
-    "flags": [
-      "contact",
-      "metronome",
-      "mirror",
-      "protect"
-    ],
-    "desc": "Power doubles if the user moves before the target.",
-    "shortDesc": "Power doubles if user moves before the target."
   },
   {
     "id": "bonerush",
@@ -1387,7 +1347,7 @@
     "basePower": 60,
     "accuracy": 90,
     "pp": 10,
-    "priority": -6,
+    "priority": 0,
     "target": "normal",
     "flags": [
       "contact",
@@ -1665,7 +1625,7 @@
     "basePower": 0,
     "accuracy": 100,
     "pp": 20,
-    "priority": -5,
+    "priority": 0,
     "target": "scripted",
     "flags": [
       "contact",
@@ -2106,25 +2066,6 @@
     "shortDesc": "Hits 2 times in one turn."
   },
   {
-    "id": "doubleshock",
-    "name": "Double Shock",
-    "nameJa": null,
-    "type": "Electric",
-    "category": "Physical",
-    "basePower": 120,
-    "accuracy": 100,
-    "pp": 5,
-    "priority": 0,
-    "target": "normal",
-    "flags": [
-      "contact",
-      "mirror",
-      "protect"
-    ],
-    "desc": "Fails unless the user is an Electric type. If this move is successful and the user is not Terastallized, the user's Electric type becomes typeless as long as it remains active.",
-    "shortDesc": "User's Electric type: typeless; must be Electric."
-  },
-  {
     "id": "doubleteam",
     "name": "Double Team",
     "nameJa": "かげぶんしん",
@@ -2289,7 +2230,7 @@
     "basePower": 60,
     "accuracy": 90,
     "pp": 10,
-    "priority": -6,
+    "priority": 0,
     "target": "normal",
     "flags": [
       "contact",
@@ -3124,27 +3065,6 @@
     "shortDesc": "Nearly always goes first. First turn out only."
   },
   {
-    "id": "fishiousrend",
-    "name": "Fishious Rend",
-    "nameJa": null,
-    "type": "Water",
-    "category": "Physical",
-    "basePower": 80,
-    "accuracy": 100,
-    "pp": 10,
-    "priority": 0,
-    "target": "normal",
-    "flags": [
-      "bite",
-      "contact",
-      "metronome",
-      "mirror",
-      "protect"
-    ],
-    "desc": "Power doubles if the user moves before the target.",
-    "shortDesc": "Power doubles if user moves before the target."
-  },
-  {
     "id": "fissure",
     "name": "Fissure",
     "nameJa": "じわれ",
@@ -3440,7 +3360,7 @@
     "basePower": 150,
     "accuracy": 100,
     "pp": 20,
-    "priority": -3,
+    "priority": 0,
     "target": "normal",
     "flags": [
       "contact",
@@ -3612,26 +3532,6 @@
     ],
     "desc": "Causes the target's Ability to be rendered ineffective as long as it remains active. If the target uses Baton Pass, the replacement will remain under this effect. If the target's Ability is As One, Battle Bond, Comatose, Disguise, Gulp Missile, Ice Face, Multitype, Power Construct, RKS System, Schooling, Shields Down, Stance Change, Tera Shift, Zen Mode, or Zero to Hero, this move fails, and receiving the effect through Baton Pass ends the effect immediately.",
     "shortDesc": "Nullifies the target's Ability."
-  },
-  {
-    "id": "geargrind",
-    "name": "Gear Grind",
-    "nameJa": null,
-    "type": "Steel",
-    "category": "Physical",
-    "basePower": 60,
-    "accuracy": 90,
-    "pp": 15,
-    "priority": 0,
-    "target": "normal",
-    "flags": [
-      "contact",
-      "metronome",
-      "mirror",
-      "protect"
-    ],
-    "desc": "Hits twice. If the first hit breaks the target's substitute, it will take damage for the second hit.",
-    "shortDesc": "Hits 2 times in one turn."
   },
   {
     "id": "gigadrain",
@@ -3813,7 +3713,7 @@
     "id": "growth",
     "name": "Growth",
     "nameJa": "せいちょう",
-    "type": "Normal",
+    "type": "Grass",
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
@@ -5507,7 +5407,7 @@
     "basePower": 0,
     "accuracy": 100,
     "pp": 20,
-    "priority": -5,
+    "priority": 0,
     "target": "scripted",
     "flags": [
       "failmefirst",
@@ -5805,25 +5705,6 @@
     "shortDesc": "High critical hit ratio."
   },
   {
-    "id": "nihillight",
-    "name": "Nihil Light",
-    "nameJa": null,
-    "type": "Dragon",
-    "category": "Special",
-    "basePower": 100,
-    "accuracy": 100,
-    "pp": 5,
-    "priority": 0,
-    "target": "allAdjacentFoes",
-    "flags": [
-      "metronome",
-      "mirror",
-      "protect"
-    ],
-    "desc": "",
-    "shortDesc": ""
-  },
-  {
     "id": "nobleroar",
     "name": "Noble Roar",
     "nameJa": "おたけび",
@@ -5846,6 +5727,21 @@
     "shortDesc": "Lowers the target's Attack and Sp. Atk by 1."
   },
   {
+    "id": "nomove",
+    "name": "(No Move)",
+    "nameJa": "(技なし)",
+    "type": "Normal",
+    "category": "Status",
+    "basePower": 0,
+    "accuracy": true,
+    "pp": 0,
+    "priority": 0,
+    "target": "normal",
+    "flags": [],
+    "desc": "",
+    "shortDesc": ""
+  },
+  {
     "id": "nuzzle",
     "name": "Nuzzle",
     "nameJa": "ほっぺすりすり",
@@ -5864,23 +5760,6 @@
     ],
     "desc": "Has a 100% chance to paralyze the target.",
     "shortDesc": "100% chance to paralyze the target."
-  },
-  {
-    "id": "obstruct",
-    "name": "Obstruct",
-    "nameJa": null,
-    "type": "Dark",
-    "category": "Status",
-    "basePower": 0,
-    "accuracy": 100,
-    "pp": 5,
-    "priority": 4,
-    "target": "self",
-    "flags": [
-      "failinstruct"
-    ],
-    "desc": "The user is protected from most attacks made by other Pokemon during this turn, and Pokemon trying to make contact with the user have their Defense lowered by 2 stages. Non-damaging moves go through this protection. This move has a 1/X chance of being successful, where X starts at 1 and triples each time this move is successfully used. X resets to 1 if this move fails, if the user's last move used is not Baneful Bunker, Burning Bulwark, Detect, Endure, King's Shield, Max Guard, Obstruct, Protect, Quick Guard, Silk Trap, Spiky Shield, or Wide Guard, or if it was one of those moves and the user's protection was broken. Fails if the user moves last this turn.",
-    "shortDesc": "Protects from damaging attacks. Contact: -2 Def."
   },
   {
     "id": "outrage",
@@ -6620,26 +6499,6 @@
     "shortDesc": "Damages target based on Defense, not Sp. Def."
   },
   {
-    "id": "purify",
-    "name": "Purify",
-    "nameJa": null,
-    "type": "Poison",
-    "category": "Status",
-    "basePower": 0,
-    "accuracy": true,
-    "pp": 5,
-    "priority": 0,
-    "target": "normal",
-    "flags": [
-      "heal",
-      "metronome",
-      "protect",
-      "reflectable"
-    ],
-    "desc": "The target is cured if it has a non-volatile status condition. If the target was cured, the user restores 1/2 of its maximum HP, rounded down.",
-    "shortDesc": "Cures target's status; heals user 1/2 max HP if so."
-  },
-  {
     "id": "quash",
     "name": "Quash",
     "nameJa": "さきおくり",
@@ -6942,24 +6801,6 @@
     "shortDesc": "More power the less HP the user has left."
   },
   {
-    "id": "revivalblessing",
-    "name": "Revival Blessing",
-    "nameJa": null,
-    "type": "Normal",
-    "category": "Status",
-    "basePower": 0,
-    "accuracy": true,
-    "pp": 1,
-    "priority": 0,
-    "target": "self",
-    "flags": [
-      "heal",
-      "nosketch"
-    ],
-    "desc": "A fainted party member is selected and revived with 1/2 its max HP, rounded down. Fails if there are no fainted party members.",
-    "shortDesc": "Revives a fainted Pokemon to 50% HP."
-  },
-  {
     "id": "risingvoltage",
     "name": "Rising Voltage",
     "nameJa": "ライジングボルト",
@@ -6987,7 +6828,7 @@
     "basePower": 0,
     "accuracy": true,
     "pp": 20,
-    "priority": -6,
+    "priority": 0,
     "target": "normal",
     "flags": [
       "allyanim",
@@ -7567,28 +7408,6 @@
     ],
     "desc": "Lowers the user's Defense and Special Defense by 1 stage. Raises the user's Attack, Special Attack, and Speed by 2 stages.",
     "shortDesc": "Lowers Def, SpD by 1; raises Atk, SpA, Spe by 2."
-  },
-  {
-    "id": "shelltrap",
-    "name": "Shell Trap",
-    "nameJa": null,
-    "type": "Fire",
-    "category": "Special",
-    "basePower": 150,
-    "accuracy": 100,
-    "pp": 10,
-    "priority": -3,
-    "target": "allAdjacentFoes",
-    "flags": [
-      "failcopycat",
-      "failinstruct",
-      "failmefirst",
-      "noassist",
-      "nosleeptalk",
-      "protect"
-    ],
-    "desc": "Fails unless the user is hit by a physical attack from an opponent this turn before it can execute the move. If the user was hit and has not fainted, it attacks immediately after being hit, and the effect ends. If the opponent's physical attack had a secondary effect removed by the Sheer Force Ability, it does not count for the purposes of this effect.",
-    "shortDesc": "User must take physical damage before moving."
   },
   {
     "id": "shelter",
@@ -8810,7 +8629,7 @@
     "id": "syrupbomb",
     "name": "Syrup Bomb",
     "nameJa": "みずあめボム",
-    "type": "Grass",
+    "type": "Steel",
     "category": "Special",
     "basePower": 60,
     "accuracy": 90,
@@ -9395,7 +9214,7 @@
     "basePower": 0,
     "accuracy": true,
     "pp": 5,
-    "priority": -7,
+    "priority": 0,
     "target": "all",
     "flags": [
       "metronome",
@@ -9768,7 +9587,7 @@
     "basePower": 0,
     "accuracy": true,
     "pp": 20,
-    "priority": -6,
+    "priority": 0,
     "target": "normal",
     "flags": [
       "allyanim",

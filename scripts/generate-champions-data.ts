@@ -1,62 +1,99 @@
 /**
- * pokemon-showdown の Champions mod データと @pkmn/data の gen 9 ベースデータを合成し、
- * 以下の JSON ファイルを packages/mcp-server/data/ 配下に出力する。
+ * @smogon/calc Gen 0 (Champions) を正として、data/champions/ 配下に以下の JSON を生成する。
  *
- * - champions-abilities.json
- * - champions-items.json
- * - champions-moves.json
- * - champions-learnsets.json
+ * - pokemon.json
+ * - abilities.json
+ * - items.json
+ * - moves.json
+ * - learnsets.json
+ * - natures.json
+ * - types.json
+ * - conditions.json
  *
- * 合成ロジック:
- * - gen 9 ベース (@pkmn/data) の全エントリをスタート地点とする
- * - Champions mod の override を適用 (isNonstandard, basePower, accuracy, pp 等)
- * - Champions mod で新規追加/復活された新エントリは、gen9 ベースにない場合
- *   pokemon-showdown 本体の text ファイルから name/desc を補完
- * - 最終的な isNonstandard が null (= 使える) となるもののみ出力。
- *   "Past" / "Future" 等のフラグが付いているものは Champions 環境で使えないとして除外する。
+ * 生成ロジック:
+ * - 各エントリの存在・計算用フィールドは @smogon/calc Gen 0 を正とする
+ *   （species / abilities / items / moves / natures / types）
+ * - @smogon/calc が持たない補完情報（desc / accuracy / pp / target / flags）は
+ *   @pkmn/data Gen 9 base から取得
+ * - @pkmn/data に無い desc/shortDesc（Champions 固有の ability など）は
+ *   外部攻略データの base-text TypeScript ソースから補完
+ * - Champions 固有のオーバーライド（basePower / accuracy / pp 等）は
+ *   外部攻略データ mod の TypeScript ソースを静的パースして適用
+ * - learnset は外部攻略データ mod からパースする
+ * - nameJa は既存 JSON から保持する（既存エントリになければ null のまま）
  *
  * 前提: fetch-champions-data.ts 実行後に /tmp/champions-raw/ に
- *       *.ts および base-text-*.ts が存在すること。
+ *       mod の *.ts および base-text-*.ts が存在すること。
  *
- * 使い方: npx tsx packages/mcp-server/scripts/generate-champions-data.ts
+ * 使い方: npx tsx scripts/generate-champions-data.ts
  */
 
+import { Generations } from "@smogon/calc";
 import type {
-  Ability,
-  Item,
-  Move,
+  Ability as CalcAbility,
+  Item as CalcItem,
+  Move as CalcMove,
   MoveCategory,
   MoveTarget,
-  Nonstandard,
+  Nature,
+  Specie,
+  StatID,
+  Type,
   TypeName,
-} from "@pkmn/dex-types";
-import { Generations } from "@pkmn/data";
+} from "@smogon/calc/dist/data/interface";
 import { Dex } from "@pkmn/dex";
+import { Generations as PkmnGenerations } from "@pkmn/data";
+import type { Ability, Item, Move } from "@pkmn/dex-types";
 import { readFileSync, writeFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
+// ===== 定数 =====
+
+const CHAMPIONS_GEN_NUM = 0 as const;
+const PKMN_BASE_GEN_NUM = 9 as const;
 const CHAMPIONS_RAW_DIR = "/tmp/champions-raw";
-const OUTPUT_DIR = resolve(import.meta.dirname, "../data");
-const TARGET_GENERATION = 9;
-const NONSTANDARD_PAST: Nonstandard = "Past";
+const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
+const OUTPUT_DIR = resolve(SCRIPT_DIR, "../data/champions");
 const INDENT_SPACES = 2;
 const NO_ABILITY_ID = "noability";
+const DEFAULT_MOVE_TARGET: MoveTarget = "normal";
+const DEFAULT_ACCURACY: number | true = true;
+const DEFAULT_PP = 0;
+const TYPE_NAME_UNKNOWN = "???" as const;
 
-type IsNonstandardOverride = Nonstandard | null | undefined;
+// ===== 出力先ファイル名 =====
 
-interface AbilityOverride {
-  isNonstandard?: IsNonstandardOverride;
+const POKEMON_FILE = "pokemon.json";
+const ABILITIES_FILE = "abilities.json";
+const ITEMS_FILE = "items.json";
+const MOVES_FILE = "moves.json";
+const LEARNSETS_FILE = "learnsets.json";
+const NATURES_FILE = "natures.json";
+const TYPES_FILE = "types.json";
+const CONDITIONS_FILE = "conditions.json";
+
+// ===== 出力データの型定義 =====
+
+interface BaseStats {
+  hp: number;
+  atk: number;
+  def: number;
+  spa: number;
+  spd: number;
+  spe: number;
 }
 
-interface ItemOverride {
-  isNonstandard?: IsNonstandardOverride;
-}
-
-interface MoveOverride {
-  isNonstandard?: IsNonstandardOverride;
-  basePower?: number;
-  accuracy?: number | true;
-  pp?: number;
+interface PokemonEntry {
+  id: string;
+  name: string;
+  nameJa: string | null;
+  types: string[];
+  baseStats: BaseStats;
+  ability: string | null;
+  weightkg: number;
+  baseSpecies: string | null;
+  otherFormes: string[] | null;
 }
 
 interface AbilityEntry {
@@ -93,151 +130,104 @@ interface MoveEntry {
   shortDesc: string;
 }
 
+interface NatureEntry {
+  id: string;
+  name: string;
+  nameJa: string | null;
+  plus: StatID | null;
+  minus: StatID | null;
+}
+
+interface TypeEntry {
+  id: string;
+  name: string;
+  nameJa: string;
+}
+
+interface ConditionEntry {
+  id: string;
+  name: string;
+  nameJa: string;
+}
+
+interface Conditions {
+  weather: ConditionEntry[];
+  terrain: ConditionEntry[];
+  status: ConditionEntry[];
+  sideCondition: ConditionEntry[];
+}
+
+type LearnsetMap = Record<string, string[]>;
+
+// ===== 補完データの型 =====
+
+interface MoveOverride {
+  basePower?: number;
+  accuracy?: number | true;
+  pp?: number;
+}
+
 interface TextEntry {
   name: string;
   desc: string;
   shortDesc: string;
 }
 
-type LearnsetMap = Record<string, string[]>;
+// ===== ユーティリティ =====
 
-/** 既存の champions-*.json ファイル名 */
-const CHAMPIONS_ABILITIES_FILE = "champions-abilities.json";
-const CHAMPIONS_ITEMS_FILE = "champions-items.json";
-const CHAMPIONS_MOVES_FILE = "champions-moves.json";
+function readRawFile(fileName: string): string {
+  return readFileSync(resolve(CHAMPIONS_RAW_DIR, fileName), "utf-8");
+}
+
+function writeJsonFile(fileName: string, data: unknown): string {
+  const outputPath = resolve(OUTPUT_DIR, fileName);
+  writeFileSync(outputPath, JSON.stringify(data, null, INDENT_SPACES) + "\n");
+  return outputPath;
+}
+
+// ===== 既存 JSON から nameJa を読み込む =====
 
 /**
- * 既存の champions-*.json を読み込み、英語名 → 日本語名 (nameJa) の Map を返す。
- * 初回生成時などファイルが存在しない場合は空の Map を返す。
+ * 既存の JSON を読み込み、英語名 → 日本語名 (nameJa) の Map を返す。
+ * ファイルが存在しない/読めない場合は空の Map。
  *
- * 再生成時に既存の nameJa を保持するために使用する。
+ * 旧フォーマット ({ ja, en } 形式) と新フォーマット ({ name, nameJa } 形式) の
+ * 両方に対応する。
  */
 function loadExistingNameJaMap(fileName: string): Map<string, string> {
   const filePath = resolve(OUTPUT_DIR, fileName);
   const result = new Map<string, string>();
   try {
     const content = readFileSync(filePath, "utf-8");
-    const entries = JSON.parse(content) as {
-      name: string;
-      nameJa: string | null;
-    }[];
-    for (const entry of entries) {
-      if (entry.nameJa !== null) {
+    const parsed = JSON.parse(content) as unknown;
+    if (!Array.isArray(parsed)) return result;
+    for (const raw of parsed) {
+      if (raw === null || typeof raw !== "object") continue;
+      const entry = raw as Record<string, unknown>;
+      // 新フォーマット: { name, nameJa }
+      if (typeof entry.name === "string" && typeof entry.nameJa === "string") {
         result.set(entry.name, entry.nameJa);
+        continue;
+      }
+      // 旧フォーマット: { en, ja }
+      if (typeof entry.en === "string" && typeof entry.ja === "string") {
+        result.set(entry.en, entry.ja);
       }
     }
   } catch {
-    // 既存ファイルが無い、または読めない場合は空の Map を返す（初回生成想定）
+    // 既存ファイルがないケース（初回生成）は空の Map を返す
   }
   return result;
 }
 
-/**
- * Champions mod の TS ファイルから各エントリの id とフィールドの static 値のみを抽出する。
- * 動的 import は `inherit` や関数定義を含むため避け、行ベースで手動パースする。
- */
-function parseStaticOverrides<T>(
-  fileContent: string,
-  fieldParsers: { [K in keyof T]: (raw: string) => T[K] | undefined }
-): Map<string, T> {
-  const result = new Map<string, T>();
-  const lines = fileContent.split("\n");
-  let i = 0;
-  while (i < lines.length) {
-    const entryMatch = lines[i].match(/^\t([a-z0-9]+):\s*\{\s*$/);
-    if (!entryMatch) {
-      i++;
-      continue;
-    }
-    const id = entryMatch[1];
-    const bodyLines: string[] = [];
-    let depth = 1;
-    i++;
-    while (i < lines.length && depth > 0) {
-      const line = lines[i];
-      if (depth === 1 && /^\t\},?$/.test(line)) {
-        depth = 0;
-        i++;
-        break;
-      }
-      for (const ch of line) {
-        if (ch === "{") depth++;
-        else if (ch === "}") depth--;
-      }
-      bodyLines.push(line);
-      i++;
-    }
-
-    const body = bodyLines.join("\n");
-    const parsed = {} as T;
-    for (const key of Object.keys(fieldParsers) as (keyof T)[]) {
-      const value = fieldParsers[key](body);
-      if (value !== undefined) {
-        (parsed as Record<string, unknown>)[key as string] = value;
-      }
-    }
-    result.set(id, parsed);
-  }
-
-  return result;
-}
-
-function parseIsNonstandard(body: string): IsNonstandardOverride {
-  if (/^\t\tisNonstandard:\s*null,?\s*$/m.test(body)) return null;
-  if (/^\t\tisNonstandard:\s*"Past",?\s*$/m.test(body)) return NONSTANDARD_PAST;
-  return undefined;
-}
-
-function parseNumberField(field: string, body: string): number | undefined {
-  const pattern = new RegExp(`^\\t\\t${field}:\\s*(\\d+),?\\s*$`, "m");
-  const match = body.match(pattern);
-  return match ? Number(match[1]) : undefined;
-}
-
-function parseAccuracy(body: string): number | true | undefined {
-  if (/^\t\taccuracy:\s*true,?\s*$/m.test(body)) return true;
-  const numMatch = body.match(/^\t\taccuracy:\s*(\d+),?\s*$/m);
-  if (numMatch) return Number(numMatch[1]);
-  return undefined;
-}
-
-function readChampionsFile(fileName: string): string {
-  return readFileSync(resolve(CHAMPIONS_RAW_DIR, fileName), "utf-8");
-}
-
-function parseAbilityOverrides(): Map<string, AbilityOverride> {
-  return parseStaticOverrides<AbilityOverride>(
-    readChampionsFile("abilities.ts"),
-    {
-      isNonstandard: parseIsNonstandard,
-    }
-  );
-}
-
-function parseItemOverrides(): Map<string, ItemOverride> {
-  return parseStaticOverrides<ItemOverride>(readChampionsFile("items.ts"), {
-    isNonstandard: parseIsNonstandard,
-  });
-}
-
-function parseMoveOverrides(): Map<string, MoveOverride> {
-  return parseStaticOverrides<MoveOverride>(readChampionsFile("moves.ts"), {
-    isNonstandard: parseIsNonstandard,
-    basePower: (body) => parseNumberField("basePower", body),
-    accuracy: parseAccuracy,
-    pp: (body) => parseNumberField("pp", body),
-  });
-}
+// ===== 攻略 mod のパーサ =====
 
 /**
- * pokemon-showdown 本体の data/text/{abilities,items,moves}.ts をパースして、
- * id => { name, desc, shortDesc } のマップを返す。
- * text ファイルの各エントリは 1 階層で、name/desc/shortDesc が直値の文字列。
+ * mod ファイルの各トップレベル id (1 タブインデント) ごとにボディを切り出す。
+ * 戻り値は id → ボディ文字列（エントリ内部の 2 タブ以上の本文）。
  */
-function parseTextFile(fileName: string): Map<string, TextEntry> {
-  const content = readChampionsFile(fileName);
-  const result = new Map<string, TextEntry>();
-
+function splitEntries(content: string): Map<string, string> {
+  const result = new Map<string, string>();
   const lines = content.split("\n");
   let i = 0;
   while (i < lines.length) {
@@ -264,18 +254,50 @@ function parseTextFile(fileName: string): Map<string, TextEntry> {
       bodyLines.push(line);
       i++;
     }
-    const body = bodyLines.join("\n");
-
-    // トップレベル (インデント 2 タブ) の name / desc / shortDesc のみ抽出。
-    // 世代別オーバーライド (gen6: { ... }) の中はインデントが深いため正規表現で除外される。
-    const name = matchTopLevelString(body, "name") ?? id;
-    const desc = matchTopLevelString(body, "desc") ?? "";
-    const shortDesc = matchTopLevelString(body, "shortDesc") ?? "";
-    result.set(id, { name, desc, shortDesc });
+    result.set(id, bodyLines.join("\n"));
   }
   return result;
 }
 
+function parseNumberField(field: string, body: string): number | undefined {
+  const pattern = new RegExp(`^\\t\\t${field}:\\s*(\\d+),?\\s*$`, "m");
+  const match = body.match(pattern);
+  return match ? Number(match[1]) : undefined;
+}
+
+/**
+ * ボディ内から `\t\taccuracy: true,` または `\t\taccuracy: 95,` を取り出す。
+ */
+function parseAccuracy(body: string): number | true | undefined {
+  if (/^\t\taccuracy:\s*true,?\s*$/m.test(body)) return true;
+  const numMatch = body.match(/^\t\taccuracy:\s*(\d+),?\s*$/m);
+  if (numMatch) return Number(numMatch[1]);
+  return undefined;
+}
+
+/**
+ * mod の moves.ts から各技の override（basePower / accuracy / pp）を抽出する。
+ */
+function parseMoveOverrides(): Map<string, MoveOverride> {
+  const entries = splitEntries(readRawFile("moves.ts"));
+  const result = new Map<string, MoveOverride>();
+  for (const [id, body] of entries) {
+    const override: MoveOverride = {};
+    const accuracy = parseAccuracy(body);
+    if (accuracy !== undefined) override.accuracy = accuracy;
+    const pp = parseNumberField("pp", body);
+    if (pp !== undefined) override.pp = pp;
+    const basePower = parseNumberField("basePower", body);
+    if (basePower !== undefined) override.basePower = basePower;
+    result.set(id, override);
+  }
+  return result;
+}
+
+/**
+ * ボディ内から `\t\t{field}: "..."` という形のトップレベル string 値を取り出す。
+ * 世代別オーバーライド (gen6: {...}) のネストは正規表現のインデント指定で除外される。
+ */
 function matchTopLevelString(body: string, field: string): string | undefined {
   const pattern = new RegExp(
     `^\\t\\t${field}:\\s*"((?:[^"\\\\]|\\\\.)*)",?\\s*$`,
@@ -295,13 +317,31 @@ function unescapeTsStringLiteral(literal: string): string {
 }
 
 /**
- * Champions mod の learnsets.ts をパースして、ポケモンごとの技 ID 配列を返す。
+ * base-text ファイル (text/{abilities,items,moves}.ts) をパースし、
+ * id → { name, desc, shortDesc } のマップを返す。
+ *
+ * 世代別オーバーライド (gen6: {...}) を含むが、
+ * トップレベル (2 タブインデント) の name/desc/shortDesc のみを取る。
+ */
+function parseTextFile(fileName: string): Map<string, TextEntry> {
+  const entries = splitEntries(readRawFile(fileName));
+  const result = new Map<string, TextEntry>();
+  for (const [id, body] of entries) {
+    const name = matchTopLevelString(body, "name") ?? id;
+    const desc = matchTopLevelString(body, "desc") ?? "";
+    const shortDesc = matchTopLevelString(body, "shortDesc") ?? "";
+    result.set(id, { name, desc, shortDesc });
+  }
+  return result;
+}
+
+/**
+ * 攻略 mod の learnsets.ts からポケモンごとの技 ID 配列をパースする。
  */
 function parseLearnsets(): LearnsetMap {
-  const content = readChampionsFile("learnsets.ts");
+  const content = readRawFile("learnsets.ts");
   const result: LearnsetMap = {};
   const lines = content.split("\n");
-
   let i = 0;
   while (i < lines.length) {
     const speciesMatch = lines[i].match(/^\t([a-z0-9]+):\s*\{\s*$/);
@@ -328,91 +368,40 @@ function parseLearnsets(): LearnsetMap {
       i++;
     }
 
-    result[speciesId] = moveIds.sort();
+    result[speciesId] = [...new Set(moveIds)].sort();
     i++;
   }
-
   return result;
 }
 
-/**
- * Champions mod の isNonstandard override を解決する。
- *
- * - override で `isNonstandard: "Past"` と明示されていれば "Past"
- * - override で `isNonstandard: null` と明示されていれば null
- * - override 自体は存在するが isNonstandard 指定なし (basePower 等のみ変更) → null (使える)
- *   → Champions mod が何らかの上書きをしているエントリは使える前提と解釈
- * - override が全く存在しない → baseIsNonstandard をそのまま使う
- */
-function resolveEffectiveNonstandard(
-  baseIsNonstandard: Nonstandard | null | undefined,
-  hasOverride: boolean,
-  overrideValue: IsNonstandardOverride
-): Nonstandard | null | undefined {
-  if (!hasOverride) return baseIsNonstandard;
-  if (overrideValue !== undefined) return overrideValue;
-  return null;
+// ===== @pkmn/data 側のインデックス（id → エントリ） =====
+
+interface PkmnIndex {
+  abilities: Map<string, Ability>;
+  items: Map<string, Item>;
+  moves: Map<string, Move>;
 }
 
-/**
- * Champions で使えるかを判定する。
- * null (= 使える) 以外は "Past" / "Future" / "Unobtainable" 等いずれも使えないとして除外する。
- */
-function isUsable(
-  baseIsNonstandard: Nonstandard | null | undefined,
-  override: { isNonstandard?: IsNonstandardOverride } | undefined
-): boolean {
-  const effective = resolveEffectiveNonstandard(
-    baseIsNonstandard,
-    override !== undefined,
-    override?.isNonstandard
-  );
-  return effective === null || effective === undefined;
+function buildPkmnIndex(): PkmnIndex {
+  // exists = () => true にすることで isNonstandard === "Past" のエントリも列挙される
+  const gens = new PkmnGenerations(Dex, () => true);
+  const pkmnGen = gens.get(PKMN_BASE_GEN_NUM);
+
+  const abilities = new Map<string, Ability>();
+  for (const ability of pkmnGen.abilities) abilities.set(ability.id, ability);
+
+  const items = new Map<string, Item>();
+  for (const item of pkmnGen.items) items.set(item.id, item);
+
+  const moves = new Map<string, Move>();
+  for (const move of pkmnGen.moves) moves.set(move.id, move);
+
+  return { abilities, items, moves };
 }
 
-function buildAbilityEntries(
-  abilities: Iterable<Ability>,
-  overrides: Map<string, AbilityOverride>,
-  textEntries: Map<string, TextEntry>,
-  enToJa: Map<string, string>
-): AbilityEntry[] {
-  const entries: AbilityEntry[] = [];
-  const seenIds = new Set<string>();
+// ===== エントリ構築 =====
 
-  for (const ability of abilities) {
-    if (ability.id === NO_ABILITY_ID) continue;
-    const override = overrides.get(ability.id);
-    if (!isUsable(ability.isNonstandard, override)) continue;
-    entries.push({
-      id: ability.id,
-      name: ability.name,
-      nameJa: enToJa.get(ability.name) ?? null,
-      desc: ability.desc ?? ability.shortDesc ?? "",
-      shortDesc: ability.shortDesc ?? "",
-    });
-    seenIds.add(ability.id);
-  }
-
-  // gen9 ベースに存在しないが Champions mod で新規追加された特性を text から補完
-  for (const [id, override] of overrides) {
-    if (seenIds.has(id)) continue;
-    if (override.isNonstandard === NONSTANDARD_PAST) continue;
-    const text = textEntries.get(id);
-    if (!text) continue;
-    entries.push({
-      id,
-      name: text.name,
-      nameJa: enToJa.get(text.name) ?? null,
-      desc: text.desc || text.shortDesc,
-      shortDesc: text.shortDesc,
-    });
-  }
-
-  entries.sort((a, b) => a.id.localeCompare(b.id));
-  return entries;
-}
-
-function extractMegaInfo(item: Item): {
+function extractMegaInfo(item: CalcItem): {
   megaStone: string | null;
   megaEvolves: string | null;
 } {
@@ -423,189 +412,366 @@ function extractMegaInfo(item: Item): {
   return { megaStone: megaStoneForme, megaEvolves };
 }
 
-function buildItemEntries(
-  items: Iterable<Item>,
-  overrides: Map<string, ItemOverride>,
+function buildPokemonEntries(
+  species: Iterable<Specie>,
+  enToJa: Map<string, string>
+): PokemonEntry[] {
+  const entries: PokemonEntry[] = [];
+  for (const specie of species) {
+    entries.push({
+      id: specie.id,
+      name: specie.name,
+      nameJa: enToJa.get(specie.name) ?? null,
+      types: [...specie.types],
+      baseStats: {
+        hp: specie.baseStats.hp,
+        atk: specie.baseStats.atk,
+        def: specie.baseStats.def,
+        spa: specie.baseStats.spa,
+        spd: specie.baseStats.spd,
+        spe: specie.baseStats.spe,
+      },
+      ability: specie.abilities?.[0] ? specie.abilities[0] : null,
+      weightkg: specie.weightkg,
+      baseSpecies: specie.baseSpecies ?? null,
+      otherFormes: specie.otherFormes ? [...specie.otherFormes] : null,
+    });
+  }
+  entries.sort((a, b) => a.name.localeCompare(b.name));
+  return entries;
+}
+
+function buildAbilityEntries(
+  abilities: Iterable<CalcAbility>,
+  pkmnAbilities: Map<string, Ability>,
   textEntries: Map<string, TextEntry>,
   enToJa: Map<string, string>
-): ItemEntry[] {
-  const entries: ItemEntry[] = [];
-  const seenIds = new Set<string>();
-
-  for (const item of items) {
-    const override = overrides.get(item.id);
-    if (!isUsable(item.isNonstandard, override)) continue;
-    const { megaStone, megaEvolves } = extractMegaInfo(item);
+): AbilityEntry[] {
+  const entries: AbilityEntry[] = [];
+  for (const ability of abilities) {
+    if (ability.id === NO_ABILITY_ID) continue;
+    const pkmn = pkmnAbilities.get(ability.id);
+    const text = textEntries.get(ability.id);
+    const shortDesc = pkmn?.shortDesc || text?.shortDesc || "";
+    const desc = pkmn?.desc || text?.desc || shortDesc;
     entries.push({
-      id: item.id,
-      name: item.name,
-      nameJa: enToJa.get(item.name) ?? null,
-      desc: item.desc ?? item.shortDesc ?? "",
-      shortDesc: item.shortDesc ?? "",
-      megaStone,
-      megaEvolves,
-    });
-    seenIds.add(item.id);
-  }
-
-  for (const [id, override] of overrides) {
-    if (seenIds.has(id)) continue;
-    if (override.isNonstandard === NONSTANDARD_PAST) continue;
-    const text = textEntries.get(id);
-    if (!text) continue;
-    entries.push({
-      id,
-      name: text.name,
-      nameJa: enToJa.get(text.name) ?? null,
-      desc: text.desc || text.shortDesc,
-      shortDesc: text.shortDesc,
-      megaStone: null,
-      megaEvolves: null,
+      id: ability.id,
+      name: ability.name,
+      nameJa: enToJa.get(ability.name) ?? null,
+      desc,
+      shortDesc,
     });
   }
-
   entries.sort((a, b) => a.id.localeCompare(b.id));
   return entries;
 }
 
-function flagKeysToArray(flags: Move["flags"]): string[] {
+function buildItemEntries(
+  items: Iterable<CalcItem>,
+  pkmnItems: Map<string, Item>,
+  textEntries: Map<string, TextEntry>,
+  enToJa: Map<string, string>
+): ItemEntry[] {
+  const entries: ItemEntry[] = [];
+  for (const item of items) {
+    const { megaStone, megaEvolves } = extractMegaInfo(item);
+    const pkmn = pkmnItems.get(item.id);
+    const text = textEntries.get(item.id);
+    const shortDesc = pkmn?.shortDesc || text?.shortDesc || "";
+    const desc = pkmn?.desc || text?.desc || shortDesc;
+    entries.push({
+      id: item.id,
+      name: item.name,
+      nameJa: enToJa.get(item.name) ?? null,
+      desc,
+      shortDesc,
+      megaStone,
+      megaEvolves,
+    });
+  }
+  entries.sort((a, b) => a.id.localeCompare(b.id));
+  return entries;
+}
+
+/**
+ * @pkmn/data Move の flags (Record<string, 1 | 0>) から有効なフラグ名だけを配列化する。
+ */
+function pkmnFlagsToArray(flags: Move["flags"] | undefined): string[] {
   if (!flags) return [];
   return Object.keys(flags)
-    .filter((k) => flags[k as keyof typeof flags])
+    .filter((key) => flags[key as keyof typeof flags])
     .sort();
 }
 
 function buildMoveEntries(
-  moves: Iterable<Move>,
-  overrides: Map<string, MoveOverride>,
+  moves: Iterable<CalcMove>,
+  pkmnMoves: Map<string, Move>,
+  moveOverrides: Map<string, MoveOverride>,
   textEntries: Map<string, TextEntry>,
   enToJa: Map<string, string>
 ): MoveEntry[] {
   const entries: MoveEntry[] = [];
-  const seenIds = new Set<string>();
-
   for (const move of moves) {
-    const override = overrides.get(move.id);
-    if (!isUsable(move.isNonstandard, override)) continue;
+    const pkmn = pkmnMoves.get(move.id);
+    const text = textEntries.get(move.id);
+    const override = moveOverrides.get(move.id);
+    // @smogon/calc は Gen >= 4 だと category 未指定を Status にフォールバックするため、
+    // Gen 0 でも同じ扱いにする。
+    const category = move.category ?? "Status";
+    // basePower / accuracy / pp は Champions override → @pkmn/data → @smogon/calc の優先順で解決。
+    const basePower = override?.basePower ?? move.basePower;
+    const accuracy: number | true =
+      override?.accuracy ?? pkmn?.accuracy ?? DEFAULT_ACCURACY;
+    const pp = override?.pp ?? pkmn?.pp ?? DEFAULT_PP;
+    // flags は @pkmn/data が網羅的なのでそちらを使う（metronome / snatch / mirror など）。
+    const flags = pkmnFlagsToArray(pkmn?.flags);
+    const shortDesc = pkmn?.shortDesc || text?.shortDesc || "";
+    const desc = pkmn?.desc || text?.desc || shortDesc;
     entries.push({
       id: move.id,
       name: move.name,
       nameJa: enToJa.get(move.name) ?? null,
       type: move.type,
-      category: move.category,
-      basePower: override?.basePower ?? move.basePower,
-      accuracy: override?.accuracy ?? move.accuracy,
-      pp: override?.pp ?? move.pp,
-      priority: move.priority,
-      target: move.target,
-      flags: flagKeysToArray(move.flags),
-      desc: move.desc ?? move.shortDesc ?? "",
-      shortDesc: move.shortDesc ?? "",
+      category,
+      basePower,
+      accuracy,
+      pp,
+      priority: move.priority ?? 0,
+      target: move.target ?? pkmn?.target ?? DEFAULT_MOVE_TARGET,
+      flags,
+      desc,
+      shortDesc,
     });
-    seenIds.add(move.id);
   }
-
-  // gen9 base に存在しないが Champions mod で新規追加された技は text から補完できないため警告のみ
-  // (現状そのようなケースは観測されていない)
-  for (const [id, override] of overrides) {
-    if (seenIds.has(id)) continue;
-    if (override.isNonstandard === NONSTANDARD_PAST) continue;
-    const text = textEntries.get(id);
-    if (!text) continue;
-    console.warn(
-      `  Warning: move "${id}" is enabled in Champions but no gen9 base data; skipping`
-    );
-  }
-
   entries.sort((a, b) => a.id.localeCompare(b.id));
   return entries;
 }
 
-function sortLearnsets(learnsets: LearnsetMap): LearnsetMap {
-  const sortedKeys = Object.keys(learnsets).sort();
+/**
+ * @smogon/calc Gen 0 に存在する species のみに絞り込み、
+ * 技 ID も Champions 内の有効な技に限定した上で id 昇順で返す。
+ *
+ * mod の learnset には Champions 外 (例: Aegislash) のエントリや
+ * Champions で使えない技が含まれうるため、両方を除外する。
+ */
+function sortAndFilterLearnsets(
+  learnsets: LearnsetMap,
+  validSpeciesIds: ReadonlySet<string>,
+  validMoveIds: ReadonlySet<string>
+): LearnsetMap {
+  const sortedKeys = Object.keys(learnsets)
+    .filter((key) => validSpeciesIds.has(key))
+    .sort();
   const result: LearnsetMap = {};
   for (const key of sortedKeys) {
-    result[key] = learnsets[key];
+    result[key] = learnsets[key].filter((moveId) => validMoveIds.has(moveId));
   }
   return result;
 }
 
-function writeJsonFile(fileName: string, data: unknown): string {
-  const outputPath = resolve(OUTPUT_DIR, fileName);
-  writeFileSync(outputPath, JSON.stringify(data, null, INDENT_SPACES) + "\n");
-  return outputPath;
+function buildNatureEntries(
+  natures: Iterable<Nature>,
+  enToJa: Map<string, string>
+): NatureEntry[] {
+  const entries: NatureEntry[] = [];
+  for (const nature of natures) {
+    // Bashful / Hardy / Docile / Quirky / Serious は plus === minus となっており補正なし
+    const hasBoost = nature.plus !== nature.minus;
+    entries.push({
+      id: nature.id,
+      name: nature.name,
+      nameJa: enToJa.get(nature.name) ?? null,
+      plus: hasBoost ? (nature.plus ?? null) : null,
+      minus: hasBoost ? (nature.minus ?? null) : null,
+    });
+  }
+  entries.sort((a, b) => a.id.localeCompare(b.id));
+  return entries;
 }
 
-async function main(): Promise<void> {
-  // DEFAULT_EXISTS だと isNonstandard === "Past" のエントリが除外されるため、
-  // 全て列挙できるように exists = () => true を指定する。
-  const gens = new Generations(Dex, () => true);
-  const gen = gens.get(TARGET_GENERATION);
+// ===== Type / Condition マッピング =====
 
-  console.log("Parsing Champions mod overrides...");
-  const abilityOverrides = parseAbilityOverrides();
-  const itemOverrides = parseItemOverrides();
-  const moveOverrides = parseMoveOverrides();
-  const learnsets = parseLearnsets();
+const TYPE_JA_MAP: Readonly<Record<string, string>> = {
+  Normal: "ノーマル",
+  Fire: "ほのお",
+  Water: "みず",
+  Electric: "でんき",
+  Grass: "くさ",
+  Ice: "こおり",
+  Fighting: "かくとう",
+  Poison: "どく",
+  Ground: "じめん",
+  Flying: "ひこう",
+  Psychic: "エスパー",
+  Bug: "むし",
+  Rock: "いわ",
+  Ghost: "ゴースト",
+  Dragon: "ドラゴン",
+  Dark: "あく",
+  Steel: "はがね",
+  Fairy: "フェアリー",
+};
+
+function buildTypeEntries(types: Iterable<Type>): TypeEntry[] {
+  const entries: TypeEntry[] = [];
+  for (const type of types) {
+    // '???' (無属性) は MCP ツールの対象外として除外
+    if ((type.name as string) === TYPE_NAME_UNKNOWN) continue;
+    const nameJa = TYPE_JA_MAP[type.name];
+    if (!nameJa) {
+      throw new Error(`Missing Japanese name for type: ${type.name}`);
+    }
+    entries.push({
+      id: type.id,
+      name: type.name,
+      nameJa,
+    });
+  }
+  entries.sort((a, b) => a.id.localeCompare(b.id));
+  return entries;
+}
+
+// 天気・フィールド・状態異常・サイド効果の日本語マッピング
+const CONDITIONS: Conditions = {
+  weather: [
+    { id: "sun", name: "Sun", nameJa: "はれ" },
+    { id: "rain", name: "Rain", nameJa: "あめ" },
+    { id: "sand", name: "Sand", nameJa: "すなあらし" },
+    { id: "hail", name: "Hail", nameJa: "あられ" },
+    { id: "snow", name: "Snow", nameJa: "ゆき" },
+    { id: "harshsunshine", name: "Harsh Sunshine", nameJa: "おおひでり" },
+    { id: "heavyrain", name: "Heavy Rain", nameJa: "おおあめ" },
+    { id: "strongwinds", name: "Strong Winds", nameJa: "らんきりゅう" },
+  ],
+  terrain: [
+    { id: "electric", name: "Electric", nameJa: "エレキフィールド" },
+    { id: "grassy", name: "Grassy", nameJa: "グラスフィールド" },
+    { id: "psychic", name: "Psychic", nameJa: "サイコフィールド" },
+    { id: "misty", name: "Misty", nameJa: "ミストフィールド" },
+  ],
+  status: [
+    { id: "slp", name: "slp", nameJa: "ねむり" },
+    { id: "psn", name: "psn", nameJa: "どく" },
+    { id: "brn", name: "brn", nameJa: "やけど" },
+    { id: "frz", name: "frz", nameJa: "こおり" },
+    { id: "par", name: "par", nameJa: "まひ" },
+    { id: "tox", name: "tox", nameJa: "もうどく" },
+  ],
+  sideCondition: [
+    { id: "reflect", name: "Reflect", nameJa: "リフレクター" },
+    { id: "lightscreen", name: "Light Screen", nameJa: "ひかりのかべ" },
+    { id: "auroraveil", name: "Aurora Veil", nameJa: "オーロラベール" },
+    { id: "tailwind", name: "Tailwind", nameJa: "おいかぜ" },
+  ],
+};
+
+// ===== メイン =====
+
+async function main(): Promise<void> {
+  const gen = Generations.get(CHAMPIONS_GEN_NUM);
+
+  console.log("Building @pkmn/data index (gen 9 base)...");
+  const pkmnIndex = buildPkmnIndex();
   console.log(
-    `  abilities: ${abilityOverrides.size}, items: ${itemOverrides.size}, moves: ${moveOverrides.size}, learnsets: ${Object.keys(learnsets).length}`
+    `  abilities: ${pkmnIndex.abilities.size}, items: ${pkmnIndex.items.size}, moves: ${pkmnIndex.moves.size}`
   );
 
-  console.log("\nParsing base text files for supplemental descriptions...");
+  console.log("\nParsing Champions mod overrides and base-text...");
+  const moveOverrides = parseMoveOverrides();
+  const learnsets = parseLearnsets();
   const abilityText = parseTextFile("base-text-abilities.ts");
   const itemText = parseTextFile("base-text-items.ts");
   const moveText = parseTextFile("base-text-moves.ts");
   console.log(
-    `  abilities: ${abilityText.size}, items: ${itemText.size}, moves: ${moveText.size}`
+    `  moves override: ${moveOverrides.size}, learnsets species: ${Object.keys(learnsets).length}`
+  );
+  console.log(
+    `  base-text abilities: ${abilityText.size}, items: ${itemText.size}, moves: ${moveText.size}`
   );
 
   console.log("\nLoading existing Japanese name mappings...");
-  const abilityEnToJa = loadExistingNameJaMap(CHAMPIONS_ABILITIES_FILE);
-  const itemEnToJa = loadExistingNameJaMap(CHAMPIONS_ITEMS_FILE);
-  const moveEnToJa = loadExistingNameJaMap(CHAMPIONS_MOVES_FILE);
+  const pokemonEnToJa = loadExistingNameJaMap(POKEMON_FILE);
+  const abilityEnToJa = loadExistingNameJaMap(ABILITIES_FILE);
+  const itemEnToJa = loadExistingNameJaMap(ITEMS_FILE);
+  const moveEnToJa = loadExistingNameJaMap(MOVES_FILE);
+  const natureEnToJa = loadExistingNameJaMap(NATURES_FILE);
   console.log(
-    `  abilities: ${abilityEnToJa.size}, items: ${itemEnToJa.size}, moves: ${moveEnToJa.size}`
+    `  pokemon: ${pokemonEnToJa.size}, abilities: ${abilityEnToJa.size}, items: ${itemEnToJa.size}, moves: ${moveEnToJa.size}, natures: ${natureEnToJa.size}`
   );
 
-  console.log("\nBuilding merged data...");
+  console.log("\nBuilding entries...");
+  const pokemonEntries = buildPokemonEntries(gen.species, pokemonEnToJa);
   const abilityEntries = buildAbilityEntries(
     gen.abilities,
-    abilityOverrides,
+    pkmnIndex.abilities,
     abilityText,
     abilityEnToJa
   );
   const itemEntries = buildItemEntries(
     gen.items,
-    itemOverrides,
+    pkmnIndex.items,
     itemText,
     itemEnToJa
   );
   const moveEntries = buildMoveEntries(
     gen.moves,
+    pkmnIndex.moves,
     moveOverrides,
     moveText,
     moveEnToJa
   );
-  const sortedLearnsets = sortLearnsets(learnsets);
+  const natureEntries = buildNatureEntries(gen.natures, natureEnToJa);
+  const typeEntries = buildTypeEntries(gen.types);
+  const validSpeciesIds = new Set(pokemonEntries.map((e) => e.id));
+  const validMoveIds = new Set(moveEntries.map((e) => e.id));
+  const sortedLearnsets = sortAndFilterLearnsets(
+    learnsets,
+    validSpeciesIds,
+    validMoveIds
+  );
 
   console.log("\nWriting JSON files...");
-  const abilityPath = writeJsonFile(
-    "champions-abilities.json",
-    abilityEntries
-  );
-  const itemPath = writeJsonFile("champions-items.json", itemEntries);
-  const movePath = writeJsonFile("champions-moves.json", moveEntries);
-  const learnsetPath = writeJsonFile(
-    "champions-learnsets.json",
-    sortedLearnsets
-  );
+  const writes: [string, { length?: number; count?: number }][] = [
+    [
+      writeJsonFile(POKEMON_FILE, pokemonEntries),
+      { length: pokemonEntries.length },
+    ],
+    [
+      writeJsonFile(ABILITIES_FILE, abilityEntries),
+      { length: abilityEntries.length },
+    ],
+    [writeJsonFile(ITEMS_FILE, itemEntries), { length: itemEntries.length }],
+    [writeJsonFile(MOVES_FILE, moveEntries), { length: moveEntries.length }],
+    [
+      writeJsonFile(LEARNSETS_FILE, sortedLearnsets),
+      { count: Object.keys(sortedLearnsets).length },
+    ],
+    [
+      writeJsonFile(NATURES_FILE, natureEntries),
+      { length: natureEntries.length },
+    ],
+    [writeJsonFile(TYPES_FILE, typeEntries), { length: typeEntries.length }],
+    [writeJsonFile(CONDITIONS_FILE, CONDITIONS), { count: 4 }],
+  ];
 
-  console.log(`  ${abilityPath} (abilities: ${abilityEntries.length})`);
-  console.log(`  ${itemPath} (items: ${itemEntries.length})`);
-  console.log(`  ${movePath} (moves: ${moveEntries.length})`);
-  console.log(
-    `  ${learnsetPath} (species: ${Object.keys(sortedLearnsets).length})`
-  );
+  for (const [path, stats] of writes) {
+    console.log(`  ${path} ${JSON.stringify(stats)}`);
+  }
+
+  const pokemonWithJa = pokemonEntries.filter((e) => e.nameJa !== null).length;
+  const abilitiesWithJa = abilityEntries.filter(
+    (e) => e.nameJa !== null
+  ).length;
+  const itemsWithJa = itemEntries.filter((e) => e.nameJa !== null).length;
+  const movesWithJa = moveEntries.filter((e) => e.nameJa !== null).length;
+  const naturesWithJa = natureEntries.filter((e) => e.nameJa !== null).length;
+
+  console.log("\nJapanese name coverage:");
+  console.log(`  pokemon: ${pokemonWithJa}/${pokemonEntries.length}`);
+  console.log(`  abilities: ${abilitiesWithJa}/${abilityEntries.length}`);
+  console.log(`  items: ${itemsWithJa}/${itemEntries.length}`);
+  console.log(`  moves: ${movesWithJa}/${moveEntries.length}`);
+  console.log(`  natures: ${naturesWithJa}/${natureEntries.length}`);
 
   console.log("\nAll done!");
 }

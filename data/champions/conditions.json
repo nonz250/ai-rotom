@@ -1,0 +1,120 @@
+{
+  "weather": [
+    {
+      "id": "sun",
+      "name": "Sun",
+      "nameJa": "はれ"
+    },
+    {
+      "id": "rain",
+      "name": "Rain",
+      "nameJa": "あめ"
+    },
+    {
+      "id": "sand",
+      "name": "Sand",
+      "nameJa": "すなあらし"
+    },
+    {
+      "id": "hail",
+      "name": "Hail",
+      "nameJa": "あられ"
+    },
+    {
+      "id": "snow",
+      "name": "Snow",
+      "nameJa": "ゆき"
+    },
+    {
+      "id": "harshsunshine",
+      "name": "Harsh Sunshine",
+      "nameJa": "おおひでり"
+    },
+    {
+      "id": "heavyrain",
+      "name": "Heavy Rain",
+      "nameJa": "おおあめ"
+    },
+    {
+      "id": "strongwinds",
+      "name": "Strong Winds",
+      "nameJa": "らんきりゅう"
+    }
+  ],
+  "terrain": [
+    {
+      "id": "electric",
+      "name": "Electric",
+      "nameJa": "エレキフィールド"
+    },
+    {
+      "id": "grassy",
+      "name": "Grassy",
+      "nameJa": "グラスフィールド"
+    },
+    {
+      "id": "psychic",
+      "name": "Psychic",
+      "nameJa": "サイコフィールド"
+    },
+    {
+      "id": "misty",
+      "name": "Misty",
+      "nameJa": "ミストフィールド"
+    }
+  ],
+  "status": [
+    {
+      "id": "slp",
+      "name": "slp",
+      "nameJa": "ねむり"
+    },
+    {
+      "id": "psn",
+      "name": "psn",
+      "nameJa": "どく"
+    },
+    {
+      "id": "brn",
+      "name": "brn",
+      "nameJa": "やけど"
+    },
+    {
+      "id": "frz",
+      "name": "frz",
+      "nameJa": "こおり"
+    },
+    {
+      "id": "par",
+      "name": "par",
+      "nameJa": "まひ"
+    },
+    {
+      "id": "tox",
+      "name": "tox",
+      "nameJa": "もうどく"
+    }
+  ],
+  "sideCondition": [
+    {
+      "id": "reflect",
+      "name": "Reflect",
+      "nameJa": "リフレクター"
+    },
+    {
+      "id": "lightscreen",
+      "name": "Light Screen",
+      "nameJa": "ひかりのかべ"
+    },
+    {
+      "id": "auroraveil",
+      "name": "Aurora Veil",
+      "nameJa": "オーロラベール"
+    },
+    {
+      "id": "tailwind",
+      "name": "Tailwind",
+      "nameJa": "おいかぜ"
+    }
+  ]
+}

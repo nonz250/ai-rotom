@@ -1,29 +1,28 @@
 /**
- * @smogon/calc が持つ英語名リストを元に、外部 API から日本語名を取得し
- * 名前変換マッピング JSON を生成するスクリプト。
+ * @smogon/calc が持つポケモン英語名を元に、外部 API から日本語名を取得し
+ * data/champions/pokemon.json の nameJa フィールドを補完するスクリプト。
  *
- * 対象:
- * - pokemon-names.json （ポケモン名）
+ * 特性・技・持ち物・性格の日本語名は abilities.json / items.json / moves.json / natures.json の
+ * nameJa に統合済みのため、このスクリプトは pokemon.json のみ更新する。
  *
- * 特性・技・持ち物の日本語名は champions-*.json の nameJa に統合済みのため、
- * このスクリプトは出力しない（generate-champions-data.ts が担当する）。
+ * 既存エントリの types / baseStats 等の拡張フィールドは保持する。
  *
- * 使い方: npx tsx packages/mcp-server/scripts/generate-name-mappings.ts
+ * 使い方: npx tsx scripts/generate-name-mappings.ts
  */
 
 import { Generations } from "@smogon/calc";
-import { writeFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { readFileSync, writeFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const API_BASE = "https://pokeapi.co/api/v2";
-const DATA_DIR = resolve(import.meta.dirname, "../data");
+const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
+const DATA_DIR = resolve(SCRIPT_DIR, "../data/champions");
+const POKEMON_FILE = "pokemon.json";
 const CHAMPIONS_GEN_NUM = 0;
 const REQUEST_DELAY_MS = 100;
-
-interface NameEntry {
-  ja: string;
-  en: string;
-}
+const INDENT_SPACES = 2;
+const PROGRESS_INTERVAL = 50;
 
 async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -90,7 +89,6 @@ async function fetchPokemonJapaneseName(
   englishName: string,
   baseNameCache: Map<string, string>
 ): Promise<string | null> {
-  // フォルム名のチェック
   for (const pattern of FORM_PATTERNS) {
     const match = englishName.match(pattern.suffix);
     if (match) {
@@ -109,7 +107,6 @@ async function fetchPokemonJapaneseName(
     }
   }
 
-  // 通常の種族名
   const jaName = await fetchJapaneseName(
     "pokemon-species",
     toApiId(englishName)
@@ -120,21 +117,63 @@ async function fetchPokemonJapaneseName(
   return jaName;
 }
 
-async function generatePokemonMappings(
-  englishNames: string[],
-  outputFile: string
-): Promise<void> {
-  console.log(`\n--- pokemon-species (${englishNames.length} entries) ---`);
+/**
+ * 既存 pokemon.json を読み込み、nameJa が null のエントリに対してのみ外部 API から日本語名を取得する。
+ * 既存の他フィールド (types / baseStats / ability 等) は保持して書き戻す。
+ */
+async function main(): Promise<void> {
+  const gen = Generations.get(CHAMPIONS_GEN_NUM);
 
-  const entries: NameEntry[] = [];
+  // 現在の pokemon.json を読み込んで nameJa の埋まり具合を確認
+  const filePath = resolve(DATA_DIR, POKEMON_FILE);
+  let existing: Record<string, unknown>[] = [];
+  try {
+    const content = readFileSync(filePath, "utf-8");
+    const parsed = JSON.parse(content) as unknown;
+    if (Array.isArray(parsed)) {
+      existing = parsed.filter(
+        (x): x is Record<string, unknown> =>
+          typeof x === "object" && x !== null
+      );
+    }
+  } catch {
+    throw new Error(
+      `${filePath} is missing. Run generate-champions-data.ts first.`
+    );
+  }
+
+  const byName = new Map<string, Record<string, unknown>>();
+  for (const entry of existing) {
+    const name = entry.name;
+    if (typeof name === "string") byName.set(name, entry);
+  }
+
+  // @smogon/calc Gen 0 の species を正として欠損チェック
+  const missingNames: string[] = [];
+  for (const specie of gen.species) {
+    const entry = byName.get(specie.name);
+    if (!entry || entry.nameJa === null || entry.nameJa === undefined) {
+      missingNames.push(specie.name);
+    }
+  }
+
+  console.log(
+    `Total pokemon entries: ${existing.length}, missing nameJa: ${missingNames.length}`
+  );
+  if (missingNames.length === 0) {
+    console.log("Nothing to fetch. Exiting.");
+    return;
+  }
+
   const baseNameCache = new Map<string, string>();
   let found = 0;
   let notFound = 0;
 
-  for (const enName of englishNames) {
+  for (const enName of missingNames) {
     const jaName = await fetchPokemonJapaneseName(enName, baseNameCache);
     if (jaName) {
-      entries.push({ ja: jaName, en: enName });
+      const entry = byName.get(enName);
+      if (entry) entry.nameJa = jaName;
       found++;
     } else {
       console.warn(`  Not found: ${enName}`);
@@ -143,32 +182,25 @@ async function generatePokemonMappings(
 
     await sleep(REQUEST_DELAY_MS);
 
-    if ((found + notFound) % 50 === 0) {
-      console.log(`  Progress: ${found + notFound}/${englishNames.length}`);
+    if ((found + notFound) % PROGRESS_INTERVAL === 0) {
+      console.log(`  Progress: ${found + notFound}/${missingNames.length}`);
     }
   }
 
-  entries.sort((a, b) => a.en.localeCompare(b.en));
+  // name の昇順でソートして書き戻す
+  existing.sort((a, b) => {
+    const an = typeof a.name === "string" ? a.name : "";
+    const bn = typeof b.name === "string" ? b.name : "";
+    return an.localeCompare(bn);
+  });
 
-  const outputPath = resolve(DATA_DIR, outputFile);
-  writeFileSync(outputPath, JSON.stringify(entries, null, 2) + "\n");
-  console.log(
-    `  Done: ${found} found, ${notFound} not found → ${outputFile}`
+  writeFileSync(
+    filePath,
+    JSON.stringify(existing, null, INDENT_SPACES) + "\n"
   );
-}
-
-async function main(): Promise<void> {
-  const gen = Generations.get(CHAMPIONS_GEN_NUM);
-
-  const pokemonNames: string[] = [];
-  for (const s of gen.species) pokemonNames.push(s.name);
-
-  console.log("Generating name mappings from external API...");
-  console.log(`Pokemon: ${pokemonNames.length}`);
-
-  await generatePokemonMappings(pokemonNames, "pokemon-names.json");
-
-  console.log("\nAll done!");
+  console.log(
+    `\nDone: ${found} found, ${notFound} not found → ${POKEMON_FILE}`
+  );
 }
 
 main().catch(console.error);
