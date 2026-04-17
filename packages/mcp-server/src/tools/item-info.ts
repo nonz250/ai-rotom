@@ -56,12 +56,11 @@ export function registerItemInfoTool(server: McpServer): void {
         );
       }
 
-      const nameJa = itemNameResolver.toJapanese(entry.name) ?? null;
       const isMegaStone = entry.megaStone !== null;
 
       const output: ItemInfoOutput = {
         name: entry.name,
-        nameJa,
+        nameJa: entry.nameJa,
         descEn: entry.desc,
         shortDescEn: entry.shortDesc,
         megaStone: isMegaStone,

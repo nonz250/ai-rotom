@@ -11,10 +11,12 @@ export type MoveCategory = "Physical" | "Special" | "Status";
 
 /**
  * ポケモンチャンピオンズの特性データ。
+ * nameJa は外部 API に登録されていない特性の場合 null となる。
  */
 export interface AbilityEntry {
   id: string;
   name: string;
+  nameJa: string | null;
   desc: string;
   shortDesc: string;
 }
@@ -22,10 +24,12 @@ export interface AbilityEntry {
 /**
  * ポケモンチャンピオンズの持ち物データ。
  * メガストーンの場合は megaStone / megaEvolves に値が入る。
+ * nameJa は外部 API に登録されていない持ち物の場合 null となる。
  */
 export interface ItemEntry {
   id: string;
   name: string;
+  nameJa: string | null;
   desc: string;
   shortDesc: string;
   /** メガ進化後のポケモン名（例: "Charizard-Mega-X"）。メガストーンでなければ null */
@@ -36,10 +40,12 @@ export interface ItemEntry {
 
 /**
  * ポケモンチャンピオンズの技データ。
+ * nameJa は外部 API に登録されていない技の場合 null となる。
  */
 export interface MoveEntry {
   id: string;
   name: string;
+  nameJa: string | null;
   type: string;
   category: MoveCategory;
   /** 威力。変化技は 0 */

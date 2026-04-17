@@ -62,6 +62,7 @@ interface MoveOverride {
 interface AbilityEntry {
   id: string;
   name: string;
+  nameJa: string | null;
   desc: string;
   shortDesc: string;
 }
@@ -69,6 +70,7 @@ interface AbilityEntry {
 interface ItemEntry {
   id: string;
   name: string;
+  nameJa: string | null;
   desc: string;
   shortDesc: string;
   megaStone: string | null;
@@ -78,6 +80,7 @@ interface ItemEntry {
 interface MoveEntry {
   id: string;
   name: string;
+  nameJa: string | null;
   type: TypeName;
   category: MoveCategory;
   basePower: number;
@@ -97,6 +100,37 @@ interface TextEntry {
 }
 
 type LearnsetMap = Record<string, string[]>;
+
+/** 既存の champions-*.json ファイル名 */
+const CHAMPIONS_ABILITIES_FILE = "champions-abilities.json";
+const CHAMPIONS_ITEMS_FILE = "champions-items.json";
+const CHAMPIONS_MOVES_FILE = "champions-moves.json";
+
+/**
+ * 既存の champions-*.json を読み込み、英語名 → 日本語名 (nameJa) の Map を返す。
+ * 初回生成時などファイルが存在しない場合は空の Map を返す。
+ *
+ * 再生成時に既存の nameJa を保持するために使用する。
+ */
+function loadExistingNameJaMap(fileName: string): Map<string, string> {
+  const filePath = resolve(OUTPUT_DIR, fileName);
+  const result = new Map<string, string>();
+  try {
+    const content = readFileSync(filePath, "utf-8");
+    const entries = JSON.parse(content) as {
+      name: string;
+      nameJa: string | null;
+    }[];
+    for (const entry of entries) {
+      if (entry.nameJa !== null) {
+        result.set(entry.name, entry.nameJa);
+      }
+    }
+  } catch {
+    // 既存ファイルが無い、または読めない場合は空の Map を返す（初回生成想定）
+  }
+  return result;
+}
 
 /**
  * Champions mod の TS ファイルから各エントリの id とフィールドの static 値のみを抽出する。
@@ -339,7 +373,8 @@ function isUsable(
 function buildAbilityEntries(
   abilities: Iterable<Ability>,
   overrides: Map<string, AbilityOverride>,
-  textEntries: Map<string, TextEntry>
+  textEntries: Map<string, TextEntry>,
+  enToJa: Map<string, string>
 ): AbilityEntry[] {
   const entries: AbilityEntry[] = [];
   const seenIds = new Set<string>();
@@ -351,6 +386,7 @@ function buildAbilityEntries(
     entries.push({
       id: ability.id,
       name: ability.name,
+      nameJa: enToJa.get(ability.name) ?? null,
       desc: ability.desc ?? ability.shortDesc ?? "",
       shortDesc: ability.shortDesc ?? "",
     });
@@ -366,6 +402,7 @@ function buildAbilityEntries(
     entries.push({
       id,
       name: text.name,
+      nameJa: enToJa.get(text.name) ?? null,
       desc: text.desc || text.shortDesc,
       shortDesc: text.shortDesc,
     });
@@ -389,7 +426,8 @@ function extractMegaInfo(item: Item): {
 function buildItemEntries(
   items: Iterable<Item>,
   overrides: Map<string, ItemOverride>,
-  textEntries: Map<string, TextEntry>
+  textEntries: Map<string, TextEntry>,
+  enToJa: Map<string, string>
 ): ItemEntry[] {
   const entries: ItemEntry[] = [];
   const seenIds = new Set<string>();
@@ -401,6 +439,7 @@ function buildItemEntries(
     entries.push({
       id: item.id,
       name: item.name,
+      nameJa: enToJa.get(item.name) ?? null,
       desc: item.desc ?? item.shortDesc ?? "",
       shortDesc: item.shortDesc ?? "",
       megaStone,
@@ -417,6 +456,7 @@ function buildItemEntries(
     entries.push({
       id,
       name: text.name,
+      nameJa: enToJa.get(text.name) ?? null,
       desc: text.desc || text.shortDesc,
       shortDesc: text.shortDesc,
       megaStone: null,
@@ -438,7 +478,8 @@ function flagKeysToArray(flags: Move["flags"]): string[] {
 function buildMoveEntries(
   moves: Iterable<Move>,
   overrides: Map<string, MoveOverride>,
-  textEntries: Map<string, TextEntry>
+  textEntries: Map<string, TextEntry>,
+  enToJa: Map<string, string>
 ): MoveEntry[] {
   const entries: MoveEntry[] = [];
   const seenIds = new Set<string>();
@@ -449,6 +490,7 @@ function buildMoveEntries(
     entries.push({
       id: move.id,
       name: move.name,
+      nameJa: enToJa.get(move.name) ?? null,
       type: move.type,
       category: move.category,
       basePower: override?.basePower ?? move.basePower,
@@ -517,14 +559,33 @@ async function main(): Promise<void> {
     `  abilities: ${abilityText.size}, items: ${itemText.size}, moves: ${moveText.size}`
   );
 
+  console.log("\nLoading existing Japanese name mappings...");
+  const abilityEnToJa = loadExistingNameJaMap(CHAMPIONS_ABILITIES_FILE);
+  const itemEnToJa = loadExistingNameJaMap(CHAMPIONS_ITEMS_FILE);
+  const moveEnToJa = loadExistingNameJaMap(CHAMPIONS_MOVES_FILE);
+  console.log(
+    `  abilities: ${abilityEnToJa.size}, items: ${itemEnToJa.size}, moves: ${moveEnToJa.size}`
+  );
+
   console.log("\nBuilding merged data...");
   const abilityEntries = buildAbilityEntries(
     gen.abilities,
     abilityOverrides,
-    abilityText
+    abilityText,
+    abilityEnToJa
   );
-  const itemEntries = buildItemEntries(gen.items, itemOverrides, itemText);
-  const moveEntries = buildMoveEntries(gen.moves, moveOverrides, moveText);
+  const itemEntries = buildItemEntries(
+    gen.items,
+    itemOverrides,
+    itemText,
+    itemEnToJa
+  );
+  const moveEntries = buildMoveEntries(
+    gen.moves,
+    moveOverrides,
+    moveText,
+    moveEnToJa
+  );
   const sortedLearnsets = sortLearnsets(learnsets);
 
   console.log("\nWriting JSON files...");
