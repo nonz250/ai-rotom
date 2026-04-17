@@ -16,8 +16,6 @@
     "@smogon/calc": "file:vendor/smogon-calc-0.11.0.tgz"
   },
   "devDependencies": {
-    "@pkmn/data": "^0.10.7",
-    "@pkmn/dex": "^0.10.7",
     "tsdown": "0.21.8"
   }
 }
