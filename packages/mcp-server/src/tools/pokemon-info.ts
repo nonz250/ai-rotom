@@ -5,6 +5,7 @@ import {
   pokemonNameResolver,
   abilityNameResolver,
 } from "../name-resolvers.js";
+import { championsLearnsets, toDataId } from "../data-store.js";
 
 const CHAMPIONS_GEN_NUM = 0;
 const DEFAULT_SEARCH_LIMIT = 20;
@@ -146,6 +147,13 @@ interface PokemonInfoResult {
   abilitiesJa: string[];
   weightkg: number;
   otherFormes?: string[];
+  /**
+   * ポケモンチャンピオンズで覚えられる技の総数。
+   * learnset データが存在しないポケモンの場合は null。
+   * 注: @smogon/calc の species データは通常特性しか持たないため、
+   * 隠れ特性を含む全特性の列挙はできない（データ制約）。
+   */
+  learnableMoveCount: number | null;
 }
 
 interface SearchPokemonResult {
@@ -193,6 +201,10 @@ export function registerPokemonInfoTools(server: McpServer): void {
         const nameJa =
           pokemonNameResolver.toJapanese(species.name) ?? species.name;
 
+        const learnsetEntry = championsLearnsets[toDataId(species.name)];
+        const learnableMoveCount =
+          learnsetEntry !== undefined ? learnsetEntry.length : null;
+
         const result: PokemonInfoResult = {
           name: species.name,
           nameJa,
@@ -202,6 +214,7 @@ export function registerPokemonInfoTools(server: McpServer): void {
           abilities,
           abilitiesJa,
           weightkg: species.weightkg,
+          learnableMoveCount,
         };
 
         if (species.otherFormes && species.otherFormes.length > 0) {
