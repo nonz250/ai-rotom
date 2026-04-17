@@ -75,11 +75,9 @@ export function registerMoveInfoTool(server: McpServer): void {
         );
       }
 
-      const nameJa = moveNameResolver.toJapanese(entry.name) ?? null;
-
       const output: MoveInfoOutput = {
         name: entry.name,
-        nameJa,
+        nameJa: entry.nameJa,
         type: entry.type,
         category: entry.category,
         basePower: normalizeBasePower(entry.category, entry.basePower),

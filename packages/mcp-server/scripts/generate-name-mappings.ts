@@ -2,6 +2,12 @@
  * @smogon/calc が持つ英語名リストを元に、外部 API から日本語名を取得し
  * 名前変換マッピング JSON を生成するスクリプト。
  *
+ * 対象:
+ * - pokemon-names.json （ポケモン名）
+ *
+ * 特性・技・持ち物の日本語名は champions-*.json の nameJa に統合済みのため、
+ * このスクリプトは出力しない（generate-champions-data.ts が担当する）。
+ *
  * 使い方: npx tsx packages/mcp-server/scripts/generate-name-mappings.ts
  */
 
@@ -151,69 +157,16 @@ async function generatePokemonMappings(
   );
 }
 
-async function generateMappings(
-  category: string,
-  englishNames: string[],
-  outputFile: string
-): Promise<void> {
-  console.log(`\n--- ${category} (${englishNames.length} entries) ---`);
-
-  const entries: NameEntry[] = [];
-  let found = 0;
-  let notFound = 0;
-
-  for (const enName of englishNames) {
-    if (enName === "(No Move)") continue;
-
-    const jaName = await fetchJapaneseName(category, toApiId(enName));
-    if (jaName) {
-      entries.push({ ja: jaName, en: enName });
-      found++;
-    } else {
-      console.warn(`  Not found: ${enName}`);
-      notFound++;
-    }
-
-    await sleep(REQUEST_DELAY_MS);
-
-    if ((found + notFound) % 50 === 0) {
-      console.log(`  Progress: ${found + notFound}/${englishNames.length}`);
-    }
-  }
-
-  entries.sort((a, b) => a.en.localeCompare(b.en));
-
-  const outputPath = resolve(DATA_DIR, outputFile);
-  writeFileSync(outputPath, JSON.stringify(entries, null, 2) + "\n");
-  console.log(
-    `  Done: ${found} found, ${notFound} not found → ${outputFile}`
-  );
-}
-
 async function main(): Promise<void> {
   const gen = Generations.get(CHAMPIONS_GEN_NUM);
 
   const pokemonNames: string[] = [];
   for (const s of gen.species) pokemonNames.push(s.name);
 
-  const moveNames: string[] = [];
-  for (const m of gen.moves) moveNames.push(m.name);
-
-  const abilityNames: string[] = [];
-  for (const a of gen.abilities) abilityNames.push(a.name);
-
-  const itemNames: string[] = [];
-  for (const i of gen.items) itemNames.push(i.name);
-
   console.log("Generating name mappings from external API...");
-  console.log(
-    `Pokemon: ${pokemonNames.length}, Moves: ${moveNames.length}, Abilities: ${abilityNames.length}, Items: ${itemNames.length}`
-  );
+  console.log(`Pokemon: ${pokemonNames.length}`);
 
   await generatePokemonMappings(pokemonNames, "pokemon-names.json");
-  await generateMappings("move", moveNames, "move-names.json");
-  await generateMappings("ability", abilityNames, "ability-names.json");
-  await generateMappings("item", itemNames, "item-names.json");
 
   console.log("\nAll done!");
 }

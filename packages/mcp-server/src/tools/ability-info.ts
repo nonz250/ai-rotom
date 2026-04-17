@@ -52,11 +52,9 @@ export function registerAbilityInfoTool(server: McpServer): void {
         );
       }
 
-      const nameJa = abilityNameResolver.toJapanese(entry.name) ?? null;
-
       const output: AbilityInfoOutput = {
         name: entry.name,
-        nameJa,
+        nameJa: entry.nameJa,
         descEn: entry.desc,
         shortDescEn: entry.shortDesc,
       };

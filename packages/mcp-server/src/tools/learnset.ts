@@ -1,10 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { championsLearnsets, movesById, toDataId } from "../data-store.js";
-import {
-  moveNameResolver,
-  pokemonNameResolver,
-} from "../name-resolvers.js";
+import { pokemonNameResolver } from "../name-resolvers.js";
 
 const TOOL_NAME = "get_learnset";
 const TOOL_DESCRIPTION =
@@ -49,13 +46,14 @@ function resolvePokemonNameEn(input: string): string {
 
 /**
  * 技 ID から出力用の英語名・日本語名ペアを組み立てる。
- * チャンピオンズデータに存在しない ID はフォールバックで ID をそのまま英語名に使う。
+ * チャンピオンズデータに存在しない ID はフォールバックで ID をそのまま英語名に使い、ja は null とする。
  */
 function buildLearnsetMoveEntry(moveId: string): LearnsetMoveEntry {
   const moveEntry = movesById.get(moveId);
-  const en = moveEntry?.name ?? moveId;
-  const ja = moveNameResolver.toJapanese(en) ?? null;
-  return { en, ja };
+  if (moveEntry === undefined) {
+    return { en: moveId, ja: null };
+  }
+  return { en: moveEntry.name, ja: moveEntry.nameJa };
 }
 
 export function registerLearnsetTool(server: McpServer): void {

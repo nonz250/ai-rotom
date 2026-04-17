@@ -2,6 +2,7 @@
   {
     "id": "abomasite",
     "name": "Abomasite",
+    "nameJa": "ユキノオナイト",
     "desc": "If held by an Abomasnow, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by an Abomasnow, this item allows it to Mega Evolve in battle.",
     "megaStone": "Abomasnow-Mega",
@@ -10,6 +11,7 @@
   {
     "id": "absolite",
     "name": "Absolite",
+    "nameJa": "アブソルナイト",
     "desc": "If held by an Absol, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by an Absol, this item allows it to Mega Evolve in battle.",
     "megaStone": "Absol-Mega",
@@ -18,6 +20,7 @@
   {
     "id": "aerodactylite",
     "name": "Aerodactylite",
+    "nameJa": "プテラナイト",
     "desc": "If held by an Aerodactyl, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by an Aerodactyl, this item allows it to Mega Evolve in battle.",
     "megaStone": "Aerodactyl-Mega",
@@ -26,6 +29,7 @@
   {
     "id": "aggronite",
     "name": "Aggronite",
+    "nameJa": "ボスゴドラナイト",
     "desc": "If held by an Aggron, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by an Aggron, this item allows it to Mega Evolve in battle.",
     "megaStone": "Aggron-Mega",
@@ -34,6 +38,7 @@
   {
     "id": "alakazite",
     "name": "Alakazite",
+    "nameJa": "フーディナイト",
     "desc": "If held by an Alakazam, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by an Alakazam, this item allows it to Mega Evolve in battle.",
     "megaStone": "Alakazam-Mega",
@@ -42,6 +47,7 @@
   {
     "id": "altarianite",
     "name": "Altarianite",
+    "nameJa": "チルタリスナイト",
     "desc": "If held by an Altaria, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by an Altaria, this item allows it to Mega Evolve in battle.",
     "megaStone": "Altaria-Mega",
@@ -50,6 +56,7 @@
   {
     "id": "ampharosite",
     "name": "Ampharosite",
+    "nameJa": "デンリュウナイト",
     "desc": "If held by an Ampharos, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by an Ampharos, this item allows it to Mega Evolve in battle.",
     "megaStone": "Ampharos-Mega",
@@ -58,6 +65,7 @@
   {
     "id": "aspearberry",
     "name": "Aspear Berry",
+    "nameJa": "ナナシのみ",
     "desc": "Holder is cured if it is frozen. Single use.",
     "shortDesc": "Holder is cured if it is frozen. Single use.",
     "megaStone": null,
@@ -66,6 +74,7 @@
   {
     "id": "audinite",
     "name": "Audinite",
+    "nameJa": "タブンネナイト",
     "desc": "If held by an Audino, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by an Audino, this item allows it to Mega Evolve in battle.",
     "megaStone": "Audino-Mega",
@@ -74,6 +83,7 @@
   {
     "id": "babiriberry",
     "name": "Babiri Berry",
+    "nameJa": "リリバのみ",
     "desc": "Halves damage taken from a supereffective Steel-type attack. Single use.",
     "shortDesc": "Halves damage taken from a supereffective Steel-type attack. Single use.",
     "megaStone": null,
@@ -82,6 +92,7 @@
   {
     "id": "banettite",
     "name": "Banettite",
+    "nameJa": "ジュペッタナイト",
     "desc": "If held by a Banette, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Banette, this item allows it to Mega Evolve in battle.",
     "megaStone": "Banette-Mega",
@@ -90,6 +101,7 @@
   {
     "id": "beedrillite",
     "name": "Beedrillite",
+    "nameJa": "スピアナイト",
     "desc": "If held by a Beedrill, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Beedrill, this item allows it to Mega Evolve in battle.",
     "megaStone": "Beedrill-Mega",
@@ -98,6 +110,7 @@
   {
     "id": "blackbelt",
     "name": "Black Belt",
+    "nameJa": "くろおび",
     "desc": "Holder's Fighting-type attacks have 1.2x power.",
     "shortDesc": "Holder's Fighting-type attacks have 1.2x power.",
     "megaStone": null,
@@ -106,6 +119,7 @@
   {
     "id": "blackglasses",
     "name": "Black Glasses",
+    "nameJa": "くろいメガネ",
     "desc": "Holder's Dark-type attacks have 1.2x power.",
     "shortDesc": "Holder's Dark-type attacks have 1.2x power.",
     "megaStone": null,
@@ -114,6 +128,7 @@
   {
     "id": "blastoisinite",
     "name": "Blastoisinite",
+    "nameJa": "カメックスナイト",
     "desc": "If held by a Blastoise, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Blastoise, this item allows it to Mega Evolve in battle.",
     "megaStone": "Blastoise-Mega",
@@ -122,6 +137,7 @@
   {
     "id": "brightpowder",
     "name": "Bright Powder",
+    "nameJa": "ひかりのこな",
     "desc": "The accuracy of attacks against the holder is 0.9x.",
     "shortDesc": "The accuracy of attacks against the holder is 0.9x.",
     "megaStone": null,
@@ -130,6 +146,7 @@
   {
     "id": "cameruptite",
     "name": "Cameruptite",
+    "nameJa": "バクーダナイト",
     "desc": "If held by a Camerupt, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Camerupt, this item allows it to Mega Evolve in battle.",
     "megaStone": "Camerupt-Mega",
@@ -138,6 +155,7 @@
   {
     "id": "chandelurite",
     "name": "Chandelurite",
+    "nameJa": "シャンデラナイト",
     "desc": "If held by a Chandelure, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Chandelure, this item allows it to Mega Evolve in battle.",
     "megaStone": "Chandelure-Mega",
@@ -146,6 +164,7 @@
   {
     "id": "charcoal",
     "name": "Charcoal",
+    "nameJa": "もくたん",
     "desc": "Holder's Fire-type attacks have 1.2x power.",
     "shortDesc": "Holder's Fire-type attacks have 1.2x power.",
     "megaStone": null,
@@ -154,6 +173,7 @@
   {
     "id": "charizarditex",
     "name": "Charizardite X",
+    "nameJa": "リザードナイトＸ",
     "desc": "If held by a Charizard, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Charizard, this item allows it to Mega Evolve in battle.",
     "megaStone": "Charizard-Mega-X",
@@ -162,6 +182,7 @@
   {
     "id": "charizarditey",
     "name": "Charizardite Y",
+    "nameJa": "リザードナイトＹ",
     "desc": "If held by a Charizard, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Charizard, this item allows it to Mega Evolve in battle.",
     "megaStone": "Charizard-Mega-Y",
@@ -170,6 +191,7 @@
   {
     "id": "chartiberry",
     "name": "Charti Berry",
+    "nameJa": "ヨロギのみ",
     "desc": "Halves damage taken from a supereffective Rock-type attack. Single use.",
     "shortDesc": "Halves damage taken from a supereffective Rock-type attack. Single use.",
     "megaStone": null,
@@ -178,6 +200,7 @@
   {
     "id": "cheriberry",
     "name": "Cheri Berry",
+    "nameJa": "クラボのみ",
     "desc": "Holder cures itself if it is paralyzed. Single use.",
     "shortDesc": "Holder cures itself if it is paralyzed. Single use.",
     "megaStone": null,
@@ -186,6 +209,7 @@
   {
     "id": "chesnaughtite",
     "name": "Chesnaughtite",
+    "nameJa": "ブリガロナイト",
     "desc": "If held by a Chesnaught, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Chesnaught, this item allows it to Mega Evolve in battle.",
     "megaStone": "Chesnaught-Mega",
@@ -194,6 +218,7 @@
   {
     "id": "chestoberry",
     "name": "Chesto Berry",
+    "nameJa": "カゴのみ",
     "desc": "Holder wakes up if it is asleep. Single use.",
     "shortDesc": "Holder wakes up if it is asleep. Single use.",
     "megaStone": null,
@@ -202,6 +227,7 @@
   {
     "id": "chilanberry",
     "name": "Chilan Berry",
+    "nameJa": "ホズのみ",
     "desc": "Halves damage taken from a Normal-type attack. Single use.",
     "shortDesc": "Halves damage taken from a Normal-type attack. Single use.",
     "megaStone": null,
@@ -210,6 +236,7 @@
   {
     "id": "chimechite",
     "name": "Chimechite",
+    "nameJa": "チリーンナイト",
     "desc": "",
     "shortDesc": "",
     "megaStone": "Chimecho-Mega",
@@ -218,6 +245,7 @@
   {
     "id": "choicescarf",
     "name": "Choice Scarf",
+    "nameJa": "こだわりスカーフ",
     "desc": "Holder's Speed is 1.5x, but it can only select the first move it executes.",
     "shortDesc": "Holder's Speed is 1.5x, but it can only select the first move it executes.",
     "megaStone": null,
@@ -226,6 +254,7 @@
   {
     "id": "chopleberry",
     "name": "Chople Berry",
+    "nameJa": "ヨプのみ",
     "desc": "Halves damage taken from a supereffective Fighting-type attack. Single use.",
     "shortDesc": "Halves damage taken from a supereffective Fighting-type attack. Single use.",
     "megaStone": null,
@@ -234,6 +263,7 @@
   {
     "id": "clefablite",
     "name": "Clefablite",
+    "nameJa": "ピクシナイト",
     "desc": "If held by a Clefable, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Clefable, this item allows it to Mega Evolve in battle.",
     "megaStone": "Clefable-Mega",
@@ -242,6 +272,7 @@
   {
     "id": "cobaberry",
     "name": "Coba Berry",
+    "nameJa": "バコウのみ",
     "desc": "Halves damage taken from a supereffective Flying-type attack. Single use.",
     "shortDesc": "Halves damage taken from a supereffective Flying-type attack. Single use.",
     "megaStone": null,
@@ -250,6 +281,7 @@
   {
     "id": "colburberry",
     "name": "Colbur Berry",
+    "nameJa": "ナモのみ",
     "desc": "Halves damage taken from a supereffective Dark-type attack. Single use.",
     "shortDesc": "Halves damage taken from a supereffective Dark-type attack. Single use.",
     "megaStone": null,
@@ -258,6 +290,7 @@
   {
     "id": "crabominite",
     "name": "Crabominite",
+    "nameJa": "ケケンカニナイト",
     "desc": "",
     "shortDesc": "",
     "megaStone": "Crabominable-Mega",
@@ -266,6 +299,7 @@
   {
     "id": "delphoxite",
     "name": "Delphoxite",
+    "nameJa": "マフォクシナイト",
     "desc": "If held by a Delphox, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Delphox, this item allows it to Mega Evolve in battle.",
     "megaStone": "Delphox-Mega",
@@ -274,6 +308,7 @@
   {
     "id": "dragonfang",
     "name": "Dragon Fang",
+    "nameJa": "りゅうのキバ",
     "desc": "Holder's Dragon-type attacks have 1.2x power.",
     "shortDesc": "Holder's Dragon-type attacks have 1.2x power.",
     "megaStone": null,
@@ -282,6 +317,7 @@
   {
     "id": "dragoninite",
     "name": "Dragoninite",
+    "nameJa": "カイリューナイト",
     "desc": "If held by a Dragonite, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Dragonite, this item allows it to Mega Evolve in battle.",
     "megaStone": "Dragonite-Mega",
@@ -290,6 +326,7 @@
   {
     "id": "drampanite",
     "name": "Drampanite",
+    "nameJa": "ジジーロンナイト",
     "desc": "If held by a Drampa, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Drampa, this item allows it to Mega Evolve in battle.",
     "megaStone": "Drampa-Mega",
@@ -298,6 +335,7 @@
   {
     "id": "emboarite",
     "name": "Emboarite",
+    "nameJa": "エンブオーナイト",
     "desc": "If held by an Emboar, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by an Emboar, this item allows it to Mega Evolve in battle.",
     "megaStone": "Emboar-Mega",
@@ -306,6 +344,7 @@
   {
     "id": "excadrite",
     "name": "Excadrite",
+    "nameJa": "ドリュウズナイト",
     "desc": "If held by an Excadrill, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by an Excadrill, this item allows it to Mega Evolve in battle.",
     "megaStone": "Excadrill-Mega",
@@ -314,6 +353,7 @@
   {
     "id": "fairyfeather",
     "name": "Fairy Feather",
+    "nameJa": "ようせいのハネ",
     "desc": "Holder's Fairy-type attacks have 1.2x power.",
     "shortDesc": "Holder's Fairy-type attacks have 1.2x power.",
     "megaStone": null,
@@ -322,6 +362,7 @@
   {
     "id": "feraligite",
     "name": "Feraligite",
+    "nameJa": "オーダイルナイト",
     "desc": "If held by a Feraligatr, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Feraligatr, this item allows it to Mega Evolve in battle.",
     "megaStone": "Feraligatr-Mega",
@@ -330,6 +371,7 @@
   {
     "id": "floettite",
     "name": "Floettite",
+    "nameJa": "フラエッテナイト",
     "desc": "If held by an Eternal Flower Floette, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by an Eternal Flower Floette, this item allows it to Mega Evolve in battle.",
     "megaStone": "Floette-Mega",
@@ -338,6 +380,7 @@
   {
     "id": "focusband",
     "name": "Focus Band",
+    "nameJa": "きあいのハチマキ",
     "desc": "Holder has a 10% chance to survive an attack that would KO it with 1 HP.",
     "shortDesc": "Holder has a 10% chance to survive an attack that would KO it with 1 HP.",
     "megaStone": null,
@@ -346,6 +389,7 @@
   {
     "id": "focussash",
     "name": "Focus Sash",
+    "nameJa": "きあいのタスキ",
     "desc": "If holder's HP is full, will survive an attack that would KO it with 1 HP. Single use.",
     "shortDesc": "If holder's HP is full, will survive an attack that would KO it with 1 HP. Single use.",
     "megaStone": null,
@@ -354,6 +398,7 @@
   {
     "id": "froslassite",
     "name": "Froslassite",
+    "nameJa": "ユキメノコナイト",
     "desc": "If held by a Froslass, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Froslass, this item allows it to Mega Evolve in battle.",
     "megaStone": "Froslass-Mega",
@@ -362,6 +407,7 @@
   {
     "id": "galladite",
     "name": "Galladite",
+    "nameJa": "エルレイドナイト",
     "desc": "If held by a Gallade, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Gallade, this item allows it to Mega Evolve in battle.",
     "megaStone": "Gallade-Mega",
@@ -370,6 +416,7 @@
   {
     "id": "garchompite",
     "name": "Garchompite",
+    "nameJa": "ガブリアスナイト",
     "desc": "If held by a Garchomp, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Garchomp, this item allows it to Mega Evolve in battle.",
     "megaStone": "Garchomp-Mega",
@@ -378,6 +425,7 @@
   {
     "id": "gardevoirite",
     "name": "Gardevoirite",
+    "nameJa": "サーナイトナイト",
     "desc": "If held by a Gardevoir, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Gardevoir, this item allows it to Mega Evolve in battle.",
     "megaStone": "Gardevoir-Mega",
@@ -386,6 +434,7 @@
   {
     "id": "gengarite",
     "name": "Gengarite",
+    "nameJa": "ゲンガナイト",
     "desc": "If held by a Gengar, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Gengar, this item allows it to Mega Evolve in battle.",
     "megaStone": "Gengar-Mega",
@@ -394,6 +443,7 @@
   {
     "id": "glalitite",
     "name": "Glalitite",
+    "nameJa": "オニゴーリナイト",
     "desc": "If held by a Glalie, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Glalie, this item allows it to Mega Evolve in battle.",
     "megaStone": "Glalie-Mega",
@@ -402,6 +452,7 @@
   {
     "id": "glimmoranite",
     "name": "Glimmoranite",
+    "nameJa": "キラフロルナイト",
     "desc": "",
     "shortDesc": "",
     "megaStone": "Glimmora-Mega",
@@ -410,6 +461,7 @@
   {
     "id": "golurkite",
     "name": "Golurkite",
+    "nameJa": "ゴルーグナイト",
     "desc": "",
     "shortDesc": "",
     "megaStone": "Golurk-Mega",
@@ -418,6 +470,7 @@
   {
     "id": "greninjite",
     "name": "Greninjite",
+    "nameJa": "ゲッコウガナイト",
     "desc": "If held by a Greninja, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Greninja, this item allows it to Mega Evolve in battle.",
     "megaStone": "Greninja-Mega",
@@ -426,6 +479,7 @@
   {
     "id": "gyaradosite",
     "name": "Gyaradosite",
+    "nameJa": "ギャラドスナイト",
     "desc": "If held by a Gyarados, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Gyarados, this item allows it to Mega Evolve in battle.",
     "megaStone": "Gyarados-Mega",
@@ -434,6 +488,7 @@
   {
     "id": "habanberry",
     "name": "Haban Berry",
+    "nameJa": "ハバンのみ",
     "desc": "Halves damage taken from a supereffective Dragon-type attack. Single use.",
     "shortDesc": "Halves damage taken from a supereffective Dragon-type attack. Single use.",
     "megaStone": null,
@@ -442,6 +497,7 @@
   {
     "id": "hardstone",
     "name": "Hard Stone",
+    "nameJa": "かたいいし",
     "desc": "Holder's Rock-type attacks have 1.2x power.",
     "shortDesc": "Holder's Rock-type attacks have 1.2x power.",
     "megaStone": null,
@@ -450,6 +506,7 @@
   {
     "id": "hawluchanite",
     "name": "Hawluchanite",
+    "nameJa": "ルチャブルナイト",
     "desc": "If held by a Hawlucha, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Hawlucha, this item allows it to Mega Evolve in battle.",
     "megaStone": "Hawlucha-Mega",
@@ -458,6 +515,7 @@
   {
     "id": "heracronite",
     "name": "Heracronite",
+    "nameJa": "ヘラクロスナイト",
     "desc": "If held by a Heracross, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Heracross, this item allows it to Mega Evolve in battle.",
     "megaStone": "Heracross-Mega",
@@ -466,6 +524,7 @@
   {
     "id": "houndoominite",
     "name": "Houndoominite",
+    "nameJa": "ヘルガナイト",
     "desc": "If held by a Houndoom, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Houndoom, this item allows it to Mega Evolve in battle.",
     "megaStone": "Houndoom-Mega",
@@ -474,6 +533,7 @@
   {
     "id": "kangaskhanite",
     "name": "Kangaskhanite",
+    "nameJa": "ガルーラナイト",
     "desc": "If held by a Kangaskhan, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Kangaskhan, this item allows it to Mega Evolve in battle.",
     "megaStone": "Kangaskhan-Mega",
@@ -482,6 +542,7 @@
   {
     "id": "kasibberry",
     "name": "Kasib Berry",
+    "nameJa": "カシブのみ",
     "desc": "Halves damage taken from a supereffective Ghost-type attack. Single use.",
     "shortDesc": "Halves damage taken from a supereffective Ghost-type attack. Single use.",
     "megaStone": null,
@@ -490,6 +551,7 @@
   {
     "id": "kebiaberry",
     "name": "Kebia Berry",
+    "nameJa": "ビアーのみ",
     "desc": "Halves damage taken from a supereffective Poison-type attack. Single use.",
     "shortDesc": "Halves damage taken from a supereffective Poison-type attack. Single use.",
     "megaStone": null,
@@ -498,6 +560,7 @@
   {
     "id": "kingsrock",
     "name": "King's Rock",
+    "nameJa": "おうじゃのしるし",
     "desc": "Holder's attacks without a chance to make the target flinch gain a 10% chance to make the target flinch. Evolves Poliwhirl into Politoed and Slowpoke into Slowking when traded.",
     "shortDesc": "Holder's attacks without a chance to flinch gain a 10% chance to flinch.",
     "megaStone": null,
@@ -506,6 +569,7 @@
   {
     "id": "leftovers",
     "name": "Leftovers",
+    "nameJa": "たべのこし",
     "desc": "At the end of every turn, holder restores 1/16 of its max HP.",
     "shortDesc": "At the end of every turn, holder restores 1/16 of its max HP.",
     "megaStone": null,
@@ -514,6 +578,7 @@
   {
     "id": "leppaberry",
     "name": "Leppa Berry",
+    "nameJa": "ヒメリのみ",
     "desc": "Restores 10 PP to the first of the holder's moves to reach 0 PP. Single use.",
     "shortDesc": "Restores 10 PP to the first of the holder's moves to reach 0 PP. Single use.",
     "megaStone": null,
@@ -522,6 +587,7 @@
   {
     "id": "lightball",
     "name": "Light Ball",
+    "nameJa": "でんきだま",
     "desc": "If held by a Pikachu, its Attack and Sp. Atk are doubled.",
     "shortDesc": "If held by a Pikachu, its Attack and Sp. Atk are doubled.",
     "megaStone": null,
@@ -530,6 +596,7 @@
   {
     "id": "lopunnite",
     "name": "Lopunnite",
+    "nameJa": "ミミロップナイト",
     "desc": "If held by a Lopunny, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Lopunny, this item allows it to Mega Evolve in battle.",
     "megaStone": "Lopunny-Mega",
@@ -538,6 +605,7 @@
   {
     "id": "lucarionite",
     "name": "Lucarionite",
+    "nameJa": "ルカリオナイト",
     "desc": "If held by a Lucario, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Lucario, this item allows it to Mega Evolve in battle.",
     "megaStone": "Lucario-Mega",
@@ -546,6 +614,7 @@
   {
     "id": "lumberry",
     "name": "Lum Berry",
+    "nameJa": "ラムのみ",
     "desc": "Holder cures itself if it has a non-volatile status or is confused. Single use.",
     "shortDesc": "Holder cures itself if it has a non-volatile status or is confused. Single use.",
     "megaStone": null,
@@ -554,6 +623,7 @@
   {
     "id": "magnet",
     "name": "Magnet",
+    "nameJa": "じしゃく",
     "desc": "Holder's Electric-type attacks have 1.2x power.",
     "shortDesc": "Holder's Electric-type attacks have 1.2x power.",
     "megaStone": null,
@@ -562,6 +632,7 @@
   {
     "id": "manectite",
     "name": "Manectite",
+    "nameJa": "ライボルトナイト",
     "desc": "If held by a Manectric, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Manectric, this item allows it to Mega Evolve in battle.",
     "megaStone": "Manectric-Mega",
@@ -570,6 +641,7 @@
   {
     "id": "medichamite",
     "name": "Medichamite",
+    "nameJa": "チャーレムナイト",
     "desc": "If held by a Medicham, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Medicham, this item allows it to Mega Evolve in battle.",
     "megaStone": "Medicham-Mega",
@@ -578,6 +650,7 @@
   {
     "id": "meganiumite",
     "name": "Meganiumite",
+    "nameJa": "メガニウムナイト",
     "desc": "If held by a Meganium, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Meganium, this item allows it to Mega Evolve in battle.",
     "megaStone": "Meganium-Mega",
@@ -586,6 +659,7 @@
   {
     "id": "mentalherb",
     "name": "Mental Herb",
+    "nameJa": "メンタルハーブ",
     "desc": "Cures holder of Attract, Disable, Encore, Heal Block, Taunt, Torment. Single use.",
     "shortDesc": "Cures holder of Attract, Disable, Encore, Heal Block, Taunt, Torment. Single use.",
     "megaStone": null,
@@ -594,6 +668,7 @@
   {
     "id": "meowsticite",
     "name": "Meowsticite",
+    "nameJa": "ニャオニクスナイト",
     "desc": "",
     "shortDesc": "",
     "megaStone": "Meowstic-M-Mega",
@@ -602,6 +677,7 @@
   {
     "id": "metalcoat",
     "name": "Metal Coat",
+    "nameJa": "メタルコート",
     "desc": "Holder's Steel-type attacks have 1.2x power. Evolves Onix into Steelix and Scyther into Scizor when traded.",
     "shortDesc": "Holder's Steel-type attacks have 1.2x power.",
     "megaStone": null,
@@ -610,6 +686,7 @@
   {
     "id": "miracleseed",
     "name": "Miracle Seed",
+    "nameJa": "きせきのタネ",
     "desc": "Holder's Grass-type attacks have 1.2x power.",
     "shortDesc": "Holder's Grass-type attacks have 1.2x power.",
     "megaStone": null,
@@ -618,6 +695,7 @@
   {
     "id": "mysticwater",
     "name": "Mystic Water",
+    "nameJa": "しんぴのしずく",
     "desc": "Holder's Water-type attacks have 1.2x power.",
     "shortDesc": "Holder's Water-type attacks have 1.2x power.",
     "megaStone": null,
@@ -626,6 +704,7 @@
   {
     "id": "nevermeltice",
     "name": "Never-Melt Ice",
+    "nameJa": "とけないこおり",
     "desc": "Holder's Ice-type attacks have 1.2x power.",
     "shortDesc": "Holder's Ice-type attacks have 1.2x power.",
     "megaStone": null,
@@ -634,6 +713,7 @@
   {
     "id": "occaberry",
     "name": "Occa Berry",
+    "nameJa": "オッカのみ",
     "desc": "Halves damage taken from a supereffective Fire-type attack. Single use.",
     "shortDesc": "Halves damage taken from a supereffective Fire-type attack. Single use.",
     "megaStone": null,
@@ -642,6 +722,7 @@
   {
     "id": "oranberry",
     "name": "Oran Berry",
+    "nameJa": "オレンのみ",
     "desc": "Restores 10 HP when at 1/2 max HP or less. Single use.",
     "shortDesc": "Restores 10 HP when at 1/2 max HP or less. Single use.",
     "megaStone": null,
@@ -650,6 +731,7 @@
   {
     "id": "passhoberry",
     "name": "Passho Berry",
+    "nameJa": "イトケのみ",
     "desc": "Halves damage taken from a supereffective Water-type attack. Single use.",
     "shortDesc": "Halves damage taken from a supereffective Water-type attack. Single use.",
     "megaStone": null,
@@ -658,6 +740,7 @@
   {
     "id": "payapaberry",
     "name": "Payapa Berry",
+    "nameJa": "ウタンのみ",
     "desc": "Halves damage taken from a supereffective Psychic-type attack. Single use.",
     "shortDesc": "Halves damage taken from a supereffective Psychic-type attack. Single use.",
     "megaStone": null,
@@ -666,6 +749,7 @@
   {
     "id": "pechaberry",
     "name": "Pecha Berry",
+    "nameJa": "モモンのみ",
     "desc": "Holder is cured if it is poisoned. Single use.",
     "shortDesc": "Holder is cured if it is poisoned. Single use.",
     "megaStone": null,
@@ -674,6 +758,7 @@
   {
     "id": "persimberry",
     "name": "Persim Berry",
+    "nameJa": "キーのみ",
     "desc": "Holder is cured if it is confused. Single use.",
     "shortDesc": "Holder is cured if it is confused. Single use.",
     "megaStone": null,
@@ -682,6 +767,7 @@
   {
     "id": "pidgeotite",
     "name": "Pidgeotite",
+    "nameJa": "ピジョットナイト",
     "desc": "If held by a Pidgeot, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Pidgeot, this item allows it to Mega Evolve in battle.",
     "megaStone": "Pidgeot-Mega",
@@ -690,6 +776,7 @@
   {
     "id": "pinsirite",
     "name": "Pinsirite",
+    "nameJa": "カイロスナイト",
     "desc": "If held by a Pinsir, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Pinsir, this item allows it to Mega Evolve in battle.",
     "megaStone": "Pinsir-Mega",
@@ -698,6 +785,7 @@
   {
     "id": "poisonbarb",
     "name": "Poison Barb",
+    "nameJa": "どくバリ",
     "desc": "Holder's Poison-type attacks have 1.2x power.",
     "shortDesc": "Holder's Poison-type attacks have 1.2x power.",
     "megaStone": null,
@@ -706,6 +794,7 @@
   {
     "id": "quickclaw",
     "name": "Quick Claw",
+    "nameJa": "せんせいのツメ",
     "desc": "Each turn, holder has a 20% chance to move first in its priority bracket.",
     "shortDesc": "Each turn, holder has a 20% chance to move first in its priority bracket.",
     "megaStone": null,
@@ -714,6 +803,7 @@
   {
     "id": "rawstberry",
     "name": "Rawst Berry",
+    "nameJa": "チーゴのみ",
     "desc": "Holder is cured if it is burned. Single use.",
     "shortDesc": "Holder is cured if it is burned. Single use.",
     "megaStone": null,
@@ -722,6 +812,7 @@
   {
     "id": "rindoberry",
     "name": "Rindo Berry",
+    "nameJa": "リンドのみ",
     "desc": "Halves damage taken from a supereffective Grass-type attack. Single use.",
     "shortDesc": "Halves damage taken from a supereffective Grass-type attack. Single use.",
     "megaStone": null,
@@ -730,6 +821,7 @@
   {
     "id": "roseliberry",
     "name": "Roseli Berry",
+    "nameJa": "ロゼルのみ",
     "desc": "Halves damage taken from a supereffective Fairy-type attack. Single use.",
     "shortDesc": "Halves damage taken from a supereffective Fairy-type attack. Single use.",
     "megaStone": null,
@@ -738,6 +830,7 @@
   {
     "id": "sablenite",
     "name": "Sablenite",
+    "nameJa": "ヤミラミナイト",
     "desc": "If held by a Sableye, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Sableye, this item allows it to Mega Evolve in battle.",
     "megaStone": "Sableye-Mega",
@@ -746,6 +839,7 @@
   {
     "id": "scizorite",
     "name": "Scizorite",
+    "nameJa": "ハッサムナイト",
     "desc": "If held by a Scizor, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Scizor, this item allows it to Mega Evolve in battle.",
     "megaStone": "Scizor-Mega",
@@ -754,6 +848,7 @@
   {
     "id": "scopelens",
     "name": "Scope Lens",
+    "nameJa": "ピントレンズ",
     "desc": "Holder's critical hit ratio is raised by 1 stage.",
     "shortDesc": "Holder's critical hit ratio is raised by 1 stage.",
     "megaStone": null,
@@ -762,6 +857,7 @@
   {
     "id": "scovillainite",
     "name": "Scovillainite",
+    "nameJa": "スコヴィランナイト",
     "desc": "",
     "shortDesc": "",
     "megaStone": "Scovillain-Mega",
@@ -770,6 +866,7 @@
   {
     "id": "sharpbeak",
     "name": "Sharp Beak",
+    "nameJa": "するどいくちばし",
     "desc": "Holder's Flying-type attacks have 1.2x power.",
     "shortDesc": "Holder's Flying-type attacks have 1.2x power.",
     "megaStone": null,
@@ -778,6 +875,7 @@
   {
     "id": "sharpedonite",
     "name": "Sharpedonite",
+    "nameJa": "サメハダナイト",
     "desc": "If held by a Sharpedo, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Sharpedo, this item allows it to Mega Evolve in battle.",
     "megaStone": "Sharpedo-Mega",
@@ -786,6 +884,7 @@
   {
     "id": "shellbell",
     "name": "Shell Bell",
+    "nameJa": "かいがらのすず",
     "desc": "After an attack, holder gains 1/8 of the damage in HP dealt to other Pokemon.",
     "shortDesc": "After an attack, holder gains 1/8 of the damage in HP dealt to other Pokemon.",
     "megaStone": null,
@@ -794,6 +893,7 @@
   {
     "id": "shucaberry",
     "name": "Shuca Berry",
+    "nameJa": "シュカのみ",
     "desc": "Halves damage taken from a supereffective Ground-type attack. Single use.",
     "shortDesc": "Halves damage taken from a supereffective Ground-type attack. Single use.",
     "megaStone": null,
@@ -802,6 +902,7 @@
   {
     "id": "silkscarf",
     "name": "Silk Scarf",
+    "nameJa": "シルクのスカーフ",
     "desc": "Holder's Normal-type attacks have 1.2x power.",
     "shortDesc": "Holder's Normal-type attacks have 1.2x power.",
     "megaStone": null,
@@ -810,6 +911,7 @@
   {
     "id": "silverpowder",
     "name": "Silver Powder",
+    "nameJa": "ぎんのこな",
     "desc": "Holder's Bug-type attacks have 1.2x power.",
     "shortDesc": "Holder's Bug-type attacks have 1.2x power.",
     "megaStone": null,
@@ -818,6 +920,7 @@
   {
     "id": "sitrusberry",
     "name": "Sitrus Berry",
+    "nameJa": "オボンのみ",
     "desc": "Restores 1/4 max HP when at 1/2 max HP or less. Single use.",
     "shortDesc": "Restores 1/4 max HP when at 1/2 max HP or less. Single use.",
     "megaStone": null,
@@ -826,6 +929,7 @@
   {
     "id": "skarmorite",
     "name": "Skarmorite",
+    "nameJa": "エアームドナイト",
     "desc": "If held by a Skarmory, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Skarmory, this item allows it to Mega Evolve in battle.",
     "megaStone": "Skarmory-Mega",
@@ -834,6 +938,7 @@
   {
     "id": "slowbronite",
     "name": "Slowbronite",
+    "nameJa": "ヤドランナイト",
     "desc": "If held by a Slowbro, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Slowbro, this item allows it to Mega Evolve in battle.",
     "megaStone": "Slowbro-Mega",
@@ -842,6 +947,7 @@
   {
     "id": "softsand",
     "name": "Soft Sand",
+    "nameJa": "やわらかいすな",
     "desc": "Holder's Ground-type attacks have 1.2x power.",
     "shortDesc": "Holder's Ground-type attacks have 1.2x power.",
     "megaStone": null,
@@ -850,6 +956,7 @@
   {
     "id": "spelltag",
     "name": "Spell Tag",
+    "nameJa": "のろいのおふだ",
     "desc": "Holder's Ghost-type attacks have 1.2x power.",
     "shortDesc": "Holder's Ghost-type attacks have 1.2x power.",
     "megaStone": null,
@@ -858,6 +965,7 @@
   {
     "id": "starminite",
     "name": "Starminite",
+    "nameJa": "スターミーナイト",
     "desc": "If held by a Starmie, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Starmie, this item allows it to Mega Evolve in battle.",
     "megaStone": "Starmie-Mega",
@@ -866,6 +974,7 @@
   {
     "id": "steelixite",
     "name": "Steelixite",
+    "nameJa": "ハガネールナイト",
     "desc": "If held by a Steelix, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Steelix, this item allows it to Mega Evolve in battle.",
     "megaStone": "Steelix-Mega",
@@ -874,6 +983,7 @@
   {
     "id": "tangaberry",
     "name": "Tanga Berry",
+    "nameJa": "タンガのみ",
     "desc": "Halves damage taken from a supereffective Bug-type attack. Single use.",
     "shortDesc": "Halves damage taken from a supereffective Bug-type attack. Single use.",
     "megaStone": null,
@@ -882,6 +992,7 @@
   {
     "id": "twistedspoon",
     "name": "Twisted Spoon",
+    "nameJa": "まがったスプーン",
     "desc": "Holder's Psychic-type attacks have 1.2x power.",
     "shortDesc": "Holder's Psychic-type attacks have 1.2x power.",
     "megaStone": null,
@@ -890,6 +1001,7 @@
   {
     "id": "tyranitarite",
     "name": "Tyranitarite",
+    "nameJa": "バンギラスナイト",
     "desc": "If held by a Tyranitar, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Tyranitar, this item allows it to Mega Evolve in battle.",
     "megaStone": "Tyranitar-Mega",
@@ -898,6 +1010,7 @@
   {
     "id": "venusaurite",
     "name": "Venusaurite",
+    "nameJa": "フシギバナイト",
     "desc": "If held by a Venusaur, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Venusaur, this item allows it to Mega Evolve in battle.",
     "megaStone": "Venusaur-Mega",
@@ -906,6 +1019,7 @@
   {
     "id": "victreebelite",
     "name": "Victreebelite",
+    "nameJa": "ウツボットナイト",
     "desc": "If held by a Victreebel, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Victreebel, this item allows it to Mega Evolve in battle.",
     "megaStone": "Victreebel-Mega",
@@ -914,6 +1028,7 @@
   {
     "id": "wacanberry",
     "name": "Wacan Berry",
+    "nameJa": "ソクノのみ",
     "desc": "Halves damage taken from a supereffective Electric-type attack. Single use.",
     "shortDesc": "Halves damage taken from a supereffective Electric-type attack. Single use.",
     "megaStone": null,
@@ -922,6 +1037,7 @@
   {
     "id": "whiteherb",
     "name": "White Herb",
+    "nameJa": "しろいハーブ",
     "desc": "Restores all lowered stat stages to 0 when one is less than 0. Single use.",
     "shortDesc": "Restores all lowered stat stages to 0 when one is less than 0. Single use.",
     "megaStone": null,
@@ -930,6 +1046,7 @@
   {
     "id": "yacheberry",
     "name": "Yache Berry",
+    "nameJa": "ヤチェのみ",
     "desc": "Halves damage taken from a supereffective Ice-type attack. Single use.",
     "shortDesc": "Halves damage taken from a supereffective Ice-type attack. Single use.",
     "megaStone": null,
