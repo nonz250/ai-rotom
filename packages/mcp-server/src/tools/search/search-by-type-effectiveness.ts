@@ -1,6 +1,8 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { Generations, toID } from "@smogon/calc";
+import { Generations } from "@smogon/calc";
+import type { TypeName } from "@smogon/calc/dist/data/interface";
+import { calculateTypeEffectiveness } from "@ai-rotom/shared";
 import {
   championsLearnsets,
   championsPokemon,
@@ -108,19 +110,11 @@ function calcDefensiveMultiplier(
   defenderTypes: readonly string[],
   gen: ReturnType<typeof Generations.get>,
 ): number {
-  const attackType = gen.types.get(toID(attackTypeName));
-  if (attackType === undefined) {
-    return 1;
-  }
-  const eff = attackType.effectiveness as Record<string, number>;
-  let multiplier = 1;
-  for (const defenseType of defenderTypes) {
-    const val = eff[defenseType];
-    if (val !== undefined) {
-      multiplier *= val;
-    }
-  }
-  return multiplier;
+  return calculateTypeEffectiveness(
+    gen,
+    attackTypeName as TypeName,
+    defenderTypes as readonly TypeName[],
+  );
 }
 
 /**

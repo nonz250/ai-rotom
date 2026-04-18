@@ -1,6 +1,8 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { Generations, toID } from "@smogon/calc";
+import { Generations } from "@smogon/calc";
+import type { TypeName } from "@smogon/calc/dist/data/interface";
+import { calculateTypeEffectiveness } from "@ai-rotom/shared";
 import {
   championsLearnsets,
   championsTypes,
@@ -140,21 +142,16 @@ function normalizeMovesMap(
 }
 
 /**
- * 攻撃タイプ → 各 18 防御タイプへの倍率を計算する。
+ * 攻撃タイプ → 単一防御タイプへの倍率を計算する。
  */
 function getEffectivenessForDefenderType(
   attackTypeName: string,
   defenderTypeName: string,
   gen: ReturnType<typeof Generations.get>,
 ): number {
-  const attackType = gen.types.get(toID(attackTypeName));
-  if (attackType === undefined) {
-    return 1;
-  }
-  const eff = (attackType.effectiveness as Record<string, number>)[
-    defenderTypeName
-  ];
-  return eff ?? 1;
+  return calculateTypeEffectiveness(gen, attackTypeName as TypeName, [
+    defenderTypeName as TypeName,
+  ]);
 }
 
 export function registerPartyCoverageTool(server: McpServer): void {

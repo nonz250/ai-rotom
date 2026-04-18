@@ -1,6 +1,8 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { Generations, Pokemon, toID } from "@smogon/calc";
+import { Generations, Pokemon } from "@smogon/calc";
+import type { TypeName } from "@smogon/calc/dist/data/interface";
+import { calculateTypeEffectiveness } from "@ai-rotom/shared";
 import {
   championsLearnsets,
   championsTypes,
@@ -146,18 +148,14 @@ function buildDefensesProfile(
   const resistances: DefenseEntry[] = [];
   const immunities: ImmunityEntry[] = [];
 
-  for (const attackerType of championsTypes) {
-    const attackCalcType = gen.types.get(toID(attackerType.name));
-    if (attackCalcType === undefined) continue;
+  const defenders = defenderTypes as readonly TypeName[];
 
-    const eff = attackCalcType.effectiveness as Record<string, number>;
-    let multiplier = 1;
-    for (const t of defenderTypes) {
-      const v = eff[t];
-      if (v !== undefined) {
-        multiplier *= v;
-      }
-    }
+  for (const attackerType of championsTypes) {
+    const multiplier = calculateTypeEffectiveness(
+      gen,
+      attackerType.name as TypeName,
+      defenders,
+    );
 
     if (multiplier === IMMUNITY_MULTIPLIER) {
       immunities.push({

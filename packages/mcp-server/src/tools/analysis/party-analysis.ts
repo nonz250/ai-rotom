@@ -1,6 +1,8 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { Generations, toID } from "@smogon/calc";
+import { Generations } from "@smogon/calc";
+import type { TypeName } from "@smogon/calc/dist/data/interface";
+import { calculateTypeEffectiveness } from "@ai-rotom/shared";
 import {
   pokemonNameResolver,
 } from "../../name-resolvers.js";
@@ -100,6 +102,9 @@ function resolvePokemonName(name: string): string {
   throw new Error(`ポケモン「${name}」が見つかりません。${suggestionMessage}`);
 }
 
+/** ???タイプは計算対象から除外するためのマーカー */
+const UNKNOWN_TYPE_NAME = "???";
+
 /**
  * ポケモンのタイプに対する各攻撃タイプの倍率を計算する。
  */
@@ -115,19 +120,18 @@ function calculateTypeMatchups(
   const resistances: TypeMultiplier[] = [];
   const immunities: string[] = [];
 
+  const defenderTypes = pokemonTypes as readonly TypeName[];
+
   for (const attackType of gen.types) {
-    if (attackType.name === "???") {
+    if (attackType.name === UNKNOWN_TYPE_NAME) {
       continue;
     }
 
-    let multiplier = 1;
-    for (const defenseType of pokemonTypes) {
-      const effectiveness =
-        (attackType.effectiveness as Record<string, number>)[defenseType];
-      if (effectiveness !== undefined) {
-        multiplier *= effectiveness;
-      }
-    }
+    const multiplier = calculateTypeEffectiveness(
+      gen,
+      attackType.name,
+      defenderTypes,
+    );
 
     if (multiplier === IMMUNITY_THRESHOLD) {
       immunities.push(attackType.name);
@@ -153,18 +157,19 @@ function findUncoveredTypes(
   const uncovered: string[] = [];
 
   for (const targetType of gen.types) {
-    if (targetType.name === "???") {
+    if (targetType.name === UNKNOWN_TYPE_NAME) {
       continue;
     }
 
     let isCovered = false;
     for (const types of memberTypes) {
       for (const memberType of types) {
-        const attackingType = gen.types.get(toID(memberType));
-        if (!attackingType) continue;
-        const effectiveness =
-          (attackingType.effectiveness as Record<string, number>)[targetType.name];
-        if (effectiveness !== undefined && effectiveness >= WEAKNESS_THRESHOLD) {
+        const effectiveness = calculateTypeEffectiveness(
+          gen,
+          memberType as TypeName,
+          [targetType.name],
+        );
+        if (effectiveness >= WEAKNESS_THRESHOLD) {
           isCovered = true;
           break;
         }

@@ -1,6 +1,12 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { Generations, toID } from "@smogon/calc";
+import { Generations } from "@smogon/calc";
+import type { TypeName } from "@smogon/calc/dist/data/interface";
+import {
+  calculateTypeEffectiveness,
+  compareSpeed,
+  type SpeedComparison,
+} from "@ai-rotom/shared";
 import { DamageCalculatorAdapter } from "../../calc/damage-calculator.js";
 import type {
   DamageCalcResult,
@@ -107,7 +113,7 @@ interface CounterPokemonProfile {
 }
 
 interface CounterDetails {
-  speedAdvantage: "faster" | "slower" | "tie";
+  speedAdvantage: SpeedComparison;
   bestMove?: CounterMoveInfo;
   incomingBestMove?: IncomingMoveInfo;
 }
@@ -163,15 +169,11 @@ function calcMultiplier(
   defenderTypes: readonly string[],
   gen: ReturnType<typeof Generations.get>,
 ): number {
-  const attackType = gen.types.get(toID(attackTypeName));
-  if (attackType === undefined) return 1;
-  const eff = attackType.effectiveness as Record<string, number>;
-  let m = 1;
-  for (const t of defenderTypes) {
-    const v = eff[t];
-    if (v !== undefined) m *= v;
-  }
-  return m;
+  return calculateTypeEffectiveness(
+    gen,
+    attackTypeName as TypeName,
+    defenderTypes as readonly TypeName[],
+  );
 }
 
 /**
@@ -274,7 +276,7 @@ function isLowIncomingDamage(incomingMaxPercent: number): boolean {
  */
 function calcCounterScore(args: {
   typeAdvantage: boolean;
-  speedAdvantage: "faster" | "slower" | "tie";
+  speedAdvantage: SpeedComparison;
   incomingMaxPercent: number | null;
   outgoingMaxPercent: number | null;
 }): number {
@@ -307,7 +309,7 @@ function calcCounterScore(args: {
 function classifyStrategy(args: {
   incomingMultiplier: number;
   outgoingMaxPercent: number | null;
-  speedAdvantage: "faster" | "slower" | "tie";
+  speedAdvantage: SpeedComparison;
 }): CounterStrategy {
   const canKillIn2
     = args.outgoingMaxPercent !== null
@@ -465,12 +467,10 @@ export function registerFindCountersTool(server: McpServer): void {
         const bestOutgoing = pickBestMove(outgoing);
         const bestIncoming = pickBestMove(incoming);
 
-        const speedAdvantage: "faster" | "slower" | "tie"
-          = candidateObj.stats.spe > targetObj.stats.spe
-            ? "faster"
-            : candidateObj.stats.spe < targetObj.stats.spe
-              ? "slower"
-              : "tie";
+        const speedAdvantage = compareSpeed(
+          candidateObj.stats.spe,
+          targetObj.stats.spe,
+        );
 
         const outgoingMaxPercent
           = bestOutgoing !== undefined ? bestOutgoing.maxPercent : null;

@@ -1,4 +1,5 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { compareSpeed } from "@ai-rotom/shared";
 import type { DamageCalcResult } from "../../calc/damage-calculator.js";
 import { DamageCalculatorAdapter } from "../../calc/damage-calculator.js";
 import {
@@ -84,7 +85,7 @@ export function registerMatchupTool(server: McpServer): void {
             nameJa: nameJa2,
             speed: p2.stats.spe,
           },
-          pokemon1Faster: p1.stats.spe > p2.stats.spe,
+          pokemon1Faster: compareSpeed(p1.stats.spe, p2.stats.spe) === "faster",
           pokemon1Attacks,
           pokemon2Attacks,
         };

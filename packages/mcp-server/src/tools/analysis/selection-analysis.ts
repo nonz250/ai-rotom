@@ -1,6 +1,12 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { Generations, toID } from "@smogon/calc";
+import { Generations } from "@smogon/calc";
+import type { TypeName } from "@smogon/calc/dist/data/interface";
+import {
+  calculateTypeEffectiveness,
+  compareSpeed,
+  type SpeedComparison,
+} from "@ai-rotom/shared";
 import { DamageCalculatorAdapter } from "../../calc/damage-calculator.js";
 import type { DamageCalcResult } from "../../calc/damage-calculator.js";
 import {
@@ -72,7 +78,7 @@ interface MatchupEntry {
   mine: string;
   opponent: string;
   typeAdvantage: { myToOpp: number; oppToMy: number };
-  speedCompare: "faster" | "slower" | "tie";
+  speedCompare: SpeedComparison;
   damageEstimate: DamageEstimate | null;
 }
 
@@ -93,6 +99,7 @@ type PokemonInput = z.infer<typeof pokemonSchema>;
 
 /**
  * 2つのポケモンタイプ配列から、攻撃側→防御側の最大抜群倍率を算出する。
+ * 攻撃側は自身のタイプの技が出せる前提で、各タイプでの相性倍率のうち最大値を返す。
  */
 function maxTypeMultiplier(
   attackerTypes: readonly string[],
@@ -100,17 +107,13 @@ function maxTypeMultiplier(
   gen: ReturnType<typeof Generations.get>,
 ): number {
   let max = 0;
+  const defenders = defenderTypes as readonly TypeName[];
   for (const attackTypeName of attackerTypes) {
-    const attackType = gen.types.get(toID(attackTypeName));
-    if (attackType === undefined) continue;
-    const eff = attackType.effectiveness as Record<string, number>;
-    let multiplier = 1;
-    for (const defenseType of defenderTypes) {
-      const val = eff[defenseType];
-      if (val !== undefined) {
-        multiplier *= val;
-      }
-    }
+    const multiplier = calculateTypeEffectiveness(
+      gen,
+      attackTypeName as TypeName,
+      defenders,
+    );
     if (multiplier > max) {
       max = multiplier;
     }
@@ -326,12 +329,10 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
             gen,
           );
 
-          const speedCompare: MatchupEntry["speedCompare"] =
-            mine.profile.actualStats.spe > opp.profile.actualStats.spe
-              ? "faster"
-              : mine.profile.actualStats.spe < opp.profile.actualStats.spe
-              ? "slower"
-              : "tie";
+          const speedCompare = compareSpeed(
+            mine.profile.actualStats.spe,
+            opp.profile.actualStats.spe,
+          );
 
           let damageEstimate: DamageEstimate | null = null;
           try {
