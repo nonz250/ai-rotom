@@ -63,7 +63,7 @@ export interface DamageRangeOutput {
   baseResult: DamageCalcResult | null;
 }
 
-type DefenseStatKey = "def" | "spd";
+export type DefenseStatKey = "def" | "spd";
 
 /**
  * 単発 OHKO 確率（0-1）を計算する。
@@ -152,12 +152,14 @@ function defenseKeyForMove(category: MoveCategory): DefenseStatKey {
  * 見つからない場合は null。
  *
  * 実装方針:
- *   totalCap を 0 → MAX_STAT_POINT_TOTAL に増やしながら、
- *   その内側で (hpSp, defenseSp) 全組を試し、最初に耐えた組を返す。
- *   SP は 0-32 なので最大 33*33 = 1089 通り/totalCap、
  *   calculator 呼び出しは重いので coarse (STEP=4) → fine (STEP=1) で段階的に絞る。
+ *   Phase 1 (coarse): 粗いステップで全組を試し、hpSp + defSp が最小の耐えた組を記録。
+ *     早期 break せず全探索することで、HP 側に偏った (hpSp 小, defSp 大) 候補に
+ *     固定されるのを避け、(hpSp 大, defSp 小) の合計最小候補も正しく拾う。
+ *     coarse は 9x9=81 通り程度なので全探索しても計算コストは軽い。
+ *   Phase 2 (fine): coarse で見つかった組の周辺を fine ステップで微調整。
  */
-function findMinimalSurvivalSp(
+export function findMinimalSurvivalSp(
   calculator: DamageCalculatorAdapter,
   attacker: PokemonInput,
   defender: PokemonInput,
@@ -175,10 +177,16 @@ function findMinimalSurvivalSp(
   }
 
   let coarseBest: { hpSp: number; defenseSp: number } | null = null;
+  let coarseBestTotal = Number.POSITIVE_INFINITY;
 
-  outer: for (const hpSp of coarseSpValues) {
+  // coarse 段階でも全探索し、hpSp + defSp の合計が最小の候補を記録する。
+  // 途中で break すると (0, 12) のような HP 偏り候補で固定され、
+  // (16, 0) 等の合計最小候補が拾えなくなるため、最後まで評価する。
+  for (const hpSp of coarseSpValues) {
     for (const defSp of coarseSpValues) {
       if (hpSp + defSp > MAX_STAT_POINT_TOTAL) continue;
+      // 既知の最小合計を超える候補は評価不要（枝刈り）
+      if (hpSp + defSp >= coarseBestTotal) continue;
       const { survived } = trySurvive(
         calculator,
         attacker,
@@ -191,7 +199,7 @@ function findMinimalSurvivalSp(
       );
       if (survived) {
         coarseBest = { hpSp, defenseSp: defSp };
-        break outer;
+        coarseBestTotal = hpSp + defSp;
       }
     }
   }
