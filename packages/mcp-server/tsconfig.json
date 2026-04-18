@@ -14,7 +14,8 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "@data/*": ["../../data/champions/*"]
+      "@data/*": ["../../data/champions/*"],
+      "@ai-rotom/shared": ["../shared/src/index.ts"]
     }
   },
   "include": ["src"]

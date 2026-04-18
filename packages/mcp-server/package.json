@@ -12,9 +12,9 @@
     "dev": "tsdown --watch"
   },
   "dependencies": {
-    "@ai-rotom/shared": "*",
     "@modelcontextprotocol/sdk": "1.29.0",
-    "@smogon/calc": "file:vendor/smogon-calc-0.11.0.tgz"
+    "@smogon/calc": "file:vendor/smogon-calc-0.11.0.tgz",
+    "zod": "4.3.6"
   },
   "devDependencies": {
     "tsdown": "0.21.8"
