@@ -1,7 +1,7 @@
-import abilitiesData from "../data/champions-abilities.json";
-import itemsData from "../data/champions-items.json";
-import movesData from "../data/champions-moves.json";
-import learnsetsData from "../data/champions-learnsets.json";
+import abilitiesData from "@data/abilities.json";
+import itemsData from "@data/items.json";
+import movesData from "@data/moves.json";
+import learnsetsData from "@data/learnsets.json";
 
 /**
  * 技のカテゴリー。

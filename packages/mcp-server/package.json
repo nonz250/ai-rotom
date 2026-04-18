@@ -4,8 +4,9 @@
   "private": false,
   "type": "module",
   "bin": {
-    "ai-rotom": "./dist/index.js"
+    "ai-rotom": "./dist/index.mjs"
   },
+  "files": ["dist"],
   "scripts": {
     "build": "tsdown",
     "dev": "tsdown --watch"
