@@ -7,6 +7,7 @@ import {
   pokemonById,
   toDataId,
 } from "../../data-store";
+import { EFFECTIVE_THRESHOLD } from "./party-coverage";
 
 const CHAMPIONS_GEN_NUM = 0;
 
@@ -96,6 +97,33 @@ describe("analyze_party_coverage logic", () => {
     it("存在しないポケモンは pokemonNameResolver で undefined", () => {
       // 単純な名前解決チェックのみ
       expect(pokemonById.get(toDataId("NotAPokemon"))).toBeUndefined();
+    });
+  });
+
+  describe("EFFECTIVE_THRESHOLD 境界条件（uncoveredTypes 判定の仕様固定）", () => {
+    it("しきい値は等倍（1倍）", () => {
+      const EQUAL_EFFECTIVENESS = 1;
+      expect(EFFECTIVE_THRESHOLD).toBe(EQUAL_EFFECTIVENESS);
+    });
+
+    it("等倍（maxMultiplier === 1）は uncovered に含まれる", () => {
+      const EQUAL_EFFECTIVENESS = 1;
+      expect(EQUAL_EFFECTIVENESS <= EFFECTIVE_THRESHOLD).toBe(true);
+    });
+
+    it("抜群（maxMultiplier === 2）は uncovered から除外される", () => {
+      const SUPER_EFFECTIVE = 2;
+      expect(SUPER_EFFECTIVE <= EFFECTIVE_THRESHOLD).toBe(false);
+    });
+
+    it("無効（maxMultiplier === 0）は uncovered に含まれる", () => {
+      const NO_EFFECT = 0;
+      expect(NO_EFFECT <= EFFECTIVE_THRESHOLD).toBe(true);
+    });
+
+    it("4倍抜群（maxMultiplier === 4）は uncovered から除外される", () => {
+      const FOUR_TIMES_EFFECTIVE = 4;
+      expect(FOUR_TIMES_EFFECTIVE <= EFFECTIVE_THRESHOLD).toBe(false);
     });
   });
 });

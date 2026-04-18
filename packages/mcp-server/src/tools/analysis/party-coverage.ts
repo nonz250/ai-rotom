@@ -18,15 +18,21 @@ import { pokemonNameResolver } from "../../name-resolvers.js";
 
 const CHAMPIONS_GEN_NUM = 0;
 
-/** 抜群ラインのしきい値（これを超えると「カバー済み」扱い） */
-const EFFECTIVE_THRESHOLD = 1;
+/**
+ * 抜群ラインのしきい値。
+ * この値「ちょうど」までは uncovered 扱い、「これを超える」と covered 扱い。
+ * 具体的には maxMultiplier <= 1 なら uncovered（等倍以下）、maxMultiplier > 1 なら covered（2倍以上）。
+ */
+export const EFFECTIVE_THRESHOLD = 1;
 
 /** ステータス技（攻撃タイプから除外するため） */
 const STATUS_CATEGORY: MoveCategory = "Status";
 
 const TOOL_NAME = "analyze_party_coverage";
 const TOOL_DESCRIPTION =
-  "パーティの攻撃カバレッジを分析する。各防御タイプ（18種）に対して、パーティのどの技が最も効果的かを算出し、抜群を取れないタイプを洗い出す。2タイプ複合のディフェンダーは analyze_matchup で個別に確認してください。ポケモンチャンピオンズ対応。";
+  "パーティの攻撃カバレッジを分析する。各防御タイプ（18種）に対して、パーティのどの技が最も効果的かを算出し、抜群を取れないタイプを洗い出す。"
+  + " `uncoveredTypes` は『抜群（>1 倍）を取れる技が 1 つも無い防御タイプ』を列挙する（等倍 1 倍も含む）。抜群倍率の内訳は `coverage[].maxMultiplier` を参照。"
+  + " 2タイプ複合のディフェンダーは analyze_matchup で個別に確認してください。ポケモンチャンピオンズ対応。";
 
 const inputSchema = {
   myParty: z.array(pokemonSchema).describe("自分のパーティ（moves 未指定時は learnset 内の全攻撃技を候補にする）"),
@@ -53,6 +59,10 @@ interface BestAttackerEntry {
 interface CoverageEntry {
   defenderType: string;
   defenderTypeJa: string;
+  /**
+   * パーティ内の全攻撃技がこの防御タイプに与える最大倍率。
+   * 0 (無効) / 0.25 / 0.5 / 1 (等倍) / 2 / 4 のいずれか。
+   */
   maxMultiplier: number;
   bestAttackers: BestAttackerEntry[];
 }
@@ -60,6 +70,10 @@ interface CoverageEntry {
 export interface PartyCoverageOutput {
   attackingTypes: AttackingTypeEntry[];
   coverage: CoverageEntry[];
+  /**
+   * パーティ内の誰も抜群（>1 倍）を取れない防御タイプ一覧。
+   * `coverage[].maxMultiplier <= 1` (無効・半減・等倍) となるタイプが該当する。
+   */
   uncoveredTypes: AttackingTypeEntry[];
 }
 
