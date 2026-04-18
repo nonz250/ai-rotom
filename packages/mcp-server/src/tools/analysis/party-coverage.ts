@@ -2,7 +2,11 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { Generations } from "@smogon/calc";
 import type { TypeName } from "@smogon/calc/dist/data/interface";
-import { calculateTypeEffectiveness, pokemonSchema } from "@ai-rotom/shared";
+import {
+  calculateTypeEffectiveness,
+  pokemonSchema,
+  type PokemonInput,
+} from "@ai-rotom/shared";
 import {
   championsLearnsets,
   championsTypes,
@@ -167,104 +171,116 @@ function getEffectivenessForDefenderType(
   ]);
 }
 
+export interface AnalyzePartyCoverageInput {
+  myParty: PokemonInput[];
+  moves?: Record<string, string[]>;
+}
+
+/**
+ * パーティの攻撃カバレッジを計算する純関数。
+ * MCP tool handler からも直接テストからも呼び出せる。
+ */
+export function analyzePartyCoverage(
+  args: AnalyzePartyCoverageInput,
+): PartyCoverageOutput {
+  const gen = Generations.get(CHAMPIONS_GEN_NUM);
+  const movesMap = normalizeMovesMap(args.moves);
+
+  interface MemberWithMoves {
+    entry: PokemonEntry;
+    attackingMoves: MoveEntry[];
+  }
+
+  const members: MemberWithMoves[] = [];
+  const attackingTypesSet = new Set<string>();
+
+  for (const member of args.myParty) {
+    const entry = resolvePokemonEntry(member.name);
+    const explicitMoves = movesMap.get(entry.id);
+    const attackingMoves = resolveAttackingMoveIds(entry, explicitMoves);
+
+    for (const move of attackingMoves) {
+      attackingTypesSet.add(move.type);
+    }
+
+    members.push({ entry, attackingMoves });
+  }
+
+  const attackingTypes: AttackingTypeEntry[] = [];
+  const typeJaMap = new Map<string, string>(
+    championsTypes.map((t: TypeEntry) => [t.name, t.nameJa]),
+  );
+  for (const typeName of attackingTypesSet) {
+    attackingTypes.push({
+      type: typeName,
+      nameJa: typeJaMap.get(typeName) ?? typeName,
+    });
+  }
+  attackingTypes.sort((a, b) => a.type.localeCompare(b.type));
+
+  const coverage: CoverageEntry[] = [];
+  const uncoveredTypes: AttackingTypeEntry[] = [];
+
+  for (const defenderType of championsTypes) {
+    let maxMultiplier = 0;
+    const bestAttackers: BestAttackerEntry[] = [];
+
+    for (const member of members) {
+      for (const move of member.attackingMoves) {
+        const multiplier = getEffectivenessForDefenderType(
+          move.type,
+          defenderType.name,
+          gen,
+        );
+        if (multiplier > maxMultiplier) {
+          maxMultiplier = multiplier;
+          bestAttackers.length = 0;
+          bestAttackers.push({
+            pokemon: member.entry.name,
+            move: move.name,
+            multiplier,
+          });
+        } else if (multiplier === maxMultiplier && multiplier > 0) {
+          const alreadyHasSamePokemon = bestAttackers.some(
+            (ba) => ba.pokemon === member.entry.name,
+          );
+          if (!alreadyHasSamePokemon) {
+            bestAttackers.push({
+              pokemon: member.entry.name,
+              move: move.name,
+              multiplier,
+            });
+          }
+        }
+      }
+    }
+
+    coverage.push({
+      defenderType: defenderType.name,
+      defenderTypeJa: defenderType.nameJa,
+      maxMultiplier,
+      bestAttackers,
+    });
+
+    if (maxMultiplier <= EFFECTIVE_THRESHOLD) {
+      uncoveredTypes.push({
+        type: defenderType.name,
+        nameJa: defenderType.nameJa,
+      });
+    }
+  }
+
+  return {
+    attackingTypes,
+    coverage,
+    uncoveredTypes,
+  };
+}
+
 export function registerPartyCoverageTool(server: McpServer): void {
   server.tool(TOOL_NAME, TOOL_DESCRIPTION, inputSchema, async (args) => {
     try {
-      const gen = Generations.get(CHAMPIONS_GEN_NUM);
-      const movesMap = normalizeMovesMap(args.moves);
-
-      // 各メンバーの攻撃技候補を収集
-      interface MemberWithMoves {
-        entry: PokemonEntry;
-        attackingMoves: MoveEntry[];
-      }
-
-      const members: MemberWithMoves[] = [];
-      const attackingTypesSet = new Set<string>();
-
-      for (const member of args.myParty) {
-        const entry = resolvePokemonEntry(member.name);
-        const explicitMoves = movesMap.get(entry.id);
-        const attackingMoves = resolveAttackingMoveIds(entry, explicitMoves);
-
-        for (const move of attackingMoves) {
-          attackingTypesSet.add(move.type);
-        }
-
-        members.push({ entry, attackingMoves });
-      }
-
-      const attackingTypes: AttackingTypeEntry[] = [];
-      const typeJaMap = new Map<string, string>(
-        championsTypes.map((t: TypeEntry) => [t.name, t.nameJa]),
-      );
-      for (const typeName of attackingTypesSet) {
-        attackingTypes.push({
-          type: typeName,
-          nameJa: typeJaMap.get(typeName) ?? typeName,
-        });
-      }
-      attackingTypes.sort((a, b) => a.type.localeCompare(b.type));
-
-      // 各防御タイプごとに、パーティから放てる最高倍率を計算
-      const coverage: CoverageEntry[] = [];
-      const uncoveredTypes: AttackingTypeEntry[] = [];
-
-      for (const defenderType of championsTypes) {
-        let maxMultiplier = 0;
-        const bestAttackers: BestAttackerEntry[] = [];
-
-        for (const member of members) {
-          for (const move of member.attackingMoves) {
-            const multiplier = getEffectivenessForDefenderType(
-              move.type,
-              defenderType.name,
-              gen,
-            );
-            if (multiplier > maxMultiplier) {
-              maxMultiplier = multiplier;
-              bestAttackers.length = 0;
-              bestAttackers.push({
-                pokemon: member.entry.name,
-                move: move.name,
-                multiplier,
-              });
-            } else if (multiplier === maxMultiplier && multiplier > 0) {
-              // 同点のアタッカーも候補に残す（ただし同じポケモンの別技は 1 件にまとめる）
-              const alreadyHasSamePokemon = bestAttackers.some(
-                (ba) => ba.pokemon === member.entry.name,
-              );
-              if (!alreadyHasSamePokemon) {
-                bestAttackers.push({
-                  pokemon: member.entry.name,
-                  move: move.name,
-                  multiplier,
-                });
-              }
-            }
-          }
-        }
-
-        coverage.push({
-          defenderType: defenderType.name,
-          defenderTypeJa: defenderType.nameJa,
-          maxMultiplier,
-          bestAttackers,
-        });
-
-        if (maxMultiplier <= EFFECTIVE_THRESHOLD) {
-          uncoveredTypes.push({
-            type: defenderType.name,
-            nameJa: defenderType.nameJa,
-          });
-        }
-      }
-
-      const output: PartyCoverageOutput = {
-        attackingTypes,
-        coverage,
-        uncoveredTypes,
-      };
+      const output = analyzePartyCoverage(args);
 
       return {
         content: [{ type: "text" as const, text: JSON.stringify(output) }],
