@@ -1,6 +1,6 @@
 {
   "name": "@nonz250/ai-rotom",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Pokemon Champions battle advisor MCP server",
   "license": "MIT",
   "private": false,
@@ -8,7 +8,7 @@
   "bin": {
     "ai-rotom": "dist/index.mjs"
   },
-  "files": ["dist"],
+  "files": ["dist", "LICENSE", "THIRD_PARTY_LICENSES.md"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nonz250/ai-rotom.git",
