@@ -61,33 +61,12 @@ npx -y ai-rotom
 claude mcp add ai-rotom -- npx -y ai-rotom
 ```
 
-または `.mcp.json` / `settings.json` 等に以下を記述:
-
-```json
-{
-  "mcpServers": {
-    "ai-rotom": {
-      "command": "npx",
-      "args": ["-y", "ai-rotom"]
-    }
-  }
-}
-```
-
 ### Codex
 
 プロジェクトまたはユーザー設定に追加。
 
 ```bash
 codex mcp add ai-rotom -- npx -y ai-rotom
-```
-
-または `~/.codex/config.toml`（プロジェクトスコープは `.codex/config.toml`）に以下を記述:
-
-```toml
-[mcp_servers.ai-rotom]
-command = "npx"
-args = ["-y", "ai-rotom"]
 ```
 
 ## 利用可能な MCP ツール
