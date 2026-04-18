@@ -161,8 +161,12 @@ GitHub Release の作成で npm publish が自動実行されます
 
    ```bash
    npm login           # 2FA 有効な npm アカウントで
-   npm publish --workspace=ai-rotom --access public --provenance
+   npm publish --workspace=ai-rotom --access public
    ```
+
+   ※ `--provenance` は CI 専用オプションなのでローカルでは付けません。
+   Trusted Publisher 設定後の GitHub Release 経由の publish からは
+   `publish.yml` で自動的に provenance が付与されます。
 
 2. **npm で Trusted Publisher を設定**:
    - npmjs.com → `ai-rotom` パッケージ → Settings → Trusted Publishers → Add
