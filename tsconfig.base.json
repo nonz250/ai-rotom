@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@data/*": ["./data/champions/*"],
+      "@ai-rotom/shared": ["./shared/src/index.ts"]
+    }
+  }
+}

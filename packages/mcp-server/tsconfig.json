@@ -1,4 +1,5 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "target": "ES2024",
     "module": "ESNext",
@@ -12,11 +13,7 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "paths": {
-      "@data/*": ["../../data/champions/*"],
-      "@ai-rotom/shared": ["../shared/src/index.ts"]
-    }
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["src"]
 }
