@@ -1,7 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { calculate, Generations, Pokemon, Move, Field } from "@smogon/calc";
-import { DamageCalculatorAdapter } from "./damage-calculator";
-import type { DamageCalcResult } from "./damage-calculator";
+import { DamageCalculatorAdapter } from "@ai-rotom/shared";
+import type { DamageCalcResult } from "@ai-rotom/shared";
+import { pokemonEntryProvider } from "../data-store";
 import {
   pokemonNameResolver,
   moveNameResolver,
@@ -96,13 +97,16 @@ describe("@smogon/calc Champions integration", () => {
 });
 
 describe("DamageCalculatorAdapter", () => {
-  const adapter = new DamageCalculatorAdapter({
-    pokemon: pokemonNameResolver,
-    move: moveNameResolver,
-    ability: abilityNameResolver,
-    item: itemNameResolver,
-    nature: natureNameResolver,
-  });
+  const adapter = new DamageCalculatorAdapter(
+    {
+      pokemon: pokemonNameResolver,
+      move: moveNameResolver,
+      ability: abilityNameResolver,
+      item: itemNameResolver,
+      nature: natureNameResolver,
+    },
+    pokemonEntryProvider,
+  );
 
   it("should calculate damage with Japanese names", () => {
     const result = adapter.calculate({
@@ -244,14 +248,45 @@ describe("DamageCalculatorAdapter", () => {
   });
 });
 
-describe("DamageCalculatorAdapter.calculateAllMoves", () => {
-  const adapter = new DamageCalculatorAdapter({
-    pokemon: pokemonNameResolver,
-    move: moveNameResolver,
-    ability: abilityNameResolver,
-    item: itemNameResolver,
-    nature: natureNameResolver,
+describe("DamageCalculatorAdapter damage with pokemon.json overrides", () => {
+  const adapter = new DamageCalculatorAdapter(
+    {
+      pokemon: pokemonNameResolver,
+      move: moveNameResolver,
+      ability: abilityNameResolver,
+      item: itemNameResolver,
+      nature: natureNameResolver,
+    },
+    pokemonEntryProvider,
+  );
+
+  it("メガスターミーの物理技が Huge Power で計算される", () => {
+    // pokemon.json: Starmie-Mega atk=100, ability[0]=Huge Power
+    // Huge Power 特性は攻撃力を 2 倍する
+    const withHugePower = adapter.calculate({
+      attacker: { name: "メガスターミー" },
+      defender: { name: "ギャラドス" },
+      moveName: "たきのぼり",
+    });
+
+    // ability を無指定（pokemon.json の Huge Power が適用される）
+    expect(withHugePower.min).toBeGreaterThan(0);
+    // description に Huge Power の文字列が含まれることを期待
+    expect(withHugePower.description).toContain("Starmie-Mega");
   });
+});
+
+describe("DamageCalculatorAdapter.calculateAllMoves", () => {
+  const adapter = new DamageCalculatorAdapter(
+    {
+      pokemon: pokemonNameResolver,
+      move: moveNameResolver,
+      ability: abilityNameResolver,
+      item: itemNameResolver,
+      nature: natureNameResolver,
+    },
+    pokemonEntryProvider,
+  );
 
   it("should return multiple damage results for Japanese names", () => {
     const results = adapter.calculateAllMoves({
@@ -322,13 +357,16 @@ describe("DamageCalculatorAdapter.calculateAllMoves", () => {
 });
 
 describe("DamageCalculatorAdapter.createPokemonObject", () => {
-  const adapter = new DamageCalculatorAdapter({
-    pokemon: pokemonNameResolver,
-    move: moveNameResolver,
-    ability: abilityNameResolver,
-    item: itemNameResolver,
-    nature: natureNameResolver,
-  });
+  const adapter = new DamageCalculatorAdapter(
+    {
+      pokemon: pokemonNameResolver,
+      move: moveNameResolver,
+      ability: abilityNameResolver,
+      item: itemNameResolver,
+      nature: natureNameResolver,
+    },
+    pokemonEntryProvider,
+  );
 
   it("should create Pokemon object with Japanese name", () => {
     const { pokemon, resolvedName } = adapter.createPokemonObject({
@@ -358,5 +396,31 @@ describe("DamageCalculatorAdapter.createPokemonObject", () => {
     expect(() =>
       adapter.createPokemonObject({ name: "ソニック" }),
     ).toThrow("ポケモン「ソニック」が見つかりません。");
+  });
+
+  it("should apply pokemon.json overrides (Starmie-Mega atk = 100)", () => {
+    // pokemon.json で Starmie-Mega の atk は 140 → 100 に修正済み
+    // デフォルト特性は Huge Power
+    const { pokemon } = adapter.createPokemonObject({
+      name: "メガスターミー",
+    });
+
+    expect(pokemon.species.baseStats.atk).toBe(100);
+    expect(pokemon.ability).toBe("Huge Power");
+  });
+
+  it("should use explicit ability when specified", () => {
+    // Charizard は pokemon.json で [Blaze, Solar Power]
+    // ユーザー指定の場合は優先される
+    const { pokemon: pDefault } = adapter.createPokemonObject({
+      name: "リザードン",
+    });
+    const { pokemon: pSolarPower } = adapter.createPokemonObject({
+      name: "リザードン",
+      ability: "Solar Power",
+    });
+
+    expect(pDefault.ability).toBe("Blaze");
+    expect(pSolarPower.ability).toBe("Solar Power");
   });
 });

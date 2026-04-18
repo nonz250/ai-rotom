@@ -1,0 +1,6946 @@
+[
+  {
+    "id": "abomasnow",
+    "name": "Abomasnow",
+    "nameJa": "ユキノオー",
+    "types": [
+      "Grass",
+      "Ice"
+    ],
+    "baseStats": {
+      "hp": 90,
+      "atk": 92,
+      "def": 75,
+      "spa": 92,
+      "spd": 85,
+      "spe": 60
+    },
+    "abilities": [
+      "Snow Warning",
+      "Soundproof"
+    ],
+    "weightkg": 135.5,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Abomasnow-Mega"
+    ]
+  },
+  {
+    "id": "abomasnowmega",
+    "name": "Abomasnow-Mega",
+    "nameJa": "メガユキノオー",
+    "types": [
+      "Grass",
+      "Ice"
+    ],
+    "baseStats": {
+      "hp": 90,
+      "atk": 132,
+      "def": 105,
+      "spa": 132,
+      "spd": 105,
+      "spe": 30
+    },
+    "abilities": [
+      "Snow Warning"
+    ],
+    "weightkg": 185,
+    "baseSpecies": "Abomasnow",
+    "otherFormes": null
+  },
+  {
+    "id": "absol",
+    "name": "Absol",
+    "nameJa": "アブソル",
+    "types": [
+      "Dark"
+    ],
+    "baseStats": {
+      "hp": 65,
+      "atk": 130,
+      "def": 60,
+      "spa": 75,
+      "spd": 60,
+      "spe": 75
+    },
+    "abilities": [
+      "Pressure",
+      "Super Luck",
+      "Justified"
+    ],
+    "weightkg": 47,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Absol-Mega"
+    ]
+  },
+  {
+    "id": "absolmega",
+    "name": "Absol-Mega",
+    "nameJa": "メガアブソル",
+    "types": [
+      "Dark"
+    ],
+    "baseStats": {
+      "hp": 65,
+      "atk": 150,
+      "def": 60,
+      "spa": 115,
+      "spd": 60,
+      "spe": 115
+    },
+    "abilities": [
+      "Magic Bounce"
+    ],
+    "weightkg": 49,
+    "baseSpecies": "Absol",
+    "otherFormes": null
+  },
+  {
+    "id": "aegislash",
+    "name": "Aegislash",
+    "nameJa": "ギルガルド(シールドフォルム)",
+    "types": [
+      "Steel",
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 60,
+      "atk": 50,
+      "def": 140,
+      "spa": 50,
+      "spd": 140,
+      "spe": 60
+    },
+    "abilities": [
+      "Stance Change"
+    ],
+    "weightkg": 0,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Aegislash-Blade"
+    ]
+  },
+  {
+    "id": "aegislashblade",
+    "name": "Aegislash-Blade",
+    "nameJa": "ギルガルド(ブレードフォルム)",
+    "types": [
+      "Steel",
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 60,
+      "atk": 140,
+      "def": 50,
+      "spa": 140,
+      "spd": 50,
+      "spe": 60
+    },
+    "abilities": [
+      "Stance Change"
+    ],
+    "weightkg": 0,
+    "baseSpecies": "Aegislash",
+    "otherFormes": null
+  },
+  {
+    "id": "aerodactyl",
+    "name": "Aerodactyl",
+    "nameJa": "プテラ",
+    "types": [
+      "Rock",
+      "Flying"
+    ],
+    "baseStats": {
+      "hp": 80,
+      "atk": 105,
+      "def": 65,
+      "spa": 60,
+      "spd": 75,
+      "spe": 130
+    },
+    "abilities": [
+      "Rock Head",
+      "Pressure",
+      "Unnerve"
+    ],
+    "weightkg": 59,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Aerodactyl-Mega"
+    ]
+  },
+  {
+    "id": "aerodactylmega",
+    "name": "Aerodactyl-Mega",
+    "nameJa": "メガプテラ",
+    "types": [
+      "Rock",
+      "Flying"
+    ],
+    "baseStats": {
+      "hp": 80,
+      "atk": 135,
+      "def": 85,
+      "spa": 70,
+      "spd": 95,
+      "spe": 150
+    },
+    "abilities": [
+      "Tough Claws"
+    ],
+    "weightkg": 79,
+    "baseSpecies": "Aerodactyl",
+    "otherFormes": null
+  },
+  {
+    "id": "aggron",
+    "name": "Aggron",
+    "nameJa": "ボスゴドラ",
+    "types": [
+      "Steel",
+      "Rock"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 110,
+      "def": 180,
+      "spa": 60,
+      "spd": 60,
+      "spe": 50
+    },
+    "abilities": [
+      "Sturdy",
+      "Rock Head",
+      "Heavy Metal"
+    ],
+    "weightkg": 360,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Aggron-Mega"
+    ]
+  },
+  {
+    "id": "aggronmega",
+    "name": "Aggron-Mega",
+    "nameJa": "メガボスゴドラ",
+    "types": [
+      "Steel"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 140,
+      "def": 230,
+      "spa": 60,
+      "spd": 80,
+      "spe": 50
+    },
+    "abilities": [
+      "Filter"
+    ],
+    "weightkg": 395,
+    "baseSpecies": "Aggron",
+    "otherFormes": null
+  },
+  {
+    "id": "alakazam",
+    "name": "Alakazam",
+    "nameJa": "フーディン",
+    "types": [
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 55,
+      "atk": 50,
+      "def": 45,
+      "spa": 135,
+      "spd": 95,
+      "spe": 120
+    },
+    "abilities": [
+      "Synchronize",
+      "Inner Focus",
+      "Magic Guard"
+    ],
+    "weightkg": 48,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Alakazam-Mega"
+    ]
+  },
+  {
+    "id": "alakazammega",
+    "name": "Alakazam-Mega",
+    "nameJa": "メガフーディン",
+    "types": [
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 55,
+      "atk": 50,
+      "def": 65,
+      "spa": 175,
+      "spd": 105,
+      "spe": 150
+    },
+    "abilities": [
+      "Trace"
+    ],
+    "weightkg": 48,
+    "baseSpecies": "Alakazam",
+    "otherFormes": null
+  },
+  {
+    "id": "alcremie",
+    "name": "Alcremie",
+    "nameJa": "マホイップ",
+    "types": [
+      "Fairy"
+    ],
+    "baseStats": {
+      "hp": 65,
+      "atk": 60,
+      "def": 75,
+      "spa": 110,
+      "spd": 121,
+      "spe": 64
+    },
+    "abilities": [
+      "Sweet Veil",
+      "Aroma Veil"
+    ],
+    "weightkg": 0.5,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "altaria",
+    "name": "Altaria",
+    "nameJa": "チルタリス",
+    "types": [
+      "Dragon",
+      "Flying"
+    ],
+    "baseStats": {
+      "hp": 75,
+      "atk": 70,
+      "def": 90,
+      "spa": 70,
+      "spd": 105,
+      "spe": 80
+    },
+    "abilities": [
+      "Natural Cure",
+      "Cloud Nine"
+    ],
+    "weightkg": 20.6,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Altaria-Mega"
+    ]
+  },
+  {
+    "id": "altariamega",
+    "name": "Altaria-Mega",
+    "nameJa": "メガチルタリス",
+    "types": [
+      "Dragon",
+      "Fairy"
+    ],
+    "baseStats": {
+      "hp": 75,
+      "atk": 110,
+      "def": 110,
+      "spa": 110,
+      "spd": 105,
+      "spe": 80
+    },
+    "abilities": [
+      "Pixilate"
+    ],
+    "weightkg": 20.6,
+    "baseSpecies": "Altaria",
+    "otherFormes": null
+  },
+  {
+    "id": "ampharos",
+    "name": "Ampharos",
+    "nameJa": "デンリュウ",
+    "types": [
+      "Electric"
+    ],
+    "baseStats": {
+      "hp": 90,
+      "atk": 75,
+      "def": 85,
+      "spa": 115,
+      "spd": 90,
+      "spe": 55
+    },
+    "abilities": [
+      "Static",
+      "Plus"
+    ],
+    "weightkg": 61.5,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Ampharos-Mega"
+    ]
+  },
+  {
+    "id": "ampharosmega",
+    "name": "Ampharos-Mega",
+    "nameJa": "メガデンリュウ",
+    "types": [
+      "Electric",
+      "Dragon"
+    ],
+    "baseStats": {
+      "hp": 90,
+      "atk": 95,
+      "def": 105,
+      "spa": 165,
+      "spd": 110,
+      "spe": 45
+    },
+    "abilities": [
+      "Mold Breaker"
+    ],
+    "weightkg": 61.5,
+    "baseSpecies": "Ampharos",
+    "otherFormes": null
+  },
+  {
+    "id": "appletun",
+    "name": "Appletun",
+    "nameJa": "タルップル",
+    "types": [
+      "Grass",
+      "Dragon"
+    ],
+    "baseStats": {
+      "hp": 110,
+      "atk": 85,
+      "def": 80,
+      "spa": 100,
+      "spd": 80,
+      "spe": 30
+    },
+    "abilities": [
+      "Ripen",
+      "Gluttony",
+      "Thick Fat"
+    ],
+    "weightkg": 13,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "araquanid",
+    "name": "Araquanid",
+    "nameJa": "オニシズクモ",
+    "types": [
+      "Water",
+      "Bug"
+    ],
+    "baseStats": {
+      "hp": 68,
+      "atk": 70,
+      "def": 92,
+      "spa": 50,
+      "spd": 132,
+      "spe": 42
+    },
+    "abilities": [
+      "Water Bubble",
+      "Water Absorb"
+    ],
+    "weightkg": 82,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "arbok",
+    "name": "Arbok",
+    "nameJa": "アーボック",
+    "types": [
+      "Poison"
+    ],
+    "baseStats": {
+      "hp": 60,
+      "atk": 95,
+      "def": 69,
+      "spa": 65,
+      "spd": 79,
+      "spe": 80
+    },
+    "abilities": [
+      "Intimidate",
+      "Shed Skin",
+      "Unnerve"
+    ],
+    "weightkg": 65,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "arcanine",
+    "name": "Arcanine",
+    "nameJa": "ウインディ",
+    "types": [
+      "Fire"
+    ],
+    "baseStats": {
+      "hp": 90,
+      "atk": 110,
+      "def": 80,
+      "spa": 100,
+      "spd": 80,
+      "spe": 95
+    },
+    "abilities": [
+      "Intimidate",
+      "Flash Fire",
+      "Justified"
+    ],
+    "weightkg": 155,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Arcanine-Hisui"
+    ]
+  },
+  {
+    "id": "arcaninehisui",
+    "name": "Arcanine-Hisui",
+    "nameJa": "ヒスイウインディ",
+    "types": [
+      "Fire",
+      "Rock"
+    ],
+    "baseStats": {
+      "hp": 95,
+      "atk": 115,
+      "def": 80,
+      "spa": 95,
+      "spd": 80,
+      "spe": 90
+    },
+    "abilities": [
+      "Intimidate",
+      "Flash Fire",
+      "Rock Head"
+    ],
+    "weightkg": 168,
+    "baseSpecies": "Arcanine",
+    "otherFormes": null
+  },
+  {
+    "id": "archaludon",
+    "name": "Archaludon",
+    "nameJa": "ブリジュラス",
+    "types": [
+      "Steel",
+      "Dragon"
+    ],
+    "baseStats": {
+      "hp": 90,
+      "atk": 105,
+      "def": 130,
+      "spa": 125,
+      "spd": 65,
+      "spe": 85
+    },
+    "abilities": [
+      "Stamina",
+      "Sturdy",
+      "Stalwart"
+    ],
+    "weightkg": 60,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "ariados",
+    "name": "Ariados",
+    "nameJa": "アリアドス",
+    "types": [
+      "Bug",
+      "Poison"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 90,
+      "def": 70,
+      "spa": 60,
+      "spd": 70,
+      "spe": 40
+    },
+    "abilities": [
+      "Swarm",
+      "Insomnia",
+      "Sniper"
+    ],
+    "weightkg": 33.5,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "armarouge",
+    "name": "Armarouge",
+    "nameJa": "グレンアルマ",
+    "types": [
+      "Fire",
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 85,
+      "atk": 60,
+      "def": 100,
+      "spa": 125,
+      "spd": 80,
+      "spe": 75
+    },
+    "abilities": [
+      "Flash Fire",
+      "Weak Armor"
+    ],
+    "weightkg": 85,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "aromatisse",
+    "name": "Aromatisse",
+    "nameJa": "フレフワン",
+    "types": [
+      "Fairy"
+    ],
+    "baseStats": {
+      "hp": 101,
+      "atk": 72,
+      "def": 72,
+      "spa": 99,
+      "spd": 89,
+      "spe": 29
+    },
+    "abilities": [
+      "Healer",
+      "Aroma Veil"
+    ],
+    "weightkg": 15.5,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "audino",
+    "name": "Audino",
+    "nameJa": "タブンネ",
+    "types": [
+      "Normal"
+    ],
+    "baseStats": {
+      "hp": 103,
+      "atk": 60,
+      "def": 86,
+      "spa": 60,
+      "spd": 86,
+      "spe": 50
+    },
+    "abilities": [
+      "Healer",
+      "Regenerator",
+      "Klutz"
+    ],
+    "weightkg": 31,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Audino-Mega"
+    ]
+  },
+  {
+    "id": "audinomega",
+    "name": "Audino-Mega",
+    "nameJa": "メガタブンネ",
+    "types": [
+      "Normal",
+      "Fairy"
+    ],
+    "baseStats": {
+      "hp": 103,
+      "atk": 60,
+      "def": 126,
+      "spa": 80,
+      "spd": 126,
+      "spe": 50
+    },
+    "abilities": [
+      "Healer"
+    ],
+    "weightkg": 32,
+    "baseSpecies": "Audino",
+    "otherFormes": null
+  },
+  {
+    "id": "aurorus",
+    "name": "Aurorus",
+    "nameJa": "アマルルガ",
+    "types": [
+      "Rock",
+      "Ice"
+    ],
+    "baseStats": {
+      "hp": 123,
+      "atk": 77,
+      "def": 72,
+      "spa": 99,
+      "spd": 92,
+      "spe": 58
+    },
+    "abilities": [
+      "Refrigerate",
+      "Snow Warning"
+    ],
+    "weightkg": 225,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "avalugg",
+    "name": "Avalugg",
+    "nameJa": "クレベース",
+    "types": [
+      "Ice"
+    ],
+    "baseStats": {
+      "hp": 95,
+      "atk": 117,
+      "def": 184,
+      "spa": 44,
+      "spd": 46,
+      "spe": 28
+    },
+    "abilities": [
+      "Own Tempo",
+      "Ice Body",
+      "Sturdy"
+    ],
+    "weightkg": 505,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Avalugg-Hisui"
+    ]
+  },
+  {
+    "id": "avalugghisui",
+    "name": "Avalugg-Hisui",
+    "nameJa": "ヒスイクレベース",
+    "types": [
+      "Ice",
+      "Rock"
+    ],
+    "baseStats": {
+      "hp": 95,
+      "atk": 127,
+      "def": 184,
+      "spa": 34,
+      "spd": 36,
+      "spe": 38
+    },
+    "abilities": [
+      "Strong Jaw",
+      "Ice Body",
+      "Sturdy"
+    ],
+    "weightkg": 262.4,
+    "baseSpecies": "Avalugg",
+    "otherFormes": null
+  },
+  {
+    "id": "azumarill",
+    "name": "Azumarill",
+    "nameJa": "マリルリ",
+    "types": [
+      "Water",
+      "Fairy"
+    ],
+    "baseStats": {
+      "hp": 100,
+      "atk": 50,
+      "def": 80,
+      "spa": 60,
+      "spd": 80,
+      "spe": 50
+    },
+    "abilities": [
+      "Thick Fat",
+      "Huge Power",
+      "Sap Sipper"
+    ],
+    "weightkg": 28.5,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "banette",
+    "name": "Banette",
+    "nameJa": "ジュペッタ",
+    "types": [
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 64,
+      "atk": 115,
+      "def": 65,
+      "spa": 83,
+      "spd": 63,
+      "spe": 65
+    },
+    "abilities": [
+      "Insomnia",
+      "Frisk",
+      "Cursed Body"
+    ],
+    "weightkg": 12.5,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Banette-Mega"
+    ]
+  },
+  {
+    "id": "banettemega",
+    "name": "Banette-Mega",
+    "nameJa": "メガジュペッタ",
+    "types": [
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 64,
+      "atk": 165,
+      "def": 75,
+      "spa": 93,
+      "spd": 83,
+      "spe": 75
+    },
+    "abilities": [
+      "Prankster"
+    ],
+    "weightkg": 13,
+    "baseSpecies": "Banette",
+    "otherFormes": null
+  },
+  {
+    "id": "basculegion",
+    "name": "Basculegion",
+    "nameJa": "イダイトウ(オス)",
+    "types": [
+      "Water",
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 120,
+      "atk": 112,
+      "def": 65,
+      "spa": 80,
+      "spd": 75,
+      "spe": 78
+    },
+    "abilities": [
+      "Swift Swim",
+      "Adaptability",
+      "Mold Breaker"
+    ],
+    "weightkg": 110,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Basculegion-F"
+    ]
+  },
+  {
+    "id": "basculegionf",
+    "name": "Basculegion-F",
+    "nameJa": "イダイトウ(メス)",
+    "types": [
+      "Water",
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 120,
+      "atk": 92,
+      "def": 65,
+      "spa": 100,
+      "spd": 75,
+      "spe": 78
+    },
+    "abilities": [
+      "Swift Swim",
+      "Adaptability",
+      "Mold Breaker"
+    ],
+    "weightkg": 110,
+    "baseSpecies": "Basculegion",
+    "otherFormes": null
+  },
+  {
+    "id": "bastiodon",
+    "name": "Bastiodon",
+    "nameJa": "トリデプス",
+    "types": [
+      "Rock",
+      "Steel"
+    ],
+    "baseStats": {
+      "hp": 60,
+      "atk": 52,
+      "def": 168,
+      "spa": 47,
+      "spd": 138,
+      "spe": 30
+    },
+    "abilities": [
+      "Sturdy",
+      "Soundproof"
+    ],
+    "weightkg": 149.5,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "beartic",
+    "name": "Beartic",
+    "nameJa": "ツンベアー",
+    "types": [
+      "Ice"
+    ],
+    "baseStats": {
+      "hp": 95,
+      "atk": 130,
+      "def": 80,
+      "spa": 70,
+      "spd": 80,
+      "spe": 50
+    },
+    "abilities": [
+      "Snow Cloak",
+      "Slush Rush",
+      "Swift Swim"
+    ],
+    "weightkg": 260,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "beedrill",
+    "name": "Beedrill",
+    "nameJa": "スピアー",
+    "types": [
+      "Bug",
+      "Poison"
+    ],
+    "baseStats": {
+      "hp": 65,
+      "atk": 90,
+      "def": 40,
+      "spa": 45,
+      "spd": 80,
+      "spe": 75
+    },
+    "abilities": [
+      "Swarm",
+      "Sniper"
+    ],
+    "weightkg": 29.5,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Beedrill-Mega"
+    ]
+  },
+  {
+    "id": "beedrillmega",
+    "name": "Beedrill-Mega",
+    "nameJa": "メガスピアー",
+    "types": [
+      "Bug",
+      "Poison"
+    ],
+    "baseStats": {
+      "hp": 65,
+      "atk": 150,
+      "def": 40,
+      "spa": 15,
+      "spd": 80,
+      "spe": 145
+    },
+    "abilities": [
+      "Adaptability"
+    ],
+    "weightkg": 40.5,
+    "baseSpecies": "Beedrill",
+    "otherFormes": null
+  },
+  {
+    "id": "bellibolt",
+    "name": "Bellibolt",
+    "nameJa": "ハラバリー",
+    "types": [
+      "Electric"
+    ],
+    "baseStats": {
+      "hp": 109,
+      "atk": 64,
+      "def": 91,
+      "spa": 103,
+      "spd": 83,
+      "spe": 45
+    },
+    "abilities": [
+      "Electromorphosis",
+      "Static",
+      "Damp"
+    ],
+    "weightkg": 113,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "blastoise",
+    "name": "Blastoise",
+    "nameJa": "カメックス",
+    "types": [
+      "Water"
+    ],
+    "baseStats": {
+      "hp": 79,
+      "atk": 83,
+      "def": 100,
+      "spa": 85,
+      "spd": 105,
+      "spe": 78
+    },
+    "abilities": [
+      "Torrent",
+      "Rain Dish"
+    ],
+    "weightkg": 85.5,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Blastoise-Mega"
+    ]
+  },
+  {
+    "id": "blastoisemega",
+    "name": "Blastoise-Mega",
+    "nameJa": "メガカメックス",
+    "types": [
+      "Water"
+    ],
+    "baseStats": {
+      "hp": 79,
+      "atk": 103,
+      "def": 120,
+      "spa": 135,
+      "spd": 115,
+      "spe": 78
+    },
+    "abilities": [
+      "Mega Launcher"
+    ],
+    "weightkg": 101.1,
+    "baseSpecies": "Blastoise",
+    "otherFormes": null
+  },
+  {
+    "id": "camerupt",
+    "name": "Camerupt",
+    "nameJa": "バクーダ",
+    "types": [
+      "Fire",
+      "Ground"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 100,
+      "def": 70,
+      "spa": 105,
+      "spd": 75,
+      "spe": 40
+    },
+    "abilities": [
+      "Magma Armor",
+      "Solid Rock",
+      "Anger Point"
+    ],
+    "weightkg": 220,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Camerupt-Mega"
+    ]
+  },
+  {
+    "id": "cameruptmega",
+    "name": "Camerupt-Mega",
+    "nameJa": "メガバクーダ",
+    "types": [
+      "Fire",
+      "Ground"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 120,
+      "def": 100,
+      "spa": 145,
+      "spd": 105,
+      "spe": 20
+    },
+    "abilities": [
+      "Sheer Force"
+    ],
+    "weightkg": 320.5,
+    "baseSpecies": "Camerupt",
+    "otherFormes": null
+  },
+  {
+    "id": "castform",
+    "name": "Castform",
+    "nameJa": "ポワルン",
+    "types": [
+      "Normal"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 70,
+      "def": 70,
+      "spa": 70,
+      "spd": 70,
+      "spe": 70
+    },
+    "abilities": [
+      "Forecast"
+    ],
+    "weightkg": 0.8,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Castform-Sunny",
+      "Castform-Rainy",
+      "Castform-Snowy"
+    ]
+  },
+  {
+    "id": "castformrainy",
+    "name": "Castform-Rainy",
+    "nameJa": "ポワルン(あまみずのすがた)",
+    "types": [
+      "Water"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 70,
+      "def": 70,
+      "spa": 70,
+      "spd": 70,
+      "spe": 70
+    },
+    "abilities": [
+      "Forecast"
+    ],
+    "weightkg": 0,
+    "baseSpecies": "Castform",
+    "otherFormes": null
+  },
+  {
+    "id": "castformsnowy",
+    "name": "Castform-Snowy",
+    "nameJa": "ポワルン(ゆきぐものすがた)",
+    "types": [
+      "Ice"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 70,
+      "def": 70,
+      "spa": 70,
+      "spd": 70,
+      "spe": 70
+    },
+    "abilities": [
+      "Forecast"
+    ],
+    "weightkg": 0,
+    "baseSpecies": "Castform",
+    "otherFormes": null
+  },
+  {
+    "id": "castformsunny",
+    "name": "Castform-Sunny",
+    "nameJa": "ポワルン(たいようのすがた)",
+    "types": [
+      "Fire"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 70,
+      "def": 70,
+      "spa": 70,
+      "spd": 70,
+      "spe": 70
+    },
+    "abilities": [
+      "Forecast"
+    ],
+    "weightkg": 0,
+    "baseSpecies": "Castform",
+    "otherFormes": null
+  },
+  {
+    "id": "ceruledge",
+    "name": "Ceruledge",
+    "nameJa": "ソウブレイズ",
+    "types": [
+      "Fire",
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 75,
+      "atk": 125,
+      "def": 80,
+      "spa": 60,
+      "spd": 100,
+      "spe": 85
+    },
+    "abilities": [
+      "Flash Fire",
+      "Weak Armor"
+    ],
+    "weightkg": 62,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "chandelure",
+    "name": "Chandelure",
+    "nameJa": "シャンデラ",
+    "types": [
+      "Ghost",
+      "Fire"
+    ],
+    "baseStats": {
+      "hp": 60,
+      "atk": 55,
+      "def": 90,
+      "spa": 145,
+      "spd": 90,
+      "spe": 80
+    },
+    "abilities": [
+      "Flash Fire",
+      "Flame Body",
+      "Infiltrator"
+    ],
+    "weightkg": 34.3,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Chandelure-Mega"
+    ]
+  },
+  {
+    "id": "chandeluremega",
+    "name": "Chandelure-Mega",
+    "nameJa": "メガシャンデラ",
+    "types": [
+      "Ghost",
+      "Fire"
+    ],
+    "baseStats": {
+      "hp": 60,
+      "atk": 75,
+      "def": 110,
+      "spa": 175,
+      "spd": 110,
+      "spe": 90
+    },
+    "abilities": [
+      "Infiltrator"
+    ],
+    "weightkg": 69.6,
+    "baseSpecies": "Chandelure",
+    "otherFormes": null
+  },
+  {
+    "id": "charizard",
+    "name": "Charizard",
+    "nameJa": "リザードン",
+    "types": [
+      "Fire",
+      "Flying"
+    ],
+    "baseStats": {
+      "hp": 78,
+      "atk": 84,
+      "def": 78,
+      "spa": 109,
+      "spd": 85,
+      "spe": 100
+    },
+    "abilities": [
+      "Blaze",
+      "Solar Power"
+    ],
+    "weightkg": 90.5,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Charizard-Mega-X",
+      "Charizard-Mega-Y"
+    ]
+  },
+  {
+    "id": "charizardmegax",
+    "name": "Charizard-Mega-X",
+    "nameJa": "メガリザードンX",
+    "types": [
+      "Fire",
+      "Dragon"
+    ],
+    "baseStats": {
+      "hp": 78,
+      "atk": 130,
+      "def": 111,
+      "spa": 130,
+      "spd": 85,
+      "spe": 100
+    },
+    "abilities": [
+      "Tough Claws"
+    ],
+    "weightkg": 110.5,
+    "baseSpecies": "Charizard",
+    "otherFormes": null
+  },
+  {
+    "id": "charizardmegay",
+    "name": "Charizard-Mega-Y",
+    "nameJa": "メガリザードンY",
+    "types": [
+      "Fire",
+      "Flying"
+    ],
+    "baseStats": {
+      "hp": 78,
+      "atk": 104,
+      "def": 78,
+      "spa": 159,
+      "spd": 115,
+      "spe": 100
+    },
+    "abilities": [
+      "Drought"
+    ],
+    "weightkg": 100.5,
+    "baseSpecies": "Charizard",
+    "otherFormes": null
+  },
+  {
+    "id": "chesnaught",
+    "name": "Chesnaught",
+    "nameJa": "ブリガロン",
+    "types": [
+      "Grass",
+      "Fighting"
+    ],
+    "baseStats": {
+      "hp": 88,
+      "atk": 107,
+      "def": 122,
+      "spa": 74,
+      "spd": 75,
+      "spe": 64
+    },
+    "abilities": [
+      "Overgrow",
+      "Bulletproof"
+    ],
+    "weightkg": 90,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Chesnaught-Mega"
+    ]
+  },
+  {
+    "id": "chesnaughtmega",
+    "name": "Chesnaught-Mega",
+    "nameJa": "メガブリガロン",
+    "types": [
+      "Grass",
+      "Fighting"
+    ],
+    "baseStats": {
+      "hp": 88,
+      "atk": 137,
+      "def": 172,
+      "spa": 74,
+      "spd": 115,
+      "spe": 44
+    },
+    "abilities": [
+      "Bulletproof"
+    ],
+    "weightkg": 90,
+    "baseSpecies": "Chesnaught",
+    "otherFormes": null
+  },
+  {
+    "id": "chimecho",
+    "name": "Chimecho",
+    "nameJa": "チリーン",
+    "types": [
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 75,
+      "atk": 50,
+      "def": 80,
+      "spa": 95,
+      "spd": 90,
+      "spe": 65
+    },
+    "abilities": [
+      "Levitate"
+    ],
+    "weightkg": 1,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Chimecho-Mega"
+    ]
+  },
+  {
+    "id": "chimechomega",
+    "name": "Chimecho-Mega",
+    "nameJa": "メガチリーン",
+    "types": [
+      "Psychic",
+      "Steel"
+    ],
+    "baseStats": {
+      "hp": 75,
+      "atk": 50,
+      "def": 110,
+      "spa": 135,
+      "spd": 120,
+      "spe": 65
+    },
+    "abilities": [
+      "Levitate"
+    ],
+    "weightkg": 8,
+    "baseSpecies": "Chimecho",
+    "otherFormes": null
+  },
+  {
+    "id": "clawitzer",
+    "name": "Clawitzer",
+    "nameJa": "ブロスター",
+    "types": [
+      "Water"
+    ],
+    "baseStats": {
+      "hp": 71,
+      "atk": 73,
+      "def": 88,
+      "spa": 120,
+      "spd": 89,
+      "spe": 59
+    },
+    "abilities": [
+      "Mega Launcher"
+    ],
+    "weightkg": 35.3,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "clefable",
+    "name": "Clefable",
+    "nameJa": "ピクシー",
+    "types": [
+      "Fairy"
+    ],
+    "baseStats": {
+      "hp": 95,
+      "atk": 70,
+      "def": 73,
+      "spa": 95,
+      "spd": 90,
+      "spe": 60
+    },
+    "abilities": [
+      "Cute Charm",
+      "Magic Guard",
+      "Unaware"
+    ],
+    "weightkg": 40,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Clefable-Mega"
+    ]
+  },
+  {
+    "id": "clefablemega",
+    "name": "Clefable-Mega",
+    "nameJa": "メガピクシー",
+    "types": [
+      "Fairy",
+      "Flying"
+    ],
+    "baseStats": {
+      "hp": 95,
+      "atk": 80,
+      "def": 93,
+      "spa": 135,
+      "spd": 110,
+      "spe": 70
+    },
+    "abilities": [
+      "Magic Bounce"
+    ],
+    "weightkg": 42.3,
+    "baseSpecies": "Clefable",
+    "otherFormes": null
+  },
+  {
+    "id": "cofagrigus",
+    "name": "Cofagrigus",
+    "nameJa": "デスカーン",
+    "types": [
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 58,
+      "atk": 50,
+      "def": 145,
+      "spa": 95,
+      "spd": 105,
+      "spe": 30
+    },
+    "abilities": [
+      "Mummy"
+    ],
+    "weightkg": 76.5,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "conkeldurr",
+    "name": "Conkeldurr",
+    "nameJa": "ローブシン",
+    "types": [
+      "Fighting"
+    ],
+    "baseStats": {
+      "hp": 105,
+      "atk": 140,
+      "def": 95,
+      "spa": 55,
+      "spd": 65,
+      "spe": 45
+    },
+    "abilities": [
+      "Guts",
+      "Sheer Force",
+      "Iron Fist"
+    ],
+    "weightkg": 87,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "corviknight",
+    "name": "Corviknight",
+    "nameJa": "アーマーガア",
+    "types": [
+      "Flying",
+      "Steel"
+    ],
+    "baseStats": {
+      "hp": 98,
+      "atk": 87,
+      "def": 105,
+      "spa": 53,
+      "spd": 85,
+      "spe": 67
+    },
+    "abilities": [
+      "Pressure",
+      "Unnerve",
+      "Mirror Armor"
+    ],
+    "weightkg": 75,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "crabominable",
+    "name": "Crabominable",
+    "nameJa": "ケケンカニ",
+    "types": [
+      "Fighting",
+      "Ice"
+    ],
+    "baseStats": {
+      "hp": 97,
+      "atk": 132,
+      "def": 77,
+      "spa": 62,
+      "spd": 67,
+      "spe": 43
+    },
+    "abilities": [
+      "Hyper Cutter",
+      "Iron Fist",
+      "Anger Point"
+    ],
+    "weightkg": 180,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Crabominable-Mega"
+    ]
+  },
+  {
+    "id": "crabominablemega",
+    "name": "Crabominable-Mega",
+    "nameJa": "メガケケンカニ",
+    "types": [
+      "Fighting",
+      "Ice"
+    ],
+    "baseStats": {
+      "hp": 97,
+      "atk": 157,
+      "def": 122,
+      "spa": 62,
+      "spd": 107,
+      "spe": 33
+    },
+    "abilities": [
+      "Iron Fist"
+    ],
+    "weightkg": 252.8,
+    "baseSpecies": "Crabominable",
+    "otherFormes": null
+  },
+  {
+    "id": "decidueye",
+    "name": "Decidueye",
+    "nameJa": "ジュナイパー",
+    "types": [
+      "Grass",
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 78,
+      "atk": 107,
+      "def": 75,
+      "spa": 100,
+      "spd": 100,
+      "spe": 70
+    },
+    "abilities": [
+      "Overgrow",
+      "Long Reach"
+    ],
+    "weightkg": 36.6,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Decidueye-Hisui"
+    ]
+  },
+  {
+    "id": "decidueyehisui",
+    "name": "Decidueye-Hisui",
+    "nameJa": "ヒスイジュナイパー",
+    "types": [
+      "Grass",
+      "Fighting"
+    ],
+    "baseStats": {
+      "hp": 88,
+      "atk": 112,
+      "def": 80,
+      "spa": 95,
+      "spd": 95,
+      "spe": 60
+    },
+    "abilities": [
+      "Overgrow",
+      "Scrappy"
+    ],
+    "weightkg": 37,
+    "baseSpecies": "Decidueye",
+    "otherFormes": null
+  },
+  {
+    "id": "dedenne",
+    "name": "Dedenne",
+    "nameJa": "デデンネ",
+    "types": [
+      "Electric",
+      "Fairy"
+    ],
+    "baseStats": {
+      "hp": 67,
+      "atk": 58,
+      "def": 57,
+      "spa": 81,
+      "spd": 67,
+      "spe": 101
+    },
+    "abilities": [
+      "Cheek Pouch",
+      "Pickup",
+      "Plus"
+    ],
+    "weightkg": 2.2,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "delphox",
+    "name": "Delphox",
+    "nameJa": "マフォクシー",
+    "types": [
+      "Fire",
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 75,
+      "atk": 69,
+      "def": 72,
+      "spa": 114,
+      "spd": 100,
+      "spe": 104
+    },
+    "abilities": [
+      "Blaze",
+      "Magician"
+    ],
+    "weightkg": 39,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Delphox-Mega"
+    ]
+  },
+  {
+    "id": "delphoxmega",
+    "name": "Delphox-Mega",
+    "nameJa": "メガマフォクシー",
+    "types": [
+      "Fire",
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 75,
+      "atk": 69,
+      "def": 72,
+      "spa": 159,
+      "spd": 125,
+      "spe": 134
+    },
+    "abilities": [
+      "Levitate"
+    ],
+    "weightkg": 39,
+    "baseSpecies": "Delphox",
+    "otherFormes": null
+  },
+  {
+    "id": "diggersby",
+    "name": "Diggersby",
+    "nameJa": "ホルード",
+    "types": [
+      "Normal",
+      "Ground"
+    ],
+    "baseStats": {
+      "hp": 85,
+      "atk": 56,
+      "def": 77,
+      "spa": 50,
+      "spd": 77,
+      "spe": 78
+    },
+    "abilities": [
+      "Pickup",
+      "Cheek Pouch",
+      "Huge Power"
+    ],
+    "weightkg": 42.4,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "ditto",
+    "name": "Ditto",
+    "nameJa": "メタモン",
+    "types": [
+      "Normal"
+    ],
+    "baseStats": {
+      "hp": 48,
+      "atk": 48,
+      "def": 48,
+      "spa": 48,
+      "spd": 48,
+      "spe": 48
+    },
+    "abilities": [
+      "Limber",
+      "Imposter"
+    ],
+    "weightkg": 4,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "dragapult",
+    "name": "Dragapult",
+    "nameJa": "ドラパルト",
+    "types": [
+      "Dragon",
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 88,
+      "atk": 120,
+      "def": 75,
+      "spa": 100,
+      "spd": 75,
+      "spe": 142
+    },
+    "abilities": [
+      "Clear Body",
+      "Infiltrator",
+      "Cursed Body"
+    ],
+    "weightkg": 50,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "dragonite",
+    "name": "Dragonite",
+    "nameJa": "カイリュー",
+    "types": [
+      "Dragon",
+      "Flying"
+    ],
+    "baseStats": {
+      "hp": 91,
+      "atk": 134,
+      "def": 95,
+      "spa": 100,
+      "spd": 100,
+      "spe": 80
+    },
+    "abilities": [
+      "Inner Focus",
+      "Multiscale"
+    ],
+    "weightkg": 210,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Dragonite-Mega"
+    ]
+  },
+  {
+    "id": "dragonitemega",
+    "name": "Dragonite-Mega",
+    "nameJa": "メガカイリュー",
+    "types": [
+      "Dragon",
+      "Flying"
+    ],
+    "baseStats": {
+      "hp": 91,
+      "atk": 124,
+      "def": 115,
+      "spa": 145,
+      "spd": 125,
+      "spe": 100
+    },
+    "abilities": [
+      "Multiscale"
+    ],
+    "weightkg": 290,
+    "baseSpecies": "Dragonite",
+    "otherFormes": null
+  },
+  {
+    "id": "drampa",
+    "name": "Drampa",
+    "nameJa": "ジジーロン",
+    "types": [
+      "Normal",
+      "Dragon"
+    ],
+    "baseStats": {
+      "hp": 78,
+      "atk": 60,
+      "def": 85,
+      "spa": 135,
+      "spd": 91,
+      "spe": 36
+    },
+    "abilities": [
+      "Berserk",
+      "Sap Sipper",
+      "Cloud Nine"
+    ],
+    "weightkg": 185,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Drampa-Mega"
+    ]
+  },
+  {
+    "id": "drampamega",
+    "name": "Drampa-Mega",
+    "nameJa": "メガジジーロン",
+    "types": [
+      "Normal",
+      "Dragon"
+    ],
+    "baseStats": {
+      "hp": 78,
+      "atk": 85,
+      "def": 110,
+      "spa": 160,
+      "spd": 116,
+      "spe": 36
+    },
+    "abilities": [
+      "Berserk"
+    ],
+    "weightkg": 185,
+    "baseSpecies": "Drampa",
+    "otherFormes": null
+  },
+  {
+    "id": "emboar",
+    "name": "Emboar",
+    "nameJa": "エンブオー",
+    "types": [
+      "Fire",
+      "Fighting"
+    ],
+    "baseStats": {
+      "hp": 110,
+      "atk": 123,
+      "def": 65,
+      "spa": 100,
+      "spd": 65,
+      "spe": 65
+    },
+    "abilities": [
+      "Blaze",
+      "Reckless"
+    ],
+    "weightkg": 150,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Emboar-Mega"
+    ]
+  },
+  {
+    "id": "emboarmega",
+    "name": "Emboar-Mega",
+    "nameJa": "メガエンブオー",
+    "types": [
+      "Fire",
+      "Fighting"
+    ],
+    "baseStats": {
+      "hp": 110,
+      "atk": 148,
+      "def": 75,
+      "spa": 110,
+      "spd": 110,
+      "spe": 75
+    },
+    "abilities": [
+      "Mold Breaker"
+    ],
+    "weightkg": 180.3,
+    "baseSpecies": "Emboar",
+    "otherFormes": null
+  },
+  {
+    "id": "emolga",
+    "name": "Emolga",
+    "nameJa": "エモンガ",
+    "types": [
+      "Electric",
+      "Flying"
+    ],
+    "baseStats": {
+      "hp": 55,
+      "atk": 75,
+      "def": 60,
+      "spa": 75,
+      "spd": 60,
+      "spe": 103
+    },
+    "abilities": [
+      "Static",
+      "Motor Drive"
+    ],
+    "weightkg": 5,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "empoleon",
+    "name": "Empoleon",
+    "nameJa": "エンペルト",
+    "types": [
+      "Water",
+      "Steel"
+    ],
+    "baseStats": {
+      "hp": 84,
+      "atk": 86,
+      "def": 88,
+      "spa": 111,
+      "spd": 101,
+      "spe": 60
+    },
+    "abilities": [
+      "Torrent",
+      "Competitive"
+    ],
+    "weightkg": 84.5,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "espathra",
+    "name": "Espathra",
+    "nameJa": "クエスパトラ",
+    "types": [
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 95,
+      "atk": 60,
+      "def": 60,
+      "spa": 101,
+      "spd": 60,
+      "spe": 105
+    },
+    "abilities": [
+      "Opportunist",
+      "Frisk",
+      "Speed Boost"
+    ],
+    "weightkg": 90,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "espeon",
+    "name": "Espeon",
+    "nameJa": "エーフィ",
+    "types": [
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 65,
+      "atk": 65,
+      "def": 60,
+      "spa": 130,
+      "spd": 95,
+      "spe": 110
+    },
+    "abilities": [
+      "Synchronize",
+      "Magic Bounce"
+    ],
+    "weightkg": 26.5,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "excadrill",
+    "name": "Excadrill",
+    "nameJa": "ドリュウズ",
+    "types": [
+      "Ground",
+      "Steel"
+    ],
+    "baseStats": {
+      "hp": 110,
+      "atk": 135,
+      "def": 60,
+      "spa": 50,
+      "spd": 65,
+      "spe": 88
+    },
+    "abilities": [
+      "Sand Rush",
+      "Sand Force",
+      "Mold Breaker"
+    ],
+    "weightkg": 40.4,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Excadrill-Mega"
+    ]
+  },
+  {
+    "id": "excadrillmega",
+    "name": "Excadrill-Mega",
+    "nameJa": "メガドリュウズ",
+    "types": [
+      "Ground",
+      "Steel"
+    ],
+    "baseStats": {
+      "hp": 110,
+      "atk": 165,
+      "def": 100,
+      "spa": 65,
+      "spd": 65,
+      "spe": 103
+    },
+    "abilities": [
+      "Piercing Drill"
+    ],
+    "weightkg": 60,
+    "baseSpecies": "Excadrill",
+    "otherFormes": null
+  },
+  {
+    "id": "farigiraf",
+    "name": "Farigiraf",
+    "nameJa": "リキキリン",
+    "types": [
+      "Normal",
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 120,
+      "atk": 90,
+      "def": 70,
+      "spa": 110,
+      "spd": 70,
+      "spe": 60
+    },
+    "abilities": [
+      "Cud Chew",
+      "Armor Tail",
+      "Sap Sipper"
+    ],
+    "weightkg": 160,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "feraligatr",
+    "name": "Feraligatr",
+    "nameJa": "オーダイル",
+    "types": [
+      "Water"
+    ],
+    "baseStats": {
+      "hp": 85,
+      "atk": 105,
+      "def": 100,
+      "spa": 79,
+      "spd": 83,
+      "spe": 78
+    },
+    "abilities": [
+      "Torrent",
+      "Sheer Force"
+    ],
+    "weightkg": 88.8,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Feraligatr-Mega"
+    ]
+  },
+  {
+    "id": "feraligatrmega",
+    "name": "Feraligatr-Mega",
+    "nameJa": "メガオーダイル",
+    "types": [
+      "Water",
+      "Dragon"
+    ],
+    "baseStats": {
+      "hp": 85,
+      "atk": 160,
+      "def": 125,
+      "spa": 89,
+      "spd": 93,
+      "spe": 78
+    },
+    "abilities": [
+      "Dragonize"
+    ],
+    "weightkg": 108.8,
+    "baseSpecies": "Feraligatr",
+    "otherFormes": null
+  },
+  {
+    "id": "flapple",
+    "name": "Flapple",
+    "nameJa": "アップリュー",
+    "types": [
+      "Grass",
+      "Dragon"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 110,
+      "def": 80,
+      "spa": 95,
+      "spd": 60,
+      "spe": 70
+    },
+    "abilities": [
+      "Ripen",
+      "Gluttony",
+      "Hustle"
+    ],
+    "weightkg": 1,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "flareon",
+    "name": "Flareon",
+    "nameJa": "ブースター",
+    "types": [
+      "Fire"
+    ],
+    "baseStats": {
+      "hp": 65,
+      "atk": 130,
+      "def": 60,
+      "spa": 95,
+      "spd": 110,
+      "spe": 65
+    },
+    "abilities": [
+      "Flash Fire",
+      "Guts"
+    ],
+    "weightkg": 25,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "floetteeternal",
+    "name": "Floette-Eternal",
+    "nameJa": "フラエッテ(えいえんのはな)",
+    "types": [
+      "Fairy"
+    ],
+    "baseStats": {
+      "hp": 74,
+      "atk": 65,
+      "def": 67,
+      "spa": 125,
+      "spd": 128,
+      "spe": 92
+    },
+    "abilities": [
+      "Flower Veil",
+      "Symbiosis"
+    ],
+    "weightkg": 0.9,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Floette-Mega"
+    ]
+  },
+  {
+    "id": "floettemega",
+    "name": "Floette-Mega",
+    "nameJa": "メガフラエッテ(えいえんのはな)",
+    "types": [
+      "Fairy"
+    ],
+    "baseStats": {
+      "hp": 74,
+      "atk": 85,
+      "def": 87,
+      "spa": 155,
+      "spd": 148,
+      "spe": 102
+    },
+    "abilities": [
+      "Fairy Aura"
+    ],
+    "weightkg": 100.8,
+    "baseSpecies": "Floette-Eternal",
+    "otherFormes": null
+  },
+  {
+    "id": "florges",
+    "name": "Florges",
+    "nameJa": "フラージェス",
+    "types": [
+      "Fairy"
+    ],
+    "baseStats": {
+      "hp": 78,
+      "atk": 65,
+      "def": 68,
+      "spa": 112,
+      "spd": 154,
+      "spe": 75
+    },
+    "abilities": [
+      "Flower Veil",
+      "Symbiosis"
+    ],
+    "weightkg": 10,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "forretress",
+    "name": "Forretress",
+    "nameJa": "フォレトス",
+    "types": [
+      "Bug",
+      "Steel"
+    ],
+    "baseStats": {
+      "hp": 75,
+      "atk": 90,
+      "def": 140,
+      "spa": 60,
+      "spd": 60,
+      "spe": 40
+    },
+    "abilities": [
+      "Sturdy",
+      "Overcoat"
+    ],
+    "weightkg": 125.8,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "froslass",
+    "name": "Froslass",
+    "nameJa": "ユキメノコ",
+    "types": [
+      "Ice",
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 80,
+      "def": 70,
+      "spa": 80,
+      "spd": 70,
+      "spe": 110
+    },
+    "abilities": [
+      "Snow Cloak",
+      "Cursed Body"
+    ],
+    "weightkg": 26.6,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Froslass-Mega"
+    ]
+  },
+  {
+    "id": "froslassmega",
+    "name": "Froslass-Mega",
+    "nameJa": "メガユキメノコ",
+    "types": [
+      "Ice",
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 80,
+      "def": 70,
+      "spa": 140,
+      "spd": 100,
+      "spe": 120
+    },
+    "abilities": [
+      "Snow Warning"
+    ],
+    "weightkg": 29.6,
+    "baseSpecies": "Froslass",
+    "otherFormes": null
+  },
+  {
+    "id": "furfrou",
+    "name": "Furfrou",
+    "nameJa": "トリミアン",
+    "types": [
+      "Normal"
+    ],
+    "baseStats": {
+      "hp": 75,
+      "atk": 80,
+      "def": 60,
+      "spa": 65,
+      "spd": 90,
+      "spe": 102
+    },
+    "abilities": [
+      "Fur Coat"
+    ],
+    "weightkg": 28,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "gallade",
+    "name": "Gallade",
+    "nameJa": "エルレイド",
+    "types": [
+      "Psychic",
+      "Fighting"
+    ],
+    "baseStats": {
+      "hp": 68,
+      "atk": 125,
+      "def": 65,
+      "spa": 65,
+      "spd": 115,
+      "spe": 80
+    },
+    "abilities": [
+      "Steadfast",
+      "Sharpness",
+      "Justified"
+    ],
+    "weightkg": 52,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Gallade-Mega"
+    ]
+  },
+  {
+    "id": "gallademega",
+    "name": "Gallade-Mega",
+    "nameJa": "メガエルレイド",
+    "types": [
+      "Psychic",
+      "Fighting"
+    ],
+    "baseStats": {
+      "hp": 68,
+      "atk": 165,
+      "def": 95,
+      "spa": 65,
+      "spd": 115,
+      "spe": 110
+    },
+    "abilities": [
+      "Inner Focus"
+    ],
+    "weightkg": 56.4,
+    "baseSpecies": "Gallade",
+    "otherFormes": null
+  },
+  {
+    "id": "garbodor",
+    "name": "Garbodor",
+    "nameJa": "ダストダス",
+    "types": [
+      "Poison"
+    ],
+    "baseStats": {
+      "hp": 80,
+      "atk": 95,
+      "def": 82,
+      "spa": 60,
+      "spd": 82,
+      "spe": 75
+    },
+    "abilities": [
+      "Stench",
+      "Weak Armor",
+      "Aftermath"
+    ],
+    "weightkg": 107.3,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "garchomp",
+    "name": "Garchomp",
+    "nameJa": "ガブリアス",
+    "types": [
+      "Dragon",
+      "Ground"
+    ],
+    "baseStats": {
+      "hp": 108,
+      "atk": 130,
+      "def": 95,
+      "spa": 80,
+      "spd": 85,
+      "spe": 102
+    },
+    "abilities": [
+      "Sand Veil",
+      "Rough Skin"
+    ],
+    "weightkg": 95,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Garchomp-Mega"
+    ]
+  },
+  {
+    "id": "garchompmega",
+    "name": "Garchomp-Mega",
+    "nameJa": "メガガブリアス",
+    "types": [
+      "Dragon",
+      "Ground"
+    ],
+    "baseStats": {
+      "hp": 108,
+      "atk": 170,
+      "def": 115,
+      "spa": 120,
+      "spd": 95,
+      "spe": 92
+    },
+    "abilities": [
+      "Sand Force"
+    ],
+    "weightkg": 95,
+    "baseSpecies": "Garchomp",
+    "otherFormes": null
+  },
+  {
+    "id": "gardevoir",
+    "name": "Gardevoir",
+    "nameJa": "サーナイト",
+    "types": [
+      "Psychic",
+      "Fairy"
+    ],
+    "baseStats": {
+      "hp": 68,
+      "atk": 65,
+      "def": 65,
+      "spa": 125,
+      "spd": 115,
+      "spe": 80
+    },
+    "abilities": [
+      "Synchronize",
+      "Trace",
+      "Telepathy"
+    ],
+    "weightkg": 48.4,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Gardevoir-Mega"
+    ]
+  },
+  {
+    "id": "gardevoirmega",
+    "name": "Gardevoir-Mega",
+    "nameJa": "メガサーナイト",
+    "types": [
+      "Psychic",
+      "Fairy"
+    ],
+    "baseStats": {
+      "hp": 68,
+      "atk": 85,
+      "def": 65,
+      "spa": 165,
+      "spd": 135,
+      "spe": 100
+    },
+    "abilities": [
+      "Pixilate"
+    ],
+    "weightkg": 48.4,
+    "baseSpecies": "Gardevoir",
+    "otherFormes": null
+  },
+  {
+    "id": "garganacl",
+    "name": "Garganacl",
+    "nameJa": "キョジオーン",
+    "types": [
+      "Rock"
+    ],
+    "baseStats": {
+      "hp": 100,
+      "atk": 100,
+      "def": 130,
+      "spa": 45,
+      "spd": 90,
+      "spe": 35
+    },
+    "abilities": [
+      "Purifying Salt",
+      "Sturdy",
+      "Clear Body"
+    ],
+    "weightkg": 240,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "gengar",
+    "name": "Gengar",
+    "nameJa": "ゲンガー",
+    "types": [
+      "Ghost",
+      "Poison"
+    ],
+    "baseStats": {
+      "hp": 60,
+      "atk": 65,
+      "def": 60,
+      "spa": 130,
+      "spd": 75,
+      "spe": 110
+    },
+    "abilities": [
+      "Cursed Body"
+    ],
+    "weightkg": 40.5,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Gengar-Mega"
+    ]
+  },
+  {
+    "id": "gengarmega",
+    "name": "Gengar-Mega",
+    "nameJa": "メガゲンガー",
+    "types": [
+      "Ghost",
+      "Poison"
+    ],
+    "baseStats": {
+      "hp": 60,
+      "atk": 65,
+      "def": 80,
+      "spa": 170,
+      "spd": 95,
+      "spe": 130
+    },
+    "abilities": [
+      "Shadow Tag"
+    ],
+    "weightkg": 40.5,
+    "baseSpecies": "Gengar",
+    "otherFormes": null
+  },
+  {
+    "id": "glaceon",
+    "name": "Glaceon",
+    "nameJa": "グレイシア",
+    "types": [
+      "Ice"
+    ],
+    "baseStats": {
+      "hp": 65,
+      "atk": 60,
+      "def": 110,
+      "spa": 130,
+      "spd": 95,
+      "spe": 65
+    },
+    "abilities": [
+      "Snow Cloak",
+      "Ice Body"
+    ],
+    "weightkg": 25.9,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "glalie",
+    "name": "Glalie",
+    "nameJa": "オニゴーリ",
+    "types": [
+      "Ice"
+    ],
+    "baseStats": {
+      "hp": 80,
+      "atk": 80,
+      "def": 80,
+      "spa": 80,
+      "spd": 80,
+      "spe": 80
+    },
+    "abilities": [
+      "Inner Focus",
+      "Ice Body",
+      "Moody"
+    ],
+    "weightkg": 256.5,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Glalie-Mega"
+    ]
+  },
+  {
+    "id": "glaliemega",
+    "name": "Glalie-Mega",
+    "nameJa": "メガオニゴーリ",
+    "types": [
+      "Ice"
+    ],
+    "baseStats": {
+      "hp": 80,
+      "atk": 120,
+      "def": 80,
+      "spa": 120,
+      "spd": 80,
+      "spe": 100
+    },
+    "abilities": [
+      "Refrigerate"
+    ],
+    "weightkg": 350.2,
+    "baseSpecies": "Glalie",
+    "otherFormes": null
+  },
+  {
+    "id": "glimmora",
+    "name": "Glimmora",
+    "nameJa": "キラフロル",
+    "types": [
+      "Rock",
+      "Poison"
+    ],
+    "baseStats": {
+      "hp": 83,
+      "atk": 55,
+      "def": 90,
+      "spa": 130,
+      "spd": 81,
+      "spe": 86
+    },
+    "abilities": [
+      "Toxic Debris",
+      "Corrosion"
+    ],
+    "weightkg": 45,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Glimmora-Mega"
+    ]
+  },
+  {
+    "id": "glimmoramega",
+    "name": "Glimmora-Mega",
+    "nameJa": "メガキラフロル",
+    "types": [
+      "Rock",
+      "Poison"
+    ],
+    "baseStats": {
+      "hp": 83,
+      "atk": 90,
+      "def": 105,
+      "spa": 150,
+      "spd": 96,
+      "spe": 101
+    },
+    "abilities": [
+      "Adaptability"
+    ],
+    "weightkg": 77,
+    "baseSpecies": "Glimmora",
+    "otherFormes": null
+  },
+  {
+    "id": "gliscor",
+    "name": "Gliscor",
+    "nameJa": "グライオン",
+    "types": [
+      "Ground",
+      "Flying"
+    ],
+    "baseStats": {
+      "hp": 75,
+      "atk": 95,
+      "def": 125,
+      "spa": 45,
+      "spd": 75,
+      "spe": 95
+    },
+    "abilities": [
+      "Hyper Cutter",
+      "Sand Veil",
+      "Poison Heal"
+    ],
+    "weightkg": 42.5,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "golurk",
+    "name": "Golurk",
+    "nameJa": "ゴルーグ",
+    "types": [
+      "Ground",
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 89,
+      "atk": 124,
+      "def": 80,
+      "spa": 55,
+      "spd": 80,
+      "spe": 55
+    },
+    "abilities": [
+      "Iron Fist",
+      "Klutz",
+      "No Guard"
+    ],
+    "weightkg": 330,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Golurk-Mega"
+    ]
+  },
+  {
+    "id": "golurkmega",
+    "name": "Golurk-Mega",
+    "nameJa": "メガゴルーグ",
+    "types": [
+      "Ground",
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 89,
+      "atk": 159,
+      "def": 105,
+      "spa": 70,
+      "spd": 105,
+      "spe": 55
+    },
+    "abilities": [
+      "Unseen Fist"
+    ],
+    "weightkg": 330,
+    "baseSpecies": "Golurk",
+    "otherFormes": null
+  },
+  {
+    "id": "goodra",
+    "name": "Goodra",
+    "nameJa": "ヌメルゴン",
+    "types": [
+      "Dragon"
+    ],
+    "baseStats": {
+      "hp": 90,
+      "atk": 100,
+      "def": 70,
+      "spa": 110,
+      "spd": 150,
+      "spe": 80
+    },
+    "abilities": [
+      "Sap Sipper",
+      "Hydration",
+      "Gooey"
+    ],
+    "weightkg": 150.5,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Goodra-Hisui"
+    ]
+  },
+  {
+    "id": "goodrahisui",
+    "name": "Goodra-Hisui",
+    "nameJa": "ヒスイヌメルゴン",
+    "types": [
+      "Steel",
+      "Dragon"
+    ],
+    "baseStats": {
+      "hp": 80,
+      "atk": 100,
+      "def": 100,
+      "spa": 110,
+      "spd": 150,
+      "spe": 60
+    },
+    "abilities": [
+      "Sap Sipper",
+      "Shell Armor",
+      "Gooey"
+    ],
+    "weightkg": 334.1,
+    "baseSpecies": "Goodra",
+    "otherFormes": null
+  },
+  {
+    "id": "gourgeist",
+    "name": "Gourgeist",
+    "nameJa": "パンプジン(ちゅうだましゅ)",
+    "types": [
+      "Ghost",
+      "Grass"
+    ],
+    "baseStats": {
+      "hp": 65,
+      "atk": 90,
+      "def": 122,
+      "spa": 58,
+      "spd": 75,
+      "spe": 84
+    },
+    "abilities": [
+      "Pickup",
+      "Frisk",
+      "Insomnia"
+    ],
+    "weightkg": 12.5,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Gourgeist-Small",
+      "Gourgeist-Large",
+      "Gourgeist-Super"
+    ]
+  },
+  {
+    "id": "gourgeistlarge",
+    "name": "Gourgeist-Large",
+    "nameJa": "パンプジン(おおだましゅ)",
+    "types": [
+      "Ghost",
+      "Grass"
+    ],
+    "baseStats": {
+      "hp": 75,
+      "atk": 95,
+      "def": 122,
+      "spa": 58,
+      "spd": 75,
+      "spe": 69
+    },
+    "abilities": [
+      "Pickup",
+      "Frisk",
+      "Insomnia"
+    ],
+    "weightkg": 14,
+    "baseSpecies": "Gourgeist",
+    "otherFormes": null
+  },
+  {
+    "id": "gourgeistsmall",
+    "name": "Gourgeist-Small",
+    "nameJa": "パンプジン(こだましゅ)",
+    "types": [
+      "Ghost",
+      "Grass"
+    ],
+    "baseStats": {
+      "hp": 55,
+      "atk": 85,
+      "def": 122,
+      "spa": 58,
+      "spd": 75,
+      "spe": 99
+    },
+    "abilities": [
+      "Pickup",
+      "Frisk",
+      "Insomnia"
+    ],
+    "weightkg": 9.5,
+    "baseSpecies": "Gourgeist",
+    "otherFormes": null
+  },
+  {
+    "id": "gourgeistsuper",
+    "name": "Gourgeist-Super",
+    "nameJa": "パンプジン(ギガだましゅ)",
+    "types": [
+      "Ghost",
+      "Grass"
+    ],
+    "baseStats": {
+      "hp": 85,
+      "atk": 100,
+      "def": 122,
+      "spa": 58,
+      "spd": 75,
+      "spe": 54
+    },
+    "abilities": [
+      "Pickup",
+      "Frisk",
+      "Insomnia"
+    ],
+    "weightkg": 39,
+    "baseSpecies": "Gourgeist",
+    "otherFormes": null
+  },
+  {
+    "id": "greninja",
+    "name": "Greninja",
+    "nameJa": "ゲッコウガ",
+    "types": [
+      "Water",
+      "Dark"
+    ],
+    "baseStats": {
+      "hp": 72,
+      "atk": 95,
+      "def": 67,
+      "spa": 103,
+      "spd": 71,
+      "spe": 122
+    },
+    "abilities": [
+      "Torrent",
+      "Protean"
+    ],
+    "weightkg": 40,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Greninja-Mega"
+    ]
+  },
+  {
+    "id": "greninjamega",
+    "name": "Greninja-Mega",
+    "nameJa": "メガゲッコウガ",
+    "types": [
+      "Water",
+      "Dark"
+    ],
+    "baseStats": {
+      "hp": 72,
+      "atk": 125,
+      "def": 77,
+      "spa": 133,
+      "spd": 81,
+      "spe": 142
+    },
+    "abilities": [
+      "Protean"
+    ],
+    "weightkg": 40,
+    "baseSpecies": "Greninja",
+    "otherFormes": null
+  },
+  {
+    "id": "gyarados",
+    "name": "Gyarados",
+    "nameJa": "ギャラドス",
+    "types": [
+      "Water",
+      "Flying"
+    ],
+    "baseStats": {
+      "hp": 95,
+      "atk": 125,
+      "def": 79,
+      "spa": 60,
+      "spd": 100,
+      "spe": 81
+    },
+    "abilities": [
+      "Intimidate",
+      "Moxie"
+    ],
+    "weightkg": 235,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Gyarados-Mega"
+    ]
+  },
+  {
+    "id": "gyaradosmega",
+    "name": "Gyarados-Mega",
+    "nameJa": "メガギャラドス",
+    "types": [
+      "Water",
+      "Dark"
+    ],
+    "baseStats": {
+      "hp": 95,
+      "atk": 155,
+      "def": 109,
+      "spa": 70,
+      "spd": 130,
+      "spe": 81
+    },
+    "abilities": [
+      "Mold Breaker"
+    ],
+    "weightkg": 305,
+    "baseSpecies": "Gyarados",
+    "otherFormes": null
+  },
+  {
+    "id": "hatterene",
+    "name": "Hatterene",
+    "nameJa": "ブリムオン",
+    "types": [
+      "Psychic",
+      "Fairy"
+    ],
+    "baseStats": {
+      "hp": 57,
+      "atk": 90,
+      "def": 95,
+      "spa": 136,
+      "spd": 103,
+      "spe": 29
+    },
+    "abilities": [
+      "Healer",
+      "Anticipation",
+      "Magic Bounce"
+    ],
+    "weightkg": 5.1,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "hawlucha",
+    "name": "Hawlucha",
+    "nameJa": "ルチャブル",
+    "types": [
+      "Fighting",
+      "Flying"
+    ],
+    "baseStats": {
+      "hp": 78,
+      "atk": 92,
+      "def": 75,
+      "spa": 74,
+      "spd": 63,
+      "spe": 118
+    },
+    "abilities": [
+      "Limber",
+      "Unburden",
+      "Mold Breaker"
+    ],
+    "weightkg": 21.5,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Hawlucha-Mega"
+    ]
+  },
+  {
+    "id": "hawluchamega",
+    "name": "Hawlucha-Mega",
+    "nameJa": "メガルチャブル",
+    "types": [
+      "Fighting",
+      "Flying"
+    ],
+    "baseStats": {
+      "hp": 78,
+      "atk": 137,
+      "def": 100,
+      "spa": 74,
+      "spd": 93,
+      "spe": 118
+    },
+    "abilities": [
+      "No Guard"
+    ],
+    "weightkg": 25,
+    "baseSpecies": "Hawlucha",
+    "otherFormes": null
+  },
+  {
+    "id": "heliolisk",
+    "name": "Heliolisk",
+    "nameJa": "エレザード",
+    "types": [
+      "Electric",
+      "Normal"
+    ],
+    "baseStats": {
+      "hp": 62,
+      "atk": 55,
+      "def": 52,
+      "spa": 109,
+      "spd": 94,
+      "spe": 109
+    },
+    "abilities": [
+      "Dry Skin",
+      "Sand Veil",
+      "Solar Power"
+    ],
+    "weightkg": 21,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "heracross",
+    "name": "Heracross",
+    "nameJa": "ヘラクロス",
+    "types": [
+      "Bug",
+      "Fighting"
+    ],
+    "baseStats": {
+      "hp": 80,
+      "atk": 125,
+      "def": 75,
+      "spa": 40,
+      "spd": 95,
+      "spe": 85
+    },
+    "abilities": [
+      "Swarm",
+      "Guts",
+      "Moxie"
+    ],
+    "weightkg": 54,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Heracross-Mega"
+    ]
+  },
+  {
+    "id": "heracrossmega",
+    "name": "Heracross-Mega",
+    "nameJa": "メガヘラクロス",
+    "types": [
+      "Bug",
+      "Fighting"
+    ],
+    "baseStats": {
+      "hp": 80,
+      "atk": 185,
+      "def": 115,
+      "spa": 40,
+      "spd": 105,
+      "spe": 75
+    },
+    "abilities": [
+      "Skill Link"
+    ],
+    "weightkg": 62.5,
+    "baseSpecies": "Heracross",
+    "otherFormes": null
+  },
+  {
+    "id": "hippowdon",
+    "name": "Hippowdon",
+    "nameJa": "カバルドン",
+    "types": [
+      "Ground"
+    ],
+    "baseStats": {
+      "hp": 108,
+      "atk": 112,
+      "def": 118,
+      "spa": 68,
+      "spd": 72,
+      "spe": 47
+    },
+    "abilities": [
+      "Sand Stream",
+      "Sand Force"
+    ],
+    "weightkg": 300,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "houndoom",
+    "name": "Houndoom",
+    "nameJa": "ヘルガー",
+    "types": [
+      "Dark",
+      "Fire"
+    ],
+    "baseStats": {
+      "hp": 75,
+      "atk": 90,
+      "def": 50,
+      "spa": 110,
+      "spd": 80,
+      "spe": 95
+    },
+    "abilities": [
+      "Early Bird",
+      "Flash Fire",
+      "Unnerve"
+    ],
+    "weightkg": 35,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Houndoom-Mega"
+    ]
+  },
+  {
+    "id": "houndoommega",
+    "name": "Houndoom-Mega",
+    "nameJa": "メガヘルガー",
+    "types": [
+      "Dark",
+      "Fire"
+    ],
+    "baseStats": {
+      "hp": 75,
+      "atk": 90,
+      "def": 90,
+      "spa": 140,
+      "spd": 90,
+      "spe": 115
+    },
+    "abilities": [
+      "Solar Power"
+    ],
+    "weightkg": 49.5,
+    "baseSpecies": "Houndoom",
+    "otherFormes": null
+  },
+  {
+    "id": "hydrapple",
+    "name": "Hydrapple",
+    "nameJa": "カミツオロチ",
+    "types": [
+      "Grass",
+      "Dragon"
+    ],
+    "baseStats": {
+      "hp": 106,
+      "atk": 80,
+      "def": 110,
+      "spa": 120,
+      "spd": 80,
+      "spe": 44
+    },
+    "abilities": [
+      "Supersweet Syrup",
+      "Regenerator",
+      "Sticky Hold"
+    ],
+    "weightkg": 93,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "hydreigon",
+    "name": "Hydreigon",
+    "nameJa": "サザンドラ",
+    "types": [
+      "Dark",
+      "Dragon"
+    ],
+    "baseStats": {
+      "hp": 92,
+      "atk": 105,
+      "def": 90,
+      "spa": 125,
+      "spd": 90,
+      "spe": 98
+    },
+    "abilities": [
+      "Levitate"
+    ],
+    "weightkg": 160,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "incineroar",
+    "name": "Incineroar",
+    "nameJa": "ガオガエン",
+    "types": [
+      "Fire",
+      "Dark"
+    ],
+    "baseStats": {
+      "hp": 95,
+      "atk": 115,
+      "def": 90,
+      "spa": 80,
+      "spd": 90,
+      "spe": 60
+    },
+    "abilities": [
+      "Blaze",
+      "Intimidate"
+    ],
+    "weightkg": 83,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "infernape",
+    "name": "Infernape",
+    "nameJa": "ゴウカザル",
+    "types": [
+      "Fire",
+      "Fighting"
+    ],
+    "baseStats": {
+      "hp": 76,
+      "atk": 104,
+      "def": 71,
+      "spa": 104,
+      "spd": 71,
+      "spe": 108
+    },
+    "abilities": [
+      "Blaze",
+      "Iron Fist"
+    ],
+    "weightkg": 55,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "jolteon",
+    "name": "Jolteon",
+    "nameJa": "サンダース",
+    "types": [
+      "Electric"
+    ],
+    "baseStats": {
+      "hp": 65,
+      "atk": 65,
+      "def": 60,
+      "spa": 110,
+      "spd": 95,
+      "spe": 130
+    },
+    "abilities": [
+      "Volt Absorb",
+      "Quick Feet"
+    ],
+    "weightkg": 24.5,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "kangaskhan",
+    "name": "Kangaskhan",
+    "nameJa": "ガルーラ",
+    "types": [
+      "Normal"
+    ],
+    "baseStats": {
+      "hp": 105,
+      "atk": 95,
+      "def": 80,
+      "spa": 40,
+      "spd": 80,
+      "spe": 90
+    },
+    "abilities": [
+      "Early Bird",
+      "Scrappy",
+      "Inner Focus"
+    ],
+    "weightkg": 80,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Kangaskhan-Mega"
+    ]
+  },
+  {
+    "id": "kangaskhanmega",
+    "name": "Kangaskhan-Mega",
+    "nameJa": "メガガルーラ",
+    "types": [
+      "Normal"
+    ],
+    "baseStats": {
+      "hp": 105,
+      "atk": 125,
+      "def": 100,
+      "spa": 60,
+      "spd": 100,
+      "spe": 100
+    },
+    "abilities": [
+      "Parental Bond"
+    ],
+    "weightkg": 100,
+    "baseSpecies": "Kangaskhan",
+    "otherFormes": null
+  },
+  {
+    "id": "kingambit",
+    "name": "Kingambit",
+    "nameJa": "ドドゲザン",
+    "types": [
+      "Dark",
+      "Steel"
+    ],
+    "baseStats": {
+      "hp": 100,
+      "atk": 135,
+      "def": 120,
+      "spa": 60,
+      "spd": 85,
+      "spe": 50
+    },
+    "abilities": [
+      "Defiant",
+      "Supreme Overlord",
+      "Pressure"
+    ],
+    "weightkg": 120,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "kleavor",
+    "name": "Kleavor",
+    "nameJa": "バサギリ",
+    "types": [
+      "Bug",
+      "Rock"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 135,
+      "def": 95,
+      "spa": 45,
+      "spd": 70,
+      "spe": 85
+    },
+    "abilities": [
+      "Swarm",
+      "Sheer Force",
+      "Sharpness"
+    ],
+    "weightkg": 89,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "klefki",
+    "name": "Klefki",
+    "nameJa": "クレッフィ",
+    "types": [
+      "Steel",
+      "Fairy"
+    ],
+    "baseStats": {
+      "hp": 57,
+      "atk": 80,
+      "def": 91,
+      "spa": 80,
+      "spd": 87,
+      "spe": 75
+    },
+    "abilities": [
+      "Prankster",
+      "Magician"
+    ],
+    "weightkg": 3,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "kommoo",
+    "name": "Kommo-o",
+    "nameJa": "ジャラランガ",
+    "types": [
+      "Dragon",
+      "Fighting"
+    ],
+    "baseStats": {
+      "hp": 75,
+      "atk": 110,
+      "def": 125,
+      "spa": 100,
+      "spd": 105,
+      "spe": 85
+    },
+    "abilities": [
+      "Bulletproof",
+      "Soundproof",
+      "Overcoat"
+    ],
+    "weightkg": 78.2,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "krookodile",
+    "name": "Krookodile",
+    "nameJa": "ワルビアル",
+    "types": [
+      "Ground",
+      "Dark"
+    ],
+    "baseStats": {
+      "hp": 95,
+      "atk": 117,
+      "def": 80,
+      "spa": 65,
+      "spd": 70,
+      "spe": 92
+    },
+    "abilities": [
+      "Intimidate",
+      "Moxie",
+      "Anger Point"
+    ],
+    "weightkg": 96.3,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "leafeon",
+    "name": "Leafeon",
+    "nameJa": "リーフィア",
+    "types": [
+      "Grass"
+    ],
+    "baseStats": {
+      "hp": 65,
+      "atk": 110,
+      "def": 130,
+      "spa": 60,
+      "spd": 65,
+      "spe": 95
+    },
+    "abilities": [
+      "Leaf Guard",
+      "Chlorophyll"
+    ],
+    "weightkg": 25.5,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "liepard",
+    "name": "Liepard",
+    "nameJa": "レパルダス",
+    "types": [
+      "Dark"
+    ],
+    "baseStats": {
+      "hp": 64,
+      "atk": 88,
+      "def": 50,
+      "spa": 88,
+      "spd": 50,
+      "spe": 106
+    },
+    "abilities": [
+      "Limber",
+      "Unburden",
+      "Prankster"
+    ],
+    "weightkg": 37.5,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "lopunny",
+    "name": "Lopunny",
+    "nameJa": "ミミロップ",
+    "types": [
+      "Normal"
+    ],
+    "baseStats": {
+      "hp": 65,
+      "atk": 76,
+      "def": 84,
+      "spa": 54,
+      "spd": 96,
+      "spe": 105
+    },
+    "abilities": [
+      "Cute Charm",
+      "Klutz",
+      "Limber"
+    ],
+    "weightkg": 33.3,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Lopunny-Mega"
+    ]
+  },
+  {
+    "id": "lopunnymega",
+    "name": "Lopunny-Mega",
+    "nameJa": "メガミミロップ",
+    "types": [
+      "Normal",
+      "Fighting"
+    ],
+    "baseStats": {
+      "hp": 65,
+      "atk": 136,
+      "def": 94,
+      "spa": 54,
+      "spd": 96,
+      "spe": 135
+    },
+    "abilities": [
+      "Scrappy"
+    ],
+    "weightkg": 28.3,
+    "baseSpecies": "Lopunny",
+    "otherFormes": null
+  },
+  {
+    "id": "lucario",
+    "name": "Lucario",
+    "nameJa": "ルカリオ",
+    "types": [
+      "Fighting",
+      "Steel"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 110,
+      "def": 70,
+      "spa": 115,
+      "spd": 70,
+      "spe": 90
+    },
+    "abilities": [
+      "Steadfast",
+      "Inner Focus",
+      "Justified"
+    ],
+    "weightkg": 54,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Lucario-Mega"
+    ]
+  },
+  {
+    "id": "lucariomega",
+    "name": "Lucario-Mega",
+    "nameJa": "メガルカリオ",
+    "types": [
+      "Fighting",
+      "Steel"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 145,
+      "def": 88,
+      "spa": 140,
+      "spd": 70,
+      "spe": 112
+    },
+    "abilities": [
+      "Adaptability"
+    ],
+    "weightkg": 57.5,
+    "baseSpecies": "Lucario",
+    "otherFormes": null
+  },
+  {
+    "id": "luxray",
+    "name": "Luxray",
+    "nameJa": "レントラー",
+    "types": [
+      "Electric"
+    ],
+    "baseStats": {
+      "hp": 80,
+      "atk": 120,
+      "def": 79,
+      "spa": 95,
+      "spd": 79,
+      "spe": 70
+    },
+    "abilities": [
+      "Rivalry",
+      "Intimidate",
+      "Guts"
+    ],
+    "weightkg": 42,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "lycanroc",
+    "name": "Lycanroc",
+    "nameJa": "ルガルガン(まひる)",
+    "types": [
+      "Rock"
+    ],
+    "baseStats": {
+      "hp": 75,
+      "atk": 115,
+      "def": 65,
+      "spa": 55,
+      "spd": 65,
+      "spe": 112
+    },
+    "abilities": [
+      "Keen Eye",
+      "Sand Rush",
+      "Steadfast"
+    ],
+    "weightkg": 25,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Lycanroc-Dusk",
+      "Lycanroc-Midnight"
+    ]
+  },
+  {
+    "id": "lycanrocdusk",
+    "name": "Lycanroc-Dusk",
+    "nameJa": "ルガルガン(たそがれ)",
+    "types": [
+      "Rock"
+    ],
+    "baseStats": {
+      "hp": 75,
+      "atk": 117,
+      "def": 65,
+      "spa": 55,
+      "spd": 65,
+      "spe": 110
+    },
+    "abilities": [
+      "Tough Claws"
+    ],
+    "weightkg": 25,
+    "baseSpecies": "Lycanroc",
+    "otherFormes": null
+  },
+  {
+    "id": "lycanrocmidnight",
+    "name": "Lycanroc-Midnight",
+    "nameJa": "ルガルガン(まよなか)",
+    "types": [
+      "Rock"
+    ],
+    "baseStats": {
+      "hp": 85,
+      "atk": 115,
+      "def": 75,
+      "spa": 55,
+      "spd": 75,
+      "spe": 82
+    },
+    "abilities": [
+      "Keen Eye",
+      "Vital Spirit",
+      "No Guard"
+    ],
+    "weightkg": 25,
+    "baseSpecies": "Lycanroc",
+    "otherFormes": null
+  },
+  {
+    "id": "machamp",
+    "name": "Machamp",
+    "nameJa": "カイリキー",
+    "types": [
+      "Fighting"
+    ],
+    "baseStats": {
+      "hp": 90,
+      "atk": 130,
+      "def": 80,
+      "spa": 65,
+      "spd": 85,
+      "spe": 55
+    },
+    "abilities": [
+      "Guts",
+      "No Guard",
+      "Steadfast"
+    ],
+    "weightkg": 130,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "mamoswine",
+    "name": "Mamoswine",
+    "nameJa": "マンムー",
+    "types": [
+      "Ice",
+      "Ground"
+    ],
+    "baseStats": {
+      "hp": 110,
+      "atk": 130,
+      "def": 80,
+      "spa": 70,
+      "spd": 60,
+      "spe": 80
+    },
+    "abilities": [
+      "Oblivious",
+      "Snow Cloak",
+      "Thick Fat"
+    ],
+    "weightkg": 291,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "manectric",
+    "name": "Manectric",
+    "nameJa": "ライボルト",
+    "types": [
+      "Electric"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 75,
+      "def": 60,
+      "spa": 105,
+      "spd": 60,
+      "spe": 105
+    },
+    "abilities": [
+      "Static",
+      "Lightning Rod",
+      "Minus"
+    ],
+    "weightkg": 40.2,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Manectric-Mega"
+    ]
+  },
+  {
+    "id": "manectricmega",
+    "name": "Manectric-Mega",
+    "nameJa": "メガライボルト",
+    "types": [
+      "Electric"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 75,
+      "def": 80,
+      "spa": 135,
+      "spd": 80,
+      "spe": 135
+    },
+    "abilities": [
+      "Intimidate"
+    ],
+    "weightkg": 44,
+    "baseSpecies": "Manectric",
+    "otherFormes": null
+  },
+  {
+    "id": "maushold",
+    "name": "Maushold",
+    "nameJa": "イッカネズミ(3びきかぞく)",
+    "types": [
+      "Normal"
+    ],
+    "baseStats": {
+      "hp": 74,
+      "atk": 75,
+      "def": 70,
+      "spa": 65,
+      "spd": 75,
+      "spe": 111
+    },
+    "abilities": [
+      "Friend Guard",
+      "Cheek Pouch",
+      "Technician"
+    ],
+    "weightkg": 2.3,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Maushold-Four"
+    ]
+  },
+  {
+    "id": "mausholdfour",
+    "name": "Maushold-Four",
+    "nameJa": "イッカネズミ(4ひきかぞく)",
+    "types": [
+      "Normal"
+    ],
+    "baseStats": {
+      "hp": 74,
+      "atk": 75,
+      "def": 70,
+      "spa": 65,
+      "spd": 75,
+      "spe": 111
+    },
+    "abilities": [
+      "Friend Guard",
+      "Cheek Pouch",
+      "Technician"
+    ],
+    "weightkg": 2.8,
+    "baseSpecies": "Maushold",
+    "otherFormes": null
+  },
+  {
+    "id": "medicham",
+    "name": "Medicham",
+    "nameJa": "チャーレム",
+    "types": [
+      "Fighting",
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 60,
+      "atk": 60,
+      "def": 75,
+      "spa": 60,
+      "spd": 75,
+      "spe": 80
+    },
+    "abilities": [
+      "Pure Power",
+      "Telepathy"
+    ],
+    "weightkg": 31.5,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Medicham-Mega"
+    ]
+  },
+  {
+    "id": "medichammega",
+    "name": "Medicham-Mega",
+    "nameJa": "メガチャーレム",
+    "types": [
+      "Fighting",
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 60,
+      "atk": 100,
+      "def": 85,
+      "spa": 80,
+      "spd": 85,
+      "spe": 100
+    },
+    "abilities": [
+      "Pure Power"
+    ],
+    "weightkg": 31.5,
+    "baseSpecies": "Medicham",
+    "otherFormes": null
+  },
+  {
+    "id": "meganium",
+    "name": "Meganium",
+    "nameJa": "メガニウム",
+    "types": [
+      "Grass"
+    ],
+    "baseStats": {
+      "hp": 80,
+      "atk": 82,
+      "def": 100,
+      "spa": 83,
+      "spd": 100,
+      "spe": 80
+    },
+    "abilities": [
+      "Overgrow",
+      "Leaf Guard"
+    ],
+    "weightkg": 100.5,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Meganium-Mega"
+    ]
+  },
+  {
+    "id": "meganiummega",
+    "name": "Meganium-Mega",
+    "nameJa": "メガメガニウム",
+    "types": [
+      "Grass",
+      "Fairy"
+    ],
+    "baseStats": {
+      "hp": 80,
+      "atk": 92,
+      "def": 115,
+      "spa": 143,
+      "spd": 115,
+      "spe": 80
+    },
+    "abilities": [
+      "Mega Solar"
+    ],
+    "weightkg": 201,
+    "baseSpecies": "Meganium",
+    "otherFormes": null
+  },
+  {
+    "id": "meowscarada",
+    "name": "Meowscarada",
+    "nameJa": "マスカーニャ",
+    "types": [
+      "Grass",
+      "Dark"
+    ],
+    "baseStats": {
+      "hp": 76,
+      "atk": 110,
+      "def": 70,
+      "spa": 81,
+      "spd": 70,
+      "spe": 123
+    },
+    "abilities": [
+      "Overgrow",
+      "Protean"
+    ],
+    "weightkg": 31.2,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "meowstic",
+    "name": "Meowstic",
+    "nameJa": "ニャオニクス(オス)",
+    "types": [
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 74,
+      "atk": 48,
+      "def": 76,
+      "spa": 83,
+      "spd": 81,
+      "spe": 104
+    },
+    "abilities": [
+      "Keen Eye",
+      "Infiltrator",
+      "Prankster"
+    ],
+    "weightkg": 8.5,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Meowstic-F",
+      "Meowstic-F-Mega",
+      "Meowstic-M-Mega"
+    ]
+  },
+  {
+    "id": "meowsticf",
+    "name": "Meowstic-F",
+    "nameJa": "ニャオニクス(メス)",
+    "types": [
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 74,
+      "atk": 48,
+      "def": 76,
+      "spa": 83,
+      "spd": 81,
+      "spe": 104
+    },
+    "abilities": [
+      "Keen Eye",
+      "Infiltrator",
+      "Competitive"
+    ],
+    "weightkg": 8.5,
+    "baseSpecies": "Meowstic",
+    "otherFormes": null
+  },
+  {
+    "id": "meowsticfmega",
+    "name": "Meowstic-F-Mega",
+    "nameJa": "メガニャオニクス(メス)",
+    "types": [
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 74,
+      "atk": 48,
+      "def": 76,
+      "spa": 143,
+      "spd": 101,
+      "spe": 124
+    },
+    "abilities": [
+      "Trace"
+    ],
+    "weightkg": 10.1,
+    "baseSpecies": "Meowstic",
+    "otherFormes": null
+  },
+  {
+    "id": "meowsticmmega",
+    "name": "Meowstic-M-Mega",
+    "nameJa": "メガニャオニクス(オス)",
+    "types": [
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 74,
+      "atk": 48,
+      "def": 76,
+      "spa": 143,
+      "spd": 101,
+      "spe": 124
+    },
+    "abilities": [
+      "Trace"
+    ],
+    "weightkg": 10.1,
+    "baseSpecies": "Meowstic",
+    "otherFormes": null
+  },
+  {
+    "id": "milotic",
+    "name": "Milotic",
+    "nameJa": "ミロカロス",
+    "types": [
+      "Water"
+    ],
+    "baseStats": {
+      "hp": 95,
+      "atk": 60,
+      "def": 79,
+      "spa": 100,
+      "spd": 125,
+      "spe": 81
+    },
+    "abilities": [
+      "Marvel Scale",
+      "Competitive",
+      "Cute Charm"
+    ],
+    "weightkg": 162,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "mimikyu",
+    "name": "Mimikyu",
+    "nameJa": "ミミッキュ",
+    "types": [
+      "Ghost",
+      "Fairy"
+    ],
+    "baseStats": {
+      "hp": 55,
+      "atk": 90,
+      "def": 80,
+      "spa": 50,
+      "spd": 105,
+      "spe": 96
+    },
+    "abilities": [
+      "Disguise"
+    ],
+    "weightkg": 0.7,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Mimikyu-Busted"
+    ]
+  },
+  {
+    "id": "mimikyubusted",
+    "name": "Mimikyu-Busted",
+    "nameJa": "ミミッキュ(ばれたすがた)",
+    "types": [
+      "Ghost",
+      "Fairy"
+    ],
+    "baseStats": {
+      "hp": 55,
+      "atk": 90,
+      "def": 80,
+      "spa": 50,
+      "spd": 105,
+      "spe": 96
+    },
+    "abilities": [
+      "Disguise"
+    ],
+    "weightkg": 0.7,
+    "baseSpecies": "Mimikyu",
+    "otherFormes": null
+  },
+  {
+    "id": "morpeko",
+    "name": "Morpeko",
+    "nameJa": "モルペコ",
+    "types": [
+      "Electric",
+      "Dark"
+    ],
+    "baseStats": {
+      "hp": 58,
+      "atk": 95,
+      "def": 58,
+      "spa": 70,
+      "spd": 58,
+      "spe": 97
+    },
+    "abilities": [
+      "Hunger Switch"
+    ],
+    "weightkg": 3,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Morpeko-Hangry"
+    ]
+  },
+  {
+    "id": "morpekohangry",
+    "name": "Morpeko-Hangry",
+    "nameJa": "モルペコ(はらぺこもよう)",
+    "types": [
+      "Electric",
+      "Dark"
+    ],
+    "baseStats": {
+      "hp": 58,
+      "atk": 95,
+      "def": 58,
+      "spa": 70,
+      "spd": 58,
+      "spe": 97
+    },
+    "abilities": [
+      "Hunger Switch"
+    ],
+    "weightkg": 3,
+    "baseSpecies": "Morpeko",
+    "otherFormes": null
+  },
+  {
+    "id": "mrrime",
+    "name": "Mr. Rime",
+    "nameJa": "バリコオル",
+    "types": [
+      "Ice",
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 80,
+      "atk": 85,
+      "def": 75,
+      "spa": 110,
+      "spd": 100,
+      "spe": 70
+    },
+    "abilities": [
+      "Tangled Feet",
+      "Screen Cleaner",
+      "Ice Body"
+    ],
+    "weightkg": 58.2,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "mudsdale",
+    "name": "Mudsdale",
+    "nameJa": "バンバドロ",
+    "types": [
+      "Ground"
+    ],
+    "baseStats": {
+      "hp": 100,
+      "atk": 125,
+      "def": 100,
+      "spa": 55,
+      "spd": 85,
+      "spe": 35
+    },
+    "abilities": [
+      "Own Tempo",
+      "Stamina",
+      "Inner Focus"
+    ],
+    "weightkg": 920,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "ninetales",
+    "name": "Ninetales",
+    "nameJa": "キュウコン",
+    "types": [
+      "Fire"
+    ],
+    "baseStats": {
+      "hp": 73,
+      "atk": 76,
+      "def": 75,
+      "spa": 81,
+      "spd": 100,
+      "spe": 100
+    },
+    "abilities": [
+      "Flash Fire",
+      "Drought"
+    ],
+    "weightkg": 19.9,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Ninetales-Alola"
+    ]
+  },
+  {
+    "id": "ninetalesalola",
+    "name": "Ninetales-Alola",
+    "nameJa": "アローラキュウコン",
+    "types": [
+      "Ice",
+      "Fairy"
+    ],
+    "baseStats": {
+      "hp": 73,
+      "atk": 67,
+      "def": 75,
+      "spa": 81,
+      "spd": 100,
+      "spe": 109
+    },
+    "abilities": [
+      "Snow Cloak",
+      "Snow Warning"
+    ],
+    "weightkg": 19.9,
+    "baseSpecies": "Ninetales",
+    "otherFormes": null
+  },
+  {
+    "id": "noivern",
+    "name": "Noivern",
+    "nameJa": "オンバーン",
+    "types": [
+      "Flying",
+      "Dragon"
+    ],
+    "baseStats": {
+      "hp": 85,
+      "atk": 70,
+      "def": 80,
+      "spa": 97,
+      "spd": 80,
+      "spe": 123
+    },
+    "abilities": [
+      "Frisk",
+      "Infiltrator",
+      "Telepathy"
+    ],
+    "weightkg": 85,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "oranguru",
+    "name": "Oranguru",
+    "nameJa": "ヤレユータン",
+    "types": [
+      "Normal",
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 90,
+      "atk": 60,
+      "def": 80,
+      "spa": 90,
+      "spd": 110,
+      "spe": 60
+    },
+    "abilities": [
+      "Inner Focus",
+      "Telepathy",
+      "Symbiosis"
+    ],
+    "weightkg": 76,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "orthworm",
+    "name": "Orthworm",
+    "nameJa": "ミミズズ",
+    "types": [
+      "Steel"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 85,
+      "def": 145,
+      "spa": 60,
+      "spd": 55,
+      "spe": 65
+    },
+    "abilities": [
+      "Earth Eater",
+      "Sand Veil"
+    ],
+    "weightkg": 310,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "palafin",
+    "name": "Palafin",
+    "nameJa": "イルカマン(ナイーブ)",
+    "types": [
+      "Water"
+    ],
+    "baseStats": {
+      "hp": 100,
+      "atk": 70,
+      "def": 72,
+      "spa": 53,
+      "spd": 62,
+      "spe": 100
+    },
+    "abilities": [
+      "Zero to Hero"
+    ],
+    "weightkg": 60.2,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Palafin-Hero"
+    ]
+  },
+  {
+    "id": "palafinhero",
+    "name": "Palafin-Hero",
+    "nameJa": "イルカマン(マイティ)",
+    "types": [
+      "Water"
+    ],
+    "baseStats": {
+      "hp": 100,
+      "atk": 160,
+      "def": 97,
+      "spa": 106,
+      "spd": 87,
+      "spe": 100
+    },
+    "abilities": [
+      "Zero to Hero"
+    ],
+    "weightkg": 97.4,
+    "baseSpecies": "Palafin",
+    "otherFormes": null
+  },
+  {
+    "id": "pangoro",
+    "name": "Pangoro",
+    "nameJa": "ゴロンダ",
+    "types": [
+      "Fighting",
+      "Dark"
+    ],
+    "baseStats": {
+      "hp": 95,
+      "atk": 124,
+      "def": 78,
+      "spa": 69,
+      "spd": 71,
+      "spe": 58
+    },
+    "abilities": [
+      "Iron Fist",
+      "Mold Breaker",
+      "Scrappy"
+    ],
+    "weightkg": 136,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "passimian",
+    "name": "Passimian",
+    "nameJa": "ナゲツケサル",
+    "types": [
+      "Fighting"
+    ],
+    "baseStats": {
+      "hp": 100,
+      "atk": 120,
+      "def": 90,
+      "spa": 40,
+      "spd": 60,
+      "spe": 80
+    },
+    "abilities": [
+      "Receiver",
+      "Defiant"
+    ],
+    "weightkg": 82.8,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "pelipper",
+    "name": "Pelipper",
+    "nameJa": "ペリッパー",
+    "types": [
+      "Water",
+      "Flying"
+    ],
+    "baseStats": {
+      "hp": 60,
+      "atk": 50,
+      "def": 100,
+      "spa": 95,
+      "spd": 70,
+      "spe": 65
+    },
+    "abilities": [
+      "Keen Eye",
+      "Drizzle",
+      "Rain Dish"
+    ],
+    "weightkg": 28,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "pidgeot",
+    "name": "Pidgeot",
+    "nameJa": "ピジョット",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
+    "baseStats": {
+      "hp": 83,
+      "atk": 80,
+      "def": 75,
+      "spa": 70,
+      "spd": 70,
+      "spe": 101
+    },
+    "abilities": [
+      "Keen Eye",
+      "Tangled Feet",
+      "Big Pecks"
+    ],
+    "weightkg": 39.5,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Pidgeot-Mega"
+    ]
+  },
+  {
+    "id": "pidgeotmega",
+    "name": "Pidgeot-Mega",
+    "nameJa": "メガピジョット",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
+    "baseStats": {
+      "hp": 83,
+      "atk": 80,
+      "def": 80,
+      "spa": 135,
+      "spd": 80,
+      "spe": 121
+    },
+    "abilities": [
+      "No Guard"
+    ],
+    "weightkg": 50.5,
+    "baseSpecies": "Pidgeot",
+    "otherFormes": null
+  },
+  {
+    "id": "pikachu",
+    "name": "Pikachu",
+    "nameJa": "ピカチュウ",
+    "types": [
+      "Electric"
+    ],
+    "baseStats": {
+      "hp": 35,
+      "atk": 55,
+      "def": 40,
+      "spa": 50,
+      "spd": 50,
+      "spe": 90
+    },
+    "abilities": [
+      "Static",
+      "Lightning Rod"
+    ],
+    "weightkg": 6,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "pinsir",
+    "name": "Pinsir",
+    "nameJa": "カイロス",
+    "types": [
+      "Bug"
+    ],
+    "baseStats": {
+      "hp": 65,
+      "atk": 125,
+      "def": 100,
+      "spa": 55,
+      "spd": 70,
+      "spe": 85
+    },
+    "abilities": [
+      "Hyper Cutter",
+      "Mold Breaker",
+      "Moxie"
+    ],
+    "weightkg": 55,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Pinsir-Mega"
+    ]
+  },
+  {
+    "id": "pinsirmega",
+    "name": "Pinsir-Mega",
+    "nameJa": "メガカイロス",
+    "types": [
+      "Bug",
+      "Flying"
+    ],
+    "baseStats": {
+      "hp": 65,
+      "atk": 155,
+      "def": 120,
+      "spa": 65,
+      "spd": 90,
+      "spe": 105
+    },
+    "abilities": [
+      "Aerilate"
+    ],
+    "weightkg": 59,
+    "baseSpecies": "Pinsir",
+    "otherFormes": null
+  },
+  {
+    "id": "politoed",
+    "name": "Politoed",
+    "nameJa": "ニョロトノ",
+    "types": [
+      "Water"
+    ],
+    "baseStats": {
+      "hp": 90,
+      "atk": 75,
+      "def": 75,
+      "spa": 90,
+      "spd": 100,
+      "spe": 70
+    },
+    "abilities": [
+      "Water Absorb",
+      "Damp",
+      "Drizzle"
+    ],
+    "weightkg": 33.9,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "polteageist",
+    "name": "Polteageist",
+    "nameJa": "ポットデス",
+    "types": [
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 60,
+      "atk": 65,
+      "def": 65,
+      "spa": 134,
+      "spd": 114,
+      "spe": 70
+    },
+    "abilities": [
+      "Weak Armor",
+      "Cursed Body"
+    ],
+    "weightkg": 0.4,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Polteageist-Antique"
+    ]
+  },
+  {
+    "id": "polteageistantique",
+    "name": "Polteageist-Antique",
+    "nameJa": "ポットデス(しんさくフォルム)",
+    "types": [
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 60,
+      "atk": 65,
+      "def": 65,
+      "spa": 134,
+      "spd": 114,
+      "spe": 70
+    },
+    "abilities": [
+      "Weak Armor"
+    ],
+    "weightkg": 0.4,
+    "baseSpecies": "Polteageist",
+    "otherFormes": null
+  },
+  {
+    "id": "primarina",
+    "name": "Primarina",
+    "nameJa": "アシレーヌ",
+    "types": [
+      "Water",
+      "Fairy"
+    ],
+    "baseStats": {
+      "hp": 80,
+      "atk": 74,
+      "def": 74,
+      "spa": 126,
+      "spd": 116,
+      "spe": 60
+    },
+    "abilities": [
+      "Torrent",
+      "Liquid Voice"
+    ],
+    "weightkg": 44,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "quaquaval",
+    "name": "Quaquaval",
+    "nameJa": "ウェーニバル",
+    "types": [
+      "Water",
+      "Fighting"
+    ],
+    "baseStats": {
+      "hp": 85,
+      "atk": 120,
+      "def": 80,
+      "spa": 85,
+      "spd": 75,
+      "spe": 85
+    },
+    "abilities": [
+      "Torrent",
+      "Moxie"
+    ],
+    "weightkg": 61.9,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "raichu",
+    "name": "Raichu",
+    "nameJa": "ライチュウ",
+    "types": [
+      "Electric"
+    ],
+    "baseStats": {
+      "hp": 60,
+      "atk": 90,
+      "def": 55,
+      "spa": 90,
+      "spd": 80,
+      "spe": 110
+    },
+    "abilities": [
+      "Static",
+      "Lightning Rod"
+    ],
+    "weightkg": 30,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Raichu-Alola"
+    ]
+  },
+  {
+    "id": "raichualola",
+    "name": "Raichu-Alola",
+    "nameJa": "アローラライチュウ",
+    "types": [
+      "Electric",
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 60,
+      "atk": 85,
+      "def": 50,
+      "spa": 95,
+      "spd": 85,
+      "spe": 110
+    },
+    "abilities": [
+      "Surge Surfer"
+    ],
+    "weightkg": 21,
+    "baseSpecies": "Raichu",
+    "otherFormes": null
+  },
+  {
+    "id": "rampardos",
+    "name": "Rampardos",
+    "nameJa": "ラムパルド",
+    "types": [
+      "Rock"
+    ],
+    "baseStats": {
+      "hp": 97,
+      "atk": 165,
+      "def": 60,
+      "spa": 65,
+      "spd": 50,
+      "spe": 58
+    },
+    "abilities": [
+      "Mold Breaker",
+      "Sheer Force"
+    ],
+    "weightkg": 102.5,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "reuniclus",
+    "name": "Reuniclus",
+    "nameJa": "ランクルス",
+    "types": [
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 110,
+      "atk": 65,
+      "def": 75,
+      "spa": 125,
+      "spd": 85,
+      "spe": 30
+    },
+    "abilities": [
+      "Overcoat",
+      "Magic Guard",
+      "Regenerator"
+    ],
+    "weightkg": 20.1,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "rhyperior",
+    "name": "Rhyperior",
+    "nameJa": "ドサイドン",
+    "types": [
+      "Ground",
+      "Rock"
+    ],
+    "baseStats": {
+      "hp": 115,
+      "atk": 140,
+      "def": 130,
+      "spa": 55,
+      "spd": 55,
+      "spe": 40
+    },
+    "abilities": [
+      "Lightning Rod",
+      "Solid Rock",
+      "Reckless"
+    ],
+    "weightkg": 282.8,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "roserade",
+    "name": "Roserade",
+    "nameJa": "ロズレイド",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
+    "baseStats": {
+      "hp": 60,
+      "atk": 70,
+      "def": 65,
+      "spa": 125,
+      "spd": 105,
+      "spe": 90
+    },
+    "abilities": [
+      "Natural Cure",
+      "Poison Point",
+      "Technician"
+    ],
+    "weightkg": 14.5,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "rotom",
+    "name": "Rotom",
+    "nameJa": "ロトム",
+    "types": [
+      "Electric",
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 50,
+      "atk": 50,
+      "def": 77,
+      "spa": 95,
+      "spd": 77,
+      "spe": 91
+    },
+    "abilities": [
+      "Levitate"
+    ],
+    "weightkg": 0.3,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Rotom-Fan",
+      "Rotom-Frost",
+      "Rotom-Heat",
+      "Rotom-Mow",
+      "Rotom-Wash"
+    ]
+  },
+  {
+    "id": "rotomfan",
+    "name": "Rotom-Fan",
+    "nameJa": "スピンロトム",
+    "types": [
+      "Electric",
+      "Flying"
+    ],
+    "baseStats": {
+      "hp": 50,
+      "atk": 65,
+      "def": 107,
+      "spa": 105,
+      "spd": 107,
+      "spe": 86
+    },
+    "abilities": [
+      "Levitate"
+    ],
+    "weightkg": 0.3,
+    "baseSpecies": "Rotom",
+    "otherFormes": null
+  },
+  {
+    "id": "rotomfrost",
+    "name": "Rotom-Frost",
+    "nameJa": "フロストロトム",
+    "types": [
+      "Electric",
+      "Ice"
+    ],
+    "baseStats": {
+      "hp": 50,
+      "atk": 65,
+      "def": 107,
+      "spa": 105,
+      "spd": 107,
+      "spe": 86
+    },
+    "abilities": [
+      "Levitate"
+    ],
+    "weightkg": 0.3,
+    "baseSpecies": "Rotom",
+    "otherFormes": null
+  },
+  {
+    "id": "rotomheat",
+    "name": "Rotom-Heat",
+    "nameJa": "ヒートロトム",
+    "types": [
+      "Electric",
+      "Fire"
+    ],
+    "baseStats": {
+      "hp": 50,
+      "atk": 65,
+      "def": 107,
+      "spa": 105,
+      "spd": 107,
+      "spe": 86
+    },
+    "abilities": [
+      "Levitate"
+    ],
+    "weightkg": 0.3,
+    "baseSpecies": "Rotom",
+    "otherFormes": null
+  },
+  {
+    "id": "rotommow",
+    "name": "Rotom-Mow",
+    "nameJa": "カットロトム",
+    "types": [
+      "Electric",
+      "Grass"
+    ],
+    "baseStats": {
+      "hp": 50,
+      "atk": 65,
+      "def": 107,
+      "spa": 105,
+      "spd": 107,
+      "spe": 86
+    },
+    "abilities": [
+      "Levitate"
+    ],
+    "weightkg": 0.3,
+    "baseSpecies": "Rotom",
+    "otherFormes": null
+  },
+  {
+    "id": "rotomwash",
+    "name": "Rotom-Wash",
+    "nameJa": "ウォッシュロトム",
+    "types": [
+      "Electric",
+      "Water"
+    ],
+    "baseStats": {
+      "hp": 50,
+      "atk": 65,
+      "def": 107,
+      "spa": 105,
+      "spd": 107,
+      "spe": 86
+    },
+    "abilities": [
+      "Levitate"
+    ],
+    "weightkg": 0.3,
+    "baseSpecies": "Rotom",
+    "otherFormes": null
+  },
+  {
+    "id": "runerigus",
+    "name": "Runerigus",
+    "nameJa": "デスバーン",
+    "types": [
+      "Ground",
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 58,
+      "atk": 95,
+      "def": 145,
+      "spa": 50,
+      "spd": 105,
+      "spe": 30
+    },
+    "abilities": [
+      "Wandering Spirit"
+    ],
+    "weightkg": 66.6,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "sableye",
+    "name": "Sableye",
+    "nameJa": "ヤミラミ",
+    "types": [
+      "Dark",
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 50,
+      "atk": 75,
+      "def": 75,
+      "spa": 65,
+      "spd": 65,
+      "spe": 50
+    },
+    "abilities": [
+      "Keen Eye",
+      "Stall",
+      "Prankster"
+    ],
+    "weightkg": 11,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Sableye-Mega"
+    ]
+  },
+  {
+    "id": "sableyemega",
+    "name": "Sableye-Mega",
+    "nameJa": "メガヤミラミ",
+    "types": [
+      "Dark",
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 50,
+      "atk": 85,
+      "def": 125,
+      "spa": 85,
+      "spd": 115,
+      "spe": 20
+    },
+    "abilities": [
+      "Magic Bounce"
+    ],
+    "weightkg": 161,
+    "baseSpecies": "Sableye",
+    "otherFormes": null
+  },
+  {
+    "id": "salazzle",
+    "name": "Salazzle",
+    "nameJa": "エンニュート",
+    "types": [
+      "Poison",
+      "Fire"
+    ],
+    "baseStats": {
+      "hp": 68,
+      "atk": 64,
+      "def": 60,
+      "spa": 111,
+      "spd": 60,
+      "spe": 117
+    },
+    "abilities": [
+      "Corrosion",
+      "Oblivious"
+    ],
+    "weightkg": 22.2,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "samurott",
+    "name": "Samurott",
+    "nameJa": "ダイケンキ",
+    "types": [
+      "Water"
+    ],
+    "baseStats": {
+      "hp": 95,
+      "atk": 100,
+      "def": 85,
+      "spa": 108,
+      "spd": 70,
+      "spe": 70
+    },
+    "abilities": [
+      "Torrent",
+      "Shell Armor"
+    ],
+    "weightkg": 94.6,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Samurott-Hisui"
+    ]
+  },
+  {
+    "id": "samurotthisui",
+    "name": "Samurott-Hisui",
+    "nameJa": "ヒスイダイケンキ",
+    "types": [
+      "Water",
+      "Dark"
+    ],
+    "baseStats": {
+      "hp": 90,
+      "atk": 108,
+      "def": 80,
+      "spa": 100,
+      "spd": 65,
+      "spe": 85
+    },
+    "abilities": [
+      "Torrent",
+      "Sharpness"
+    ],
+    "weightkg": 58.2,
+    "baseSpecies": "Samurott",
+    "otherFormes": null
+  },
+  {
+    "id": "sandaconda",
+    "name": "Sandaconda",
+    "nameJa": "サダイジャ",
+    "types": [
+      "Ground"
+    ],
+    "baseStats": {
+      "hp": 72,
+      "atk": 107,
+      "def": 125,
+      "spa": 65,
+      "spd": 70,
+      "spe": 71
+    },
+    "abilities": [
+      "Sand Spit",
+      "Shed Skin",
+      "Sand Veil"
+    ],
+    "weightkg": 65.5,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "scizor",
+    "name": "Scizor",
+    "nameJa": "ハッサム",
+    "types": [
+      "Bug",
+      "Steel"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 130,
+      "def": 100,
+      "spa": 55,
+      "spd": 80,
+      "spe": 65
+    },
+    "abilities": [
+      "Swarm",
+      "Technician",
+      "Light Metal"
+    ],
+    "weightkg": 118,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Scizor-Mega"
+    ]
+  },
+  {
+    "id": "scizormega",
+    "name": "Scizor-Mega",
+    "nameJa": "メガハッサム",
+    "types": [
+      "Bug",
+      "Steel"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 150,
+      "def": 140,
+      "spa": 65,
+      "spd": 100,
+      "spe": 75
+    },
+    "abilities": [
+      "Technician"
+    ],
+    "weightkg": 125,
+    "baseSpecies": "Scizor",
+    "otherFormes": null
+  },
+  {
+    "id": "scovillain",
+    "name": "Scovillain",
+    "nameJa": "スコヴィラン",
+    "types": [
+      "Grass",
+      "Fire"
+    ],
+    "baseStats": {
+      "hp": 65,
+      "atk": 108,
+      "def": 65,
+      "spa": 108,
+      "spd": 65,
+      "spe": 75
+    },
+    "abilities": [
+      "Chlorophyll",
+      "Insomnia",
+      "Moody"
+    ],
+    "weightkg": 15,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Scovillain-Mega"
+    ]
+  },
+  {
+    "id": "scovillainmega",
+    "name": "Scovillain-Mega",
+    "nameJa": "メガスコヴィラン",
+    "types": [
+      "Grass",
+      "Fire"
+    ],
+    "baseStats": {
+      "hp": 65,
+      "atk": 138,
+      "def": 85,
+      "spa": 138,
+      "spd": 85,
+      "spe": 75
+    },
+    "abilities": [
+      "Spicy Extract"
+    ],
+    "weightkg": 22,
+    "baseSpecies": "Scovillain",
+    "otherFormes": null
+  },
+  {
+    "id": "serperior",
+    "name": "Serperior",
+    "nameJa": "ジャローダ",
+    "types": [
+      "Grass"
+    ],
+    "baseStats": {
+      "hp": 75,
+      "atk": 75,
+      "def": 95,
+      "spa": 75,
+      "spd": 95,
+      "spe": 113
+    },
+    "abilities": [
+      "Overgrow",
+      "Contrary"
+    ],
+    "weightkg": 63,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "sharpedo",
+    "name": "Sharpedo",
+    "nameJa": "サメハダー",
+    "types": [
+      "Water",
+      "Dark"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 120,
+      "def": 40,
+      "spa": 95,
+      "spd": 40,
+      "spe": 95
+    },
+    "abilities": [
+      "Rough Skin",
+      "Speed Boost"
+    ],
+    "weightkg": 88.8,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Sharpedo-Mega"
+    ]
+  },
+  {
+    "id": "sharpedomega",
+    "name": "Sharpedo-Mega",
+    "nameJa": "メガサメハダー",
+    "types": [
+      "Water",
+      "Dark"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 140,
+      "def": 70,
+      "spa": 110,
+      "spd": 65,
+      "spe": 105
+    },
+    "abilities": [
+      "Strong Jaw"
+    ],
+    "weightkg": 130.3,
+    "baseSpecies": "Sharpedo",
+    "otherFormes": null
+  },
+  {
+    "id": "simipour",
+    "name": "Simipour",
+    "nameJa": "ヒヤッキー",
+    "types": [
+      "Water"
+    ],
+    "baseStats": {
+      "hp": 75,
+      "atk": 98,
+      "def": 63,
+      "spa": 98,
+      "spd": 63,
+      "spe": 101
+    },
+    "abilities": [
+      "Gluttony",
+      "Torrent"
+    ],
+    "weightkg": 29,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "simisage",
+    "name": "Simisage",
+    "nameJa": "ヤナッキー",
+    "types": [
+      "Grass"
+    ],
+    "baseStats": {
+      "hp": 75,
+      "atk": 98,
+      "def": 63,
+      "spa": 98,
+      "spd": 63,
+      "spe": 101
+    },
+    "abilities": [
+      "Gluttony",
+      "Overgrow"
+    ],
+    "weightkg": 30.5,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "simisear",
+    "name": "Simisear",
+    "nameJa": "バオッキー",
+    "types": [
+      "Fire"
+    ],
+    "baseStats": {
+      "hp": 75,
+      "atk": 98,
+      "def": 63,
+      "spa": 98,
+      "spd": 63,
+      "spe": 101
+    },
+    "abilities": [
+      "Gluttony",
+      "Blaze"
+    ],
+    "weightkg": 28,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "sinistcha",
+    "name": "Sinistcha",
+    "nameJa": "ヤバソチャ",
+    "types": [
+      "Grass",
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 71,
+      "atk": 60,
+      "def": 106,
+      "spa": 121,
+      "spd": 80,
+      "spe": 70
+    },
+    "abilities": [
+      "Hospitality",
+      "Heatproof"
+    ],
+    "weightkg": 2.2,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Sinistcha-Masterpiece"
+    ]
+  },
+  {
+    "id": "sinistchamasterpiece",
+    "name": "Sinistcha-Masterpiece",
+    "nameJa": "ヤバソチャ(けっさくフォルム)",
+    "types": [
+      "Grass",
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 71,
+      "atk": 60,
+      "def": 106,
+      "spa": 121,
+      "spd": 80,
+      "spe": 70
+    },
+    "abilities": [
+      "Hospitality"
+    ],
+    "weightkg": 2.2,
+    "baseSpecies": "Sinistcha",
+    "otherFormes": null
+  },
+  {
+    "id": "skarmory",
+    "name": "Skarmory",
+    "nameJa": "エアームド",
+    "types": [
+      "Steel",
+      "Flying"
+    ],
+    "baseStats": {
+      "hp": 65,
+      "atk": 80,
+      "def": 140,
+      "spa": 40,
+      "spd": 70,
+      "spe": 70
+    },
+    "abilities": [
+      "Keen Eye",
+      "Sturdy",
+      "Weak Armor"
+    ],
+    "weightkg": 50.5,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Skarmory-Mega"
+    ]
+  },
+  {
+    "id": "skarmorymega",
+    "name": "Skarmory-Mega",
+    "nameJa": "メガエアームド",
+    "types": [
+      "Steel",
+      "Flying"
+    ],
+    "baseStats": {
+      "hp": 65,
+      "atk": 140,
+      "def": 110,
+      "spa": 40,
+      "spd": 100,
+      "spe": 110
+    },
+    "abilities": [
+      "Stalwart"
+    ],
+    "weightkg": 40.4,
+    "baseSpecies": "Skarmory",
+    "otherFormes": null
+  },
+  {
+    "id": "skeledirge",
+    "name": "Skeledirge",
+    "nameJa": "ラウドボーン",
+    "types": [
+      "Fire",
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 104,
+      "atk": 75,
+      "def": 100,
+      "spa": 110,
+      "spd": 75,
+      "spe": 66
+    },
+    "abilities": [
+      "Blaze",
+      "Unaware"
+    ],
+    "weightkg": 326.5,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "slowbro",
+    "name": "Slowbro",
+    "nameJa": "ヤドラン",
+    "types": [
+      "Water",
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 95,
+      "atk": 75,
+      "def": 110,
+      "spa": 100,
+      "spd": 80,
+      "spe": 30
+    },
+    "abilities": [
+      "Oblivious",
+      "Own Tempo",
+      "Regenerator"
+    ],
+    "weightkg": 78.5,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Slowbro-Galar",
+      "Slowbro-Mega"
+    ]
+  },
+  {
+    "id": "slowbrogalar",
+    "name": "Slowbro-Galar",
+    "nameJa": "ガラルヤドラン",
+    "types": [
+      "Poison",
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 95,
+      "atk": 100,
+      "def": 95,
+      "spa": 100,
+      "spd": 70,
+      "spe": 30
+    },
+    "abilities": [
+      "Quick Draw",
+      "Own Tempo",
+      "Regenerator"
+    ],
+    "weightkg": 70.5,
+    "baseSpecies": "Slowbro",
+    "otherFormes": null
+  },
+  {
+    "id": "slowbromega",
+    "name": "Slowbro-Mega",
+    "nameJa": "メガヤドラン",
+    "types": [
+      "Water",
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 95,
+      "atk": 75,
+      "def": 180,
+      "spa": 130,
+      "spd": 80,
+      "spe": 30
+    },
+    "abilities": [
+      "Shell Armor"
+    ],
+    "weightkg": 120,
+    "baseSpecies": "Slowbro",
+    "otherFormes": null
+  },
+  {
+    "id": "slowking",
+    "name": "Slowking",
+    "nameJa": "ヤドキング",
+    "types": [
+      "Water",
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 95,
+      "atk": 75,
+      "def": 80,
+      "spa": 100,
+      "spd": 110,
+      "spe": 30
+    },
+    "abilities": [
+      "Oblivious",
+      "Own Tempo",
+      "Regenerator"
+    ],
+    "weightkg": 79.5,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Slowking-Galar"
+    ]
+  },
+  {
+    "id": "slowkinggalar",
+    "name": "Slowking-Galar",
+    "nameJa": "ガラルヤドキング",
+    "types": [
+      "Poison",
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 95,
+      "atk": 65,
+      "def": 80,
+      "spa": 110,
+      "spd": 110,
+      "spe": 30
+    },
+    "abilities": [
+      "Curious Medicine",
+      "Own Tempo",
+      "Regenerator"
+    ],
+    "weightkg": 79.5,
+    "baseSpecies": "Slowking",
+    "otherFormes": null
+  },
+  {
+    "id": "slurpuff",
+    "name": "Slurpuff",
+    "nameJa": "ペロリーム",
+    "types": [
+      "Fairy"
+    ],
+    "baseStats": {
+      "hp": 82,
+      "atk": 80,
+      "def": 86,
+      "spa": 85,
+      "spd": 75,
+      "spe": 72
+    },
+    "abilities": [
+      "Sweet Veil",
+      "Unburden"
+    ],
+    "weightkg": 5,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "sneasler",
+    "name": "Sneasler",
+    "nameJa": "オオニューラ",
+    "types": [
+      "Fighting",
+      "Poison"
+    ],
+    "baseStats": {
+      "hp": 80,
+      "atk": 130,
+      "def": 60,
+      "spa": 40,
+      "spd": 80,
+      "spe": 120
+    },
+    "abilities": [
+      "Pressure",
+      "Unburden",
+      "Poison Touch"
+    ],
+    "weightkg": 43,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "snorlax",
+    "name": "Snorlax",
+    "nameJa": "カビゴン",
+    "types": [
+      "Normal"
+    ],
+    "baseStats": {
+      "hp": 160,
+      "atk": 110,
+      "def": 65,
+      "spa": 65,
+      "spd": 110,
+      "spe": 30
+    },
+    "abilities": [
+      "Immunity",
+      "Thick Fat",
+      "Gluttony"
+    ],
+    "weightkg": 460,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "spiritomb",
+    "name": "Spiritomb",
+    "nameJa": "ミカルゲ",
+    "types": [
+      "Ghost",
+      "Dark"
+    ],
+    "baseStats": {
+      "hp": 50,
+      "atk": 92,
+      "def": 108,
+      "spa": 92,
+      "spd": 108,
+      "spe": 35
+    },
+    "abilities": [
+      "Pressure",
+      "Infiltrator"
+    ],
+    "weightkg": 108,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "starmie",
+    "name": "Starmie",
+    "nameJa": "スターミー",
+    "types": [
+      "Water",
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 60,
+      "atk": 75,
+      "def": 85,
+      "spa": 100,
+      "spd": 85,
+      "spe": 115
+    },
+    "abilities": [
+      "Illuminate",
+      "Natural Cure",
+      "Analytic"
+    ],
+    "weightkg": 80,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Starmie-Mega"
+    ]
+  },
+  {
+    "id": "starmiemega",
+    "name": "Starmie-Mega",
+    "nameJa": "メガスターミー",
+    "types": [
+      "Water",
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 60,
+      "atk": 100,
+      "def": 105,
+      "spa": 130,
+      "spd": 105,
+      "spe": 120
+    },
+    "abilities": [
+      "Huge Power"
+    ],
+    "weightkg": 80,
+    "baseSpecies": "Starmie",
+    "otherFormes": null
+  },
+  {
+    "id": "steelix",
+    "name": "Steelix",
+    "nameJa": "ハガネール",
+    "types": [
+      "Steel",
+      "Ground"
+    ],
+    "baseStats": {
+      "hp": 75,
+      "atk": 85,
+      "def": 200,
+      "spa": 55,
+      "spd": 65,
+      "spe": 30
+    },
+    "abilities": [
+      "Rock Head",
+      "Sturdy",
+      "Sheer Force"
+    ],
+    "weightkg": 400,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Steelix-Mega"
+    ]
+  },
+  {
+    "id": "steelixmega",
+    "name": "Steelix-Mega",
+    "nameJa": "メガハガネール",
+    "types": [
+      "Steel",
+      "Ground"
+    ],
+    "baseStats": {
+      "hp": 75,
+      "atk": 125,
+      "def": 230,
+      "spa": 55,
+      "spd": 95,
+      "spe": 30
+    },
+    "abilities": [
+      "Sand Force"
+    ],
+    "weightkg": 740,
+    "baseSpecies": "Steelix",
+    "otherFormes": null
+  },
+  {
+    "id": "stunfisk",
+    "name": "Stunfisk",
+    "nameJa": "マッギョ",
+    "types": [
+      "Ground",
+      "Electric"
+    ],
+    "baseStats": {
+      "hp": 109,
+      "atk": 66,
+      "def": 84,
+      "spa": 81,
+      "spd": 99,
+      "spe": 32
+    },
+    "abilities": [
+      "Static",
+      "Limber",
+      "Sand Veil"
+    ],
+    "weightkg": 11,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Stunfisk-Galar"
+    ]
+  },
+  {
+    "id": "stunfiskgalar",
+    "name": "Stunfisk-Galar",
+    "nameJa": "ガラルマッギョ",
+    "types": [
+      "Ground",
+      "Steel"
+    ],
+    "baseStats": {
+      "hp": 109,
+      "atk": 81,
+      "def": 99,
+      "spa": 66,
+      "spd": 84,
+      "spe": 32
+    },
+    "abilities": [
+      "Mimicry"
+    ],
+    "weightkg": 20.5,
+    "baseSpecies": "Stunfisk",
+    "otherFormes": null
+  },
+  {
+    "id": "sylveon",
+    "name": "Sylveon",
+    "nameJa": "ニンフィア",
+    "types": [
+      "Fairy"
+    ],
+    "baseStats": {
+      "hp": 95,
+      "atk": 65,
+      "def": 65,
+      "spa": 110,
+      "spd": 130,
+      "spe": 60
+    },
+    "abilities": [
+      "Cute Charm",
+      "Pixilate"
+    ],
+    "weightkg": 23.5,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "talonflame",
+    "name": "Talonflame",
+    "nameJa": "ファイアロー",
+    "types": [
+      "Fire",
+      "Flying"
+    ],
+    "baseStats": {
+      "hp": 78,
+      "atk": 81,
+      "def": 71,
+      "spa": 74,
+      "spd": 69,
+      "spe": 126
+    },
+    "abilities": [
+      "Flame Body",
+      "Gale Wings"
+    ],
+    "weightkg": 24.5,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "tauros",
+    "name": "Tauros",
+    "nameJa": "ケンタロス",
+    "types": [
+      "Normal"
+    ],
+    "baseStats": {
+      "hp": 75,
+      "atk": 100,
+      "def": 95,
+      "spa": 40,
+      "spd": 70,
+      "spe": 110
+    },
+    "abilities": [
+      "Intimidate",
+      "Anger Point",
+      "Sheer Force"
+    ],
+    "weightkg": 88.4,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Tauros-Paldea-Aqua",
+      "Tauros-Paldea-Blaze",
+      "Tauros-Paldea-Combat"
+    ]
+  },
+  {
+    "id": "taurospaldeaaqua",
+    "name": "Tauros-Paldea-Aqua",
+    "nameJa": "パルデアケンタロス(みず)",
+    "types": [
+      "Fighting",
+      "Water"
+    ],
+    "baseStats": {
+      "hp": 75,
+      "atk": 110,
+      "def": 105,
+      "spa": 30,
+      "spd": 70,
+      "spe": 100
+    },
+    "abilities": [
+      "Intimidate",
+      "Anger Point",
+      "Cud Chew"
+    ],
+    "weightkg": 110,
+    "baseSpecies": "Tauros",
+    "otherFormes": null
+  },
+  {
+    "id": "taurospaldeablaze",
+    "name": "Tauros-Paldea-Blaze",
+    "nameJa": "パルデアケンタロス(ほのお)",
+    "types": [
+      "Fighting",
+      "Fire"
+    ],
+    "baseStats": {
+      "hp": 75,
+      "atk": 110,
+      "def": 105,
+      "spa": 30,
+      "spd": 70,
+      "spe": 100
+    },
+    "abilities": [
+      "Intimidate",
+      "Anger Point",
+      "Cud Chew"
+    ],
+    "weightkg": 85,
+    "baseSpecies": "Tauros",
+    "otherFormes": null
+  },
+  {
+    "id": "taurospaldeacombat",
+    "name": "Tauros-Paldea-Combat",
+    "nameJa": "パルデアケンタロス(かくとう)",
+    "types": [
+      "Fighting"
+    ],
+    "baseStats": {
+      "hp": 75,
+      "atk": 110,
+      "def": 105,
+      "spa": 30,
+      "spd": 70,
+      "spe": 100
+    },
+    "abilities": [
+      "Intimidate",
+      "Anger Point",
+      "Cud Chew"
+    ],
+    "weightkg": 115,
+    "baseSpecies": "Tauros",
+    "otherFormes": null
+  },
+  {
+    "id": "tinkaton",
+    "name": "Tinkaton",
+    "nameJa": "デカヌチャン",
+    "types": [
+      "Fairy",
+      "Steel"
+    ],
+    "baseStats": {
+      "hp": 85,
+      "atk": 75,
+      "def": 77,
+      "spa": 70,
+      "spd": 105,
+      "spe": 94
+    },
+    "abilities": [
+      "Mold Breaker",
+      "Own Tempo",
+      "Pickpocket"
+    ],
+    "weightkg": 112.8,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "torkoal",
+    "name": "Torkoal",
+    "nameJa": "コータス",
+    "types": [
+      "Fire"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 85,
+      "def": 140,
+      "spa": 85,
+      "spd": 70,
+      "spe": 20
+    },
+    "abilities": [
+      "White Smoke",
+      "Drought",
+      "Shell Armor"
+    ],
+    "weightkg": 80.4,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "torterra",
+    "name": "Torterra",
+    "nameJa": "ドダイトス",
+    "types": [
+      "Grass",
+      "Ground"
+    ],
+    "baseStats": {
+      "hp": 95,
+      "atk": 109,
+      "def": 105,
+      "spa": 75,
+      "spd": 85,
+      "spe": 56
+    },
+    "abilities": [
+      "Overgrow",
+      "Shell Armor"
+    ],
+    "weightkg": 310,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "toucannon",
+    "name": "Toucannon",
+    "nameJa": "ドデカバシ",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
+    "baseStats": {
+      "hp": 80,
+      "atk": 120,
+      "def": 75,
+      "spa": 75,
+      "spd": 75,
+      "spe": 60
+    },
+    "abilities": [
+      "Keen Eye",
+      "Skill Link",
+      "Sheer Force"
+    ],
+    "weightkg": 26,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "toxapex",
+    "name": "Toxapex",
+    "nameJa": "ドヒドイデ",
+    "types": [
+      "Poison",
+      "Water"
+    ],
+    "baseStats": {
+      "hp": 50,
+      "atk": 63,
+      "def": 152,
+      "spa": 53,
+      "spd": 142,
+      "spe": 35
+    },
+    "abilities": [
+      "Merciless",
+      "Limber",
+      "Regenerator"
+    ],
+    "weightkg": 14.5,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "toxicroak",
+    "name": "Toxicroak",
+    "nameJa": "ドクロッグ",
+    "types": [
+      "Poison",
+      "Fighting"
+    ],
+    "baseStats": {
+      "hp": 83,
+      "atk": 106,
+      "def": 65,
+      "spa": 86,
+      "spd": 65,
+      "spe": 85
+    },
+    "abilities": [
+      "Anticipation",
+      "Dry Skin",
+      "Poison Touch"
+    ],
+    "weightkg": 44.4,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "trevenant",
+    "name": "Trevenant",
+    "nameJa": "オーロット",
+    "types": [
+      "Ghost",
+      "Grass"
+    ],
+    "baseStats": {
+      "hp": 85,
+      "atk": 110,
+      "def": 76,
+      "spa": 65,
+      "spd": 82,
+      "spe": 56
+    },
+    "abilities": [
+      "Natural Cure",
+      "Frisk",
+      "Harvest"
+    ],
+    "weightkg": 71,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "tsareena",
+    "name": "Tsareena",
+    "nameJa": "アマージョ",
+    "types": [
+      "Grass"
+    ],
+    "baseStats": {
+      "hp": 72,
+      "atk": 120,
+      "def": 98,
+      "spa": 50,
+      "spd": 98,
+      "spe": 72
+    },
+    "abilities": [
+      "Leaf Guard",
+      "Queenly Majesty",
+      "Sweet Veil"
+    ],
+    "weightkg": 21.4,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "typhlosion",
+    "name": "Typhlosion",
+    "nameJa": "バクフーン",
+    "types": [
+      "Fire"
+    ],
+    "baseStats": {
+      "hp": 78,
+      "atk": 84,
+      "def": 78,
+      "spa": 109,
+      "spd": 85,
+      "spe": 100
+    },
+    "abilities": [
+      "Blaze",
+      "Flash Fire"
+    ],
+    "weightkg": 79.5,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Typhlosion-Hisui"
+    ]
+  },
+  {
+    "id": "typhlosionhisui",
+    "name": "Typhlosion-Hisui",
+    "nameJa": "ヒスイバクフーン",
+    "types": [
+      "Fire",
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 73,
+      "atk": 84,
+      "def": 78,
+      "spa": 119,
+      "spd": 85,
+      "spe": 95
+    },
+    "abilities": [
+      "Blaze",
+      "Frisk"
+    ],
+    "weightkg": 69.8,
+    "baseSpecies": "Typhlosion",
+    "otherFormes": null
+  },
+  {
+    "id": "tyranitar",
+    "name": "Tyranitar",
+    "nameJa": "バンギラス",
+    "types": [
+      "Rock",
+      "Dark"
+    ],
+    "baseStats": {
+      "hp": 100,
+      "atk": 134,
+      "def": 110,
+      "spa": 95,
+      "spd": 100,
+      "spe": 61
+    },
+    "abilities": [
+      "Sand Stream",
+      "Unnerve"
+    ],
+    "weightkg": 202,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Tyranitar-Mega"
+    ]
+  },
+  {
+    "id": "tyranitarmega",
+    "name": "Tyranitar-Mega",
+    "nameJa": "メガバンギラス",
+    "types": [
+      "Rock",
+      "Dark"
+    ],
+    "baseStats": {
+      "hp": 100,
+      "atk": 164,
+      "def": 150,
+      "spa": 95,
+      "spd": 120,
+      "spe": 71
+    },
+    "abilities": [
+      "Sand Stream"
+    ],
+    "weightkg": 255,
+    "baseSpecies": "Tyranitar",
+    "otherFormes": null
+  },
+  {
+    "id": "tyrantrum",
+    "name": "Tyrantrum",
+    "nameJa": "ガチゴラス",
+    "types": [
+      "Rock",
+      "Dragon"
+    ],
+    "baseStats": {
+      "hp": 82,
+      "atk": 121,
+      "def": 119,
+      "spa": 69,
+      "spd": 59,
+      "spe": 71
+    },
+    "abilities": [
+      "Strong Jaw",
+      "Rock Head"
+    ],
+    "weightkg": 270,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "umbreon",
+    "name": "Umbreon",
+    "nameJa": "ブラッキー",
+    "types": [
+      "Dark"
+    ],
+    "baseStats": {
+      "hp": 95,
+      "atk": 65,
+      "def": 110,
+      "spa": 60,
+      "spd": 130,
+      "spe": 65
+    },
+    "abilities": [
+      "Synchronize",
+      "Inner Focus"
+    ],
+    "weightkg": 27,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "vanilluxe",
+    "name": "Vanilluxe",
+    "nameJa": "バイバニラ",
+    "types": [
+      "Ice"
+    ],
+    "baseStats": {
+      "hp": 71,
+      "atk": 95,
+      "def": 85,
+      "spa": 110,
+      "spd": 95,
+      "spe": 79
+    },
+    "abilities": [
+      "Ice Body",
+      "Snow Warning",
+      "Weak Armor"
+    ],
+    "weightkg": 57.5,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "vaporeon",
+    "name": "Vaporeon",
+    "nameJa": "シャワーズ",
+    "types": [
+      "Water"
+    ],
+    "baseStats": {
+      "hp": 130,
+      "atk": 65,
+      "def": 60,
+      "spa": 110,
+      "spd": 95,
+      "spe": 65
+    },
+    "abilities": [
+      "Water Absorb",
+      "Hydration"
+    ],
+    "weightkg": 29,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "venusaur",
+    "name": "Venusaur",
+    "nameJa": "フシギバナ",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
+    "baseStats": {
+      "hp": 80,
+      "atk": 82,
+      "def": 83,
+      "spa": 100,
+      "spd": 100,
+      "spe": 80
+    },
+    "abilities": [
+      "Overgrow",
+      "Chlorophyll"
+    ],
+    "weightkg": 100,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Venusaur-Mega"
+    ]
+  },
+  {
+    "id": "venusaurmega",
+    "name": "Venusaur-Mega",
+    "nameJa": "メガフシギバナ",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
+    "baseStats": {
+      "hp": 80,
+      "atk": 100,
+      "def": 123,
+      "spa": 122,
+      "spd": 120,
+      "spe": 80
+    },
+    "abilities": [
+      "Thick Fat"
+    ],
+    "weightkg": 155.5,
+    "baseSpecies": "Venusaur",
+    "otherFormes": null
+  },
+  {
+    "id": "victreebel",
+    "name": "Victreebel",
+    "nameJa": "ウツボット",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
+    "baseStats": {
+      "hp": 80,
+      "atk": 105,
+      "def": 65,
+      "spa": 100,
+      "spd": 70,
+      "spe": 70
+    },
+    "abilities": [
+      "Chlorophyll",
+      "Gluttony"
+    ],
+    "weightkg": 15.5,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Victreebel-Mega"
+    ]
+  },
+  {
+    "id": "victreebelmega",
+    "name": "Victreebel-Mega",
+    "nameJa": "メガウツボット",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
+    "baseStats": {
+      "hp": 80,
+      "atk": 125,
+      "def": 85,
+      "spa": 135,
+      "spd": 95,
+      "spe": 70
+    },
+    "abilities": [
+      "Innards Out"
+    ],
+    "weightkg": 125.5,
+    "baseSpecies": "Victreebel",
+    "otherFormes": null
+  },
+  {
+    "id": "vivillon",
+    "name": "Vivillon",
+    "nameJa": "ビビヨン",
+    "types": [
+      "Bug",
+      "Flying"
+    ],
+    "baseStats": {
+      "hp": 80,
+      "atk": 52,
+      "def": 50,
+      "spa": 90,
+      "spd": 50,
+      "spe": 89
+    },
+    "abilities": [
+      "Shield Dust",
+      "Compound Eyes",
+      "Friend Guard"
+    ],
+    "weightkg": 17,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Vivillon-Fancy",
+      "Vivillon-Pokeball"
+    ]
+  },
+  {
+    "id": "vivillonfancy",
+    "name": "Vivillon-Fancy",
+    "nameJa": "ビビヨン(ファンシーなもよう)",
+    "types": [
+      "Bug",
+      "Flying"
+    ],
+    "baseStats": {
+      "hp": 80,
+      "atk": 52,
+      "def": 50,
+      "spa": 90,
+      "spd": 50,
+      "spe": 89
+    },
+    "abilities": [
+      "Shield Dust"
+    ],
+    "weightkg": 17,
+    "baseSpecies": "Vivillon",
+    "otherFormes": null
+  },
+  {
+    "id": "vivillonpokeball",
+    "name": "Vivillon-Pokeball",
+    "nameJa": "ビビヨン(モンスターボールもよう)",
+    "types": [
+      "Bug",
+      "Flying"
+    ],
+    "baseStats": {
+      "hp": 80,
+      "atk": 52,
+      "def": 50,
+      "spa": 90,
+      "spd": 50,
+      "spe": 89
+    },
+    "abilities": [
+      "Shield Dust"
+    ],
+    "weightkg": 17,
+    "baseSpecies": "Vivillon",
+    "otherFormes": null
+  },
+  {
+    "id": "volcarona",
+    "name": "Volcarona",
+    "nameJa": "ウルガモス",
+    "types": [
+      "Bug",
+      "Fire"
+    ],
+    "baseStats": {
+      "hp": 85,
+      "atk": 60,
+      "def": 65,
+      "spa": 135,
+      "spd": 105,
+      "spe": 100
+    },
+    "abilities": [
+      "Flame Body",
+      "Swarm"
+    ],
+    "weightkg": 46,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "watchog",
+    "name": "Watchog",
+    "nameJa": "ミルホッグ",
+    "types": [
+      "Normal"
+    ],
+    "baseStats": {
+      "hp": 60,
+      "atk": 85,
+      "def": 69,
+      "spa": 60,
+      "spd": 69,
+      "spe": 77
+    },
+    "abilities": [
+      "Illuminate",
+      "Keen Eye",
+      "Analytic"
+    ],
+    "weightkg": 27,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "weavile",
+    "name": "Weavile",
+    "nameJa": "マニューラ",
+    "types": [
+      "Dark",
+      "Ice"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 120,
+      "def": 65,
+      "spa": 45,
+      "spd": 85,
+      "spe": 125
+    },
+    "abilities": [
+      "Pressure",
+      "Pickpocket"
+    ],
+    "weightkg": 34,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "whimsicott",
+    "name": "Whimsicott",
+    "nameJa": "エルフーン",
+    "types": [
+      "Grass",
+      "Fairy"
+    ],
+    "baseStats": {
+      "hp": 60,
+      "atk": 67,
+      "def": 85,
+      "spa": 77,
+      "spd": 75,
+      "spe": 116
+    },
+    "abilities": [
+      "Prankster",
+      "Infiltrator",
+      "Chlorophyll"
+    ],
+    "weightkg": 6.6,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "wyrdeer",
+    "name": "Wyrdeer",
+    "nameJa": "アヤシシ",
+    "types": [
+      "Normal",
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 103,
+      "atk": 105,
+      "def": 72,
+      "spa": 105,
+      "spd": 75,
+      "spe": 65
+    },
+    "abilities": [
+      "Intimidate",
+      "Frisk",
+      "Sap Sipper"
+    ],
+    "weightkg": 95.1,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "zoroark",
+    "name": "Zoroark",
+    "nameJa": "ゾロアーク",
+    "types": [
+      "Dark"
+    ],
+    "baseStats": {
+      "hp": 60,
+      "atk": 105,
+      "def": 60,
+      "spa": 120,
+      "spd": 60,
+      "spe": 105
+    },
+    "abilities": [
+      "Illusion"
+    ],
+    "weightkg": 81.1,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Zoroark-Hisui"
+    ]
+  },
+  {
+    "id": "zoroarkhisui",
+    "name": "Zoroark-Hisui",
+    "nameJa": "ヒスイゾロアーク",
+    "types": [
+      "Normal",
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 55,
+      "atk": 100,
+      "def": 60,
+      "spa": 125,
+      "spd": 60,
+      "spe": 110
+    },
+    "abilities": [
+      "Illusion"
+    ],
+    "weightkg": 73,
+    "baseSpecies": "Zoroark",
+    "otherFormes": null
+  }
+]

@@ -1,0 +1,92 @@
+[
+  {
+    "id": "bug",
+    "name": "Bug",
+    "nameJa": "むし"
+  },
+  {
+    "id": "dark",
+    "name": "Dark",
+    "nameJa": "あく"
+  },
+  {
+    "id": "dragon",
+    "name": "Dragon",
+    "nameJa": "ドラゴン"
+  },
+  {
+    "id": "electric",
+    "name": "Electric",
+    "nameJa": "でんき"
+  },
+  {
+    "id": "fairy",
+    "name": "Fairy",
+    "nameJa": "フェアリー"
+  },
+  {
+    "id": "fighting",
+    "name": "Fighting",
+    "nameJa": "かくとう"
+  },
+  {
+    "id": "fire",
+    "name": "Fire",
+    "nameJa": "ほのお"
+  },
+  {
+    "id": "flying",
+    "name": "Flying",
+    "nameJa": "ひこう"
+  },
+  {
+    "id": "ghost",
+    "name": "Ghost",
+    "nameJa": "ゴースト"
+  },
+  {
+    "id": "grass",
+    "name": "Grass",
+    "nameJa": "くさ"
+  },
+  {
+    "id": "ground",
+    "name": "Ground",
+    "nameJa": "じめん"
+  },
+  {
+    "id": "ice",
+    "name": "Ice",
+    "nameJa": "こおり"
+  },
+  {
+    "id": "normal",
+    "name": "Normal",
+    "nameJa": "ノーマル"
+  },
+  {
+    "id": "poison",
+    "name": "Poison",
+    "nameJa": "どく"
+  },
+  {
+    "id": "psychic",
+    "name": "Psychic",
+    "nameJa": "エスパー"
+  },
+  {
+    "id": "rock",
+    "name": "Rock",
+    "nameJa": "いわ"
+  },
+  {
+    "id": "steel",
+    "name": "Steel",
+    "nameJa": "はがね"
+  },
+  {
+    "id": "water",
+    "name": "Water",
+    "nameJa": "みず"
+  }
+]

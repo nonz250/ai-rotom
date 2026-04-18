@@ -1,7 +1,14 @@
-import abilitiesData from "../data/champions-abilities.json";
-import itemsData from "../data/champions-items.json";
-import movesData from "../data/champions-moves.json";
-import learnsetsData from "../data/champions-learnsets.json";
+import type { BaseStats, PokemonEntry, PokemonEntryProvider } from "@ai-rotom/shared";
+import abilitiesData from "@data/abilities.json";
+import itemsData from "@data/items.json";
+import movesData from "@data/moves.json";
+import learnsetsData from "@data/learnsets.json";
+import pokemonData from "@data/pokemon.json";
+import naturesData from "@data/natures.json";
+import typesData from "@data/types.json";
+import conditionsData from "@data/conditions.json";
+
+export type { BaseStats, PokemonEntry } from "@ai-rotom/shared";
 
 /**
  * 技のカテゴリー。
@@ -69,11 +76,58 @@ export interface MoveEntry {
  */
 export type LearnsetMap = Record<string, string[]>;
 
+/**
+ * 性格による能力補正。
+ * plus はステータスが 1.1 倍される能力、minus は 0.9 倍される能力。
+ * どちらも null の場合は無補正性格。
+ */
+export interface NatureEntry {
+  id: string;
+  name: string;
+  nameJa: string;
+  plus: string | null;
+  minus: string | null;
+}
+
+/**
+ * ポケモンのタイプデータ。
+ */
+export interface TypeEntry {
+  id: string;
+  name: string;
+  nameJa: string;
+}
+
+/**
+ * バトル中の状態（天候・フィールド・状態異常・サイド効果）のエントリ。
+ */
+export interface ConditionEntry {
+  id: string;
+  name: string;
+  nameJa: string;
+}
+
+/**
+ * バトル条件データのまとまり。
+ * weather: 天候 / terrain: フィールド / status: 状態異常 / sideCondition: サイド効果
+ */
+export interface ConditionsData {
+  weather: ConditionEntry[];
+  terrain: ConditionEntry[];
+  status: ConditionEntry[];
+  sideCondition: ConditionEntry[];
+}
+
 export const championsAbilities: AbilityEntry[] =
   abilitiesData as AbilityEntry[];
 export const championsItems: ItemEntry[] = itemsData as ItemEntry[];
 export const championsMoves: MoveEntry[] = movesData as MoveEntry[];
 export const championsLearnsets: LearnsetMap = learnsetsData as LearnsetMap;
+export const championsPokemon: PokemonEntry[] = pokemonData as PokemonEntry[];
+export const championsNatures: NatureEntry[] = naturesData as NatureEntry[];
+export const championsTypes: TypeEntry[] = typesData as TypeEntry[];
+export const championsConditions: ConditionsData =
+  conditionsData as ConditionsData;
 
 /** 特性 ID → 特性データの Map */
 export const abilitiesById: ReadonlyMap<string, AbilityEntry> = new Map(
@@ -90,6 +144,21 @@ export const movesById: ReadonlyMap<string, MoveEntry> = new Map(
   championsMoves.map((m) => [m.id, m]),
 );
 
+/** ポケモン ID → ポケモンデータの Map */
+export const pokemonById: ReadonlyMap<string, PokemonEntry> = new Map(
+  championsPokemon.map((p) => [p.id, p]),
+);
+
+/** 性格 ID → 性格データの Map */
+export const naturesById: ReadonlyMap<string, NatureEntry> = new Map(
+  championsNatures.map((n) => [n.id, n]),
+);
+
+/** タイプ ID → タイプデータの Map */
+export const typesById: ReadonlyMap<string, TypeEntry> = new Map(
+  championsTypes.map((t) => [t.id, t]),
+);
+
 /**
  * Showdown 慣例の ID 変換（toID 相当）。
  * 英語名から kebab-case 小文字の ID に変換する。
@@ -98,3 +167,12 @@ export const movesById: ReadonlyMap<string, MoveEntry> = new Map(
 export function toDataId(name: string): string {
   return name.toLowerCase().replace(/[^a-z0-9]/g, "");
 }
+
+/**
+ * shared/calc モジュールに渡すための PokemonEntryProvider 実装。
+ * 英語名から pokemonById Map を引いて PokemonEntry を返す。
+ */
+export const pokemonEntryProvider: PokemonEntryProvider = {
+  getByName: (name: string): PokemonEntry | undefined =>
+    pokemonById.get(toDataId(name)),
+};

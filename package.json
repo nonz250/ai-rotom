@@ -2,7 +2,7 @@
   "name": "ai-rotom",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/mcp-server"
   ],
   "scripts": {
     "build": "npm run build --workspaces",

@@ -1,15 +1,27 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { SERVER_INSTRUCTIONS } from "./instructions.js";
-import { registerAbilityInfoTool } from "./tools/ability-info.js";
-import { registerDamageCalculationTools } from "./tools/damage-calculation.js";
-import { registerItemInfoTool } from "./tools/item-info.js";
-import { registerLearnsetTool } from "./tools/learnset.js";
-import { registerMatchupTool } from "./tools/matchup.js";
-import { registerMoveInfoTool } from "./tools/move-info.js";
-import { registerPartyAnalysisTool } from "./tools/party-analysis.js";
-import { registerPokemonInfoTools } from "./tools/pokemon-info.js";
-import { registerStatsCalculationTool } from "./tools/stats-calculation.js";
+import { registerAbilityInfoTool } from "./tools/info/ability-info.js";
+import { registerConditionInfoTool } from "./tools/info/condition-info.js";
+import { registerDamageCalculationTools } from "./tools/calc/damage-calculation.js";
+import { registerDamageRangeTool } from "./tools/calc/damage-range.js";
+import { registerFindCountersTool } from "./tools/analysis/find-counters.js";
+import { registerItemInfoTool } from "./tools/info/item-info.js";
+import { registerLearnsetTool } from "./tools/info/learnset.js";
+import { registerMatchupTool } from "./tools/analysis/matchup.js";
+import { registerMoveInfoTool } from "./tools/info/move-info.js";
+import { registerNatureInfoTool } from "./tools/info/nature-info.js";
+import { registerPartyAnalysisTool } from "./tools/analysis/party-analysis.js";
+import { registerPartyCoverageTool } from "./tools/analysis/party-coverage.js";
+import { registerPokemonInfoTools } from "./tools/info/pokemon-info.js";
+import { registerPokemonSummaryTool } from "./tools/info/pokemon-summary.js";
+import { registerSearchByAbilityTool } from "./tools/search/search-by-ability.js";
+import { registerSearchByMoveTool } from "./tools/search/search-by-move.js";
+import { registerSearchByTypeEffectivenessTool } from "./tools/search/search-by-type-effectiveness.js";
+import { registerSelectionAnalysisTool } from "./tools/analysis/selection-analysis.js";
+import { registerSpeedTiersTool } from "./tools/calc/speed-tiers.js";
+import { registerStatsCalculationTool } from "./tools/calc/stats-calculation.js";
+import { registerTypeInfoTool } from "./tools/info/type-info.js";
 
 const SERVER_NAME = "ai-rotom";
 const SERVER_VERSION = "0.0.1";
@@ -26,14 +38,26 @@ export function createServer(): McpServer {
   );
 
   registerAbilityInfoTool(server);
+  registerConditionInfoTool(server);
   registerDamageCalculationTools(server);
+  registerDamageRangeTool(server);
+  registerFindCountersTool(server);
   registerItemInfoTool(server);
   registerLearnsetTool(server);
   registerMatchupTool(server);
   registerMoveInfoTool(server);
+  registerNatureInfoTool(server);
   registerPartyAnalysisTool(server);
+  registerPartyCoverageTool(server);
   registerPokemonInfoTools(server);
+  registerPokemonSummaryTool(server);
+  registerSearchByAbilityTool(server);
+  registerSearchByMoveTool(server);
+  registerSearchByTypeEffectivenessTool(server);
+  registerSelectionAnalysisTool(server);
+  registerSpeedTiersTool(server);
   registerStatsCalculationTool(server);
+  registerTypeInfoTool(server);
 
   return server;
 }
