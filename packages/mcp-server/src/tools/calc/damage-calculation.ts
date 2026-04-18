@@ -1,8 +1,12 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { pokemonSchema, conditionsSchema } from "@ai-rotom/shared";
-import type { DamageCalcResult } from "../../calc/damage-calculator.js";
-import { DamageCalculatorAdapter } from "../../calc/damage-calculator.js";
+import {
+  DamageCalculatorAdapter,
+  conditionsSchema,
+  pokemonSchema,
+} from "@ai-rotom/shared";
+import type { DamageCalcResult } from "@ai-rotom/shared";
+import { pokemonEntryProvider } from "../../data-store.js";
 import {
   pokemonNameResolver,
   moveNameResolver,
@@ -64,13 +68,16 @@ interface PartyMatchupOutput {
 }
 
 function createCalculator(): DamageCalculatorAdapter {
-  return new DamageCalculatorAdapter({
-    pokemon: pokemonNameResolver,
-    move: moveNameResolver,
-    ability: abilityNameResolver,
-    item: itemNameResolver,
-    nature: natureNameResolver,
-  });
+  return new DamageCalculatorAdapter(
+    {
+      pokemon: pokemonNameResolver,
+      move: moveNameResolver,
+      ability: abilityNameResolver,
+      item: itemNameResolver,
+      nature: natureNameResolver,
+    },
+    pokemonEntryProvider,
+  );
 }
 
 function formatErrorResponse(error: unknown): {

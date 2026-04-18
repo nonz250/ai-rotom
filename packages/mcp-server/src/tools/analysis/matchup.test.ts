@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { Generations, Pokemon } from "@smogon/calc";
-import { DamageCalculatorAdapter } from "../../calc/damage-calculator";
+import { DamageCalculatorAdapter } from "@ai-rotom/shared";
+import { pokemonEntryProvider } from "../../data-store";
 import {
   pokemonNameResolver,
   moveNameResolver,
@@ -12,13 +13,16 @@ import {
 const CHAMPIONS_GEN_NUM = 0;
 
 describe("analyze_matchup logic", () => {
-  const adapter = new DamageCalculatorAdapter({
-    pokemon: pokemonNameResolver,
-    move: moveNameResolver,
-    ability: abilityNameResolver,
-    item: itemNameResolver,
-    nature: natureNameResolver,
-  });
+  const adapter = new DamageCalculatorAdapter(
+    {
+      pokemon: pokemonNameResolver,
+      move: moveNameResolver,
+      ability: abilityNameResolver,
+      item: itemNameResolver,
+      nature: natureNameResolver,
+    },
+    pokemonEntryProvider,
+  );
 
   describe("正常系", () => {
     it("日本語名でマッチアップ分析が実行できる", () => {

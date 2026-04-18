@@ -1,19 +1,19 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import {
+  DamageCalculatorAdapter,
   MAX_STAT_POINT_PER_STAT,
   MAX_STAT_POINT_TOTAL,
   conditionsSchema,
   pokemonSchema,
 } from "@ai-rotom/shared";
-import { DamageCalculatorAdapter } from "../../calc/damage-calculator.js";
 import type {
   ConditionsInput,
   DamageCalcResult,
   PokemonInput,
-} from "../../calc/damage-calculator.js";
+} from "@ai-rotom/shared";
 import type { MoveCategory } from "../../data-store.js";
-import { movesById, toDataId } from "../../data-store.js";
+import { movesById, pokemonEntryProvider, toDataId } from "../../data-store.js";
 import {
   abilityNameResolver,
   itemNameResolver,
@@ -260,13 +260,16 @@ function findMinimalSurvivalSp(
 }
 
 export function registerDamageRangeTool(server: McpServer): void {
-  const calculator = new DamageCalculatorAdapter({
-    pokemon: pokemonNameResolver,
-    move: moveNameResolver,
-    ability: abilityNameResolver,
-    item: itemNameResolver,
-    nature: natureNameResolver,
-  });
+  const calculator = new DamageCalculatorAdapter(
+    {
+      pokemon: pokemonNameResolver,
+      move: moveNameResolver,
+      ability: abilityNameResolver,
+      item: itemNameResolver,
+      nature: natureNameResolver,
+    },
+    pokemonEntryProvider,
+  );
 
   server.tool(TOOL_NAME, TOOL_DESCRIPTION, inputSchema, async (args) => {
     try {

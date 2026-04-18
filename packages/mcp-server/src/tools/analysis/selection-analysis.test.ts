@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { Generations, toID } from "@smogon/calc";
-import { DamageCalculatorAdapter } from "../../calc/damage-calculator";
+import { DamageCalculatorAdapter } from "@ai-rotom/shared";
+import { pokemonEntryProvider } from "../../data-store";
 import {
   pokemonNameResolver,
   moveNameResolver,
@@ -13,13 +14,16 @@ const CHAMPIONS_GEN_NUM = 0;
 
 describe("analyze_selection logic", () => {
   const gen = Generations.get(CHAMPIONS_GEN_NUM);
-  const adapter = new DamageCalculatorAdapter({
-    pokemon: pokemonNameResolver,
-    move: moveNameResolver,
-    ability: abilityNameResolver,
-    item: itemNameResolver,
-    nature: natureNameResolver,
-  });
+  const adapter = new DamageCalculatorAdapter(
+    {
+      pokemon: pokemonNameResolver,
+      move: moveNameResolver,
+      ability: abilityNameResolver,
+      item: itemNameResolver,
+      nature: natureNameResolver,
+    },
+    pokemonEntryProvider,
+  );
 
   describe("タイプ相性の最大倍率", () => {
     it("みず vs ほのお/ひこう は 2 倍", () => {

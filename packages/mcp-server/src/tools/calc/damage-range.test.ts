@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { DamageCalculatorAdapter } from "../../calc/damage-calculator";
+import { DamageCalculatorAdapter } from "@ai-rotom/shared";
 import {
   pokemonNameResolver,
   moveNameResolver,
@@ -7,16 +7,19 @@ import {
   itemNameResolver,
   natureNameResolver,
 } from "../../name-resolvers";
-import { movesById, toDataId } from "../../data-store";
+import { movesById, pokemonEntryProvider, toDataId } from "../../data-store";
 
 describe("analyze_damage_range logic", () => {
-  const adapter = new DamageCalculatorAdapter({
-    pokemon: pokemonNameResolver,
-    move: moveNameResolver,
-    ability: abilityNameResolver,
-    item: itemNameResolver,
-    nature: natureNameResolver,
-  });
+  const adapter = new DamageCalculatorAdapter(
+    {
+      pokemon: pokemonNameResolver,
+      move: moveNameResolver,
+      ability: abilityNameResolver,
+      item: itemNameResolver,
+      nature: natureNameResolver,
+    },
+    pokemonEntryProvider,
+  );
 
   describe("ベースライン計算", () => {
     it("じしん (物理) のダメージ計算ができる", () => {

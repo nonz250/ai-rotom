@@ -3,26 +3,25 @@ import { z } from "zod";
 import { Generations } from "@smogon/calc";
 import type { TypeName } from "@smogon/calc/dist/data/interface";
 import {
+  DamageCalculatorAdapter,
   calculateTypeEffectiveness,
   compareSpeed,
   pokemonSchema,
+  type BaseStats,
+  type DamageCalcResult,
+  type PokemonEntry,
+  type PokemonInput,
   type SpeedComparison,
 } from "@ai-rotom/shared";
-import { DamageCalculatorAdapter } from "../../calc/damage-calculator.js";
-import type {
-  DamageCalcResult,
-  PokemonInput,
-} from "../../calc/damage-calculator.js";
 import {
   championsLearnsets,
   championsPokemon,
   championsTypes,
   movesById,
   pokemonById,
+  pokemonEntryProvider,
   toDataId,
-  type BaseStats,
   type MoveCategory,
-  type PokemonEntry,
 } from "../../data-store.js";
 import {
   abilityNameResolver,
@@ -388,13 +387,16 @@ function buildCandidateEntries(
 }
 
 export function registerFindCountersTool(server: McpServer): void {
-  const calculator = new DamageCalculatorAdapter({
-    pokemon: pokemonNameResolver,
-    move: moveNameResolver,
-    ability: abilityNameResolver,
-    item: itemNameResolver,
-    nature: natureNameResolver,
-  });
+  const calculator = new DamageCalculatorAdapter(
+    {
+      pokemon: pokemonNameResolver,
+      move: moveNameResolver,
+      ability: abilityNameResolver,
+      item: itemNameResolver,
+      nature: natureNameResolver,
+    },
+    pokemonEntryProvider,
+  );
 
   server.tool(TOOL_NAME, TOOL_DESCRIPTION, inputSchema, async (args) => {
     try {

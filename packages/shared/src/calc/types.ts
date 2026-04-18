@@ -62,3 +62,8 @@ export interface DamageCalcResult {
  * pokemon.json 側は string で保持しているためキャスト用に定義している。
  */
 export type StatusName = "" | "psn" | "tox" | "brn" | "par" | "slp" | "frz";
+
+// PokemonEntryProvider は types/pokemon.ts で定義。
+// ダメージ計算モジュールの外部から DI されるので、calc/types.ts から re-export して
+// 呼び出し側が calc/types.ts 1 箇所でダメージ計算関連の型を拾えるようにする。
+export type { PokemonEntryProvider } from "../types/pokemon.js";

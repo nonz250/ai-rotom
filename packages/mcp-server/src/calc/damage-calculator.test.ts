@@ -1,7 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { calculate, Generations, Pokemon, Move, Field } from "@smogon/calc";
-import { DamageCalculatorAdapter } from "./damage-calculator";
-import type { DamageCalcResult } from "./damage-calculator";
+import { DamageCalculatorAdapter } from "@ai-rotom/shared";
+import type { DamageCalcResult } from "@ai-rotom/shared";
+import { pokemonEntryProvider } from "../data-store";
 import {
   pokemonNameResolver,
   moveNameResolver,
@@ -96,13 +97,16 @@ describe("@smogon/calc Champions integration", () => {
 });
 
 describe("DamageCalculatorAdapter", () => {
-  const adapter = new DamageCalculatorAdapter({
-    pokemon: pokemonNameResolver,
-    move: moveNameResolver,
-    ability: abilityNameResolver,
-    item: itemNameResolver,
-    nature: natureNameResolver,
-  });
+  const adapter = new DamageCalculatorAdapter(
+    {
+      pokemon: pokemonNameResolver,
+      move: moveNameResolver,
+      ability: abilityNameResolver,
+      item: itemNameResolver,
+      nature: natureNameResolver,
+    },
+    pokemonEntryProvider,
+  );
 
   it("should calculate damage with Japanese names", () => {
     const result = adapter.calculate({
@@ -245,13 +249,16 @@ describe("DamageCalculatorAdapter", () => {
 });
 
 describe("DamageCalculatorAdapter damage with pokemon.json overrides", () => {
-  const adapter = new DamageCalculatorAdapter({
-    pokemon: pokemonNameResolver,
-    move: moveNameResolver,
-    ability: abilityNameResolver,
-    item: itemNameResolver,
-    nature: natureNameResolver,
-  });
+  const adapter = new DamageCalculatorAdapter(
+    {
+      pokemon: pokemonNameResolver,
+      move: moveNameResolver,
+      ability: abilityNameResolver,
+      item: itemNameResolver,
+      nature: natureNameResolver,
+    },
+    pokemonEntryProvider,
+  );
 
   it("メガスターミーの物理技が Huge Power で計算される", () => {
     // pokemon.json: Starmie-Mega atk=100, ability[0]=Huge Power
@@ -270,13 +277,16 @@ describe("DamageCalculatorAdapter damage with pokemon.json overrides", () => {
 });
 
 describe("DamageCalculatorAdapter.calculateAllMoves", () => {
-  const adapter = new DamageCalculatorAdapter({
-    pokemon: pokemonNameResolver,
-    move: moveNameResolver,
-    ability: abilityNameResolver,
-    item: itemNameResolver,
-    nature: natureNameResolver,
-  });
+  const adapter = new DamageCalculatorAdapter(
+    {
+      pokemon: pokemonNameResolver,
+      move: moveNameResolver,
+      ability: abilityNameResolver,
+      item: itemNameResolver,
+      nature: natureNameResolver,
+    },
+    pokemonEntryProvider,
+  );
 
   it("should return multiple damage results for Japanese names", () => {
     const results = adapter.calculateAllMoves({
@@ -347,13 +357,16 @@ describe("DamageCalculatorAdapter.calculateAllMoves", () => {
 });
 
 describe("DamageCalculatorAdapter.createPokemonObject", () => {
-  const adapter = new DamageCalculatorAdapter({
-    pokemon: pokemonNameResolver,
-    move: moveNameResolver,
-    ability: abilityNameResolver,
-    item: itemNameResolver,
-    nature: natureNameResolver,
-  });
+  const adapter = new DamageCalculatorAdapter(
+    {
+      pokemon: pokemonNameResolver,
+      move: moveNameResolver,
+      ability: abilityNameResolver,
+      item: itemNameResolver,
+      nature: natureNameResolver,
+    },
+    pokemonEntryProvider,
+  );
 
   it("should create Pokemon object with Japanese name", () => {
     const { pokemon, resolvedName } = adapter.createPokemonObject({

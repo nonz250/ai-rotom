@@ -1,11 +1,12 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import {
+  DamageCalculatorAdapter,
   compareSpeed,
   conditionsSchema,
   pokemonSchema,
 } from "@ai-rotom/shared";
-import type { DamageCalcResult } from "../../calc/damage-calculator.js";
-import { DamageCalculatorAdapter } from "../../calc/damage-calculator.js";
+import type { DamageCalcResult } from "@ai-rotom/shared";
+import { pokemonEntryProvider } from "../../data-store.js";
 import {
   pokemonNameResolver,
   moveNameResolver,
@@ -39,13 +40,16 @@ interface MatchupOutput {
 }
 
 export function registerMatchupTool(server: McpServer): void {
-  const calculator = new DamageCalculatorAdapter({
-    pokemon: pokemonNameResolver,
-    move: moveNameResolver,
-    ability: abilityNameResolver,
-    item: itemNameResolver,
-    nature: natureNameResolver,
-  });
+  const calculator = new DamageCalculatorAdapter(
+    {
+      pokemon: pokemonNameResolver,
+      move: moveNameResolver,
+      ability: abilityNameResolver,
+      item: itemNameResolver,
+      nature: natureNameResolver,
+    },
+    pokemonEntryProvider,
+  );
 
   server.tool(
     TOOL_NAME,

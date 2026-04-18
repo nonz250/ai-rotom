@@ -1,4 +1,4 @@
-import type { NameResolver } from "@ai-rotom/shared";
+import type { NameResolver } from "../../utils/name-resolver.js";
 
 /**
  * 日本語名または英語名を受け取り、対応する英語名に変換する。

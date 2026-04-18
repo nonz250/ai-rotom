@@ -1,5 +1,5 @@
 import { Pokemon } from "@smogon/calc";
-import { pokemonById, toDataId, type PokemonEntry } from "../../data-store.js";
+import type { PokemonEntry } from "../../types/pokemon.js";
 import type { PokemonInput, StatsInput, StatusName } from "../types.js";
 
 /**
@@ -29,9 +29,9 @@ function toSmogonBoosts(
 }
 
 /**
- * pokemon.json のエントリから @smogon/calc の overrides オプション用オブジェクトを作る。
+ * PokemonEntry から @smogon/calc の overrides オプション用オブジェクトを作る。
  * @smogon/calc の Specie 型は types を文字列 union のタプル ([TypeName] | [TypeName, TypeName]) として
- * 厳密に定義しているが、pokemon.json 側は string[] で保持するため、呼び出し側でキャストする。
+ * 厳密に定義しているが、PokemonEntry 側は string[] で保持するため、呼び出し側でキャストする。
  */
 function buildSpeciesOverrides(
   entry: PokemonEntry,
@@ -49,33 +49,34 @@ function buildSpeciesOverrides(
 /**
  * PokemonInput から @smogon/calc の Pokemon コンストラクタに渡す options を組み立てる。
  *
- * pokemon.json にエントリがあるポケモンは以下の動作:
+ * pokemonEntry が与えられた場合は以下の動作:
  *   - baseStats / types を overrides で上書き（修正済み種族値・タイプを反映）
- *   - ability が未指定なら pokemon.json の 1 番目の特性（通常特性）をデフォルトに設定
- * pokemon.json にない場合は override 無し（@smogon/calc の内蔵データで動作）。
+ *   - ability が未指定なら pokemonEntry の 1 番目の特性（通常特性）をデフォルトに設定
+ * pokemonEntry が undefined の場合は override 無し（@smogon/calc の内蔵データで動作）。
+ *
+ * pokemonEntry は呼び出し側（mcp-server など）から注入される。
+ * このモジュールは data-store に直接依存しない。
  */
 export function buildPokemonOptions(
-  resolvedName: string,
   input: PokemonInput,
   natureEn: string,
   abilityEn: string | undefined,
   itemEn: string | undefined,
+  pokemonEntry: PokemonEntry | undefined,
 ): ConstructorParameters<typeof Pokemon>[2] {
-  const entry = pokemonById.get(toDataId(resolvedName));
-
   const baseOptions: ConstructorParameters<typeof Pokemon>[2] = {
     nature: natureEn,
     evs: toSmogonEvs(input.evs),
     boosts: toSmogonBoosts(input.boosts),
-    ability: abilityEn ?? entry?.abilities[0],
+    ability: abilityEn ?? pokemonEntry?.abilities[0],
     item: itemEn,
     status: (input.status ?? "") as StatusName,
   };
 
-  if (entry !== undefined) {
+  if (pokemonEntry !== undefined) {
     // @smogon/calc の Specie.types は文字列 union のタプル型。
-    // pokemon.json では string[] で保持しているため、overrides の型要件に合わせてキャストする。
-    baseOptions.overrides = buildSpeciesOverrides(entry) as NonNullable<
+    // PokemonEntry では string[] で保持しているため、overrides の型要件に合わせてキャストする。
+    baseOptions.overrides = buildSpeciesOverrides(pokemonEntry) as NonNullable<
       ConstructorParameters<typeof Pokemon>[2]
     >["overrides"];
   }

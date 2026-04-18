@@ -1,5 +1,6 @@
 import { calculate, Generations, Pokemon, Move } from "@smogon/calc";
-import type { NameResolver } from "@ai-rotom/shared";
+import { NameResolver } from "../utils/name-resolver.js";
+import type { PokemonEntryProvider } from "../types/pokemon.js";
 import {
   resolveNameWithFallback,
   resolveOptionalName,
@@ -17,7 +18,7 @@ import type {
 const CHAMPIONS_GEN_NUM = 0;
 const DEFAULT_NATURE_EN = "Serious";
 
-interface NameResolvers {
+export interface NameResolvers {
   pokemon: NameResolver;
   move: NameResolver;
   ability: NameResolver;
@@ -34,12 +35,20 @@ interface NameResolvers {
  *   - builders/pokemon-builder: @smogon/calc の Pokemon options 構築
  *   - builders/field-builder: @smogon/calc の Field 構築
  *   - formatters/result-formatter: ダメージ結果の整形（flatten・%変換）
+ *
+ * このクラスは data-store 等の具体実装に直接依存せず、
+ * 必要なデータは resolvers と entryProvider を通じて注入される。
  */
 export class DamageCalculatorAdapter {
   private readonly resolvers: NameResolvers;
+  private readonly entryProvider: PokemonEntryProvider | undefined;
 
-  constructor(resolvers: NameResolvers) {
+  constructor(
+    resolvers: NameResolvers,
+    entryProvider?: PokemonEntryProvider,
+  ) {
     this.resolvers = resolvers;
+    this.entryProvider = entryProvider;
   }
 
   calculate(input: DamageCalcInput): DamageCalcResult {
@@ -90,11 +99,11 @@ export class DamageCalculatorAdapter {
       gen,
       attackerName,
       buildPokemonOptions(
-        attackerName,
         input.attacker,
         attackerNature,
         attackerAbility,
         attackerItem,
+        this.entryProvider?.getByName(attackerName),
       ),
     );
 
@@ -102,11 +111,11 @@ export class DamageCalculatorAdapter {
       gen,
       defenderName,
       buildPokemonOptions(
-        defenderName,
         input.defender,
         defenderNature,
         defenderAbility,
         defenderItem,
+        this.entryProvider?.getByName(defenderName),
       ),
     );
 
@@ -183,11 +192,11 @@ export class DamageCalculatorAdapter {
       gen,
       attackerName,
       buildPokemonOptions(
-        attackerName,
         input.attacker,
         attackerNature,
         attackerAbility,
         attackerItem,
+        this.entryProvider?.getByName(attackerName),
       ),
     );
 
@@ -195,11 +204,11 @@ export class DamageCalculatorAdapter {
       gen,
       defenderName,
       buildPokemonOptions(
-        defenderName,
         input.defender,
         defenderNature,
         defenderAbility,
         defenderItem,
+        this.entryProvider?.getByName(defenderName),
       ),
     );
 
@@ -280,7 +289,13 @@ export class DamageCalculatorAdapter {
     const pokemon = new Pokemon(
       gen,
       resolvedName,
-      buildPokemonOptions(resolvedName, input, nature, ability, item),
+      buildPokemonOptions(
+        input,
+        nature,
+        ability,
+        item,
+        this.entryProvider?.getByName(resolvedName),
+      ),
     );
 
     return { pokemon, resolvedName };
@@ -318,4 +333,5 @@ export type {
   DamageCalcResult,
   PokemonInput,
   StatsInput,
+  PokemonEntryProvider,
 } from "./types.js";

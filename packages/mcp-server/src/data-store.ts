@@ -1,3 +1,4 @@
+import type { BaseStats, PokemonEntry, PokemonEntryProvider } from "@ai-rotom/shared";
 import abilitiesData from "@data/abilities.json";
 import itemsData from "@data/items.json";
 import movesData from "@data/moves.json";
@@ -6,6 +7,8 @@ import pokemonData from "@data/pokemon.json";
 import naturesData from "@data/natures.json";
 import typesData from "@data/types.json";
 import conditionsData from "@data/conditions.json";
+
+export type { BaseStats, PokemonEntry } from "@ai-rotom/shared";
 
 /**
  * 技のカテゴリー。
@@ -72,36 +75,6 @@ export interface MoveEntry {
  * キーはポケモン ID（kebab-case 小文字）、値は技 ID の配列。
  */
 export type LearnsetMap = Record<string, string[]>;
-
-/**
- * ポケモンの種族値テーブル。
- */
-export interface BaseStats {
-  hp: number;
-  atk: number;
-  def: number;
-  spa: number;
-  spd: number;
-  spe: number;
-}
-
-/**
- * ポケモンチャンピオンズのポケモンデータ。
- * nameJa は外部 API に登録されていないポケモンの場合 null となる。
- * abilities は通常特性 1〜2 + 隠れ特性の順で並ぶ。
- * baseSpecies はメガ進化等の派生フォームの場合、元ポケモンの英語名が入る。
- */
-export interface PokemonEntry {
-  id: string;
-  name: string;
-  nameJa: string | null;
-  types: string[];
-  baseStats: BaseStats;
-  abilities: string[];
-  weightkg: number;
-  baseSpecies: string | null;
-  otherFormes: string[] | null;
-}
 
 /**
  * 性格による能力補正。
@@ -194,3 +167,12 @@ export const typesById: ReadonlyMap<string, TypeEntry> = new Map(
 export function toDataId(name: string): string {
   return name.toLowerCase().replace(/[^a-z0-9]/g, "");
 }
+
+/**
+ * shared/calc モジュールに渡すための PokemonEntryProvider 実装。
+ * 英語名から pokemonById Map を引いて PokemonEntry を返す。
+ */
+export const pokemonEntryProvider: PokemonEntryProvider = {
+  getByName: (name: string): PokemonEntry | undefined =>
+    pokemonById.get(toDataId(name)),
+};
