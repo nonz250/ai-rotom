@@ -37,6 +37,7 @@ npm run test:watch   # テスト監視モード
 
 ```
 ai-rotom/
+├── tsconfig.base.json           # 共通 TypeScript 設定 (paths alias)
 ├── data/champions/              # マスターデータ (8 ファイル JSON)
 │   ├── pokemon.json             # ポケモン (種族値・タイプ・特性等)
 │   ├── abilities.json           # 特性
@@ -46,30 +47,33 @@ ai-rotom/
 │   ├── natures.json             # 性格
 │   ├── types.json               # タイプ (日英マッピング)
 │   └── conditions.json          # 天候/フィールド/状態異常/壁
-├── packages/
-│   ├── shared/                  # 単純ソースディレクトリ (package.json なし)
-│   │   └── src/
-│   │       ├── index.ts
-│   │       ├── constants/       # DEFAULT_LEVEL, MAX_IV, 性格補正倍率 等
-│   │       ├── utils/           # NameResolver
-│   │       ├── schemas/         # Zod 入力スキーマ
-│   │       ├── types/           # PokemonEntry, PokemonEntryProvider 等
-│   │       ├── analysis/        # タイプ相性・実数値・素早さ比較
-│   │       └── calc/            # ダメージ計算エンジン (DI 対応)
-│   └── mcp-server/              # 唯一の workspace パッケージ
-│       └── src/
-│           ├── index.ts         # エントリ (#!/usr/bin/env node)
-│           ├── server.ts        # MCP サーバー + ツール登録
-│           ├── instructions.ts  # MCP instructions テキスト
-│           ├── data-store.ts    # JSON → Map + PokemonEntryProvider 実装
-│           ├── name-resolvers.ts
-│           └── tools/
-│               ├── info/        # 情報取得系
-│               ├── search/      # 逆引き検索系
-│               ├── calc/        # 計算系
-│               └── analysis/    # 分析系
-└── packages/mcp-server/vendor/smogon-calc-0.11.0.tgz
+├── shared/                      # 単純ソースディレクトリ (package.json なし)
+│   └── src/
+│       ├── index.ts
+│       ├── constants/           # DEFAULT_LEVEL, MAX_IV, 性格補正倍率 等
+│       ├── utils/               # NameResolver
+│       ├── schemas/             # Zod 入力スキーマ
+│       ├── types/               # PokemonEntry, PokemonEntryProvider 等
+│       ├── analysis/            # タイプ相性・実数値・素早さ比較
+│       └── calc/                # ダメージ計算エンジン (DI 対応)
+└── packages/
+    └── mcp-server/              # 唯一の workspace パッケージ
+        ├── src/
+        │   ├── index.ts         # エントリ (#!/usr/bin/env node)
+        │   ├── server.ts        # MCP サーバー + ツール登録
+        │   ├── instructions.ts  # MCP instructions テキスト
+        │   ├── data-store.ts    # JSON → Map + PokemonEntryProvider 実装
+        │   ├── name-resolvers.ts
+        │   └── tools/
+        │       ├── info/        # 情報取得系
+        │       ├── search/      # 逆引き検索系
+        │       ├── calc/        # 計算系
+        │       └── analysis/    # 分析系
+        └── vendor/smogon-calc-0.11.0.tgz
 ```
+
+- `packages/` は npm workspace 対象のパッケージのみを配置する
+- `shared/` と `data/` は root 直下の「プロジェクト全体の資産」として同格
 
 ## パッケージ方針
 
@@ -98,9 +102,15 @@ shared ──→ @smogon/calc (ランタイム), zod
 TypeScript / Vitest / tsdown で以下の alias を共有:
 
 - `@data/*` → `data/champions/*`（データ JSON）
-- `@ai-rotom/shared` → `packages/shared/src/index.ts`（shared ライブラリ）
+- `@ai-rotom/shared` → `shared/src/index.ts`（shared ライブラリ）
 
-`tsconfig.json` の `rootDir` は monorepo root (`../..`) に設定し、shared の alias 解決を通る。
+**TypeScript**: ルートの `tsconfig.base.json` に paths を集約し、各パッケージの
+`tsconfig.json` が `extends` で継承する。これにより新規パッケージ追加時は
+tsconfig.base.json を extends するだけで alias が使える。
+
+**rootDir**: mcp-server の `tsconfig.json` では `rootDir: "../.."` と monorepo
+root に設定し、shared / data のファイルが alias 解決でプログラムに含まれても
+TS6059 エラーにならないようにしている。
 
 ### 配布方法
 
