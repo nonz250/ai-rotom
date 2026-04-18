@@ -6,7 +6,7 @@
   "private": false,
   "type": "module",
   "bin": {
-    "ai-rotom": "./dist/index.mjs"
+    "ai-rotom": "dist/index.mjs"
   },
   "files": ["dist"],
   "repository": {
