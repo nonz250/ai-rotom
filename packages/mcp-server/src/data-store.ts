@@ -2,6 +2,10 @@ import abilitiesData from "@data/abilities.json";
 import itemsData from "@data/items.json";
 import movesData from "@data/moves.json";
 import learnsetsData from "@data/learnsets.json";
+import pokemonData from "@data/pokemon.json";
+import naturesData from "@data/natures.json";
+import typesData from "@data/types.json";
+import conditionsData from "@data/conditions.json";
 
 /**
  * 技のカテゴリー。
@@ -69,11 +73,88 @@ export interface MoveEntry {
  */
 export type LearnsetMap = Record<string, string[]>;
 
+/**
+ * ポケモンの種族値テーブル。
+ */
+export interface BaseStats {
+  hp: number;
+  atk: number;
+  def: number;
+  spa: number;
+  spd: number;
+  spe: number;
+}
+
+/**
+ * ポケモンチャンピオンズのポケモンデータ。
+ * nameJa は外部 API に登録されていないポケモンの場合 null となる。
+ * abilities は通常特性 1〜2 + 隠れ特性の順で並ぶ。
+ * baseSpecies はメガ進化等の派生フォームの場合、元ポケモンの英語名が入る。
+ */
+export interface PokemonEntry {
+  id: string;
+  name: string;
+  nameJa: string | null;
+  types: string[];
+  baseStats: BaseStats;
+  abilities: string[];
+  weightkg: number;
+  baseSpecies: string | null;
+  otherFormes: string[] | null;
+}
+
+/**
+ * 性格による能力補正。
+ * plus はステータスが 1.1 倍される能力、minus は 0.9 倍される能力。
+ * どちらも null の場合は無補正性格。
+ */
+export interface NatureEntry {
+  id: string;
+  name: string;
+  nameJa: string;
+  plus: string | null;
+  minus: string | null;
+}
+
+/**
+ * ポケモンのタイプデータ。
+ */
+export interface TypeEntry {
+  id: string;
+  name: string;
+  nameJa: string;
+}
+
+/**
+ * バトル中の状態（天候・フィールド・状態異常・サイド効果）のエントリ。
+ */
+export interface ConditionEntry {
+  id: string;
+  name: string;
+  nameJa: string;
+}
+
+/**
+ * バトル条件データのまとまり。
+ * weather: 天候 / terrain: フィールド / status: 状態異常 / sideCondition: サイド効果
+ */
+export interface ConditionsData {
+  weather: ConditionEntry[];
+  terrain: ConditionEntry[];
+  status: ConditionEntry[];
+  sideCondition: ConditionEntry[];
+}
+
 export const championsAbilities: AbilityEntry[] =
   abilitiesData as AbilityEntry[];
 export const championsItems: ItemEntry[] = itemsData as ItemEntry[];
 export const championsMoves: MoveEntry[] = movesData as MoveEntry[];
 export const championsLearnsets: LearnsetMap = learnsetsData as LearnsetMap;
+export const championsPokemon: PokemonEntry[] = pokemonData as PokemonEntry[];
+export const championsNatures: NatureEntry[] = naturesData as NatureEntry[];
+export const championsTypes: TypeEntry[] = typesData as TypeEntry[];
+export const championsConditions: ConditionsData =
+  conditionsData as ConditionsData;
 
 /** 特性 ID → 特性データの Map */
 export const abilitiesById: ReadonlyMap<string, AbilityEntry> = new Map(
@@ -88,6 +169,21 @@ export const itemsById: ReadonlyMap<string, ItemEntry> = new Map(
 /** 技 ID → 技データの Map */
 export const movesById: ReadonlyMap<string, MoveEntry> = new Map(
   championsMoves.map((m) => [m.id, m]),
+);
+
+/** ポケモン ID → ポケモンデータの Map */
+export const pokemonById: ReadonlyMap<string, PokemonEntry> = new Map(
+  championsPokemon.map((p) => [p.id, p]),
+);
+
+/** 性格 ID → 性格データの Map */
+export const naturesById: ReadonlyMap<string, NatureEntry> = new Map(
+  championsNatures.map((n) => [n.id, n]),
+);
+
+/** タイプ ID → タイプデータの Map */
+export const typesById: ReadonlyMap<string, TypeEntry> = new Map(
+  championsTypes.map((t) => [t.id, t]),
 );
 
 /**

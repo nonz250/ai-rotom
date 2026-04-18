@@ -1,13 +1,18 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { Generations, toID } from "@smogon/calc";
 import {
   pokemonNameResolver,
   abilityNameResolver,
 } from "../name-resolvers.js";
-import { championsLearnsets, toDataId } from "../data-store.js";
+import {
+  championsLearnsets,
+  championsPokemon,
+  pokemonById,
+  toDataId,
+  type BaseStats,
+  type PokemonEntry,
+} from "../data-store.js";
 
-const CHAMPIONS_GEN_NUM = 0;
 const DEFAULT_SEARCH_LIMIT = 20;
 
 const GET_POKEMON_INFO_TOOL_NAME = "get_pokemon_info";
@@ -20,7 +25,7 @@ const SEARCH_POKEMON_DESCRIPTION =
 
 /**
  * タイプ名の日本語→英語マッピング。
- * @smogon/calc の gen 0 に登場するタイプのみ。
+ * pokemon.json に登場するタイプのみ。
  */
 const TYPE_NAME_JA_TO_EN: ReadonlyMap<string, string> = new Map([
   ["ノーマル", "Normal"],
@@ -42,10 +47,6 @@ const TYPE_NAME_JA_TO_EN: ReadonlyMap<string, string> = new Map([
   ["はがね", "Steel"],
   ["フェアリー", "Fairy"],
 ]);
-
-const TYPE_NAME_EN_TO_JA: ReadonlyMap<string, string> = new Map(
-  [...TYPE_NAME_JA_TO_EN.entries()].map(([ja, en]) => [en, ja]),
-);
 
 /** 英語タイプ名のセット（大文字小文字を無視した検索用） */
 const VALID_TYPE_NAMES_EN: ReadonlySet<string> = new Set(
@@ -98,14 +99,7 @@ function resolvePokemonName(name: string): string {
 /**
  * 種族値の合計を計算する。
  */
-function calculateBst(baseStats: {
-  hp: number;
-  atk: number;
-  def: number;
-  spa: number;
-  spd: number;
-  spe: number;
-}): number {
+function calculateBst(baseStats: BaseStats): number {
   return (
     baseStats.hp +
     baseStats.atk +
@@ -114,13 +108,6 @@ function calculateBst(baseStats: {
     baseStats.spd +
     baseStats.spe
   );
-}
-
-/**
- * species オブジェクトの abilities フィールドから特性名の配列を取得する。
- */
-function extractAbilities(abilities: Record<string, string>): string[] {
-  return Object.values(abilities);
 }
 
 /**
@@ -134,14 +121,7 @@ interface PokemonInfoResult {
   name: string;
   nameJa: string;
   types: string[];
-  baseStats: {
-    hp: number;
-    atk: number;
-    def: number;
-    spa: number;
-    spd: number;
-    spe: number;
-  };
+  baseStats: BaseStats;
   bst: number;
   abilities: string[];
   abilitiesJa: string[];
@@ -150,8 +130,6 @@ interface PokemonInfoResult {
   /**
    * ポケモンチャンピオンズで覚えられる技の総数。
    * learnset データが存在しないポケモンの場合は null。
-   * 注: @smogon/calc の species データは通常特性しか持たないため、
-   * 隠れ特性を含む全特性の列挙はできない（データ制約）。
    */
   learnableMoveCount: number | null;
 }
@@ -163,24 +141,50 @@ interface SearchPokemonResult {
   bst: number;
 }
 
-export function registerPokemonInfoTools(server: McpServer): void {
-  const gen = Generations.get(CHAMPIONS_GEN_NUM);
+/**
+ * PokemonEntry から PokemonInfoResult を構築する。
+ */
+function buildPokemonInfoResult(entry: PokemonEntry): PokemonInfoResult {
+  const abilitiesJa = entry.abilities.map(resolveAbilityNameJa);
+  const nameJa = entry.nameJa ?? entry.name;
 
+  const learnsetEntry = championsLearnsets[toDataId(entry.name)];
+  const learnableMoveCount =
+    learnsetEntry !== undefined ? learnsetEntry.length : null;
+
+  const result: PokemonInfoResult = {
+    name: entry.name,
+    nameJa,
+    types: [...entry.types],
+    baseStats: { ...entry.baseStats },
+    bst: calculateBst(entry.baseStats),
+    abilities: [...entry.abilities],
+    abilitiesJa,
+    weightkg: entry.weightkg,
+    learnableMoveCount,
+  };
+
+  if (entry.otherFormes !== null && entry.otherFormes.length > 0) {
+    result.otherFormes = [...entry.otherFormes];
+  }
+
+  return result;
+}
+
+export function registerPokemonInfoTools(server: McpServer): void {
   // ツール1: get_pokemon_info
   server.tool(
     GET_POKEMON_INFO_TOOL_NAME,
     GET_POKEMON_INFO_DESCRIPTION,
     {
-      name: z
-        .string()
-        .describe("ポケモン名（日本語 or 英語）"),
+      name: z.string().describe("ポケモン名（日本語 or 英語）"),
     },
     async (args) => {
       try {
         const englishName = resolvePokemonName(args.name);
-        const species = gen.species.get(toID(englishName));
+        const entry = pokemonById.get(toDataId(englishName));
 
-        if (!species) {
+        if (entry === undefined) {
           return {
             content: [
               {
@@ -194,32 +198,7 @@ export function registerPokemonInfoTools(server: McpServer): void {
           };
         }
 
-        const abilities = extractAbilities(
-          species.abilities as Record<string, string>,
-        );
-        const abilitiesJa = abilities.map(resolveAbilityNameJa);
-        const nameJa =
-          pokemonNameResolver.toJapanese(species.name) ?? species.name;
-
-        const learnsetEntry = championsLearnsets[toDataId(species.name)];
-        const learnableMoveCount =
-          learnsetEntry !== undefined ? learnsetEntry.length : null;
-
-        const result: PokemonInfoResult = {
-          name: species.name,
-          nameJa,
-          types: [...species.types],
-          baseStats: { ...species.baseStats },
-          bst: calculateBst(species.baseStats),
-          abilities,
-          abilitiesJa,
-          weightkg: species.weightkg,
-          learnableMoveCount,
-        };
-
-        if (species.otherFormes && species.otherFormes.length > 0) {
-          result.otherFormes = [...species.otherFormes];
-        }
+        const result = buildPokemonInfoResult(entry);
 
         return {
           content: [
@@ -294,18 +273,18 @@ export function registerPokemonInfoTools(server: McpServer): void {
 
         const results: SearchPokemonResult[] = [];
 
-        for (const species of gen.species) {
+        for (const entry of championsPokemon) {
           // タイプフィルター
           if (
             typeFilterEn !== undefined &&
-            !species.types.includes(typeFilterEn)
+            !entry.types.includes(typeFilterEn)
           ) {
             continue;
           }
 
           // 種族値下限フィルター
           if (args.minStat !== undefined) {
-            const stats = species.baseStats;
+            const stats = entry.baseStats;
             if (
               (args.minStat.hp !== undefined && stats.hp < args.minStat.hp) ||
               (args.minStat.atk !== undefined &&
@@ -323,14 +302,13 @@ export function registerPokemonInfoTools(server: McpServer): void {
             }
           }
 
-          const nameJa =
-            pokemonNameResolver.toJapanese(species.name) ?? species.name;
+          const nameJa = entry.nameJa ?? entry.name;
 
           results.push({
-            name: species.name,
+            name: entry.name,
             nameJa,
-            types: [...species.types],
-            bst: calculateBst(species.baseStats),
+            types: [...entry.types],
+            bst: calculateBst(entry.baseStats),
           });
 
           if (results.length >= limit) {

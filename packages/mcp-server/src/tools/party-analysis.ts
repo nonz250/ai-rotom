@@ -4,6 +4,7 @@ import { Generations, toID } from "@smogon/calc";
 import {
   pokemonNameResolver,
 } from "../name-resolvers.js";
+import { pokemonById, toDataId } from "../data-store.js";
 import { pokemonSchema } from "./schemas/pokemon-input.js";
 
 const CHAMPIONS_GEN_NUM = 0;
@@ -194,24 +195,23 @@ export function registerPartyAnalysisTool(server: McpServer): void {
 
         for (const member of args.party) {
           const nameEn = resolvePokemonName(member.name);
-          const species = gen.species.get(toID(nameEn));
+          const entry = pokemonById.get(toDataId(nameEn));
 
-          if (!species) {
+          if (entry === undefined) {
             throw new Error(
               `ポケモン「${member.name}」のデータが見つかりません。`,
             );
           }
 
-          const nameJa =
-            pokemonNameResolver.toJapanese(species.name) ?? species.name;
-          const types = [...species.types];
+          const nameJa = entry.nameJa ?? entry.name;
+          const types = [...entry.types];
           memberTypesList.push(types);
 
           const { weaknesses, resistances, immunities } =
             calculateTypeMatchups(types, gen);
 
           members.push({
-            name: species.name,
+            name: entry.name,
             nameJa,
             types,
             weaknesses,
@@ -225,7 +225,7 @@ export function registerPartyAnalysisTool(server: McpServer): void {
               teamWeaknesses[weakness.type] = { count: 0, members: [] };
             }
             teamWeaknesses[weakness.type].count += 1;
-            teamWeaknesses[weakness.type].members.push(species.name);
+            teamWeaknesses[weakness.type].members.push(entry.name);
           }
 
           // パーティ全体の耐性を集計

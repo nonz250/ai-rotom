@@ -1,6 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { Generations, toID, Pokemon } from "@smogon/calc";
+import { Generations, Pokemon } from "@smogon/calc";
 import {
   MAX_STAT_POINT_TOTAL,
 } from "@ai-rotom/shared";
@@ -8,6 +8,7 @@ import {
   pokemonNameResolver,
   natureNameResolver,
 } from "../name-resolvers.js";
+import { pokemonById, toDataId, type BaseStats } from "../data-store.js";
 import { evsSchema } from "./schemas/stats.js";
 
 const CHAMPIONS_GEN_NUM = 0;
@@ -30,30 +31,9 @@ interface StatsOutput {
   nameJa: string;
   nature: string;
   natureJa: string;
-  baseStats: {
-    hp: number;
-    atk: number;
-    def: number;
-    spa: number;
-    spd: number;
-    spe: number;
-  };
-  evs: {
-    hp: number;
-    atk: number;
-    def: number;
-    spa: number;
-    spd: number;
-    spe: number;
-  };
-  actualStats: {
-    hp: number;
-    atk: number;
-    def: number;
-    spa: number;
-    spd: number;
-    spe: number;
-  };
+  baseStats: BaseStats;
+  evs: BaseStats;
+  actualStats: BaseStats;
   statPoints: {
     used: number;
     remaining: number;
@@ -112,17 +92,16 @@ export function registerStatsCalculationTool(server: McpServer): void {
         const gen = Generations.get(CHAMPIONS_GEN_NUM);
 
         const nameEn = resolvePokemonName(args.name);
-        const species = gen.species.get(toID(nameEn));
+        const entry = pokemonById.get(toDataId(nameEn));
 
-        if (!species) {
+        if (entry === undefined) {
           throw new Error(
             `ポケモン「${args.name}」のデータが見つかりません。`,
           );
         }
 
         const natureEn = resolveNatureName(args.nature);
-        const nameJa =
-          pokemonNameResolver.toJapanese(species.name) ?? species.name;
+        const nameJa = entry.nameJa ?? entry.name;
         const natureJa =
           natureNameResolver.toJapanese(natureEn) ?? natureEn;
 
@@ -135,20 +114,26 @@ export function registerStatsCalculationTool(server: McpServer): void {
           spe: args.evs?.spe ?? 0,
         };
 
-        const pokemon = new Pokemon(gen, species.name, {
+        const pokemon = new Pokemon(gen, entry.name, {
           nature: natureEn,
           evs,
+          // @smogon/calc の Specie.types は文字列 union のタプル型。
+          // pokemon.json では string[] で保持しているため、overrides の型要件に合わせてキャストする。
+          overrides: {
+            types: entry.types,
+            baseStats: entry.baseStats,
+          } as NonNullable<ConstructorParameters<typeof Pokemon>[2]>["overrides"],
         });
 
         const used =
           evs.hp + evs.atk + evs.def + evs.spa + evs.spd + evs.spe;
 
         const output: StatsOutput = {
-          name: species.name,
+          name: entry.name,
           nameJa,
           nature: natureEn,
           natureJa,
-          baseStats: { ...species.baseStats },
+          baseStats: { ...entry.baseStats },
           evs,
           actualStats: {
             hp: pokemon.stats.hp,

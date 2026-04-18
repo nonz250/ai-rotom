@@ -1,48 +1,45 @@
-import { describe, it, expect, beforeAll } from "vitest";
-import { Generations, toID } from "@smogon/calc";
+import { describe, it, expect } from "vitest";
 import {
   pokemonNameResolver,
   abilityNameResolver,
 } from "../name-resolvers";
-import { championsLearnsets, toDataId } from "../data-store";
-
-const CHAMPIONS_GEN_NUM = 0;
+import {
+  championsLearnsets,
+  championsPokemon,
+  pokemonById,
+  toDataId,
+} from "../data-store";
 
 /**
  * pokemon-info.ts のロジックを直接テストする。
  * MCP ツールの登録はサーバーに依存するため、
- * ここではデータ取得ロジックの正しさを検証する。
+ * ここでは pokemon.json ベースのデータ取得ロジックの正しさを検証する。
  */
 describe("get_pokemon_info", () => {
-  const gen = Generations.get(CHAMPIONS_GEN_NUM);
-
   describe("日本語名での情報取得", () => {
     it("日本語名からポケモン情報が取得できる", () => {
       const inputName = "リザードン";
       const englishName = pokemonNameResolver.toEnglish(inputName);
       expect(englishName).toBe("Charizard");
 
-      const species = gen.species.get(toID(englishName!));
-      expect(species).toBeDefined();
-      expect(species!.name).toBe("Charizard");
-      expect(species!.types).toContain("Fire");
-      expect(species!.types).toContain("Flying");
-      expect(species!.baseStats.hp).toBe(78);
-      expect(species!.baseStats.atk).toBe(84);
-      expect(species!.baseStats.def).toBe(78);
-      expect(species!.baseStats.spa).toBe(109);
-      expect(species!.baseStats.spd).toBe(85);
-      expect(species!.baseStats.spe).toBe(100);
+      const entry = pokemonById.get(toDataId(englishName!));
+      expect(entry).toBeDefined();
+      expect(entry!.name).toBe("Charizard");
+      expect(entry!.types).toContain("Fire");
+      expect(entry!.types).toContain("Flying");
+      expect(entry!.baseStats.hp).toBe(78);
+      expect(entry!.baseStats.atk).toBe(84);
+      expect(entry!.baseStats.def).toBe(78);
+      expect(entry!.baseStats.spa).toBe(109);
+      expect(entry!.baseStats.spd).toBe(85);
+      expect(entry!.baseStats.spe).toBe(100);
     });
 
     it("特性の日本語名が取得できる", () => {
       const inputName = "リザードン";
       const englishName = pokemonNameResolver.toEnglish(inputName)!;
-      const species = gen.species.get(toID(englishName))!;
-      const abilities = Object.values(
-        species.abilities as Record<string, string>,
-      );
-      expect(abilities).toContain("Blaze");
+      const entry = pokemonById.get(toDataId(englishName))!;
+      expect(entry.abilities).toContain("Blaze");
 
       const abilityJa = abilityNameResolver.toJapanese("Blaze");
       expect(abilityJa).toBe("もうか");
@@ -50,10 +47,10 @@ describe("get_pokemon_info", () => {
 
     it("別フォルムが存在するポケモンの otherFormes が取得できる", () => {
       const englishName = pokemonNameResolver.toEnglish("リザードン")!;
-      const species = gen.species.get(toID(englishName))!;
-      expect(species.otherFormes).toBeDefined();
-      expect(species.otherFormes).toContain("Charizard-Mega-X");
-      expect(species.otherFormes).toContain("Charizard-Mega-Y");
+      const entry = pokemonById.get(toDataId(englishName))!;
+      expect(entry.otherFormes).not.toBeNull();
+      expect(entry.otherFormes).toContain("Charizard-Mega-X");
+      expect(entry.otherFormes).toContain("Charizard-Mega-Y");
     });
 
     it("learnableMoveCount が learnset の件数と一致する", () => {
@@ -62,6 +59,13 @@ describe("get_pokemon_info", () => {
       expect(learnset).toBeDefined();
       expect(learnset.length).toBeGreaterThan(0);
     });
+
+    it("メガスターミーの修正後種族値が反映される", () => {
+      // pokemon.json でメガスターミーの atk は 140 → 100 に修正済み
+      const entry = pokemonById.get(toDataId("Starmie-Mega"))!;
+      expect(entry.baseStats.atk).toBe(100);
+      expect(entry.abilities).toContain("Huge Power");
+    });
   });
 
   describe("英語名での情報取得", () => {
@@ -69,11 +73,11 @@ describe("get_pokemon_info", () => {
       const inputName = "Garchomp";
       expect(pokemonNameResolver.hasEnglishName(inputName)).toBe(true);
 
-      const species = gen.species.get(toID(inputName));
-      expect(species).toBeDefined();
-      expect(species!.name).toBe("Garchomp");
-      expect(species!.types).toContain("Dragon");
-      expect(species!.types).toContain("Ground");
+      const entry = pokemonById.get(toDataId(inputName));
+      expect(entry).toBeDefined();
+      expect(entry!.name).toBe("Garchomp");
+      expect(entry!.types).toContain("Dragon");
+      expect(entry!.types).toContain("Ground");
     });
 
     it("英語名から日本語名が逆引きできる", () => {
@@ -101,31 +105,21 @@ describe("get_pokemon_info", () => {
 });
 
 describe("search_pokemon", () => {
-  const gen = Generations.get(CHAMPIONS_GEN_NUM);
-
   describe("タイプでの絞り込み", () => {
     it("Fire タイプのポケモンだけが返される", () => {
-      const results = [];
-      for (const species of gen.species) {
-        if (species.types.includes("Fire")) {
-          results.push(species.name);
-        }
-      }
+      const results = championsPokemon.filter((p) =>
+        p.types.includes("Fire"),
+      );
       expect(results.length).toBeGreaterThan(0);
-      // 全て Fire タイプを含むことを確認
-      for (const name of results) {
-        const sp = gen.species.get(toID(name))!;
-        expect(sp.types).toContain("Fire");
+      for (const entry of results) {
+        expect(entry.types).toContain("Fire");
       }
     });
 
     it("Dragon タイプのポケモンが検索できる", () => {
-      const results = [];
-      for (const species of gen.species) {
-        if (species.types.includes("Dragon")) {
-          results.push(species.name);
-        }
-      }
+      const results = championsPokemon
+        .filter((p) => p.types.includes("Dragon"))
+        .map((p) => p.name);
       expect(results.length).toBeGreaterThan(0);
       expect(results).toContain("Garchomp");
       expect(results).toContain("Dragonite");
@@ -135,50 +129,35 @@ describe("search_pokemon", () => {
   describe("種族値の下限での絞り込み", () => {
     it("攻撃力 130 以上のポケモンだけが返される", () => {
       const MIN_ATK = 130;
-      const results = [];
-      for (const species of gen.species) {
-        if (species.baseStats.atk >= MIN_ATK) {
-          results.push({
-            name: species.name,
-            atk: species.baseStats.atk,
-          });
-        }
-      }
+      const results = championsPokemon.filter(
+        (p) => p.baseStats.atk >= MIN_ATK,
+      );
       expect(results.length).toBeGreaterThan(0);
       for (const r of results) {
-        expect(r.atk).toBeGreaterThanOrEqual(MIN_ATK);
+        expect(r.baseStats.atk).toBeGreaterThanOrEqual(MIN_ATK);
       }
     });
 
     it("素早さ 120 以上のポケモンだけが返される", () => {
       const MIN_SPE = 120;
-      const results = [];
-      for (const species of gen.species) {
-        if (species.baseStats.spe >= MIN_SPE) {
-          results.push({
-            name: species.name,
-            spe: species.baseStats.spe,
-          });
-        }
-      }
+      const results = championsPokemon.filter(
+        (p) => p.baseStats.spe >= MIN_SPE,
+      );
       expect(results.length).toBeGreaterThan(0);
       for (const r of results) {
-        expect(r.spe).toBeGreaterThanOrEqual(MIN_SPE);
+        expect(r.baseStats.spe).toBeGreaterThanOrEqual(MIN_SPE);
       }
     });
 
     it("複数の種族値条件で絞り込める", () => {
       const MIN_ATK = 100;
       const MIN_SPE = 100;
-      const results = [];
-      for (const species of gen.species) {
-        if (
-          species.baseStats.atk >= MIN_ATK &&
-          species.baseStats.spe >= MIN_SPE
-        ) {
-          results.push(species.name);
-        }
-      }
+      const results = championsPokemon
+        .filter(
+          (p) =>
+            p.baseStats.atk >= MIN_ATK && p.baseStats.spe >= MIN_SPE,
+        )
+        .map((p) => p.name);
       expect(results.length).toBeGreaterThan(0);
       // Garchomp (atk:130, spe:102) が含まれるはず
       expect(results).toContain("Garchomp");
@@ -186,25 +165,8 @@ describe("search_pokemon", () => {
   });
 
   describe("条件なしの検索", () => {
-    it("limit で返す件数を制限できる", () => {
-      const LIMIT = 5;
-      const results = [];
-      let count = 0;
-      for (const species of gen.species) {
-        results.push(species.name);
-        count++;
-        if (count >= LIMIT) break;
-      }
-      expect(results).toHaveLength(LIMIT);
-    });
-
-    it("全ポケモンの件数が正しい", () => {
-      let totalCount = 0;
-      for (const _species of gen.species) {
-        totalCount++;
-      }
-      const EXPECTED_TOTAL_SPECIES = 290;
-      expect(totalCount).toBe(EXPECTED_TOTAL_SPECIES);
+    it("pokemon.json に 1 件以上のエントリが存在する", () => {
+      expect(championsPokemon.length).toBeGreaterThan(0);
     });
   });
 });

@@ -1,8 +1,27 @@
 import { calculate, Generations, Pokemon, Move, Field } from "@smogon/calc";
 import type { NameResolver } from "@ai-rotom/shared";
+import { pokemonById, toDataId, type PokemonEntry } from "../data-store.js";
 
 const CHAMPIONS_GEN_NUM = 0;
 const DEFAULT_NATURE_EN = "Serious";
+
+/**
+ * pokemon.json のエントリから @smogon/calc の overrides オプション用オブジェクトを作る。
+ * @smogon/calc の Specie 型は types を文字列 union のタプル ([TypeName] | [TypeName, TypeName]) として
+ * 厳密に定義しているが、pokemon.json 側は string[] で保持するため、呼び出し側でキャストする。
+ */
+function buildSpeciesOverrides(
+  entry: PokemonEntry,
+): {
+  // @smogon/calc の Specie.types / baseStats に相当する形へキャストを委ねるため unknown にする
+  types: unknown;
+  baseStats: PokemonEntry["baseStats"];
+} {
+  return {
+    types: entry.types,
+    baseStats: entry.baseStats,
+  };
+}
 
 export interface StatsInput {
   hp: number;
@@ -132,6 +151,45 @@ function flattenDamage(damage: number | number[] | number[][]): number[] {
   return damage as number[];
 }
 
+type StatusName = "" | "psn" | "tox" | "brn" | "par" | "slp" | "frz";
+
+/**
+ * PokemonInput から @smogon/calc の Pokemon コンストラクタに渡す options を組み立てる。
+ *
+ * pokemon.json にエントリがあるポケモンは以下の動作:
+ *   - baseStats / types を overrides で上書き（修正済み種族値・タイプを反映）
+ *   - ability が未指定なら pokemon.json の 1 番目の特性（通常特性）をデフォルトに設定
+ * pokemon.json にない場合は override 無し（@smogon/calc の内蔵データで動作）。
+ */
+function buildPokemonOptions(
+  resolvedName: string,
+  input: PokemonInput,
+  natureEn: string,
+  abilityEn: string | undefined,
+  itemEn: string | undefined,
+): ConstructorParameters<typeof Pokemon>[2] {
+  const entry = pokemonById.get(toDataId(resolvedName));
+
+  const baseOptions: ConstructorParameters<typeof Pokemon>[2] = {
+    nature: natureEn,
+    evs: toSmogonEvs(input.evs),
+    boosts: toSmogonBoosts(input.boosts),
+    ability: abilityEn ?? entry?.abilities[0],
+    item: itemEn,
+    status: (input.status ?? "") as StatusName,
+  };
+
+  if (entry !== undefined) {
+    // @smogon/calc の Specie.types は文字列 union のタプル型。
+    // pokemon.json では string[] で保持しているため、overrides の型要件に合わせてキャストする。
+    baseOptions.overrides = buildSpeciesOverrides(entry) as NonNullable<
+      ConstructorParameters<typeof Pokemon>[2]
+    >["overrides"];
+  }
+
+  return baseOptions;
+}
+
 export class DamageCalculatorAdapter {
   private readonly resolvers: NameResolvers;
 
@@ -183,23 +241,29 @@ export class DamageCalculatorAdapter {
       "持ち物",
     );
 
-    const attacker = new Pokemon(gen, attackerName, {
-      nature: attackerNature,
-      evs: toSmogonEvs(input.attacker.evs),
-      boosts: toSmogonBoosts(input.attacker.boosts),
-      ability: attackerAbility,
-      item: attackerItem,
-      status: (input.attacker.status ?? "") as "" | "psn" | "tox" | "brn" | "par" | "slp" | "frz",
-    });
+    const attacker = new Pokemon(
+      gen,
+      attackerName,
+      buildPokemonOptions(
+        attackerName,
+        input.attacker,
+        attackerNature,
+        attackerAbility,
+        attackerItem,
+      ),
+    );
 
-    const defender = new Pokemon(gen, defenderName, {
-      nature: defenderNature,
-      evs: toSmogonEvs(input.defender.evs),
-      boosts: toSmogonBoosts(input.defender.boosts),
-      ability: defenderAbility,
-      item: defenderItem,
-      status: (input.defender.status ?? "") as "" | "psn" | "tox" | "brn" | "par" | "slp" | "frz",
-    });
+    const defender = new Pokemon(
+      gen,
+      defenderName,
+      buildPokemonOptions(
+        defenderName,
+        input.defender,
+        defenderNature,
+        defenderAbility,
+        defenderItem,
+      ),
+    );
 
     const move = new Move(gen, moveName, {
       isCrit: input.conditions?.isCriticalHit,
@@ -274,23 +338,29 @@ export class DamageCalculatorAdapter {
       "持ち物",
     );
 
-    const attacker = new Pokemon(gen, attackerName, {
-      nature: attackerNature,
-      evs: toSmogonEvs(input.attacker.evs),
-      boosts: toSmogonBoosts(input.attacker.boosts),
-      ability: attackerAbility,
-      item: attackerItem,
-      status: (input.attacker.status ?? "") as "" | "psn" | "tox" | "brn" | "par" | "slp" | "frz",
-    });
+    const attacker = new Pokemon(
+      gen,
+      attackerName,
+      buildPokemonOptions(
+        attackerName,
+        input.attacker,
+        attackerNature,
+        attackerAbility,
+        attackerItem,
+      ),
+    );
 
-    const defender = new Pokemon(gen, defenderName, {
-      nature: defenderNature,
-      evs: toSmogonEvs(input.defender.evs),
-      boosts: toSmogonBoosts(input.defender.boosts),
-      ability: defenderAbility,
-      item: defenderItem,
-      status: (input.defender.status ?? "") as "" | "psn" | "tox" | "brn" | "par" | "slp" | "frz",
-    });
+    const defender = new Pokemon(
+      gen,
+      defenderName,
+      buildPokemonOptions(
+        defenderName,
+        input.defender,
+        defenderNature,
+        defenderAbility,
+        defenderItem,
+      ),
+    );
 
     const field = this.buildField(input.conditions);
     const defenderMaxHP = defender.maxHP();
@@ -370,14 +440,11 @@ export class DamageCalculatorAdapter {
       "持ち物",
     );
 
-    const pokemon = new Pokemon(gen, resolvedName, {
-      nature,
-      evs: toSmogonEvs(input.evs),
-      boosts: toSmogonBoosts(input.boosts),
-      ability,
-      item,
-      status: (input.status ?? "") as "" | "psn" | "tox" | "brn" | "par" | "slp" | "frz",
-    });
+    const pokemon = new Pokemon(
+      gen,
+      resolvedName,
+      buildPokemonOptions(resolvedName, input, nature, ability, item),
+    );
 
     return { pokemon, resolvedName };
   }
