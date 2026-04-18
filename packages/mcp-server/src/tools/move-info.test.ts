@@ -4,7 +4,7 @@ import { moveNameResolver } from "../name-resolvers";
 
 const FLAMETHROWER_BASE_POWER = 90;
 const FLAMETHROWER_ACCURACY = 100;
-const FLAMETHROWER_PP = 15;
+const FLAMETHROWER_PP = 16;
 
 describe("get_move_info logic", () => {
   describe("データ取得", () => {

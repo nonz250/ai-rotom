@@ -65,7 +65,7 @@
     "category": "Physical",
     "basePower": 55,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "any",
     "flags": [
@@ -86,7 +86,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 30,
+    "pp": 20,
     "priority": 0,
     "target": "adjacentAllyOrSelf",
     "flags": [
@@ -125,7 +125,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -143,7 +143,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 30,
+    "pp": 20,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -161,7 +161,7 @@
     "category": "Special",
     "basePower": 60,
     "accuracy": 95,
-    "pp": 25,
+    "pp": 20,
     "priority": 0,
     "target": "allAdjacentFoes",
     "flags": [
@@ -182,7 +182,7 @@
     "category": "Special",
     "basePower": 75,
     "accuracy": 95,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "any",
     "flags": [
@@ -203,7 +203,7 @@
     "category": "Special",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -224,7 +224,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 15,
+    "pp": 16,
     "priority": 2,
     "target": "self",
     "flags": [
@@ -259,7 +259,7 @@
     "category": "Special",
     "basePower": 60,
     "accuracy": 100,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -278,7 +278,7 @@
     "category": "Special",
     "basePower": 90,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -354,7 +354,7 @@
     "category": "Physical",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -375,7 +375,7 @@
     "category": "Physical",
     "basePower": 90,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -395,7 +395,7 @@
     "category": "Special",
     "basePower": 120,
     "accuracy": 100,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -431,7 +431,7 @@
     "category": "Physical",
     "basePower": 60,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -451,7 +451,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -494,7 +494,7 @@
     "category": "Physical",
     "basePower": 110,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -530,7 +530,7 @@
     "category": "Physical",
     "basePower": 60,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -550,7 +550,7 @@
     "category": "Physical",
     "basePower": 120,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -570,7 +570,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 30,
+    "pp": 20,
     "priority": 1,
     "target": "normal",
     "flags": [
@@ -591,7 +591,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 5,
+    "pp": 8,
     "priority": 4,
     "target": "self",
     "flags": [
@@ -609,7 +609,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 40,
+    "pp": 20,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -626,7 +626,7 @@
     "category": "Physical",
     "basePower": 120,
     "accuracy": 100,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -649,7 +649,7 @@
     "category": "Physical",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -669,7 +669,7 @@
     "category": "Special",
     "basePower": 120,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -692,7 +692,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -730,7 +730,7 @@
     "category": "Physical",
     "basePower": 60,
     "accuracy": 100,
-    "pp": 25,
+    "pp": 20,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -751,7 +751,7 @@
     "category": "Physical",
     "basePower": 90,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -792,7 +792,7 @@
     "category": "Special",
     "basePower": 150,
     "accuracy": 90,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -812,7 +812,7 @@
     "category": "Physical",
     "basePower": 85,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -832,7 +832,7 @@
     "category": "Special",
     "basePower": 110,
     "accuracy": 70,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "allAdjacentFoes",
     "flags": [
@@ -852,7 +852,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -871,7 +871,7 @@
     "category": "Physical",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -890,7 +890,7 @@
     "category": "Physical",
     "basePower": 85,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -911,7 +911,7 @@
     "category": "Physical",
     "basePower": 30,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -930,7 +930,7 @@
     "category": "Special",
     "basePower": 140,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "allAdjacent",
     "flags": [
@@ -951,7 +951,7 @@
     "category": "Physical",
     "basePower": 85,
     "accuracy": 85,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "any",
     "flags": [
@@ -977,7 +977,7 @@
     "category": "Physical",
     "basePower": 120,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "any",
     "flags": [
@@ -998,7 +998,7 @@
     "category": "Physical",
     "basePower": 60,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "allAdjacentFoes",
     "flags": [
@@ -1017,7 +1017,7 @@
     "category": "Physical",
     "basePower": 75,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -1077,7 +1077,7 @@
     "category": "Special",
     "basePower": 90,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -1136,7 +1136,7 @@
     "category": "Physical",
     "basePower": 40,
     "accuracy": 100,
-    "pp": 30,
+    "pp": 20,
     "priority": 1,
     "target": "normal",
     "flags": [
@@ -1157,7 +1157,7 @@
     "category": "Physical",
     "basePower": 25,
     "accuracy": 100,
-    "pp": 30,
+    "pp": 20,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -1177,7 +1177,7 @@
     "category": "Special",
     "basePower": 70,
     "accuracy": 100,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "allAdjacentFoes",
     "flags": [
@@ -1196,7 +1196,7 @@
     "category": "Special",
     "basePower": 130,
     "accuracy": 100,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -1234,7 +1234,7 @@
     "category": "Physical",
     "basePower": 65,
     "accuracy": 90,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -1273,7 +1273,7 @@
     "category": "Special",
     "basePower": 50,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -1331,7 +1331,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "all",
     "flags": [],
@@ -1346,7 +1346,7 @@
     "category": "Physical",
     "basePower": 60,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -1368,7 +1368,7 @@
     "category": "Special",
     "basePower": 110,
     "accuracy": 100,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "allAdjacentFoes",
     "flags": [
@@ -1389,7 +1389,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -1408,7 +1408,7 @@
     "category": "Special",
     "basePower": 50,
     "accuracy": true,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -1427,7 +1427,7 @@
     "category": "Physical",
     "basePower": 120,
     "accuracy": 100,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -1447,7 +1447,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "adjacentAlly",
     "flags": [
@@ -1484,7 +1484,7 @@
     "category": "Physical",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "scripted",
     "flags": [
@@ -1504,7 +1504,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -1546,7 +1546,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 40,
+    "pp": 20,
     "priority": 0,
     "target": "allAdjacent",
     "flags": [
@@ -1585,7 +1585,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -1603,7 +1603,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 40,
+    "pp": 20,
     "priority": 0,
     "target": "allAdjacentFoes",
     "flags": [
@@ -1645,7 +1645,7 @@
     "category": "Physical",
     "basePower": 60,
     "accuracy": 100,
-    "pp": 25,
+    "pp": 20,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -1667,7 +1667,7 @@
     "category": "Physical",
     "basePower": 100,
     "accuracy": 95,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -1687,7 +1687,7 @@
     "category": "Physical",
     "basePower": 100,
     "accuracy": 80,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -1728,7 +1728,7 @@
     "category": "Physical",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -1749,7 +1749,7 @@
     "category": "Physical",
     "basePower": 75,
     "accuracy": 95,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -1769,7 +1769,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -1787,7 +1787,7 @@
     "category": "Physical",
     "basePower": 85,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -1807,7 +1807,7 @@
     "category": "Special",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "any",
     "flags": [
@@ -1828,7 +1828,7 @@
     "category": "Special",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "allAdjacentFoes",
     "flags": [
@@ -1847,7 +1847,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -1864,7 +1864,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -1885,7 +1885,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -1904,7 +1904,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 5,
+    "pp": 8,
     "priority": 4,
     "target": "self",
     "flags": [
@@ -1922,7 +1922,7 @@
     "category": "Physical",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -1947,7 +1947,7 @@
     "category": "Physical",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -1988,7 +1988,7 @@
     "category": "Special",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "allAdjacent",
     "flags": [
@@ -2007,7 +2007,7 @@
     "category": "Physical",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2033,7 +2033,7 @@
     "category": "Physical",
     "basePower": 120,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2053,7 +2053,7 @@
     "category": "Physical",
     "basePower": 35,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2073,7 +2073,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -2091,7 +2091,7 @@
     "category": "Special",
     "basePower": 130,
     "accuracy": 90,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2110,7 +2110,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "adjacentAlly",
     "flags": [
@@ -2129,7 +2129,7 @@
     "category": "Physical",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2168,7 +2168,7 @@
     "category": "Physical",
     "basePower": 50,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2188,7 +2188,7 @@
     "category": "Special",
     "basePower": 85,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "any",
     "flags": [
@@ -2209,7 +2209,7 @@
     "category": "Physical",
     "basePower": 100,
     "accuracy": 75,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2229,7 +2229,7 @@
     "category": "Physical",
     "basePower": 60,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2251,7 +2251,7 @@
     "category": "Special",
     "basePower": 50,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2272,7 +2272,7 @@
     "category": "Physical",
     "basePower": 75,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2315,7 +2315,7 @@
     "category": "Physical",
     "basePower": 80,
     "accuracy": 95,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2335,7 +2335,7 @@
     "category": "Physical",
     "basePower": 40,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2355,7 +2355,7 @@
     "category": "Physical",
     "basePower": 100,
     "accuracy": 50,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2376,7 +2376,7 @@
     "category": "Special",
     "basePower": 90,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2396,7 +2396,7 @@
     "category": "Physical",
     "basePower": 100,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "allAdjacent",
     "flags": [
@@ -2416,7 +2416,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2436,7 +2436,7 @@
     "category": "Special",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2457,7 +2457,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "all",
     "flags": [
@@ -2495,7 +2495,7 @@
     "category": "Special",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2515,7 +2515,7 @@
     "category": "Special",
     "basePower": 130,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2535,7 +2535,7 @@
     "category": "Special",
     "basePower": 55,
     "accuracy": 95,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "allAdjacentFoes",
     "flags": [
@@ -2554,7 +2554,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2576,7 +2576,7 @@
     "category": "Physical",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2597,7 +2597,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 4,
     "target": "self",
     "flags": [
@@ -2615,7 +2615,7 @@
     "category": "Special",
     "basePower": 90,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2635,7 +2635,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2656,7 +2656,7 @@
     "category": "Special",
     "basePower": 150,
     "accuracy": 100,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "allAdjacentFoes",
     "flags": [
@@ -2675,7 +2675,7 @@
     "category": "Special",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2694,7 +2694,7 @@
     "category": "Physical",
     "basePower": 250,
     "accuracy": 100,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "allAdjacent",
     "flags": [
@@ -2733,7 +2733,7 @@
     "category": "Physical",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 5,
+    "pp": 8,
     "priority": 2,
     "target": "normal",
     "flags": [
@@ -2773,7 +2773,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "all",
     "flags": [
@@ -2792,7 +2792,7 @@
     "category": "Physical",
     "basePower": 40,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 3,
     "target": "normal",
     "flags": [
@@ -2833,7 +2833,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2855,7 +2855,7 @@
     "category": "Physical",
     "basePower": 30,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 2,
     "target": "normal",
     "flags": [
@@ -2874,7 +2874,7 @@
     "category": "Physical",
     "basePower": 50,
     "accuracy": 100,
-    "pp": 25,
+    "pp": 20,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2894,7 +2894,7 @@
     "category": "Special",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2913,7 +2913,7 @@
     "category": "Special",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2933,7 +2933,7 @@
     "category": "Special",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2952,7 +2952,7 @@
     "category": "Special",
     "basePower": 110,
     "accuracy": 85,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2971,7 +2971,7 @@
     "category": "Physical",
     "basePower": 65,
     "accuracy": 95,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -2992,7 +2992,7 @@
     "category": "Physical",
     "basePower": 90,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3012,7 +3012,7 @@
     "category": "Physical",
     "basePower": 75,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3033,7 +3033,7 @@
     "category": "Special",
     "basePower": 35,
     "accuracy": 85,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3052,7 +3052,7 @@
     "category": "Physical",
     "basePower": 100,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 2,
     "target": "normal",
     "flags": [
@@ -3072,7 +3072,7 @@
     "category": "Physical",
     "basePower": 0,
     "accuracy": 30,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3092,7 +3092,7 @@
     "category": "Physical",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3132,7 +3132,7 @@
     "category": "Special",
     "basePower": 90,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3151,7 +3151,7 @@
     "category": "Physical",
     "basePower": 120,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3172,7 +3172,7 @@
     "category": "Special",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3191,7 +3191,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3212,7 +3212,7 @@
     "category": "Physical",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3253,7 +3253,7 @@
     "category": "Physical",
     "basePower": 70,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3272,7 +3272,7 @@
     "category": "Physical",
     "basePower": 90,
     "accuracy": 95,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "any",
     "flags": [
@@ -3298,7 +3298,7 @@
     "category": "Physical",
     "basePower": 100,
     "accuracy": 95,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "any",
     "flags": [
@@ -3321,7 +3321,7 @@
     "category": "Special",
     "basePower": 120,
     "accuracy": 70,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3341,7 +3341,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 30,
+    "pp": 20,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -3422,7 +3422,7 @@
     "category": "Physical",
     "basePower": 95,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3461,7 +3461,7 @@
     "category": "Special",
     "basePower": 150,
     "accuracy": 90,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3482,7 +3482,7 @@
     "category": "Special",
     "basePower": 60,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3501,7 +3501,7 @@
     "category": "Special",
     "basePower": 120,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3520,7 +3520,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3541,7 +3541,7 @@
     "category": "Special",
     "basePower": 75,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3561,7 +3561,7 @@
     "category": "Physical",
     "basePower": 150,
     "accuracy": 90,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3582,7 +3582,7 @@
     "category": "Physical",
     "basePower": 160,
     "accuracy": 100,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3602,7 +3602,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 30,
+    "pp": 20,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3663,7 +3663,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "all",
     "flags": [
@@ -3681,7 +3681,7 @@
     "category": "Physical",
     "basePower": 90,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3699,7 +3699,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "all",
     "flags": [
@@ -3735,7 +3735,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3754,7 +3754,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3775,7 +3775,7 @@
     "category": "Physical",
     "basePower": 0,
     "accuracy": 30,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3795,7 +3795,7 @@
     "category": "Physical",
     "basePower": 120,
     "accuracy": 80,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3814,7 +3814,7 @@
     "category": "Physical",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3835,7 +3835,7 @@
     "category": "Physical",
     "basePower": 100,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3856,7 +3856,7 @@
     "category": "Physical",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3876,7 +3876,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 30,
+    "pp": 20,
     "priority": 0,
     "target": "all",
     "flags": [
@@ -3894,7 +3894,7 @@
     "category": "Physical",
     "basePower": 120,
     "accuracy": 100,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3915,7 +3915,7 @@
     "category": "Physical",
     "basePower": 150,
     "accuracy": 80,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -3935,7 +3935,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "allyTeam",
     "flags": [
@@ -3956,7 +3956,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -3975,7 +3975,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "any",
     "flags": [
@@ -3998,7 +3998,7 @@
     "category": "Physical",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4019,7 +4019,7 @@
     "category": "Special",
     "basePower": 95,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "allAdjacentFoes",
     "flags": [
@@ -4039,7 +4039,7 @@
     "category": "Physical",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4079,7 +4079,7 @@
     "category": "Special",
     "basePower": 65,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4098,7 +4098,7 @@
     "category": "Physical",
     "basePower": 95,
     "accuracy": 95,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4118,7 +4118,7 @@
     "category": "Physical",
     "basePower": 130,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4139,7 +4139,7 @@
     "category": "Physical",
     "basePower": 0,
     "accuracy": 30,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4180,7 +4180,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 40,
+    "pp": 20,
     "priority": 0,
     "target": "allies",
     "flags": [
@@ -4199,7 +4199,7 @@
     "category": "Special",
     "basePower": 110,
     "accuracy": 70,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "any",
     "flags": [
@@ -4220,7 +4220,7 @@
     "category": "Special",
     "basePower": 150,
     "accuracy": 90,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4240,7 +4240,7 @@
     "category": "Special",
     "basePower": 110,
     "accuracy": 80,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4259,7 +4259,7 @@
     "category": "Special",
     "basePower": 150,
     "accuracy": 90,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4279,7 +4279,7 @@
     "category": "Special",
     "basePower": 90,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "allAdjacentFoes",
     "flags": [
@@ -4320,7 +4320,7 @@
     "category": "Special",
     "basePower": 90,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4339,7 +4339,7 @@
     "category": "Physical",
     "basePower": 65,
     "accuracy": 95,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4360,7 +4360,7 @@
     "category": "Physical",
     "basePower": 100,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4381,7 +4381,7 @@
     "category": "Physical",
     "basePower": 75,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4402,7 +4402,7 @@
     "category": "Physical",
     "basePower": 40,
     "accuracy": 100,
-    "pp": 30,
+    "pp": 20,
     "priority": 1,
     "target": "normal",
     "flags": [
@@ -4421,7 +4421,7 @@
     "category": "Physical",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4441,7 +4441,7 @@
     "category": "Physical",
     "basePower": 85,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4460,7 +4460,7 @@
     "category": "Physical",
     "basePower": 25,
     "accuracy": 100,
-    "pp": 30,
+    "pp": 20,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4479,7 +4479,7 @@
     "category": "Special",
     "basePower": 55,
     "accuracy": 95,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "allAdjacentFoes",
     "flags": [
@@ -4499,7 +4499,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -4519,7 +4519,7 @@
     "category": "Special",
     "basePower": 65,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4538,7 +4538,7 @@
     "category": "Special",
     "basePower": 100,
     "accuracy": 50,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4596,7 +4596,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4616,7 +4616,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -4634,7 +4634,7 @@
     "category": "Physical",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4654,7 +4654,7 @@
     "category": "Physical",
     "basePower": 100,
     "accuracy": 75,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4674,7 +4674,7 @@
     "category": "Physical",
     "basePower": 60,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 1,
     "target": "normal",
     "flags": [
@@ -4694,7 +4694,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 5,
+    "pp": 8,
     "priority": 4,
     "target": "self",
     "flags": [
@@ -4733,7 +4733,7 @@
     "category": "Physical",
     "basePower": 85,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4754,7 +4754,7 @@
     "category": "Physical",
     "basePower": 75,
     "accuracy": 100,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4774,7 +4774,7 @@
     "category": "Physical",
     "basePower": 140,
     "accuracy": 100,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4794,7 +4794,7 @@
     "category": "Physical",
     "basePower": 50,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4813,7 +4813,7 @@
     "category": "Special",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "allAdjacent",
     "flags": [
@@ -4832,7 +4832,7 @@
     "category": "Physical",
     "basePower": 90,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4853,7 +4853,7 @@
     "category": "Special",
     "basePower": 130,
     "accuracy": 90,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4872,7 +4872,7 @@
     "category": "Physical",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4893,7 +4893,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4913,7 +4913,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "allies",
     "flags": [
@@ -4932,7 +4932,7 @@
     "category": "Special",
     "basePower": 140,
     "accuracy": 90,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4950,7 +4950,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 30,
+    "pp": 20,
     "priority": 0,
     "target": "allySide",
     "flags": [
@@ -4968,7 +4968,7 @@
     "category": "Physical",
     "basePower": 85,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -4988,7 +4988,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -5047,7 +5047,7 @@
     "category": "Special",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -5066,7 +5066,7 @@
     "category": "Physical",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -5086,7 +5086,7 @@
     "category": "Physical",
     "basePower": 40,
     "accuracy": 100,
-    "pp": 30,
+    "pp": 20,
     "priority": 1,
     "target": "normal",
     "flags": [
@@ -5129,7 +5129,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "all",
     "flags": [
@@ -5167,7 +5167,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -5186,7 +5186,7 @@
     "category": "Special",
     "basePower": 80,
     "accuracy": 90,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "allAdjacentFoes",
     "flags": [
@@ -5207,7 +5207,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -5226,7 +5226,7 @@
     "category": "Physical",
     "basePower": 120,
     "accuracy": 85,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -5246,7 +5246,7 @@
     "category": "Physical",
     "basePower": 120,
     "accuracy": 75,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -5266,7 +5266,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -5285,7 +5285,7 @@
     "category": "Physical",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "scripted",
     "flags": [
@@ -5305,7 +5305,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 85,
-    "pp": 40,
+    "pp": 20,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -5328,7 +5328,7 @@
     "category": "Special",
     "basePower": 120,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -5348,7 +5348,7 @@
     "category": "Physical",
     "basePower": 90,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -5388,7 +5388,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -5425,7 +5425,7 @@
     "category": "Special",
     "basePower": 100,
     "accuracy": 100,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "allAdjacent",
     "flags": [
@@ -5444,7 +5444,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "all",
     "flags": [
@@ -5462,7 +5462,7 @@
     "category": "Special",
     "basePower": 95,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -5481,7 +5481,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -5500,7 +5500,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -5519,7 +5519,7 @@
     "category": "Physical",
     "basePower": 30,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "allAdjacentFoes",
     "flags": [
@@ -5539,7 +5539,7 @@
     "category": "Physical",
     "basePower": 120,
     "accuracy": 85,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -5558,7 +5558,7 @@
     "category": "Special",
     "basePower": 90,
     "accuracy": 85,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "allAdjacentFoes",
     "flags": [
@@ -5578,7 +5578,7 @@
     "category": "Special",
     "basePower": 55,
     "accuracy": 95,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -5597,7 +5597,7 @@
     "category": "Special",
     "basePower": 20,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -5616,7 +5616,7 @@
     "category": "Special",
     "basePower": 75,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -5653,7 +5653,7 @@
     "category": "Special",
     "basePower": 90,
     "accuracy": 95,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -5672,7 +5672,7 @@
     "category": "Special",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -5712,7 +5712,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 30,
+    "pp": 20,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -5769,7 +5769,7 @@
     "category": "Physical",
     "basePower": 120,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "randomNormal",
     "flags": [
@@ -5790,7 +5790,7 @@
     "category": "Special",
     "basePower": 130,
     "accuracy": 90,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -5871,7 +5871,7 @@
     "category": "Physical",
     "basePower": 50,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -5891,7 +5891,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "all",
     "flags": [
@@ -5911,7 +5911,7 @@
     "category": "Physical",
     "basePower": 90,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "allAdjacent",
     "flags": [
@@ -5931,7 +5931,7 @@
     "category": "Special",
     "basePower": 120,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "randomNormal",
     "flags": [
@@ -5953,7 +5953,7 @@
     "category": "Physical",
     "basePower": 90,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -5995,7 +5995,7 @@
     "category": "Physical",
     "basePower": 90,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -6036,7 +6036,7 @@
     "category": "Physical",
     "basePower": 50,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -6077,7 +6077,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 75,
-    "pp": 35,
+    "pp": 20,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -6098,7 +6098,7 @@
     "category": "Special",
     "basePower": 90,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -6119,7 +6119,7 @@
     "category": "Physical",
     "basePower": 110,
     "accuracy": 90,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -6138,7 +6138,7 @@
     "category": "Physical",
     "basePower": 20,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -6177,7 +6177,7 @@
     "category": "Physical",
     "basePower": 40,
     "accuracy": 100,
-    "pp": 35,
+    "pp": 20,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -6233,7 +6233,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -6252,7 +6252,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -6273,7 +6273,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -6291,7 +6291,7 @@
     "category": "Physical",
     "basePower": 20,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -6311,7 +6311,7 @@
     "category": "Physical",
     "basePower": 120,
     "accuracy": 85,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -6331,7 +6331,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 5,
+    "pp": 8,
     "priority": 4,
     "target": "self",
     "flags": [
@@ -6349,7 +6349,7 @@
     "category": "Special",
     "basePower": 90,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -6368,7 +6368,7 @@
     "category": "Physical",
     "basePower": 85,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -6389,7 +6389,7 @@
     "category": "Special",
     "basePower": 75,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -6410,7 +6410,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "all",
     "flags": [
@@ -6448,7 +6448,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -6467,7 +6467,7 @@
     "category": "Physical",
     "basePower": 90,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -6487,7 +6487,7 @@
     "category": "Special",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -6506,7 +6506,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -6524,7 +6524,7 @@
     "category": "Physical",
     "basePower": 40,
     "accuracy": 100,
-    "pp": 30,
+    "pp": 20,
     "priority": 1,
     "target": "normal",
     "flags": [
@@ -6544,7 +6544,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 15,
+    "pp": 16,
     "priority": 3,
     "target": "allySide",
     "flags": [
@@ -6599,7 +6599,7 @@
     "category": "Physical",
     "basePower": 90,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -6618,7 +6618,7 @@
     "category": "Physical",
     "basePower": 120,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "randomNormal",
     "flags": [
@@ -6636,7 +6636,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "all",
     "flags": [
@@ -6653,7 +6653,7 @@
     "category": "Physical",
     "basePower": 50,
     "accuracy": 100,
-    "pp": 40,
+    "pp": 20,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -6673,7 +6673,7 @@
     "category": "Physical",
     "basePower": 75,
     "accuracy": 95,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -6694,7 +6694,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -6713,7 +6713,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -6749,7 +6749,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -6769,7 +6769,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -6788,7 +6788,7 @@
     "category": "Physical",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -6851,7 +6851,7 @@
     "category": "Physical",
     "basePower": 25,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -6889,7 +6889,7 @@
     "category": "Physical",
     "basePower": 75,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "allAdjacentFoes",
     "flags": [
@@ -6908,7 +6908,7 @@
     "category": "Physical",
     "basePower": 60,
     "accuracy": 95,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -6927,7 +6927,7 @@
     "category": "Physical",
     "basePower": 150,
     "accuracy": 90,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -6948,7 +6948,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -6967,7 +6967,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -6986,7 +6986,7 @@
     "category": "Special",
     "basePower": 60,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7007,7 +7007,7 @@
     "category": "Physical",
     "basePower": 90,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7028,7 +7028,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 25,
+    "pp": 20,
     "priority": 0,
     "target": "allySide",
     "flags": [
@@ -7046,7 +7046,7 @@
     "category": "Physical",
     "basePower": 40,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7064,7 +7064,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "all",
     "flags": [
@@ -7082,7 +7082,7 @@
     "category": "Physical",
     "basePower": 35,
     "accuracy": 85,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7101,7 +7101,7 @@
     "category": "Special",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7140,7 +7140,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7161,7 +7161,7 @@
     "category": "Special",
     "basePower": 70,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7181,7 +7181,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 85,
-    "pp": 40,
+    "pp": 20,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7204,7 +7204,7 @@
     "category": "Physical",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7245,7 +7245,7 @@
     "category": "Physical",
     "basePower": 200,
     "accuracy": 100,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "allAdjacent",
     "flags": [
@@ -7265,7 +7265,7 @@
     "category": "Special",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7285,7 +7285,7 @@
     "category": "Physical",
     "basePower": 70,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7326,7 +7326,7 @@
     "category": "Physical",
     "basePower": 40,
     "accuracy": 100,
-    "pp": 30,
+    "pp": 20,
     "priority": 1,
     "target": "normal",
     "flags": [
@@ -7346,7 +7346,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "self",
     "flags": [],
@@ -7361,7 +7361,7 @@
     "category": "Special",
     "basePower": 0,
     "accuracy": 30,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7380,7 +7380,7 @@
     "category": "Special",
     "basePower": 90,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7399,7 +7399,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -7417,7 +7417,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -7435,7 +7435,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7456,7 +7456,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 55,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7478,7 +7478,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7499,7 +7499,7 @@
     "category": "Physical",
     "basePower": 70,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7519,7 +7519,7 @@
     "category": "Physical",
     "basePower": 140,
     "accuracy": 90,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "any",
     "flags": [
@@ -7542,7 +7542,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -7561,7 +7561,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 75,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7582,7 +7582,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -7604,7 +7604,7 @@
     "category": "Special",
     "basePower": 90,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7624,7 +7624,7 @@
     "category": "Special",
     "basePower": 95,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "allAdjacent",
     "flags": [
@@ -7643,7 +7643,7 @@
     "category": "Physical",
     "basePower": 50,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7663,7 +7663,7 @@
     "category": "Physical",
     "basePower": 70,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7679,11 +7679,11 @@
     "id": "snaptrap",
     "name": "Snap Trap",
     "nameJa": "トラバサミ",
-    "type": "Grass",
+    "type": "Steel",
     "category": "Physical",
     "basePower": 35,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7702,7 +7702,7 @@
     "category": "Special",
     "basePower": 55,
     "accuracy": 95,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "allAdjacentFoes",
     "flags": [
@@ -7722,7 +7722,7 @@
     "category": "Special",
     "basePower": 50,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7742,7 +7742,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "all",
     "flags": [],
@@ -7797,7 +7797,7 @@
     "category": "Special",
     "basePower": 120,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7819,7 +7819,7 @@
     "category": "Physical",
     "basePower": 125,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7843,7 +7843,7 @@
     "category": "Special",
     "basePower": 90,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "allAdjacent",
     "flags": [
@@ -7864,7 +7864,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7885,7 +7885,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7924,7 +7924,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 5,
+    "pp": 8,
     "priority": 4,
     "target": "self",
     "flags": [
@@ -7942,7 +7942,7 @@
     "category": "Physical",
     "basePower": 90,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7961,7 +7961,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -7982,7 +7982,7 @@
     "category": "Special",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -8040,7 +8040,7 @@
     "category": "Special",
     "basePower": 140,
     "accuracy": 95,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -8058,7 +8058,7 @@
     "category": "Physical",
     "basePower": 130,
     "accuracy": 100,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -8078,7 +8078,7 @@
     "category": "Physical",
     "basePower": 70,
     "accuracy": 90,
-    "pp": 25,
+    "pp": 20,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -8134,7 +8134,7 @@
     "category": "Physical",
     "basePower": 75,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -8154,7 +8154,7 @@
     "category": "Physical",
     "basePower": 65,
     "accuracy": 90,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -8175,7 +8175,7 @@
     "category": "Physical",
     "basePower": 100,
     "accuracy": 80,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -8194,7 +8194,7 @@
     "category": "Special",
     "basePower": 20,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -8213,7 +8213,7 @@
     "category": "Physical",
     "basePower": 60,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -8233,7 +8233,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -8254,7 +8254,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 95,
-    "pp": 40,
+    "pp": 20,
     "priority": 0,
     "target": "allAdjacentFoes",
     "flags": [
@@ -8319,7 +8319,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -8337,7 +8337,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 75,
-    "pp": 30,
+    "pp": 20,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -8358,7 +8358,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -8377,7 +8377,7 @@
     "category": "Physical",
     "basePower": 70,
     "accuracy": 100,
-    "pp": 5,
+    "pp": 8,
     "priority": 1,
     "target": "normal",
     "flags": [
@@ -8397,7 +8397,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "all",
     "flags": [
@@ -8414,7 +8414,7 @@
     "category": "Physical",
     "basePower": 100,
     "accuracy": 95,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -8434,7 +8434,7 @@
     "category": "Physical",
     "basePower": 0,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -8454,7 +8454,7 @@
     "category": "Physical",
     "basePower": 120,
     "accuracy": 100,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -8474,7 +8474,7 @@
     "category": "Special",
     "basePower": 90,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "allAdjacent",
     "flags": [
@@ -8494,7 +8494,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 85,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -8515,7 +8515,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -8534,7 +8534,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 75,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -8574,7 +8574,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -8614,7 +8614,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -8629,11 +8629,11 @@
     "id": "syrupbomb",
     "name": "Syrup Bomb",
     "nameJa": "みずあめボム",
-    "type": "Steel",
+    "type": "Grass",
     "category": "Special",
     "basePower": 60,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -8653,7 +8653,7 @@
     "category": "Physical",
     "basePower": 25,
     "accuracy": 85,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -8673,7 +8673,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "allySide",
     "flags": [
@@ -8732,7 +8732,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "all",
     "flags": [
@@ -8770,7 +8770,7 @@
     "category": "Physical",
     "basePower": 75,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -8790,7 +8790,7 @@
     "category": "Special",
     "basePower": 50,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -8810,7 +8810,7 @@
     "category": "Physical",
     "basePower": 60,
     "accuracy": 100,
-    "pp": 25,
+    "pp": 20,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -8832,7 +8832,7 @@
     "category": "Physical",
     "basePower": 120,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "randomNormal",
     "flags": [
@@ -8853,7 +8853,7 @@
     "category": "Physical",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -8873,7 +8873,7 @@
     "category": "Special",
     "basePower": 110,
     "accuracy": 70,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -8892,7 +8892,7 @@
     "category": "Special",
     "basePower": 90,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -8911,7 +8911,7 @@
     "category": "Physical",
     "basePower": 65,
     "accuracy": 95,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -8932,7 +8932,7 @@
     "category": "Physical",
     "basePower": 75,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -8994,7 +8994,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "self",
     "flags": [],
@@ -9009,7 +9009,7 @@
     "category": "Special",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -9030,7 +9030,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -9051,7 +9051,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -9130,7 +9130,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -9152,7 +9152,7 @@
     "category": "Special",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -9171,7 +9171,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -9213,7 +9213,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "all",
     "flags": [
@@ -9231,7 +9231,7 @@
     "category": "Physical",
     "basePower": 90,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -9250,7 +9250,7 @@
     "category": "Physical",
     "basePower": 20,
     "accuracy": 90,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -9270,7 +9270,7 @@
     "category": "Physical",
     "basePower": 85,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -9290,7 +9290,7 @@
     "category": "Special",
     "basePower": 40,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -9308,7 +9308,7 @@
     "category": "Physical",
     "basePower": 65,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 3,
     "target": "normal",
     "flags": [
@@ -9328,7 +9328,7 @@
     "category": "Special",
     "basePower": 90,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "randomNormal",
     "flags": [
@@ -9371,7 +9371,7 @@
     "category": "Special",
     "basePower": 40,
     "accuracy": 100,
-    "pp": 30,
+    "pp": 20,
     "priority": 1,
     "target": "normal",
     "flags": [
@@ -9390,7 +9390,7 @@
     "category": "Special",
     "basePower": 65,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -9428,7 +9428,7 @@
     "category": "Physical",
     "basePower": 120,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -9448,7 +9448,7 @@
     "category": "Physical",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -9508,7 +9508,7 @@
     "category": "Special",
     "basePower": 150,
     "accuracy": 100,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "allAdjacentFoes",
     "flags": [
@@ -9527,7 +9527,7 @@
     "category": "Physical",
     "basePower": 120,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -9547,7 +9547,7 @@
     "category": "Special",
     "basePower": 50,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -9567,7 +9567,7 @@
     "category": "Special",
     "basePower": 35,
     "accuracy": 85,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -9610,7 +9610,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 3,
     "target": "allySide",
     "flags": [
@@ -9627,7 +9627,7 @@
     "category": "Physical",
     "basePower": 90,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -9647,7 +9647,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 85,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -9667,7 +9667,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "self",
     "flags": [
@@ -9686,7 +9686,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "all",
     "flags": [
@@ -9704,7 +9704,7 @@
     "category": "Physical",
     "basePower": 120,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -9724,7 +9724,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": 100,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -9765,7 +9765,7 @@
     "category": "Physical",
     "basePower": 80,
     "accuracy": 100,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -9786,7 +9786,7 @@
     "category": "Status",
     "basePower": 0,
     "accuracy": true,
-    "pp": 10,
+    "pp": 12,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -9806,7 +9806,7 @@
     "category": "Special",
     "basePower": 120,
     "accuracy": 50,
-    "pp": 5,
+    "pp": 8,
     "priority": 0,
     "target": "normal",
     "flags": [
@@ -9826,7 +9826,7 @@
     "category": "Physical",
     "basePower": 80,
     "accuracy": 90,
-    "pp": 15,
+    "pp": 16,
     "priority": 0,
     "target": "normal",
     "flags": [
