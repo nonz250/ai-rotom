@@ -5,7 +5,7 @@
 ## インストール・使い方
 
 ```bash
-npx -y ai-rotom
+npx -y @nonz250/ai-rotom
 ```
 
 MCP クライアント（Claude Desktop / Claude Code 等）の設定例、

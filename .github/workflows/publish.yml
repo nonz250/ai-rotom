@@ -23,7 +23,7 @@ jobs:
       (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
     environment:
       name: production
-      url: https://www.npmjs.com/package/ai-rotom
+      url: https://www.npmjs.com/package/@nonz250/ai-rotom
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -64,7 +64,7 @@ jobs:
         id: check
         run: |
           VERSION=$(node -p "require('./packages/mcp-server/package.json').version")
-          if npm view "ai-rotom@$VERSION" version >/dev/null 2>&1; then
+          if npm view "@nonz250/ai-rotom@$VERSION" version >/dev/null 2>&1; then
             echo "Version $VERSION is already published. Skipping."
             echo "skip=true" >> "$GITHUB_OUTPUT"
           else
@@ -79,4 +79,4 @@ jobs:
       # 意図を明確にするため明示する。
       - name: Publish to npm (Trusted Publisher / OIDC)
         if: steps.check.outputs.skip != 'true'
-        run: npm publish --workspace=ai-rotom --provenance --access public
+        run: npm publish --workspace=@nonz250/ai-rotom --provenance --access public
