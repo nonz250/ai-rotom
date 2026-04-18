@@ -1,81 +1,21 @@
-import { calculate, Generations, Pokemon, Move, Field } from "@smogon/calc";
+import { calculate, Generations, Pokemon, Move } from "@smogon/calc";
 import type { NameResolver } from "@ai-rotom/shared";
-import { pokemonById, toDataId, type PokemonEntry } from "../data-store.js";
+import {
+  resolveNameWithFallback,
+  resolveOptionalName,
+} from "./resolvers/resolve-name.js";
+import { buildPokemonOptions } from "./builders/pokemon-builder.js";
+import { buildField } from "./builders/field-builder.js";
+import { flattenDamage, toPercent } from "./formatters/result-formatter.js";
+import type {
+  AllMovesCalcInput,
+  DamageCalcInput,
+  DamageCalcResult,
+  PokemonInput,
+} from "./types.js";
 
 const CHAMPIONS_GEN_NUM = 0;
 const DEFAULT_NATURE_EN = "Serious";
-
-/**
- * pokemon.json のエントリから @smogon/calc の overrides オプション用オブジェクトを作る。
- * @smogon/calc の Specie 型は types を文字列 union のタプル ([TypeName] | [TypeName, TypeName]) として
- * 厳密に定義しているが、pokemon.json 側は string[] で保持するため、呼び出し側でキャストする。
- */
-function buildSpeciesOverrides(
-  entry: PokemonEntry,
-): {
-  // @smogon/calc の Specie.types / baseStats に相当する形へキャストを委ねるため unknown にする
-  types: unknown;
-  baseStats: PokemonEntry["baseStats"];
-} {
-  return {
-    types: entry.types,
-    baseStats: entry.baseStats,
-  };
-}
-
-export interface StatsInput {
-  hp: number;
-  atk: number;
-  def: number;
-  spa: number;
-  spd: number;
-  spe: number;
-}
-
-export interface PokemonInput {
-  name: string;
-  nature?: string;
-  evs?: Partial<StatsInput>;
-  ability?: string;
-  item?: string;
-  boosts?: Partial<StatsInput>;
-  status?: string;
-}
-
-export interface ConditionsInput {
-  weather?: string;
-  terrain?: string;
-  isReflect?: boolean;
-  isLightScreen?: boolean;
-  isAuroraVeil?: boolean;
-  isCriticalHit?: boolean;
-}
-
-export interface DamageCalcInput {
-  attacker: PokemonInput;
-  defender: PokemonInput;
-  moveName: string;
-  conditions?: ConditionsInput;
-}
-
-export interface AllMovesCalcInput {
-  attacker: PokemonInput;
-  defender: PokemonInput;
-  conditions?: ConditionsInput;
-}
-
-export interface DamageCalcResult {
-  attacker: string;
-  defender: string;
-  move: string;
-  damage: number[];
-  min: number;
-  max: number;
-  minPercent: number;
-  maxPercent: number;
-  koChance: string;
-  description: string;
-}
 
 interface NameResolvers {
   pokemon: NameResolver;
@@ -85,111 +25,16 @@ interface NameResolvers {
   nature: NameResolver;
 }
 
-function resolveNameWithFallback(
-  resolver: NameResolver,
-  name: string,
-  label: string,
-): string {
-  const englishName = resolver.toEnglish(name);
-  if (englishName !== undefined) {
-    return englishName;
-  }
-
-  if (resolver.hasEnglishName(name)) {
-    return name;
-  }
-
-  const suggestions = resolver.suggestSimilar(name);
-  const suggestionMessage =
-    suggestions.length > 0
-      ? ` もしかして: ${suggestions.join(", ")}`
-      : "";
-  throw new Error(
-    `${label}「${name}」が見つかりません。${suggestionMessage}`,
-  );
-}
-
-function resolveOptionalName(
-  resolver: NameResolver,
-  name: string | undefined,
-  label: string,
-): string | undefined {
-  if (name === undefined) {
-    return undefined;
-  }
-  return resolveNameWithFallback(resolver, name, label);
-}
-
-function toSmogonEvs(
-  evs: Partial<StatsInput> | undefined,
-): Partial<{ hp: number; atk: number; def: number; spa: number; spd: number; spe: number }> {
-  if (evs === undefined) {
-    return {};
-  }
-  return { ...evs };
-}
-
-function toSmogonBoosts(
-  boosts: Partial<StatsInput> | undefined,
-): Partial<{ hp: number; atk: number; def: number; spa: number; spd: number; spe: number }> {
-  if (boosts === undefined) {
-    return {};
-  }
-  return { ...boosts };
-}
-
-const PERCENT_MULTIPLIER = 100;
-const PERCENT_DECIMAL_PRECISION = 10;
-
-function flattenDamage(damage: number | number[] | number[][]): number[] {
-  if (typeof damage === "number") {
-    return [damage];
-  }
-  if (Array.isArray(damage) && damage.length > 0 && Array.isArray(damage[0])) {
-    return (damage as number[][]).flat();
-  }
-  return damage as number[];
-}
-
-type StatusName = "" | "psn" | "tox" | "brn" | "par" | "slp" | "frz";
-
 /**
- * PokemonInput から @smogon/calc の Pokemon コンストラクタに渡す options を組み立てる。
+ * @smogon/calc のラッパー。日本語名入力を受け付け、
+ * 名前解決・Pokemon/Move/Field 組み立て・結果整形をまとめて担う Facade。
  *
- * pokemon.json にエントリがあるポケモンは以下の動作:
- *   - baseStats / types を overrides で上書き（修正済み種族値・タイプを反映）
- *   - ability が未指定なら pokemon.json の 1 番目の特性（通常特性）をデフォルトに設定
- * pokemon.json にない場合は override 無し（@smogon/calc の内蔵データで動作）。
+ * 実装の詳細は下記モジュールに分離している:
+ *   - resolvers/resolve-name: 日本語→英語の名前解決
+ *   - builders/pokemon-builder: @smogon/calc の Pokemon options 構築
+ *   - builders/field-builder: @smogon/calc の Field 構築
+ *   - formatters/result-formatter: ダメージ結果の整形（flatten・%変換）
  */
-function buildPokemonOptions(
-  resolvedName: string,
-  input: PokemonInput,
-  natureEn: string,
-  abilityEn: string | undefined,
-  itemEn: string | undefined,
-): ConstructorParameters<typeof Pokemon>[2] {
-  const entry = pokemonById.get(toDataId(resolvedName));
-
-  const baseOptions: ConstructorParameters<typeof Pokemon>[2] = {
-    nature: natureEn,
-    evs: toSmogonEvs(input.evs),
-    boosts: toSmogonBoosts(input.boosts),
-    ability: abilityEn ?? entry?.abilities[0],
-    item: itemEn,
-    status: (input.status ?? "") as StatusName,
-  };
-
-  if (entry !== undefined) {
-    // @smogon/calc の Specie.types は文字列 union のタプル型。
-    // pokemon.json では string[] で保持しているため、overrides の型要件に合わせてキャストする。
-    baseOptions.overrides = buildSpeciesOverrides(entry) as NonNullable<
-      ConstructorParameters<typeof Pokemon>[2]
-    >["overrides"];
-  }
-
-  return baseOptions;
-}
-
 export class DamageCalculatorAdapter {
   private readonly resolvers: NameResolvers;
 
@@ -198,7 +43,7 @@ export class DamageCalculatorAdapter {
   }
 
   calculate(input: DamageCalcInput): DamageCalcResult {
-    const gen = Generations.get(CHAMPIONS_GEN_NUM);
+    const gen = this.getGen();
 
     const attackerName = resolveNameWithFallback(
       this.resolvers.pokemon,
@@ -269,18 +114,14 @@ export class DamageCalculatorAdapter {
       isCrit: input.conditions?.isCriticalHit,
     });
 
-    const field = this.buildField(input.conditions);
+    const field = buildField(input.conditions);
 
     const result = calculate(gen, attacker, defender, move, field);
 
     const [min, max] = result.range();
     const defenderMaxHP = defender.maxHP();
-    const minPercent =
-      Math.round((min / defenderMaxHP) * PERCENT_MULTIPLIER * PERCENT_DECIMAL_PRECISION) /
-      PERCENT_DECIMAL_PRECISION;
-    const maxPercent =
-      Math.round((max / defenderMaxHP) * PERCENT_MULTIPLIER * PERCENT_DECIMAL_PRECISION) /
-      PERCENT_DECIMAL_PRECISION;
+    const minPercent = toPercent(min, defenderMaxHP);
+    const maxPercent = toPercent(max, defenderMaxHP);
 
     const koResult = result.kochance();
     const damageArray = flattenDamage(result.damage);
@@ -300,7 +141,7 @@ export class DamageCalculatorAdapter {
   }
 
   calculateAllMoves(input: AllMovesCalcInput): DamageCalcResult[] {
-    const gen = Generations.get(CHAMPIONS_GEN_NUM);
+    const gen = this.getGen();
 
     const attackerName = resolveNameWithFallback(
       this.resolvers.pokemon,
@@ -362,7 +203,7 @@ export class DamageCalculatorAdapter {
       ),
     );
 
-    const field = this.buildField(input.conditions);
+    const field = buildField(input.conditions);
     const defenderMaxHP = defender.maxHP();
 
     const results: DamageCalcResult[] = [];
@@ -384,12 +225,8 @@ export class DamageCalculatorAdapter {
           continue;
         }
 
-        const minPercent =
-          Math.round((min / defenderMaxHP) * PERCENT_MULTIPLIER * PERCENT_DECIMAL_PRECISION) /
-          PERCENT_DECIMAL_PRECISION;
-        const maxPercent =
-          Math.round((max / defenderMaxHP) * PERCENT_MULTIPLIER * PERCENT_DECIMAL_PRECISION) /
-          PERCENT_DECIMAL_PRECISION;
+        const minPercent = toPercent(min, defenderMaxHP);
+        const maxPercent = toPercent(max, defenderMaxHP);
 
         const koResult = result.kochance();
         const damageArray = flattenDamage(result.damage);
@@ -420,7 +257,7 @@ export class DamageCalculatorAdapter {
     pokemon: Pokemon;
     resolvedName: string;
   } {
-    const gen = Generations.get(CHAMPIONS_GEN_NUM);
+    const gen = this.getGen();
 
     const resolvedName = resolveNameWithFallback(
       this.resolvers.pokemon,
@@ -471,20 +308,14 @@ export class DamageCalculatorAdapter {
     }
     return resolveNameWithFallback(this.resolvers.nature, nature, "性格");
   }
-
-  private buildField(conditions: ConditionsInput | undefined): Field {
-    if (conditions === undefined) {
-      return new Field();
-    }
-
-    return new Field({
-      weather: conditions.weather as "Sun" | "Rain" | "Sand" | "Hail" | "Snow" | undefined,
-      terrain: conditions.terrain as "Electric" | "Grassy" | "Misty" | "Psychic" | undefined,
-      defenderSide: {
-        isReflect: conditions.isReflect ?? false,
-        isLightScreen: conditions.isLightScreen ?? false,
-        isAuroraVeil: conditions.isAuroraVeil ?? false,
-      },
-    });
-  }
 }
+
+// 既存呼び出し側の import パス互換性維持のため、型を types.ts から re-export する。
+export type {
+  AllMovesCalcInput,
+  ConditionsInput,
+  DamageCalcInput,
+  DamageCalcResult,
+  PokemonInput,
+  StatsInput,
+} from "./types.js";
