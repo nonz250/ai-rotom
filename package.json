@@ -7,7 +7,8 @@
   "scripts": {
     "build": "npm run build --workspaces",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:dist": "vitest run --config vitest.dist.config.ts"
   },
   "engines": {
     "node": ">=24"
