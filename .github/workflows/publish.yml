@@ -38,6 +38,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Trusted Publisher (OIDC) は npm CLI 11.5.1+ が必要。
+      # setup-node でインストールされる npm が古い場合に備え、最新化する。
+      - name: Ensure latest npm (required for Trusted Publisher OIDC)
+        run: npm install -g npm@latest
+
       - name: Verify version matches release tag
         if: github.event_name == 'release'
         run: |
@@ -67,8 +72,11 @@ jobs:
             echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Publish to npm
+      # Trusted Publisher (OIDC) で認証するため NODE_AUTH_TOKEN は指定しない。
+      # npm 側で Trusted Publisher 設定 (GitHub Actions + 本 repo + publish.yml
+      # + environment=production) が有効になっている必要がある。
+      # provenance 署名は Trusted Publisher 使用時に自動付与されるが、
+      # 意図を明確にするため明示する。
+      - name: Publish to npm (Trusted Publisher / OIDC)
         if: steps.check.outputs.skip != 'true'
         run: npm publish --workspace=ai-rotom --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
