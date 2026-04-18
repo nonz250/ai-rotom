@@ -2257,8 +2257,10 @@
       "Symbiosis"
     ],
     "weightkg": 0.9,
-    "baseSpecies": "Floette",
-    "otherFormes": null
+    "baseSpecies": null,
+    "otherFormes": [
+      "Floette-Mega"
+    ]
   },
   {
     "id": "floettemega",
@@ -2279,7 +2281,7 @@
       "Fairy Aura"
     ],
     "weightkg": 100.8,
-    "baseSpecies": "Floette",
+    "baseSpecies": "Floette-Eternal",
     "otherFormes": null
   },
   {
