@@ -7,6 +7,7 @@ import {
   pokemonById,
   toDataId,
 } from "../../data-store";
+import { analyzePartyCoverage, EFFECTIVE_THRESHOLD } from "./party-coverage";
 
 const CHAMPIONS_GEN_NUM = 0;
 
@@ -96,6 +97,77 @@ describe("analyze_party_coverage logic", () => {
     it("存在しないポケモンは pokemonNameResolver で undefined", () => {
       // 単純な名前解決チェックのみ
       expect(pokemonById.get(toDataId("NotAPokemon"))).toBeUndefined();
+    });
+  });
+
+  describe("analyzePartyCoverage の境界条件（uncoveredTypes 判定の実挙動）", () => {
+    // ガブリアスのじしんを用例として使う。じめん技のタイプ相性:
+    //   無効 (0倍): Flying
+    //   半減 (0.5倍): Grass / Bug
+    //   等倍 (1倍): Normal / Water / Psychic / Ice / Dragon / Dark / Fairy / Ghost / Ground / Fighting
+    //   抜群 (2倍): Electric / Poison / Rock / Steel / Fire
+    const GROUND_ATTACKER = { name: "ガブリアス" };
+    // 現仕様では moves に指定する技は英語名で渡す必要がある（日本語技名対応は別改修）
+    const GROUND_MOVE_SET = { ガブリアス: ["Earthquake"] };
+
+    it("しきい値定数は等倍（1倍）である仕様", () => {
+      const EQUAL_EFFECTIVENESS = 1;
+      expect(EFFECTIVE_THRESHOLD).toBe(EQUAL_EFFECTIVENESS);
+    });
+
+    it("maxMultiplier === 1（等倍）のタイプは uncoveredTypes に含まれる", () => {
+      const out = analyzePartyCoverage({
+        myParty: [GROUND_ATTACKER],
+        moves: GROUND_MOVE_SET,
+      });
+      const normal = out.coverage.find((c) => c.defenderType === "Normal");
+      expect(normal?.maxMultiplier).toBe(EFFECTIVE_THRESHOLD);
+      expect(out.uncoveredTypes.some((t) => t.type === "Normal")).toBe(true);
+    });
+
+    it("maxMultiplier === 2（抜群）のタイプは uncoveredTypes から除外される", () => {
+      const SUPER_EFFECTIVE = 2;
+      const out = analyzePartyCoverage({
+        myParty: [GROUND_ATTACKER],
+        moves: GROUND_MOVE_SET,
+      });
+      const fire = out.coverage.find((c) => c.defenderType === "Fire");
+      expect(fire?.maxMultiplier).toBe(SUPER_EFFECTIVE);
+      expect(out.uncoveredTypes.some((t) => t.type === "Fire")).toBe(false);
+    });
+
+    it("maxMultiplier === 0（無効）のタイプは uncoveredTypes に含まれる", () => {
+      const NO_EFFECT = 0;
+      const out = analyzePartyCoverage({
+        myParty: [GROUND_ATTACKER],
+        moves: GROUND_MOVE_SET,
+      });
+      const flying = out.coverage.find((c) => c.defenderType === "Flying");
+      expect(flying?.maxMultiplier).toBe(NO_EFFECT);
+      expect(out.uncoveredTypes.some((t) => t.type === "Flying")).toBe(true);
+    });
+
+    it("半減（0.5倍）のタイプも uncoveredTypes に含まれる", () => {
+      const HALF_EFFECTIVE = 0.5;
+      const out = analyzePartyCoverage({
+        myParty: [GROUND_ATTACKER],
+        moves: GROUND_MOVE_SET,
+      });
+      const grass = out.coverage.find((c) => c.defenderType === "Grass");
+      expect(grass?.maxMultiplier).toBe(HALF_EFFECTIVE);
+      expect(out.uncoveredTypes.some((t) => t.type === "Grass")).toBe(true);
+    });
+
+    it("抜群タイプは bestAttackers に最大倍率技が記録される", () => {
+      const SUPER_EFFECTIVE = 2;
+      const out = analyzePartyCoverage({
+        myParty: [GROUND_ATTACKER],
+        moves: GROUND_MOVE_SET,
+      });
+      const electric = out.coverage.find((c) => c.defenderType === "Electric");
+      expect(electric?.maxMultiplier).toBe(SUPER_EFFECTIVE);
+      expect(electric?.bestAttackers).toHaveLength(1);
+      expect(electric?.bestAttackers[0].move).toBe("Earthquake");
     });
   });
 });

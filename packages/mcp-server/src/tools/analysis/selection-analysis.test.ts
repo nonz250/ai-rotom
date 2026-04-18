@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { Generations, toID } from "@smogon/calc";
 import { DamageCalculatorAdapter } from "@ai-rotom/shared";
+import type { DamageCalcResult } from "@ai-rotom/shared";
 import { pokemonEntryProvider } from "../../data-store";
 import {
   pokemonNameResolver,
@@ -9,6 +10,7 @@ import {
   itemNameResolver,
   natureNameResolver,
 } from "../../name-resolvers";
+import { bestDamageEstimate } from "./selection-analysis";
 
 const CHAMPIONS_GEN_NUM = 0;
 
@@ -90,6 +92,95 @@ describe("analyze_selection logic", () => {
       });
       expect(pokemon.stats.spe).toBeGreaterThan(0);
       expect(resolvedName).toBe("Charizard");
+    });
+  });
+
+  describe("bestDamageEstimate", () => {
+    const SAMPLE_MIN_PERCENT = 80;
+    const SAMPLE_MAX_PERCENT = 120;
+    const SAMPLE_MIN_DAMAGE = 100;
+    const SAMPLE_MAX_DAMAGE = 150;
+
+    function makeResult(
+      overrides: Partial<DamageCalcResult> = {},
+    ): DamageCalcResult {
+      return {
+        attacker: "Charizard",
+        defender: "Garchomp",
+        move: "Blizzard",
+        damage: [SAMPLE_MIN_DAMAGE, SAMPLE_MAX_DAMAGE],
+        min: SAMPLE_MIN_DAMAGE,
+        max: SAMPLE_MAX_DAMAGE,
+        minPercent: SAMPLE_MIN_PERCENT,
+        maxPercent: SAMPLE_MAX_PERCENT,
+        koChance: "guaranteed OHKO",
+        description: "test",
+        ...overrides,
+      };
+    }
+
+    it("空配列は null を返す", () => {
+      expect(bestDamageEstimate([], () => undefined)).toBeNull();
+    });
+
+    it("results[0] の技名を name/nameJa にセットする", () => {
+      const results = [makeResult({ move: "Blizzard" })];
+      const out = bestDamageEstimate(results, (en) =>
+        en === "Blizzard" ? "ふぶき" : undefined,
+      );
+      expect(out?.move.name).toBe("Blizzard");
+      expect(out?.move.nameJa).toBe("ふぶき");
+    });
+
+    it("日本語名未解決時は英名を nameJa にフォールバックする", () => {
+      const results = [makeResult({ move: "UnknownMove" })];
+      const out = bestDamageEstimate(results, () => undefined);
+      expect(out?.move.name).toBe("UnknownMove");
+      expect(out?.move.nameJa).toBe("UnknownMove");
+    });
+
+    it("min / max / ohkoChance を引き継ぐ", () => {
+      const results = [makeResult()];
+      const out = bestDamageEstimate(results, () => undefined);
+      expect(out?.min).toBe(SAMPLE_MIN_PERCENT);
+      expect(out?.max).toBe(SAMPLE_MAX_PERCENT);
+      expect(out?.ohkoChance).toBe("guaranteed OHKO");
+    });
+
+    it("実データで moveNameResolver と統合して動作する", () => {
+      const results = [makeResult({ move: "Earthquake" })];
+      const out = bestDamageEstimate(results, (en) =>
+        moveNameResolver.toJapanese(en),
+      );
+      expect(out?.move.name).toBe("Earthquake");
+      // 「じしん」が data/moves.json に登録されていれば nameJa は日本語名になる。
+      // 未登録なら英名がそのまま入る（フォールバック挙動）。
+      expect(out?.move.nameJa.length).toBeGreaterThan(0);
+    });
+
+    it("複数件あるとき results[0] が採用される（ソート済み前提の仕様を固定）", () => {
+      const HIGH_MIN = 90;
+      const HIGH_MAX = 110;
+      const LOW_MIN = 30;
+      const LOW_MAX = 40;
+      const results = [
+        makeResult({
+          move: "HighDamageMove",
+          minPercent: HIGH_MIN,
+          maxPercent: HIGH_MAX,
+        }),
+        makeResult({
+          move: "LowDamageMove",
+          minPercent: LOW_MIN,
+          maxPercent: LOW_MAX,
+        }),
+      ];
+      const out = bestDamageEstimate(results, () => undefined);
+      // 先頭技が採用され、2 件目が採用されないことを固定する。
+      // 実装が results[results.length - 1] 等に変わると失敗する。
+      expect(out?.move.name).toBe("HighDamageMove");
+      expect(out?.max).toBe(HIGH_MAX);
+      expect(out?.min).toBe(HIGH_MIN);
     });
   });
 });

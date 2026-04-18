@@ -69,10 +69,21 @@ interface PokemonProfile {
   actualStats: BaseStats;
 }
 
+interface DamageEstimateMove {
+  /** 技の英語名（@smogon/calc に渡した正規化後の名前） */
+  name: string;
+  /** 技の日本語名。未登録技は英名をフォールバックとして返す。 */
+  nameJa: string;
+}
+
 interface DamageEstimate {
   min: number;
   max: number;
   ohkoChance: string;
+  /**
+   * 採用された技（計算対象のうち最大ダメージを叩き出した 1 件）。
+   */
+  move: DamageEstimateMove;
 }
 
 interface MatchupEntry {
@@ -124,18 +135,23 @@ function maxTypeMultiplier(
 
 /**
  * 最も有効な技（max ダメージ）から DamageEstimate を組み立てる。
+ * results は max ダメージの降順でソート済みであることを前提とする。
+ * 日本語名が未登録の場合は英名をそのまま nameJa に入れるフォールバック挙動。
  */
-function bestDamageEstimate(
+export function bestDamageEstimate(
   results: DamageCalcResult[],
+  moveJaResolver: (enName: string) => string | undefined,
 ): DamageEstimate | null {
   if (results.length === 0) {
     return null;
   }
   const best = results[0];
+  const nameJa = moveJaResolver(best.move) ?? best.move;
   return {
     min: best.minPercent,
     max: best.maxPercent,
     ohkoChance: best.koChance,
+    move: { name: best.move, nameJa },
   };
 }
 
@@ -347,7 +363,10 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
               mine.entryId,
               movesMap,
             );
-            damageEstimate = bestDamageEstimate(results);
+            damageEstimate = bestDamageEstimate(
+              results,
+              (enName) => moveNameResolver.toJapanese(enName),
+            );
           } catch {
             damageEstimate = null;
           }

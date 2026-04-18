@@ -114,7 +114,7 @@ TS6059 エラーにならないようにしている。
 
 ### 配布方法
 
-- `npx ai-rotom` で MCP サーバーを起動できる（`bin: ./dist/index.mjs`）
+- `npx @nonz250/ai-rotom` で MCP サーバーを起動できる（`bin: ./dist/index.mjs`）
 - JSON データ・shared のコード・依存パッケージのコードは `dist/index.mjs` にインライン bundle 済み
 - npm publish 時の同梱は `dist/` のみ（`files: ["dist"]`）
 

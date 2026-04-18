@@ -1,0 +1,82 @@
+name: Publish to npm
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    # workflow_dispatch は main ブランチからのみ許可する（誤ブランチでの publish を防ぐ）
+    if: >
+      github.event_name == 'release' ||
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+    environment:
+      name: production
+      url: https://www.npmjs.com/package/@nonz250/ai-rotom
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: 24
+          cache: npm
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Trusted Publisher (OIDC) は npm CLI 11.5.1+ が必要。
+      # setup-node でインストールされる npm が古い場合に備え、最新化する。
+      - name: Ensure latest npm (required for Trusted Publisher OIDC)
+        run: npm install -g npm@latest
+
+      - name: Verify version matches release tag
+        if: github.event_name == 'release'
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          PKG=$(node -p "require('./packages/mcp-server/package.json').version")
+          if [ "$TAG" != "$PKG" ]; then
+            echo "::error::Release tag ($TAG) does not match package.json version ($PKG)"
+            exit 1
+          fi
+          echo "Version check passed: $PKG"
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Check if version already published
+        id: check
+        run: |
+          VERSION=$(node -p "require('./packages/mcp-server/package.json').version")
+          if npm view "@nonz250/ai-rotom@$VERSION" version >/dev/null 2>&1; then
+            echo "Version $VERSION is already published. Skipping."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Version $VERSION is not yet published. Proceeding."
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Trusted Publisher (OIDC) で認証するため NODE_AUTH_TOKEN は指定しない。
+      # npm 側で Trusted Publisher 設定 (GitHub Actions + 本 repo + publish.yml
+      # + environment=production) が有効になっている必要がある。
+      # provenance 署名は Trusted Publisher 使用時に自動付与されるが、
+      # 意図を明確にするため明示する。
+      - name: Publish to npm (Trusted Publisher / OIDC)
+        if: steps.check.outputs.skip != 'true'
+        run: npm publish --workspace=@nonz250/ai-rotom --provenance --access public
