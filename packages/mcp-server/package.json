@@ -1,12 +1,34 @@
 {
   "name": "ai-rotom",
   "version": "0.0.1",
+  "description": "Pokemon Champions battle advisor MCP server",
+  "license": "MIT",
   "private": false,
   "type": "module",
   "bin": {
     "ai-rotom": "./dist/index.mjs"
   },
   "files": ["dist"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nonz250/ai-rotom.git",
+    "directory": "packages/mcp-server"
+  },
+  "homepage": "https://github.com/nonz250/ai-rotom#readme",
+  "bugs": {
+    "url": "https://github.com/nonz250/ai-rotom/issues"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "pokemon",
+    "pokemon-champions",
+    "damage-calculator",
+    "battle-advisor"
+  ],
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "build": "tsdown",
     "dev": "tsdown --watch"
