@@ -1,5 +1,9 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { compareSpeed } from "@ai-rotom/shared";
+import {
+  compareSpeed,
+  conditionsSchema,
+  pokemonSchema,
+} from "@ai-rotom/shared";
 import type { DamageCalcResult } from "../../calc/damage-calculator.js";
 import { DamageCalculatorAdapter } from "../../calc/damage-calculator.js";
 import {
@@ -9,7 +13,6 @@ import {
   itemNameResolver,
   natureNameResolver,
 } from "../../name-resolvers.js";
-import { pokemonSchema, conditionsSchema } from "../schemas/pokemon-input.js";
 
 const TOOL_NAME = "analyze_matchup";
 const TOOL_DESCRIPTION =

@@ -1,5 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
+import { pokemonSchema, conditionsSchema } from "@ai-rotom/shared";
 import type { DamageCalcResult } from "../../calc/damage-calculator.js";
 import { DamageCalculatorAdapter } from "../../calc/damage-calculator.js";
 import {
@@ -9,7 +10,6 @@ import {
   itemNameResolver,
   natureNameResolver,
 } from "../../name-resolvers.js";
-import { pokemonSchema, conditionsSchema } from "../schemas/pokemon-input.js";
 
 const damageCalcInputSchema = {
   attacker: pokemonSchema.describe("攻撃側ポケモン"),

@@ -3,13 +3,13 @@ import { z } from "zod";
 import { Generations, Pokemon } from "@smogon/calc";
 import {
   MAX_STAT_POINT_TOTAL,
+  evsSchema,
 } from "@ai-rotom/shared";
 import {
   pokemonNameResolver,
   natureNameResolver,
 } from "../../name-resolvers.js";
 import { pokemonById, toDataId, type BaseStats } from "../../data-store.js";
-import { evsSchema } from "../schemas/stats.js";
 
 const CHAMPIONS_GEN_NUM = 0;
 const DEFAULT_NATURE_EN = "Serious";

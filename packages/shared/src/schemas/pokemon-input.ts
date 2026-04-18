@@ -1,7 +1,37 @@
 import { z } from "zod";
-import { evsSchema, boostsSchema } from "./stats.js";
+import {
+  evsSchema,
+  boostsSchema,
+  type BoostsInput,
+  type EvsInput,
+} from "./stats.js";
 
-export const pokemonSchema = z.object({
+/**
+ * ポケモン入力の型。各ツールの入力で共通利用する。
+ */
+export type PokemonInput = {
+  name: string;
+  nature?: string;
+  evs?: EvsInput;
+  ability?: string;
+  item?: string;
+  boosts?: BoostsInput;
+  status?: string;
+};
+
+/**
+ * バトル条件の入力型。
+ */
+export type ConditionsInput = {
+  weather?: string;
+  terrain?: string;
+  isReflect?: boolean;
+  isLightScreen?: boolean;
+  isAuroraVeil?: boolean;
+  isCriticalHit?: boolean;
+};
+
+export const pokemonSchema: z.ZodType<PokemonInput> = z.object({
   name: z.string().describe("ポケモン名（日本語 or 英語）"),
   nature: z.string().optional().describe("性格名（省略時: まじめ）"),
   evs: evsSchema
@@ -15,7 +45,7 @@ export const pokemonSchema = z.object({
   status: z.string().optional().describe("状態異常"),
 });
 
-export const conditionsSchema = z.object({
+export const conditionsSchema: z.ZodType<ConditionsInput> = z.object({
   weather: z.string().optional().describe("天候（Sun, Rain, Sand, Hail, Snow）"),
   terrain: z.string().optional().describe("フィールド（Electric, Grassy, Misty, Psychic）"),
   isReflect: z.boolean().optional().describe("リフレクター"),

@@ -2,12 +2,11 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { Generations } from "@smogon/calc";
 import type { TypeName } from "@smogon/calc/dist/data/interface";
-import { calculateTypeEffectiveness } from "@ai-rotom/shared";
+import { calculateTypeEffectiveness, pokemonSchema } from "@ai-rotom/shared";
 import {
   pokemonNameResolver,
 } from "../../name-resolvers.js";
 import { pokemonById, toDataId } from "../../data-store.js";
-import { pokemonSchema } from "../schemas/pokemon-input.js";
 
 const CHAMPIONS_GEN_NUM = 0;
 

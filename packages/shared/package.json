@@ -15,6 +15,9 @@
     "build": "tsdown",
     "dev": "tsdown --watch"
   },
+  "dependencies": {
+    "zod": "4.3.6"
+  },
   "devDependencies": {
     "tsdown": "0.21.8"
   }

@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   MAX_STAT_POINT_PER_STAT,
   MAX_STAT_POINT_TOTAL,
-} from "@ai-rotom/shared";
+} from "../constants/champions.js";
 import { evsSchema, boostsSchema } from "./stats";
 
 describe("boostsSchema", () => {

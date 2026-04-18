@@ -2,7 +2,32 @@ import { z } from "zod";
 import {
   MAX_STAT_POINT_PER_STAT,
   MAX_STAT_POINT_TOTAL,
-} from "@ai-rotom/shared";
+} from "../constants/champions.js";
+
+/**
+ * 能力ポイント(SP) の型。
+ * 各ステ 0〜MAX_STAT_POINT_PER_STAT、合計 0〜MAX_STAT_POINT_TOTAL の範囲。
+ */
+export type EvsInput = {
+  hp?: number;
+  atk?: number;
+  def?: number;
+  spa?: number;
+  spd?: number;
+  spe?: number;
+};
+
+/**
+ * ランク補正 (-6〜+6) の型。
+ */
+export type BoostsInput = {
+  hp?: number;
+  atk?: number;
+  def?: number;
+  spa?: number;
+  spd?: number;
+  spe?: number;
+};
 
 const statPointValueSchema = z
   .number({ message: "能力ポイント(SP)は数値で指定してください。" })
@@ -20,7 +45,7 @@ const statPointValueSchema = z
  * 従来の EV (各 252 / 合計 510) とは別仕様なので AI クライアントが
  * 旧知識で 252 等を渡してきた場合に弾く。
  */
-export const evsSchema = z
+export const evsSchema: z.ZodType<EvsInput> = z
   .object({
     hp: statPointValueSchema.optional(),
     atk: statPointValueSchema.optional(),
@@ -56,7 +81,7 @@ const boostValueSchema = z
  * ランク補正 (いかく・ちからをつける等) のスキーマ。
  * 各ステータスは -6〜+6 の整数のみ許可する。
  */
-export const boostsSchema = z.object({
+export const boostsSchema: z.ZodType<BoostsInput> = z.object({
   hp: boostValueSchema.optional(),
   atk: boostValueSchema.optional(),
   def: boostValueSchema.optional(),

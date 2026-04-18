@@ -5,6 +5,7 @@ import type { TypeName } from "@smogon/calc/dist/data/interface";
 import {
   calculateTypeEffectiveness,
   compareSpeed,
+  pokemonSchema,
   type SpeedComparison,
 } from "@ai-rotom/shared";
 import { DamageCalculatorAdapter } from "../../calc/damage-calculator.js";
@@ -30,7 +31,6 @@ import {
   natureNameResolver,
   pokemonNameResolver,
 } from "../../name-resolvers.js";
-import { pokemonSchema } from "../schemas/pokemon-input.js";
 
 const CHAMPIONS_GEN_NUM = 0;
 

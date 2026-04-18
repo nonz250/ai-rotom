@@ -3,6 +3,8 @@ import { z } from "zod";
 import {
   MAX_STAT_POINT_PER_STAT,
   MAX_STAT_POINT_TOTAL,
+  conditionsSchema,
+  pokemonSchema,
 } from "@ai-rotom/shared";
 import { DamageCalculatorAdapter } from "../../calc/damage-calculator.js";
 import type {
@@ -19,7 +21,6 @@ import {
   natureNameResolver,
   pokemonNameResolver,
 } from "../../name-resolvers.js";
-import { conditionsSchema, pokemonSchema } from "../schemas/pokemon-input.js";
 
 /** 探索に使う SP 候補ステップ（細かさ）。4 きざみで枝刈り → hit したら 1 きざみで微調整 */
 const SP_COARSE_STEP = 4;
