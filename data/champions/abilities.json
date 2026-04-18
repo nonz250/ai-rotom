@@ -226,7 +226,7 @@
   {
     "id": "dragonize",
     "name": "Dragonize",
-    "nameJa": "ドラゴナイズ",
+    "nameJa": "ドラゴンスキン",
     "desc": "This Pokemon's Normal-type moves become Dragon-type moves and have their power multiplied by 1.2. This effect comes after other effects that change a move's type, but before Ion Deluge and Electrify's effects.",
     "shortDesc": "This Pokemon's Normal-type moves become Dragon type and have 1.2x power."
   },
@@ -651,6 +651,13 @@
     "shortDesc": "This Pokemon's moves are used as if the effects of Sunny Day were active."
   },
   {
+    "id": "megasolar",
+    "name": "Mega Solar",
+    "nameJa": "メガソーラー",
+    "desc": "メガメガニウム専用。ポケモンチャンピオンズ新特性",
+    "shortDesc": "ポケモンチャンピオンズ新特性"
+  },
+  {
     "id": "merciless",
     "name": "Merciless",
     "nameJa": "ひとでなし",
@@ -814,7 +821,7 @@
   {
     "id": "piercingdrill",
     "name": "Piercing Drill",
-    "nameJa": "せんこうドリル",
+    "nameJa": "かんつうドリル",
     "desc": "This Pokemon's contact moves ignore a target's protection and deal 1/4 the usual damage.",
     "shortDesc": "This Pokemon's contact moves ignore a target's protection and deal 1/4 the usual damage."
   },
@@ -1169,6 +1176,13 @@
     "shortDesc": "This Pokemon's Speed is raised 1 stage at the end of each full turn on the field."
   },
   {
+    "id": "spicyextract",
+    "name": "Spicy Extract",
+    "nameJa": "とびだすハバネロ",
+    "desc": "メガスコヴィラン専用。ポケモンチャンピオンズ新特性",
+    "shortDesc": "ポケモンチャンピオンズ新特性"
+  },
+  {
     "id": "spicyspray",
     "name": "Spicy Spray",
     "nameJa": "スパイシースプレー",
@@ -1262,7 +1276,7 @@
   {
     "id": "supersweetsyrup",
     "name": "Supersweet Syrup",
-    "nameJa": "あまいシロップ",
+    "nameJa": "かんろなミツ",
     "desc": "On switch-in, this Pokemon lowers the evasiveness of opponents 1 stage. Once per battle.",
     "shortDesc": "On switch-in, this Pokemon lowers the evasiveness of opponents 1 stage. Once per battle."
   },

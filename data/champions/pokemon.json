@@ -15,7 +15,10 @@
       "spd": 85,
       "spe": 60
     },
-    "ability": "Snow Warning",
+    "abilities": [
+      "Snow Warning",
+      "Soundproof"
+    ],
     "weightkg": 135.5,
     "baseSpecies": null,
     "otherFormes": [
@@ -38,7 +41,9 @@
       "spd": 105,
       "spe": 30
     },
-    "ability": "Snow Warning",
+    "abilities": [
+      "Snow Warning"
+    ],
     "weightkg": 185,
     "baseSpecies": "Abomasnow",
     "otherFormes": null
@@ -58,7 +63,11 @@
       "spd": 60,
       "spe": 75
     },
-    "ability": "Pressure",
+    "abilities": [
+      "Pressure",
+      "Super Luck",
+      "Justified"
+    ],
     "weightkg": 47,
     "baseSpecies": null,
     "otherFormes": [
@@ -80,9 +89,59 @@
       "spd": 60,
       "spe": 115
     },
-    "ability": "Magic Bounce",
+    "abilities": [
+      "Magic Bounce"
+    ],
     "weightkg": 49,
     "baseSpecies": "Absol",
+    "otherFormes": null
+  },
+  {
+    "id": "aegislash",
+    "name": "Aegislash",
+    "nameJa": "ギルガルド(シールドフォルム)",
+    "types": [
+      "Steel",
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 60,
+      "atk": 50,
+      "def": 140,
+      "spa": 50,
+      "spd": 140,
+      "spe": 60
+    },
+    "abilities": [
+      "Stance Change"
+    ],
+    "weightkg": 0,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Aegislash-Blade"
+    ]
+  },
+  {
+    "id": "aegislashblade",
+    "name": "Aegislash-Blade",
+    "nameJa": "ギルガルド(ブレードフォルム)",
+    "types": [
+      "Steel",
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 60,
+      "atk": 140,
+      "def": 50,
+      "spa": 140,
+      "spd": 50,
+      "spe": 60
+    },
+    "abilities": [
+      "Stance Change"
+    ],
+    "weightkg": 0,
+    "baseSpecies": "Aegislash",
     "otherFormes": null
   },
   {
@@ -101,7 +160,11 @@
       "spd": 75,
       "spe": 130
     },
-    "ability": "Rock Head",
+    "abilities": [
+      "Rock Head",
+      "Pressure",
+      "Unnerve"
+    ],
     "weightkg": 59,
     "baseSpecies": null,
     "otherFormes": [
@@ -124,7 +187,9 @@
       "spd": 95,
       "spe": 150
     },
-    "ability": "Tough Claws",
+    "abilities": [
+      "Tough Claws"
+    ],
     "weightkg": 79,
     "baseSpecies": "Aerodactyl",
     "otherFormes": null
@@ -145,7 +210,11 @@
       "spd": 60,
       "spe": 50
     },
-    "ability": "Sturdy",
+    "abilities": [
+      "Sturdy",
+      "Rock Head",
+      "Heavy Metal"
+    ],
     "weightkg": 360,
     "baseSpecies": null,
     "otherFormes": [
@@ -167,7 +236,9 @@
       "spd": 80,
       "spe": 50
     },
-    "ability": "Filter",
+    "abilities": [
+      "Filter"
+    ],
     "weightkg": 395,
     "baseSpecies": "Aggron",
     "otherFormes": null
@@ -187,7 +258,11 @@
       "spd": 95,
       "spe": 120
     },
-    "ability": "Synchronize",
+    "abilities": [
+      "Synchronize",
+      "Inner Focus",
+      "Magic Guard"
+    ],
     "weightkg": 48,
     "baseSpecies": null,
     "otherFormes": [
@@ -209,7 +284,9 @@
       "spd": 105,
       "spe": 150
     },
-    "ability": "Trace",
+    "abilities": [
+      "Trace"
+    ],
     "weightkg": 48,
     "baseSpecies": "Alakazam",
     "otherFormes": null
@@ -229,7 +306,10 @@
       "spd": 121,
       "spe": 64
     },
-    "ability": "Sweet Veil",
+    "abilities": [
+      "Sweet Veil",
+      "Aroma Veil"
+    ],
     "weightkg": 0.5,
     "baseSpecies": null,
     "otherFormes": null
@@ -250,7 +330,10 @@
       "spd": 105,
       "spe": 80
     },
-    "ability": "Natural Cure",
+    "abilities": [
+      "Natural Cure",
+      "Cloud Nine"
+    ],
     "weightkg": 20.6,
     "baseSpecies": null,
     "otherFormes": [
@@ -273,7 +356,9 @@
       "spd": 105,
       "spe": 80
     },
-    "ability": "Pixilate",
+    "abilities": [
+      "Pixilate"
+    ],
     "weightkg": 20.6,
     "baseSpecies": "Altaria",
     "otherFormes": null
@@ -293,7 +378,10 @@
       "spd": 90,
       "spe": 55
     },
-    "ability": "Static",
+    "abilities": [
+      "Static",
+      "Plus"
+    ],
     "weightkg": 61.5,
     "baseSpecies": null,
     "otherFormes": [
@@ -316,7 +404,9 @@
       "spd": 110,
       "spe": 45
     },
-    "ability": "Mold Breaker",
+    "abilities": [
+      "Mold Breaker"
+    ],
     "weightkg": 61.5,
     "baseSpecies": "Ampharos",
     "otherFormes": null
@@ -337,7 +427,11 @@
       "spd": 80,
       "spe": 30
     },
-    "ability": "Ripen",
+    "abilities": [
+      "Ripen",
+      "Gluttony",
+      "Thick Fat"
+    ],
     "weightkg": 13,
     "baseSpecies": null,
     "otherFormes": null
@@ -358,7 +452,10 @@
       "spd": 132,
       "spe": 42
     },
-    "ability": "Water Bubble",
+    "abilities": [
+      "Water Bubble",
+      "Water Absorb"
+    ],
     "weightkg": 82,
     "baseSpecies": null,
     "otherFormes": null
@@ -378,7 +475,11 @@
       "spd": 79,
       "spe": 80
     },
-    "ability": "Intimidate",
+    "abilities": [
+      "Intimidate",
+      "Shed Skin",
+      "Unnerve"
+    ],
     "weightkg": 65,
     "baseSpecies": null,
     "otherFormes": null
@@ -398,7 +499,11 @@
       "spd": 80,
       "spe": 95
     },
-    "ability": "Intimidate",
+    "abilities": [
+      "Intimidate",
+      "Flash Fire",
+      "Justified"
+    ],
     "weightkg": 155,
     "baseSpecies": null,
     "otherFormes": [
@@ -408,7 +513,7 @@
   {
     "id": "arcaninehisui",
     "name": "Arcanine-Hisui",
-    "nameJa": "ウインディ(ヒスイのすがた)",
+    "nameJa": "ヒスイウインディ",
     "types": [
       "Fire",
       "Rock"
@@ -421,7 +526,11 @@
       "spd": 80,
       "spe": 90
     },
-    "ability": "Intimidate",
+    "abilities": [
+      "Intimidate",
+      "Flash Fire",
+      "Rock Head"
+    ],
     "weightkg": 168,
     "baseSpecies": "Arcanine",
     "otherFormes": null
@@ -442,7 +551,11 @@
       "spd": 65,
       "spe": 85
     },
-    "ability": "Stamina",
+    "abilities": [
+      "Stamina",
+      "Sturdy",
+      "Stalwart"
+    ],
     "weightkg": 60,
     "baseSpecies": null,
     "otherFormes": null
@@ -463,7 +576,11 @@
       "spd": 70,
       "spe": 40
     },
-    "ability": "Swarm",
+    "abilities": [
+      "Swarm",
+      "Insomnia",
+      "Sniper"
+    ],
     "weightkg": 33.5,
     "baseSpecies": null,
     "otherFormes": null
@@ -484,7 +601,10 @@
       "spd": 80,
       "spe": 75
     },
-    "ability": "Flash Fire",
+    "abilities": [
+      "Flash Fire",
+      "Weak Armor"
+    ],
     "weightkg": 85,
     "baseSpecies": null,
     "otherFormes": null
@@ -504,7 +624,10 @@
       "spd": 89,
       "spe": 29
     },
-    "ability": "Healer",
+    "abilities": [
+      "Healer",
+      "Aroma Veil"
+    ],
     "weightkg": 15.5,
     "baseSpecies": null,
     "otherFormes": null
@@ -524,7 +647,11 @@
       "spd": 86,
       "spe": 50
     },
-    "ability": "Healer",
+    "abilities": [
+      "Healer",
+      "Regenerator",
+      "Klutz"
+    ],
     "weightkg": 31,
     "baseSpecies": null,
     "otherFormes": [
@@ -547,7 +674,9 @@
       "spd": 126,
       "spe": 50
     },
-    "ability": "Healer",
+    "abilities": [
+      "Healer"
+    ],
     "weightkg": 32,
     "baseSpecies": "Audino",
     "otherFormes": null
@@ -568,7 +697,10 @@
       "spd": 92,
       "spe": 58
     },
-    "ability": "Refrigerate",
+    "abilities": [
+      "Refrigerate",
+      "Snow Warning"
+    ],
     "weightkg": 225,
     "baseSpecies": null,
     "otherFormes": null
@@ -588,7 +720,11 @@
       "spd": 46,
       "spe": 28
     },
-    "ability": "Own Tempo",
+    "abilities": [
+      "Own Tempo",
+      "Ice Body",
+      "Sturdy"
+    ],
     "weightkg": 505,
     "baseSpecies": null,
     "otherFormes": [
@@ -598,7 +734,7 @@
   {
     "id": "avalugghisui",
     "name": "Avalugg-Hisui",
-    "nameJa": "クレベース(ヒスイのすがた)",
+    "nameJa": "ヒスイクレベース",
     "types": [
       "Ice",
       "Rock"
@@ -611,7 +747,11 @@
       "spd": 36,
       "spe": 38
     },
-    "ability": "Strong Jaw",
+    "abilities": [
+      "Strong Jaw",
+      "Ice Body",
+      "Sturdy"
+    ],
     "weightkg": 262.4,
     "baseSpecies": "Avalugg",
     "otherFormes": null
@@ -632,7 +772,11 @@
       "spd": 80,
       "spe": 50
     },
-    "ability": "Thick Fat",
+    "abilities": [
+      "Thick Fat",
+      "Huge Power",
+      "Sap Sipper"
+    ],
     "weightkg": 28.5,
     "baseSpecies": null,
     "otherFormes": null
@@ -652,7 +796,11 @@
       "spd": 63,
       "spe": 65
     },
-    "ability": "Insomnia",
+    "abilities": [
+      "Insomnia",
+      "Frisk",
+      "Cursed Body"
+    ],
     "weightkg": 12.5,
     "baseSpecies": null,
     "otherFormes": [
@@ -674,7 +822,9 @@
       "spd": 83,
       "spe": 75
     },
-    "ability": "Prankster",
+    "abilities": [
+      "Prankster"
+    ],
     "weightkg": 13,
     "baseSpecies": "Banette",
     "otherFormes": null
@@ -682,7 +832,7 @@
   {
     "id": "basculegion",
     "name": "Basculegion",
-    "nameJa": "イダイトウ",
+    "nameJa": "イダイトウ(オス)",
     "types": [
       "Water",
       "Ghost"
@@ -695,7 +845,11 @@
       "spd": 75,
       "spe": 78
     },
-    "ability": "Swift Swim",
+    "abilities": [
+      "Swift Swim",
+      "Adaptability",
+      "Mold Breaker"
+    ],
     "weightkg": 110,
     "baseSpecies": null,
     "otherFormes": [
@@ -705,7 +859,7 @@
   {
     "id": "basculegionf",
     "name": "Basculegion-F",
-    "nameJa": "イダイトウ(メスのすがた)",
+    "nameJa": "イダイトウ(メス)",
     "types": [
       "Water",
       "Ghost"
@@ -718,7 +872,11 @@
       "spd": 75,
       "spe": 78
     },
-    "ability": "Swift Swim",
+    "abilities": [
+      "Swift Swim",
+      "Adaptability",
+      "Mold Breaker"
+    ],
     "weightkg": 110,
     "baseSpecies": "Basculegion",
     "otherFormes": null
@@ -739,7 +897,10 @@
       "spd": 138,
       "spe": 30
     },
-    "ability": "Sturdy",
+    "abilities": [
+      "Sturdy",
+      "Soundproof"
+    ],
     "weightkg": 149.5,
     "baseSpecies": null,
     "otherFormes": null
@@ -759,7 +920,11 @@
       "spd": 80,
       "spe": 50
     },
-    "ability": "Snow Cloak",
+    "abilities": [
+      "Snow Cloak",
+      "Slush Rush",
+      "Swift Swim"
+    ],
     "weightkg": 260,
     "baseSpecies": null,
     "otherFormes": null
@@ -780,7 +945,10 @@
       "spd": 80,
       "spe": 75
     },
-    "ability": "Swarm",
+    "abilities": [
+      "Swarm",
+      "Sniper"
+    ],
     "weightkg": 29.5,
     "baseSpecies": null,
     "otherFormes": [
@@ -803,7 +971,9 @@
       "spd": 80,
       "spe": 145
     },
-    "ability": "Adaptability",
+    "abilities": [
+      "Adaptability"
+    ],
     "weightkg": 40.5,
     "baseSpecies": "Beedrill",
     "otherFormes": null
@@ -823,7 +993,11 @@
       "spd": 83,
       "spe": 45
     },
-    "ability": "Electromorphosis",
+    "abilities": [
+      "Electromorphosis",
+      "Static",
+      "Damp"
+    ],
     "weightkg": 113,
     "baseSpecies": null,
     "otherFormes": null
@@ -843,7 +1017,10 @@
       "spd": 105,
       "spe": 78
     },
-    "ability": "Torrent",
+    "abilities": [
+      "Torrent",
+      "Rain Dish"
+    ],
     "weightkg": 85.5,
     "baseSpecies": null,
     "otherFormes": [
@@ -865,7 +1042,9 @@
       "spd": 115,
       "spe": 78
     },
-    "ability": "Mega Launcher",
+    "abilities": [
+      "Mega Launcher"
+    ],
     "weightkg": 101.1,
     "baseSpecies": "Blastoise",
     "otherFormes": null
@@ -886,7 +1065,11 @@
       "spd": 75,
       "spe": 40
     },
-    "ability": "Magma Armor",
+    "abilities": [
+      "Magma Armor",
+      "Solid Rock",
+      "Anger Point"
+    ],
     "weightkg": 220,
     "baseSpecies": null,
     "otherFormes": [
@@ -909,7 +1092,9 @@
       "spd": 105,
       "spe": 20
     },
-    "ability": "Sheer Force",
+    "abilities": [
+      "Sheer Force"
+    ],
     "weightkg": 320.5,
     "baseSpecies": "Camerupt",
     "otherFormes": null
@@ -929,9 +1114,81 @@
       "spd": 70,
       "spe": 70
     },
-    "ability": "Forecast",
+    "abilities": [
+      "Forecast"
+    ],
     "weightkg": 0.8,
     "baseSpecies": null,
+    "otherFormes": [
+      "Castform-Sunny",
+      "Castform-Rainy",
+      "Castform-Snowy"
+    ]
+  },
+  {
+    "id": "castformrainy",
+    "name": "Castform-Rainy",
+    "nameJa": "ポワルン(あまみずのすがた)",
+    "types": [
+      "Water"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 70,
+      "def": 70,
+      "spa": 70,
+      "spd": 70,
+      "spe": 70
+    },
+    "abilities": [
+      "Forecast"
+    ],
+    "weightkg": 0,
+    "baseSpecies": "Castform",
+    "otherFormes": null
+  },
+  {
+    "id": "castformsnowy",
+    "name": "Castform-Snowy",
+    "nameJa": "ポワルン(ゆきぐものすがた)",
+    "types": [
+      "Ice"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 70,
+      "def": 70,
+      "spa": 70,
+      "spd": 70,
+      "spe": 70
+    },
+    "abilities": [
+      "Forecast"
+    ],
+    "weightkg": 0,
+    "baseSpecies": "Castform",
+    "otherFormes": null
+  },
+  {
+    "id": "castformsunny",
+    "name": "Castform-Sunny",
+    "nameJa": "ポワルン(たいようのすがた)",
+    "types": [
+      "Fire"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 70,
+      "def": 70,
+      "spa": 70,
+      "spd": 70,
+      "spe": 70
+    },
+    "abilities": [
+      "Forecast"
+    ],
+    "weightkg": 0,
+    "baseSpecies": "Castform",
     "otherFormes": null
   },
   {
@@ -950,7 +1207,10 @@
       "spd": 100,
       "spe": 85
     },
-    "ability": "Flash Fire",
+    "abilities": [
+      "Flash Fire",
+      "Weak Armor"
+    ],
     "weightkg": 62,
     "baseSpecies": null,
     "otherFormes": null
@@ -971,7 +1231,11 @@
       "spd": 90,
       "spe": 80
     },
-    "ability": "Flash Fire",
+    "abilities": [
+      "Flash Fire",
+      "Flame Body",
+      "Infiltrator"
+    ],
     "weightkg": 34.3,
     "baseSpecies": null,
     "otherFormes": [
@@ -994,7 +1258,9 @@
       "spd": 110,
       "spe": 90
     },
-    "ability": "Flash Fire",
+    "abilities": [
+      "Infiltrator"
+    ],
     "weightkg": 69.6,
     "baseSpecies": "Chandelure",
     "otherFormes": null
@@ -1015,7 +1281,10 @@
       "spd": 85,
       "spe": 100
     },
-    "ability": "Blaze",
+    "abilities": [
+      "Blaze",
+      "Solar Power"
+    ],
     "weightkg": 90.5,
     "baseSpecies": null,
     "otherFormes": [
@@ -1039,7 +1308,9 @@
       "spd": 85,
       "spe": 100
     },
-    "ability": "Tough Claws",
+    "abilities": [
+      "Tough Claws"
+    ],
     "weightkg": 110.5,
     "baseSpecies": "Charizard",
     "otherFormes": null
@@ -1060,7 +1331,9 @@
       "spd": 115,
       "spe": 100
     },
-    "ability": "Drought",
+    "abilities": [
+      "Drought"
+    ],
     "weightkg": 100.5,
     "baseSpecies": "Charizard",
     "otherFormes": null
@@ -1081,7 +1354,10 @@
       "spd": 75,
       "spe": 64
     },
-    "ability": "Overgrow",
+    "abilities": [
+      "Overgrow",
+      "Bulletproof"
+    ],
     "weightkg": 90,
     "baseSpecies": null,
     "otherFormes": [
@@ -1104,7 +1380,9 @@
       "spd": 115,
       "spe": 44
     },
-    "ability": "Overgrow",
+    "abilities": [
+      "Bulletproof"
+    ],
     "weightkg": 90,
     "baseSpecies": "Chesnaught",
     "otherFormes": null
@@ -1124,7 +1402,9 @@
       "spd": 90,
       "spe": 65
     },
-    "ability": "Levitate",
+    "abilities": [
+      "Levitate"
+    ],
     "weightkg": 1,
     "baseSpecies": null,
     "otherFormes": [
@@ -1147,7 +1427,9 @@
       "spd": 120,
       "spe": 65
     },
-    "ability": "Levitate",
+    "abilities": [
+      "Levitate"
+    ],
     "weightkg": 8,
     "baseSpecies": "Chimecho",
     "otherFormes": null
@@ -1167,7 +1449,9 @@
       "spd": 89,
       "spe": 59
     },
-    "ability": "Mega Launcher",
+    "abilities": [
+      "Mega Launcher"
+    ],
     "weightkg": 35.3,
     "baseSpecies": null,
     "otherFormes": null
@@ -1187,7 +1471,11 @@
       "spd": 90,
       "spe": 60
     },
-    "ability": "Cute Charm",
+    "abilities": [
+      "Cute Charm",
+      "Magic Guard",
+      "Unaware"
+    ],
     "weightkg": 40,
     "baseSpecies": null,
     "otherFormes": [
@@ -1210,7 +1498,9 @@
       "spd": 110,
       "spe": 70
     },
-    "ability": "Cute Charm",
+    "abilities": [
+      "Magic Bounce"
+    ],
     "weightkg": 42.3,
     "baseSpecies": "Clefable",
     "otherFormes": null
@@ -1230,7 +1520,9 @@
       "spd": 105,
       "spe": 30
     },
-    "ability": "Mummy",
+    "abilities": [
+      "Mummy"
+    ],
     "weightkg": 76.5,
     "baseSpecies": null,
     "otherFormes": null
@@ -1250,7 +1542,11 @@
       "spd": 65,
       "spe": 45
     },
-    "ability": "Guts",
+    "abilities": [
+      "Guts",
+      "Sheer Force",
+      "Iron Fist"
+    ],
     "weightkg": 87,
     "baseSpecies": null,
     "otherFormes": null
@@ -1271,7 +1567,11 @@
       "spd": 85,
       "spe": 67
     },
-    "ability": "Pressure",
+    "abilities": [
+      "Pressure",
+      "Unnerve",
+      "Mirror Armor"
+    ],
     "weightkg": 75,
     "baseSpecies": null,
     "otherFormes": null
@@ -1292,7 +1592,11 @@
       "spd": 67,
       "spe": 43
     },
-    "ability": "Hyper Cutter",
+    "abilities": [
+      "Hyper Cutter",
+      "Iron Fist",
+      "Anger Point"
+    ],
     "weightkg": 180,
     "baseSpecies": null,
     "otherFormes": [
@@ -1315,51 +1619,11 @@
       "spd": 107,
       "spe": 33
     },
-    "ability": "Hyper Cutter",
+    "abilities": [
+      "Iron Fist"
+    ],
     "weightkg": 252.8,
     "baseSpecies": "Crabominable",
-    "otherFormes": null
-  },
-  {
-    "id": "cramorantgorging",
-    "name": "Cramorant-Gorging",
-    "nameJa": "ウッウ(うのみのすがた)",
-    "types": [
-      "Flying",
-      "Water"
-    ],
-    "baseStats": {
-      "hp": 70,
-      "atk": 85,
-      "def": 55,
-      "spa": 85,
-      "spd": 95,
-      "spe": 85
-    },
-    "ability": "Gulp Missile",
-    "weightkg": 18,
-    "baseSpecies": "Cramorant",
-    "otherFormes": null
-  },
-  {
-    "id": "cramorantgulping",
-    "name": "Cramorant-Gulping",
-    "nameJa": "ウッウ(まるのみのすがた)",
-    "types": [
-      "Flying",
-      "Water"
-    ],
-    "baseStats": {
-      "hp": 70,
-      "atk": 85,
-      "def": 55,
-      "spa": 85,
-      "spd": 95,
-      "spe": 85
-    },
-    "ability": "Gulp Missile",
-    "weightkg": 18,
-    "baseSpecies": "Cramorant",
     "otherFormes": null
   },
   {
@@ -1378,7 +1642,10 @@
       "spd": 100,
       "spe": 70
     },
-    "ability": "Overgrow",
+    "abilities": [
+      "Overgrow",
+      "Long Reach"
+    ],
     "weightkg": 36.6,
     "baseSpecies": null,
     "otherFormes": [
@@ -1388,7 +1655,7 @@
   {
     "id": "decidueyehisui",
     "name": "Decidueye-Hisui",
-    "nameJa": "ジュナイパー(ヒスイのすがた)",
+    "nameJa": "ヒスイジュナイパー",
     "types": [
       "Grass",
       "Fighting"
@@ -1401,7 +1668,10 @@
       "spd": 95,
       "spe": 60
     },
-    "ability": "Overgrow",
+    "abilities": [
+      "Overgrow",
+      "Scrappy"
+    ],
     "weightkg": 37,
     "baseSpecies": "Decidueye",
     "otherFormes": null
@@ -1422,7 +1692,11 @@
       "spd": 67,
       "spe": 101
     },
-    "ability": "Cheek Pouch",
+    "abilities": [
+      "Cheek Pouch",
+      "Pickup",
+      "Plus"
+    ],
     "weightkg": 2.2,
     "baseSpecies": null,
     "otherFormes": null
@@ -1443,7 +1717,10 @@
       "spd": 100,
       "spe": 104
     },
-    "ability": "Blaze",
+    "abilities": [
+      "Blaze",
+      "Magician"
+    ],
     "weightkg": 39,
     "baseSpecies": null,
     "otherFormes": [
@@ -1466,7 +1743,9 @@
       "spd": 125,
       "spe": 134
     },
-    "ability": "Blaze",
+    "abilities": [
+      "Levitate"
+    ],
     "weightkg": 39,
     "baseSpecies": "Delphox",
     "otherFormes": null
@@ -1487,7 +1766,11 @@
       "spd": 77,
       "spe": 78
     },
-    "ability": "Pickup",
+    "abilities": [
+      "Pickup",
+      "Cheek Pouch",
+      "Huge Power"
+    ],
     "weightkg": 42.4,
     "baseSpecies": null,
     "otherFormes": null
@@ -1507,7 +1790,10 @@
       "spd": 48,
       "spe": 48
     },
-    "ability": "Limber",
+    "abilities": [
+      "Limber",
+      "Imposter"
+    ],
     "weightkg": 4,
     "baseSpecies": null,
     "otherFormes": null
@@ -1528,7 +1814,11 @@
       "spd": 75,
       "spe": 142
     },
-    "ability": "Clear Body",
+    "abilities": [
+      "Clear Body",
+      "Infiltrator",
+      "Cursed Body"
+    ],
     "weightkg": 50,
     "baseSpecies": null,
     "otherFormes": null
@@ -1549,7 +1839,10 @@
       "spd": 100,
       "spe": 80
     },
-    "ability": "Inner Focus",
+    "abilities": [
+      "Inner Focus",
+      "Multiscale"
+    ],
     "weightkg": 210,
     "baseSpecies": null,
     "otherFormes": [
@@ -1572,7 +1865,9 @@
       "spd": 125,
       "spe": 100
     },
-    "ability": "Inner Focus",
+    "abilities": [
+      "Multiscale"
+    ],
     "weightkg": 290,
     "baseSpecies": "Dragonite",
     "otherFormes": null
@@ -1593,7 +1888,11 @@
       "spd": 91,
       "spe": 36
     },
-    "ability": "Berserk",
+    "abilities": [
+      "Berserk",
+      "Sap Sipper",
+      "Cloud Nine"
+    ],
     "weightkg": 185,
     "baseSpecies": null,
     "otherFormes": [
@@ -1616,29 +1915,11 @@
       "spd": 116,
       "spe": 36
     },
-    "ability": "Berserk",
+    "abilities": [
+      "Berserk"
+    ],
     "weightkg": 185,
     "baseSpecies": "Drampa",
-    "otherFormes": null
-  },
-  {
-    "id": "eiscuenoice",
-    "name": "Eiscue-Noice",
-    "nameJa": "コオリッポ(ナイスフェイス)",
-    "types": [
-      "Ice"
-    ],
-    "baseStats": {
-      "hp": 75,
-      "atk": 80,
-      "def": 70,
-      "spa": 65,
-      "spd": 50,
-      "spe": 130
-    },
-    "ability": "Ice Face",
-    "weightkg": 89,
-    "baseSpecies": "Eiscue",
     "otherFormes": null
   },
   {
@@ -1657,7 +1938,10 @@
       "spd": 65,
       "spe": 65
     },
-    "ability": "Blaze",
+    "abilities": [
+      "Blaze",
+      "Reckless"
+    ],
     "weightkg": 150,
     "baseSpecies": null,
     "otherFormes": [
@@ -1680,7 +1964,9 @@
       "spd": 110,
       "spe": 75
     },
-    "ability": "Blaze",
+    "abilities": [
+      "Mold Breaker"
+    ],
     "weightkg": 180.3,
     "baseSpecies": "Emboar",
     "otherFormes": null
@@ -1701,7 +1987,10 @@
       "spd": 60,
       "spe": 103
     },
-    "ability": "Static",
+    "abilities": [
+      "Static",
+      "Motor Drive"
+    ],
     "weightkg": 5,
     "baseSpecies": null,
     "otherFormes": null
@@ -1722,7 +2011,10 @@
       "spd": 101,
       "spe": 60
     },
-    "ability": "Torrent",
+    "abilities": [
+      "Torrent",
+      "Competitive"
+    ],
     "weightkg": 84.5,
     "baseSpecies": null,
     "otherFormes": null
@@ -1742,7 +2034,11 @@
       "spd": 60,
       "spe": 105
     },
-    "ability": "Opportunist",
+    "abilities": [
+      "Opportunist",
+      "Frisk",
+      "Speed Boost"
+    ],
     "weightkg": 90,
     "baseSpecies": null,
     "otherFormes": null
@@ -1762,7 +2058,10 @@
       "spd": 95,
       "spe": 110
     },
-    "ability": "Synchronize",
+    "abilities": [
+      "Synchronize",
+      "Magic Bounce"
+    ],
     "weightkg": 26.5,
     "baseSpecies": null,
     "otherFormes": null
@@ -1783,7 +2082,11 @@
       "spd": 65,
       "spe": 88
     },
-    "ability": "Sand Rush",
+    "abilities": [
+      "Sand Rush",
+      "Sand Force",
+      "Mold Breaker"
+    ],
     "weightkg": 40.4,
     "baseSpecies": null,
     "otherFormes": [
@@ -1806,7 +2109,9 @@
       "spd": 65,
       "spe": 103
     },
-    "ability": "Sand Rush",
+    "abilities": [
+      "Piercing Drill"
+    ],
     "weightkg": 60,
     "baseSpecies": "Excadrill",
     "otherFormes": null
@@ -1827,7 +2132,11 @@
       "spd": 70,
       "spe": 60
     },
-    "ability": "Cud Chew",
+    "abilities": [
+      "Cud Chew",
+      "Armor Tail",
+      "Sap Sipper"
+    ],
     "weightkg": 160,
     "baseSpecies": null,
     "otherFormes": null
@@ -1847,7 +2156,10 @@
       "spd": 83,
       "spe": 78
     },
-    "ability": "Torrent",
+    "abilities": [
+      "Torrent",
+      "Sheer Force"
+    ],
     "weightkg": 88.8,
     "baseSpecies": null,
     "otherFormes": [
@@ -1870,7 +2182,9 @@
       "spd": 93,
       "spe": 78
     },
-    "ability": "Torrent",
+    "abilities": [
+      "Dragonize"
+    ],
     "weightkg": 108.8,
     "baseSpecies": "Feraligatr",
     "otherFormes": null
@@ -1891,7 +2205,11 @@
       "spd": 60,
       "spe": 70
     },
-    "ability": "Ripen",
+    "abilities": [
+      "Ripen",
+      "Gluttony",
+      "Hustle"
+    ],
     "weightkg": 1,
     "baseSpecies": null,
     "otherFormes": null
@@ -1911,7 +2229,10 @@
       "spd": 110,
       "spe": 65
     },
-    "ability": "Flash Fire",
+    "abilities": [
+      "Flash Fire",
+      "Guts"
+    ],
     "weightkg": 25,
     "baseSpecies": null,
     "otherFormes": null
@@ -1931,7 +2252,10 @@
       "spd": 128,
       "spe": 92
     },
-    "ability": "Flower Veil",
+    "abilities": [
+      "Flower Veil",
+      "Symbiosis"
+    ],
     "weightkg": 0.9,
     "baseSpecies": "Floette",
     "otherFormes": null
@@ -1939,7 +2263,7 @@
   {
     "id": "floettemega",
     "name": "Floette-Mega",
-    "nameJa": "メガフラエッテ",
+    "nameJa": "メガフラエッテ(えいえんのはな)",
     "types": [
       "Fairy"
     ],
@@ -1951,7 +2275,9 @@
       "spd": 148,
       "spe": 102
     },
-    "ability": "Flower Veil",
+    "abilities": [
+      "Fairy Aura"
+    ],
     "weightkg": 100.8,
     "baseSpecies": "Floette",
     "otherFormes": null
@@ -1971,7 +2297,10 @@
       "spd": 154,
       "spe": 75
     },
-    "ability": "Flower Veil",
+    "abilities": [
+      "Flower Veil",
+      "Symbiosis"
+    ],
     "weightkg": 10,
     "baseSpecies": null,
     "otherFormes": null
@@ -1992,7 +2321,10 @@
       "spd": 60,
       "spe": 40
     },
-    "ability": "Sturdy",
+    "abilities": [
+      "Sturdy",
+      "Overcoat"
+    ],
     "weightkg": 125.8,
     "baseSpecies": null,
     "otherFormes": null
@@ -2013,7 +2345,10 @@
       "spd": 70,
       "spe": 110
     },
-    "ability": "Snow Cloak",
+    "abilities": [
+      "Snow Cloak",
+      "Cursed Body"
+    ],
     "weightkg": 26.6,
     "baseSpecies": null,
     "otherFormes": [
@@ -2036,7 +2371,9 @@
       "spd": 100,
       "spe": 120
     },
-    "ability": "Snow Cloak",
+    "abilities": [
+      "Snow Warning"
+    ],
     "weightkg": 29.6,
     "baseSpecies": "Froslass",
     "otherFormes": null
@@ -2056,7 +2393,9 @@
       "spd": 90,
       "spe": 102
     },
-    "ability": "Fur Coat",
+    "abilities": [
+      "Fur Coat"
+    ],
     "weightkg": 28,
     "baseSpecies": null,
     "otherFormes": null
@@ -2077,7 +2416,11 @@
       "spd": 115,
       "spe": 80
     },
-    "ability": "Steadfast",
+    "abilities": [
+      "Steadfast",
+      "Sharpness",
+      "Justified"
+    ],
     "weightkg": 52,
     "baseSpecies": null,
     "otherFormes": [
@@ -2100,7 +2443,9 @@
       "spd": 115,
       "spe": 110
     },
-    "ability": "Inner Focus",
+    "abilities": [
+      "Inner Focus"
+    ],
     "weightkg": 56.4,
     "baseSpecies": "Gallade",
     "otherFormes": null
@@ -2120,7 +2465,11 @@
       "spd": 82,
       "spe": 75
     },
-    "ability": "Stench",
+    "abilities": [
+      "Stench",
+      "Weak Armor",
+      "Aftermath"
+    ],
     "weightkg": 107.3,
     "baseSpecies": null,
     "otherFormes": null
@@ -2141,7 +2490,10 @@
       "spd": 85,
       "spe": 102
     },
-    "ability": "Sand Veil",
+    "abilities": [
+      "Sand Veil",
+      "Rough Skin"
+    ],
     "weightkg": 95,
     "baseSpecies": null,
     "otherFormes": [
@@ -2164,7 +2516,9 @@
       "spd": 95,
       "spe": 92
     },
-    "ability": "Sand Force",
+    "abilities": [
+      "Sand Force"
+    ],
     "weightkg": 95,
     "baseSpecies": "Garchomp",
     "otherFormes": null
@@ -2185,7 +2539,11 @@
       "spd": 115,
       "spe": 80
     },
-    "ability": "Synchronize",
+    "abilities": [
+      "Synchronize",
+      "Trace",
+      "Telepathy"
+    ],
     "weightkg": 48.4,
     "baseSpecies": null,
     "otherFormes": [
@@ -2208,7 +2566,9 @@
       "spd": 135,
       "spe": 100
     },
-    "ability": "Pixilate",
+    "abilities": [
+      "Pixilate"
+    ],
     "weightkg": 48.4,
     "baseSpecies": "Gardevoir",
     "otherFormes": null
@@ -2228,7 +2588,11 @@
       "spd": 90,
       "spe": 35
     },
-    "ability": "Purifying Salt",
+    "abilities": [
+      "Purifying Salt",
+      "Sturdy",
+      "Clear Body"
+    ],
     "weightkg": 240,
     "baseSpecies": null,
     "otherFormes": null
@@ -2249,7 +2613,9 @@
       "spd": 75,
       "spe": 110
     },
-    "ability": "Cursed Body",
+    "abilities": [
+      "Cursed Body"
+    ],
     "weightkg": 40.5,
     "baseSpecies": null,
     "otherFormes": [
@@ -2272,7 +2638,9 @@
       "spd": 95,
       "spe": 130
     },
-    "ability": "Shadow Tag",
+    "abilities": [
+      "Shadow Tag"
+    ],
     "weightkg": 40.5,
     "baseSpecies": "Gengar",
     "otherFormes": null
@@ -2292,7 +2660,10 @@
       "spd": 95,
       "spe": 65
     },
-    "ability": "Snow Cloak",
+    "abilities": [
+      "Snow Cloak",
+      "Ice Body"
+    ],
     "weightkg": 25.9,
     "baseSpecies": null,
     "otherFormes": null
@@ -2312,7 +2683,11 @@
       "spd": 80,
       "spe": 80
     },
-    "ability": "Inner Focus",
+    "abilities": [
+      "Inner Focus",
+      "Ice Body",
+      "Moody"
+    ],
     "weightkg": 256.5,
     "baseSpecies": null,
     "otherFormes": [
@@ -2334,7 +2709,9 @@
       "spd": 80,
       "spe": 100
     },
-    "ability": "Refrigerate",
+    "abilities": [
+      "Refrigerate"
+    ],
     "weightkg": 350.2,
     "baseSpecies": "Glalie",
     "otherFormes": null
@@ -2355,7 +2732,10 @@
       "spd": 81,
       "spe": 86
     },
-    "ability": "Toxic Debris",
+    "abilities": [
+      "Toxic Debris",
+      "Corrosion"
+    ],
     "weightkg": 45,
     "baseSpecies": null,
     "otherFormes": [
@@ -2378,7 +2758,9 @@
       "spd": 96,
       "spe": 101
     },
-    "ability": "Toxic Debris",
+    "abilities": [
+      "Adaptability"
+    ],
     "weightkg": 77,
     "baseSpecies": "Glimmora",
     "otherFormes": null
@@ -2399,7 +2781,11 @@
       "spd": 75,
       "spe": 95
     },
-    "ability": "Hyper Cutter",
+    "abilities": [
+      "Hyper Cutter",
+      "Sand Veil",
+      "Poison Heal"
+    ],
     "weightkg": 42.5,
     "baseSpecies": null,
     "otherFormes": null
@@ -2420,7 +2806,11 @@
       "spd": 80,
       "spe": 55
     },
-    "ability": "Iron Fist",
+    "abilities": [
+      "Iron Fist",
+      "Klutz",
+      "No Guard"
+    ],
     "weightkg": 330,
     "baseSpecies": null,
     "otherFormes": [
@@ -2443,7 +2833,9 @@
       "spd": 105,
       "spe": 55
     },
-    "ability": "Iron Fist",
+    "abilities": [
+      "Unseen Fist"
+    ],
     "weightkg": 330,
     "baseSpecies": "Golurk",
     "otherFormes": null
@@ -2463,7 +2855,11 @@
       "spd": 150,
       "spe": 80
     },
-    "ability": "Sap Sipper",
+    "abilities": [
+      "Sap Sipper",
+      "Hydration",
+      "Gooey"
+    ],
     "weightkg": 150.5,
     "baseSpecies": null,
     "otherFormes": [
@@ -2473,7 +2869,7 @@
   {
     "id": "goodrahisui",
     "name": "Goodra-Hisui",
-    "nameJa": "ヌメルゴン(ヒスイのすがた)",
+    "nameJa": "ヒスイヌメルゴン",
     "types": [
       "Steel",
       "Dragon"
@@ -2486,7 +2882,11 @@
       "spd": 150,
       "spe": 60
     },
-    "ability": "Sap Sipper",
+    "abilities": [
+      "Sap Sipper",
+      "Shell Armor",
+      "Gooey"
+    ],
     "weightkg": 334.1,
     "baseSpecies": "Goodra",
     "otherFormes": null
@@ -2494,7 +2894,7 @@
   {
     "id": "gourgeist",
     "name": "Gourgeist",
-    "nameJa": "パンプジン",
+    "nameJa": "パンプジン(ちゅうだましゅ)",
     "types": [
       "Ghost",
       "Grass"
@@ -2507,19 +2907,23 @@
       "spd": 75,
       "spe": 84
     },
-    "ability": "Pickup",
+    "abilities": [
+      "Pickup",
+      "Frisk",
+      "Insomnia"
+    ],
     "weightkg": 12.5,
     "baseSpecies": null,
     "otherFormes": [
-      "Gourgeist-Large",
       "Gourgeist-Small",
+      "Gourgeist-Large",
       "Gourgeist-Super"
     ]
   },
   {
     "id": "gourgeistlarge",
     "name": "Gourgeist-Large",
-    "nameJa": "パンプジン(おおきいサイズ)",
+    "nameJa": "パンプジン(おおだましゅ)",
     "types": [
       "Ghost",
       "Grass"
@@ -2532,7 +2936,11 @@
       "spd": 75,
       "spe": 69
     },
-    "ability": "Pickup",
+    "abilities": [
+      "Pickup",
+      "Frisk",
+      "Insomnia"
+    ],
     "weightkg": 14,
     "baseSpecies": "Gourgeist",
     "otherFormes": null
@@ -2540,7 +2948,7 @@
   {
     "id": "gourgeistsmall",
     "name": "Gourgeist-Small",
-    "nameJa": "パンプジン(ちいさいサイズ)",
+    "nameJa": "パンプジン(こだましゅ)",
     "types": [
       "Ghost",
       "Grass"
@@ -2553,7 +2961,11 @@
       "spd": 75,
       "spe": 99
     },
-    "ability": "Pickup",
+    "abilities": [
+      "Pickup",
+      "Frisk",
+      "Insomnia"
+    ],
     "weightkg": 9.5,
     "baseSpecies": "Gourgeist",
     "otherFormes": null
@@ -2561,7 +2973,7 @@
   {
     "id": "gourgeistsuper",
     "name": "Gourgeist-Super",
-    "nameJa": "パンプジン(とくだいサイズ)",
+    "nameJa": "パンプジン(ギガだましゅ)",
     "types": [
       "Ghost",
       "Grass"
@@ -2574,7 +2986,11 @@
       "spd": 75,
       "spe": 54
     },
-    "ability": "Pickup",
+    "abilities": [
+      "Pickup",
+      "Frisk",
+      "Insomnia"
+    ],
     "weightkg": 39,
     "baseSpecies": "Gourgeist",
     "otherFormes": null
@@ -2595,7 +3011,10 @@
       "spd": 71,
       "spe": 122
     },
-    "ability": "Torrent",
+    "abilities": [
+      "Torrent",
+      "Protean"
+    ],
     "weightkg": 40,
     "baseSpecies": null,
     "otherFormes": [
@@ -2618,7 +3037,9 @@
       "spd": 81,
       "spe": 142
     },
-    "ability": "Torrent",
+    "abilities": [
+      "Protean"
+    ],
     "weightkg": 40,
     "baseSpecies": "Greninja",
     "otherFormes": null
@@ -2639,7 +3060,10 @@
       "spd": 100,
       "spe": 81
     },
-    "ability": "Intimidate",
+    "abilities": [
+      "Intimidate",
+      "Moxie"
+    ],
     "weightkg": 235,
     "baseSpecies": null,
     "otherFormes": [
@@ -2662,7 +3086,9 @@
       "spd": 130,
       "spe": 81
     },
-    "ability": "Mold Breaker",
+    "abilities": [
+      "Mold Breaker"
+    ],
     "weightkg": 305,
     "baseSpecies": "Gyarados",
     "otherFormes": null
@@ -2683,7 +3109,11 @@
       "spd": 103,
       "spe": 29
     },
-    "ability": "Healer",
+    "abilities": [
+      "Healer",
+      "Anticipation",
+      "Magic Bounce"
+    ],
     "weightkg": 5.1,
     "baseSpecies": null,
     "otherFormes": null
@@ -2704,7 +3134,11 @@
       "spd": 63,
       "spe": 118
     },
-    "ability": "Limber",
+    "abilities": [
+      "Limber",
+      "Unburden",
+      "Mold Breaker"
+    ],
     "weightkg": 21.5,
     "baseSpecies": null,
     "otherFormes": [
@@ -2727,7 +3161,9 @@
       "spd": 93,
       "spe": 118
     },
-    "ability": "Limber",
+    "abilities": [
+      "No Guard"
+    ],
     "weightkg": 25,
     "baseSpecies": "Hawlucha",
     "otherFormes": null
@@ -2748,7 +3184,11 @@
       "spd": 94,
       "spe": 109
     },
-    "ability": "Dry Skin",
+    "abilities": [
+      "Dry Skin",
+      "Sand Veil",
+      "Solar Power"
+    ],
     "weightkg": 21,
     "baseSpecies": null,
     "otherFormes": null
@@ -2769,7 +3209,11 @@
       "spd": 95,
       "spe": 85
     },
-    "ability": "Swarm",
+    "abilities": [
+      "Swarm",
+      "Guts",
+      "Moxie"
+    ],
     "weightkg": 54,
     "baseSpecies": null,
     "otherFormes": [
@@ -2792,7 +3236,9 @@
       "spd": 105,
       "spe": 75
     },
-    "ability": "Skill Link",
+    "abilities": [
+      "Skill Link"
+    ],
     "weightkg": 62.5,
     "baseSpecies": "Heracross",
     "otherFormes": null
@@ -2812,7 +3258,10 @@
       "spd": 72,
       "spe": 47
     },
-    "ability": "Sand Stream",
+    "abilities": [
+      "Sand Stream",
+      "Sand Force"
+    ],
     "weightkg": 300,
     "baseSpecies": null,
     "otherFormes": null
@@ -2833,7 +3282,11 @@
       "spd": 80,
       "spe": 95
     },
-    "ability": "Early Bird",
+    "abilities": [
+      "Early Bird",
+      "Flash Fire",
+      "Unnerve"
+    ],
     "weightkg": 35,
     "baseSpecies": null,
     "otherFormes": [
@@ -2856,7 +3309,9 @@
       "spd": 90,
       "spe": 115
     },
-    "ability": "Solar Power",
+    "abilities": [
+      "Solar Power"
+    ],
     "weightkg": 49.5,
     "baseSpecies": "Houndoom",
     "otherFormes": null
@@ -2877,7 +3332,11 @@
       "spd": 80,
       "spe": 44
     },
-    "ability": "Supersweet Syrup",
+    "abilities": [
+      "Supersweet Syrup",
+      "Regenerator",
+      "Sticky Hold"
+    ],
     "weightkg": 93,
     "baseSpecies": null,
     "otherFormes": null
@@ -2898,7 +3357,9 @@
       "spd": 90,
       "spe": 98
     },
-    "ability": "Levitate",
+    "abilities": [
+      "Levitate"
+    ],
     "weightkg": 160,
     "baseSpecies": null,
     "otherFormes": null
@@ -2919,7 +3380,10 @@
       "spd": 90,
       "spe": 60
     },
-    "ability": "Blaze",
+    "abilities": [
+      "Blaze",
+      "Intimidate"
+    ],
     "weightkg": 83,
     "baseSpecies": null,
     "otherFormes": null
@@ -2940,7 +3404,10 @@
       "spd": 71,
       "spe": 108
     },
-    "ability": "Blaze",
+    "abilities": [
+      "Blaze",
+      "Iron Fist"
+    ],
     "weightkg": 55,
     "baseSpecies": null,
     "otherFormes": null
@@ -2960,7 +3427,10 @@
       "spd": 95,
       "spe": 130
     },
-    "ability": "Volt Absorb",
+    "abilities": [
+      "Volt Absorb",
+      "Quick Feet"
+    ],
     "weightkg": 24.5,
     "baseSpecies": null,
     "otherFormes": null
@@ -2980,7 +3450,11 @@
       "spd": 80,
       "spe": 90
     },
-    "ability": "Early Bird",
+    "abilities": [
+      "Early Bird",
+      "Scrappy",
+      "Inner Focus"
+    ],
     "weightkg": 80,
     "baseSpecies": null,
     "otherFormes": [
@@ -3002,7 +3476,9 @@
       "spd": 100,
       "spe": 100
     },
-    "ability": "Parental Bond",
+    "abilities": [
+      "Parental Bond"
+    ],
     "weightkg": 100,
     "baseSpecies": "Kangaskhan",
     "otherFormes": null
@@ -3023,7 +3499,11 @@
       "spd": 85,
       "spe": 50
     },
-    "ability": "Defiant",
+    "abilities": [
+      "Defiant",
+      "Supreme Overlord",
+      "Pressure"
+    ],
     "weightkg": 120,
     "baseSpecies": null,
     "otherFormes": null
@@ -3044,7 +3524,11 @@
       "spd": 70,
       "spe": 85
     },
-    "ability": "Swarm",
+    "abilities": [
+      "Swarm",
+      "Sheer Force",
+      "Sharpness"
+    ],
     "weightkg": 89,
     "baseSpecies": null,
     "otherFormes": null
@@ -3065,7 +3549,10 @@
       "spd": 87,
       "spe": 75
     },
-    "ability": "Prankster",
+    "abilities": [
+      "Prankster",
+      "Magician"
+    ],
     "weightkg": 3,
     "baseSpecies": null,
     "otherFormes": null
@@ -3086,7 +3573,11 @@
       "spd": 105,
       "spe": 85
     },
-    "ability": "Bulletproof",
+    "abilities": [
+      "Bulletproof",
+      "Soundproof",
+      "Overcoat"
+    ],
     "weightkg": 78.2,
     "baseSpecies": null,
     "otherFormes": null
@@ -3107,7 +3598,11 @@
       "spd": 70,
       "spe": 92
     },
-    "ability": "Intimidate",
+    "abilities": [
+      "Intimidate",
+      "Moxie",
+      "Anger Point"
+    ],
     "weightkg": 96.3,
     "baseSpecies": null,
     "otherFormes": null
@@ -3127,7 +3622,10 @@
       "spd": 65,
       "spe": 95
     },
-    "ability": "Leaf Guard",
+    "abilities": [
+      "Leaf Guard",
+      "Chlorophyll"
+    ],
     "weightkg": 25.5,
     "baseSpecies": null,
     "otherFormes": null
@@ -3147,7 +3645,11 @@
       "spd": 50,
       "spe": 106
     },
-    "ability": "Limber",
+    "abilities": [
+      "Limber",
+      "Unburden",
+      "Prankster"
+    ],
     "weightkg": 37.5,
     "baseSpecies": null,
     "otherFormes": null
@@ -3167,7 +3669,11 @@
       "spd": 96,
       "spe": 105
     },
-    "ability": "Cute Charm",
+    "abilities": [
+      "Cute Charm",
+      "Klutz",
+      "Limber"
+    ],
     "weightkg": 33.3,
     "baseSpecies": null,
     "otherFormes": [
@@ -3190,7 +3696,9 @@
       "spd": 96,
       "spe": 135
     },
-    "ability": "Scrappy",
+    "abilities": [
+      "Scrappy"
+    ],
     "weightkg": 28.3,
     "baseSpecies": "Lopunny",
     "otherFormes": null
@@ -3211,7 +3719,11 @@
       "spd": 70,
       "spe": 90
     },
-    "ability": "Steadfast",
+    "abilities": [
+      "Steadfast",
+      "Inner Focus",
+      "Justified"
+    ],
     "weightkg": 54,
     "baseSpecies": null,
     "otherFormes": [
@@ -3234,7 +3746,9 @@
       "spd": 70,
       "spe": 112
     },
-    "ability": "Adaptability",
+    "abilities": [
+      "Adaptability"
+    ],
     "weightkg": 57.5,
     "baseSpecies": "Lucario",
     "otherFormes": null
@@ -3254,7 +3768,11 @@
       "spd": 79,
       "spe": 70
     },
-    "ability": "Rivalry",
+    "abilities": [
+      "Rivalry",
+      "Intimidate",
+      "Guts"
+    ],
     "weightkg": 42,
     "baseSpecies": null,
     "otherFormes": null
@@ -3262,7 +3780,7 @@
   {
     "id": "lycanroc",
     "name": "Lycanroc",
-    "nameJa": "ルガルガン",
+    "nameJa": "ルガルガン(まひる)",
     "types": [
       "Rock"
     ],
@@ -3274,7 +3792,11 @@
       "spd": 65,
       "spe": 112
     },
-    "ability": "Keen Eye",
+    "abilities": [
+      "Keen Eye",
+      "Sand Rush",
+      "Steadfast"
+    ],
     "weightkg": 25,
     "baseSpecies": null,
     "otherFormes": [
@@ -3285,7 +3807,7 @@
   {
     "id": "lycanrocdusk",
     "name": "Lycanroc-Dusk",
-    "nameJa": "ルガルガン(たそがれのすがた)",
+    "nameJa": "ルガルガン(たそがれ)",
     "types": [
       "Rock"
     ],
@@ -3297,7 +3819,9 @@
       "spd": 65,
       "spe": 110
     },
-    "ability": "Tough Claws",
+    "abilities": [
+      "Tough Claws"
+    ],
     "weightkg": 25,
     "baseSpecies": "Lycanroc",
     "otherFormes": null
@@ -3305,7 +3829,7 @@
   {
     "id": "lycanrocmidnight",
     "name": "Lycanroc-Midnight",
-    "nameJa": "ルガルガン(まよなかのすがた)",
+    "nameJa": "ルガルガン(まよなか)",
     "types": [
       "Rock"
     ],
@@ -3317,7 +3841,11 @@
       "spd": 75,
       "spe": 82
     },
-    "ability": "Keen Eye",
+    "abilities": [
+      "Keen Eye",
+      "Vital Spirit",
+      "No Guard"
+    ],
     "weightkg": 25,
     "baseSpecies": "Lycanroc",
     "otherFormes": null
@@ -3337,7 +3865,11 @@
       "spd": 85,
       "spe": 55
     },
-    "ability": "Guts",
+    "abilities": [
+      "Guts",
+      "No Guard",
+      "Steadfast"
+    ],
     "weightkg": 130,
     "baseSpecies": null,
     "otherFormes": null
@@ -3358,7 +3890,11 @@
       "spd": 60,
       "spe": 80
     },
-    "ability": "Oblivious",
+    "abilities": [
+      "Oblivious",
+      "Snow Cloak",
+      "Thick Fat"
+    ],
     "weightkg": 291,
     "baseSpecies": null,
     "otherFormes": null
@@ -3378,7 +3914,11 @@
       "spd": 60,
       "spe": 105
     },
-    "ability": "Static",
+    "abilities": [
+      "Static",
+      "Lightning Rod",
+      "Minus"
+    ],
     "weightkg": 40.2,
     "baseSpecies": null,
     "otherFormes": [
@@ -3400,7 +3940,9 @@
       "spd": 80,
       "spe": 135
     },
-    "ability": "Intimidate",
+    "abilities": [
+      "Intimidate"
+    ],
     "weightkg": 44,
     "baseSpecies": "Manectric",
     "otherFormes": null
@@ -3408,7 +3950,7 @@
   {
     "id": "maushold",
     "name": "Maushold",
-    "nameJa": "イッカネズミ",
+    "nameJa": "イッカネズミ(3びきかぞく)",
     "types": [
       "Normal"
     ],
@@ -3420,7 +3962,11 @@
       "spd": 75,
       "spe": 111
     },
-    "ability": "Friend Guard",
+    "abilities": [
+      "Friend Guard",
+      "Cheek Pouch",
+      "Technician"
+    ],
     "weightkg": 2.3,
     "baseSpecies": null,
     "otherFormes": [
@@ -3442,7 +3988,11 @@
       "spd": 75,
       "spe": 111
     },
-    "ability": "Friend Guard",
+    "abilities": [
+      "Friend Guard",
+      "Cheek Pouch",
+      "Technician"
+    ],
     "weightkg": 2.8,
     "baseSpecies": "Maushold",
     "otherFormes": null
@@ -3463,7 +4013,10 @@
       "spd": 75,
       "spe": 80
     },
-    "ability": "Pure Power",
+    "abilities": [
+      "Pure Power",
+      "Telepathy"
+    ],
     "weightkg": 31.5,
     "baseSpecies": null,
     "otherFormes": [
@@ -3486,7 +4039,9 @@
       "spd": 85,
       "spe": 100
     },
-    "ability": "Pure Power",
+    "abilities": [
+      "Pure Power"
+    ],
     "weightkg": 31.5,
     "baseSpecies": "Medicham",
     "otherFormes": null
@@ -3506,7 +4061,10 @@
       "spd": 100,
       "spe": 80
     },
-    "ability": "Overgrow",
+    "abilities": [
+      "Overgrow",
+      "Leaf Guard"
+    ],
     "weightkg": 100.5,
     "baseSpecies": null,
     "otherFormes": [
@@ -3529,30 +4087,11 @@
       "spd": 115,
       "spe": 80
     },
-    "ability": "Overgrow",
+    "abilities": [
+      "Mega Solar"
+    ],
     "weightkg": 201,
     "baseSpecies": "Meganium",
-    "otherFormes": null
-  },
-  {
-    "id": "meloettapirouette",
-    "name": "Meloetta-Pirouette",
-    "nameJa": "メロエッタ(ステップフォルム)",
-    "types": [
-      "Normal",
-      "Fighting"
-    ],
-    "baseStats": {
-      "hp": 100,
-      "atk": 128,
-      "def": 90,
-      "spa": 77,
-      "spd": 77,
-      "spe": 128
-    },
-    "ability": "Serene Grace",
-    "weightkg": 6.5,
-    "baseSpecies": "Meloetta",
     "otherFormes": null
   },
   {
@@ -3571,7 +4110,10 @@
       "spd": 70,
       "spe": 123
     },
-    "ability": "Overgrow",
+    "abilities": [
+      "Overgrow",
+      "Protean"
+    ],
     "weightkg": 31.2,
     "baseSpecies": null,
     "otherFormes": null
@@ -3579,7 +4121,7 @@
   {
     "id": "meowstic",
     "name": "Meowstic",
-    "nameJa": "ニャオニクス",
+    "nameJa": "ニャオニクス(オス)",
     "types": [
       "Psychic"
     ],
@@ -3591,7 +4133,11 @@
       "spd": 81,
       "spe": 104
     },
-    "ability": "Keen Eye",
+    "abilities": [
+      "Keen Eye",
+      "Infiltrator",
+      "Prankster"
+    ],
     "weightkg": 8.5,
     "baseSpecies": null,
     "otherFormes": [
@@ -3603,7 +4149,7 @@
   {
     "id": "meowsticf",
     "name": "Meowstic-F",
-    "nameJa": "ニャオニクス♀",
+    "nameJa": "ニャオニクス(メス)",
     "types": [
       "Psychic"
     ],
@@ -3615,7 +4161,11 @@
       "spd": 81,
       "spe": 104
     },
-    "ability": "Keen Eye",
+    "abilities": [
+      "Keen Eye",
+      "Infiltrator",
+      "Competitive"
+    ],
     "weightkg": 8.5,
     "baseSpecies": "Meowstic",
     "otherFormes": null
@@ -3623,7 +4173,7 @@
   {
     "id": "meowsticfmega",
     "name": "Meowstic-F-Mega",
-    "nameJa": "メガニャオニクス♀",
+    "nameJa": "メガニャオニクス(メス)",
     "types": [
       "Psychic"
     ],
@@ -3635,7 +4185,9 @@
       "spd": 101,
       "spe": 124
     },
-    "ability": "Keen Eye",
+    "abilities": [
+      "Trace"
+    ],
     "weightkg": 10.1,
     "baseSpecies": "Meowstic",
     "otherFormes": null
@@ -3643,7 +4195,7 @@
   {
     "id": "meowsticmmega",
     "name": "Meowstic-M-Mega",
-    "nameJa": "メガニャオニクス♂",
+    "nameJa": "メガニャオニクス(オス)",
     "types": [
       "Psychic"
     ],
@@ -3655,7 +4207,9 @@
       "spd": 101,
       "spe": 124
     },
-    "ability": "Keen Eye",
+    "abilities": [
+      "Trace"
+    ],
     "weightkg": 10.1,
     "baseSpecies": "Meowstic",
     "otherFormes": null
@@ -3675,7 +4229,11 @@
       "spd": 125,
       "spe": 81
     },
-    "ability": "Marvel Scale",
+    "abilities": [
+      "Marvel Scale",
+      "Competitive",
+      "Cute Charm"
+    ],
     "weightkg": 162,
     "baseSpecies": null,
     "otherFormes": null
@@ -3696,7 +4254,9 @@
       "spd": 105,
       "spe": 96
     },
-    "ability": "Disguise",
+    "abilities": [
+      "Disguise"
+    ],
     "weightkg": 0.7,
     "baseSpecies": null,
     "otherFormes": [
@@ -3719,30 +4279,11 @@
       "spd": 105,
       "spe": 96
     },
-    "ability": "Disguise",
+    "abilities": [
+      "Disguise"
+    ],
     "weightkg": 0.7,
     "baseSpecies": "Mimikyu",
-    "otherFormes": null
-  },
-  {
-    "id": "miniormeteor",
-    "name": "Minior-Meteor",
-    "nameJa": "メテノ(りゅうせいのすがた)",
-    "types": [
-      "Rock",
-      "Flying"
-    ],
-    "baseStats": {
-      "hp": 60,
-      "atk": 60,
-      "def": 100,
-      "spa": 60,
-      "spd": 100,
-      "spe": 60
-    },
-    "ability": "Shields Down",
-    "weightkg": 40,
-    "baseSpecies": "Minior",
     "otherFormes": null
   },
   {
@@ -3761,7 +4302,9 @@
       "spd": 58,
       "spe": 97
     },
-    "ability": "Hunger Switch",
+    "abilities": [
+      "Hunger Switch"
+    ],
     "weightkg": 3,
     "baseSpecies": null,
     "otherFormes": [
@@ -3784,7 +4327,9 @@
       "spd": 58,
       "spe": 97
     },
-    "ability": "Hunger Switch",
+    "abilities": [
+      "Hunger Switch"
+    ],
     "weightkg": 3,
     "baseSpecies": "Morpeko",
     "otherFormes": null
@@ -3805,7 +4350,11 @@
       "spd": 100,
       "spe": 70
     },
-    "ability": "Tangled Feet",
+    "abilities": [
+      "Tangled Feet",
+      "Screen Cleaner",
+      "Ice Body"
+    ],
     "weightkg": 58.2,
     "baseSpecies": null,
     "otherFormes": null
@@ -3825,7 +4374,11 @@
       "spd": 85,
       "spe": 35
     },
-    "ability": "Own Tempo",
+    "abilities": [
+      "Own Tempo",
+      "Stamina",
+      "Inner Focus"
+    ],
     "weightkg": 920,
     "baseSpecies": null,
     "otherFormes": null
@@ -3845,7 +4398,10 @@
       "spd": 100,
       "spe": 100
     },
-    "ability": "Flash Fire",
+    "abilities": [
+      "Flash Fire",
+      "Drought"
+    ],
     "weightkg": 19.9,
     "baseSpecies": null,
     "otherFormes": [
@@ -3855,7 +4411,7 @@
   {
     "id": "ninetalesalola",
     "name": "Ninetales-Alola",
-    "nameJa": "キュウコン(アローラのすがた)",
+    "nameJa": "アローラキュウコン",
     "types": [
       "Ice",
       "Fairy"
@@ -3868,7 +4424,10 @@
       "spd": 100,
       "spe": 109
     },
-    "ability": "Snow Cloak",
+    "abilities": [
+      "Snow Cloak",
+      "Snow Warning"
+    ],
     "weightkg": 19.9,
     "baseSpecies": "Ninetales",
     "otherFormes": null
@@ -3889,92 +4448,13 @@
       "spd": 80,
       "spe": 123
     },
-    "ability": "Frisk",
+    "abilities": [
+      "Frisk",
+      "Infiltrator",
+      "Telepathy"
+    ],
     "weightkg": 85,
     "baseSpecies": null,
-    "otherFormes": null
-  },
-  {
-    "id": "ogerponcornerstonetera",
-    "name": "Ogerpon-Cornerstone-Tera",
-    "nameJa": "オーガポン(いしずえのめん・テラスタル)",
-    "types": [
-      "Grass",
-      "Rock"
-    ],
-    "baseStats": {
-      "hp": 80,
-      "atk": 120,
-      "def": 84,
-      "spa": 60,
-      "spd": 96,
-      "spe": 110
-    },
-    "ability": "Embody Aspect (Cornerstone)",
-    "weightkg": 39.8,
-    "baseSpecies": "Ogerpon",
-    "otherFormes": null
-  },
-  {
-    "id": "ogerponhearthflametera",
-    "name": "Ogerpon-Hearthflame-Tera",
-    "nameJa": "オーガポン(かまどのめん・テラスタル)",
-    "types": [
-      "Grass",
-      "Fire"
-    ],
-    "baseStats": {
-      "hp": 80,
-      "atk": 120,
-      "def": 84,
-      "spa": 60,
-      "spd": 96,
-      "spe": 110
-    },
-    "ability": "Embody Aspect (Hearthflame)",
-    "weightkg": 39.8,
-    "baseSpecies": "Ogerpon",
-    "otherFormes": null
-  },
-  {
-    "id": "ogerpontealtera",
-    "name": "Ogerpon-Teal-Tera",
-    "nameJa": "オーガポン(みどりのめん・テラスタル)",
-    "types": [
-      "Grass"
-    ],
-    "baseStats": {
-      "hp": 80,
-      "atk": 120,
-      "def": 84,
-      "spa": 60,
-      "spd": 96,
-      "spe": 110
-    },
-    "ability": "Embody Aspect (Teal)",
-    "weightkg": 39.8,
-    "baseSpecies": "Ogerpon",
-    "otherFormes": null
-  },
-  {
-    "id": "ogerponwellspringtera",
-    "name": "Ogerpon-Wellspring-Tera",
-    "nameJa": "オーガポン(いどのめん・テラスタル)",
-    "types": [
-      "Grass",
-      "Water"
-    ],
-    "baseStats": {
-      "hp": 80,
-      "atk": 120,
-      "def": 84,
-      "spa": 60,
-      "spd": 96,
-      "spe": 110
-    },
-    "ability": "Embody Aspect (Wellspring)",
-    "weightkg": 39.8,
-    "baseSpecies": "Ogerpon",
     "otherFormes": null
   },
   {
@@ -3993,7 +4473,11 @@
       "spd": 110,
       "spe": 60
     },
-    "ability": "Inner Focus",
+    "abilities": [
+      "Inner Focus",
+      "Telepathy",
+      "Symbiosis"
+    ],
     "weightkg": 76,
     "baseSpecies": null,
     "otherFormes": null
@@ -4013,7 +4497,10 @@
       "spd": 55,
       "spe": 65
     },
-    "ability": "Earth Eater",
+    "abilities": [
+      "Earth Eater",
+      "Sand Veil"
+    ],
     "weightkg": 310,
     "baseSpecies": null,
     "otherFormes": null
@@ -4021,7 +4508,7 @@
   {
     "id": "palafin",
     "name": "Palafin",
-    "nameJa": "イルカマン",
+    "nameJa": "イルカマン(ナイーブ)",
     "types": [
       "Water"
     ],
@@ -4033,7 +4520,9 @@
       "spd": 62,
       "spe": 100
     },
-    "ability": "Zero to Hero",
+    "abilities": [
+      "Zero to Hero"
+    ],
     "weightkg": 60.2,
     "baseSpecies": null,
     "otherFormes": [
@@ -4043,7 +4532,7 @@
   {
     "id": "palafinhero",
     "name": "Palafin-Hero",
-    "nameJa": "イルカマン(ヒーローフォルム)",
+    "nameJa": "イルカマン(マイティ)",
     "types": [
       "Water"
     ],
@@ -4055,7 +4544,9 @@
       "spd": 87,
       "spe": 100
     },
-    "ability": "Zero to Hero",
+    "abilities": [
+      "Zero to Hero"
+    ],
     "weightkg": 97.4,
     "baseSpecies": "Palafin",
     "otherFormes": null
@@ -4076,7 +4567,11 @@
       "spd": 71,
       "spe": 58
     },
-    "ability": "Iron Fist",
+    "abilities": [
+      "Iron Fist",
+      "Mold Breaker",
+      "Scrappy"
+    ],
     "weightkg": 136,
     "baseSpecies": null,
     "otherFormes": null
@@ -4096,7 +4591,10 @@
       "spd": 60,
       "spe": 80
     },
-    "ability": "Receiver",
+    "abilities": [
+      "Receiver",
+      "Defiant"
+    ],
     "weightkg": 82.8,
     "baseSpecies": null,
     "otherFormes": null
@@ -4117,7 +4615,11 @@
       "spd": 70,
       "spe": 65
     },
-    "ability": "Keen Eye",
+    "abilities": [
+      "Keen Eye",
+      "Drizzle",
+      "Rain Dish"
+    ],
     "weightkg": 28,
     "baseSpecies": null,
     "otherFormes": null
@@ -4138,7 +4640,11 @@
       "spd": 70,
       "spe": 101
     },
-    "ability": "Keen Eye",
+    "abilities": [
+      "Keen Eye",
+      "Tangled Feet",
+      "Big Pecks"
+    ],
     "weightkg": 39.5,
     "baseSpecies": null,
     "otherFormes": [
@@ -4161,7 +4667,9 @@
       "spd": 80,
       "spe": 121
     },
-    "ability": "No Guard",
+    "abilities": [
+      "No Guard"
+    ],
     "weightkg": 50.5,
     "baseSpecies": "Pidgeot",
     "otherFormes": null
@@ -4181,7 +4689,10 @@
       "spd": 50,
       "spe": 90
     },
-    "ability": "Static",
+    "abilities": [
+      "Static",
+      "Lightning Rod"
+    ],
     "weightkg": 6,
     "baseSpecies": null,
     "otherFormes": null
@@ -4201,7 +4712,11 @@
       "spd": 70,
       "spe": 85
     },
-    "ability": "Hyper Cutter",
+    "abilities": [
+      "Hyper Cutter",
+      "Mold Breaker",
+      "Moxie"
+    ],
     "weightkg": 55,
     "baseSpecies": null,
     "otherFormes": [
@@ -4224,7 +4739,9 @@
       "spd": 90,
       "spe": 105
     },
-    "ability": "Aerilate",
+    "abilities": [
+      "Aerilate"
+    ],
     "weightkg": 59,
     "baseSpecies": "Pinsir",
     "otherFormes": null
@@ -4244,7 +4761,11 @@
       "spd": 100,
       "spe": 70
     },
-    "ability": "Water Absorb",
+    "abilities": [
+      "Water Absorb",
+      "Damp",
+      "Drizzle"
+    ],
     "weightkg": 33.9,
     "baseSpecies": null,
     "otherFormes": null
@@ -4264,7 +4785,10 @@
       "spd": 114,
       "spe": 70
     },
-    "ability": "Weak Armor",
+    "abilities": [
+      "Weak Armor",
+      "Cursed Body"
+    ],
     "weightkg": 0.4,
     "baseSpecies": null,
     "otherFormes": [
@@ -4286,7 +4810,9 @@
       "spd": 114,
       "spe": 70
     },
-    "ability": "Weak Armor",
+    "abilities": [
+      "Weak Armor"
+    ],
     "weightkg": 0.4,
     "baseSpecies": "Polteageist",
     "otherFormes": null
@@ -4307,7 +4833,10 @@
       "spd": 116,
       "spe": 60
     },
-    "ability": "Torrent",
+    "abilities": [
+      "Torrent",
+      "Liquid Voice"
+    ],
     "weightkg": 44,
     "baseSpecies": null,
     "otherFormes": null
@@ -4328,7 +4857,10 @@
       "spd": 75,
       "spe": 85
     },
-    "ability": "Torrent",
+    "abilities": [
+      "Torrent",
+      "Moxie"
+    ],
     "weightkg": 61.9,
     "baseSpecies": null,
     "otherFormes": null
@@ -4348,7 +4880,10 @@
       "spd": 80,
       "spe": 110
     },
-    "ability": "Static",
+    "abilities": [
+      "Static",
+      "Lightning Rod"
+    ],
     "weightkg": 30,
     "baseSpecies": null,
     "otherFormes": [
@@ -4358,7 +4893,7 @@
   {
     "id": "raichualola",
     "name": "Raichu-Alola",
-    "nameJa": "ライチュウ(アローラのすがた)",
+    "nameJa": "アローラライチュウ",
     "types": [
       "Electric",
       "Psychic"
@@ -4371,7 +4906,9 @@
       "spd": 85,
       "spe": 110
     },
-    "ability": "Surge Surfer",
+    "abilities": [
+      "Surge Surfer"
+    ],
     "weightkg": 21,
     "baseSpecies": "Raichu",
     "otherFormes": null
@@ -4391,7 +4928,10 @@
       "spd": 50,
       "spe": 58
     },
-    "ability": "Mold Breaker",
+    "abilities": [
+      "Mold Breaker",
+      "Sheer Force"
+    ],
     "weightkg": 102.5,
     "baseSpecies": null,
     "otherFormes": null
@@ -4411,7 +4951,11 @@
       "spd": 85,
       "spe": 30
     },
-    "ability": "Overcoat",
+    "abilities": [
+      "Overcoat",
+      "Magic Guard",
+      "Regenerator"
+    ],
     "weightkg": 20.1,
     "baseSpecies": null,
     "otherFormes": null
@@ -4432,7 +4976,11 @@
       "spd": 55,
       "spe": 40
     },
-    "ability": "Lightning Rod",
+    "abilities": [
+      "Lightning Rod",
+      "Solid Rock",
+      "Reckless"
+    ],
     "weightkg": 282.8,
     "baseSpecies": null,
     "otherFormes": null
@@ -4453,7 +5001,11 @@
       "spd": 105,
       "spe": 90
     },
-    "ability": "Natural Cure",
+    "abilities": [
+      "Natural Cure",
+      "Poison Point",
+      "Technician"
+    ],
     "weightkg": 14.5,
     "baseSpecies": null,
     "otherFormes": null
@@ -4474,7 +5026,9 @@
       "spd": 77,
       "spe": 91
     },
-    "ability": "Levitate",
+    "abilities": [
+      "Levitate"
+    ],
     "weightkg": 0.3,
     "baseSpecies": null,
     "otherFormes": [
@@ -4501,7 +5055,9 @@
       "spd": 107,
       "spe": 86
     },
-    "ability": "Levitate",
+    "abilities": [
+      "Levitate"
+    ],
     "weightkg": 0.3,
     "baseSpecies": "Rotom",
     "otherFormes": null
@@ -4522,7 +5078,9 @@
       "spd": 107,
       "spe": 86
     },
-    "ability": "Levitate",
+    "abilities": [
+      "Levitate"
+    ],
     "weightkg": 0.3,
     "baseSpecies": "Rotom",
     "otherFormes": null
@@ -4543,7 +5101,9 @@
       "spd": 107,
       "spe": 86
     },
-    "ability": "Levitate",
+    "abilities": [
+      "Levitate"
+    ],
     "weightkg": 0.3,
     "baseSpecies": "Rotom",
     "otherFormes": null
@@ -4564,7 +5124,9 @@
       "spd": 107,
       "spe": 86
     },
-    "ability": "Levitate",
+    "abilities": [
+      "Levitate"
+    ],
     "weightkg": 0.3,
     "baseSpecies": "Rotom",
     "otherFormes": null
@@ -4585,7 +5147,9 @@
       "spd": 107,
       "spe": 86
     },
-    "ability": "Levitate",
+    "abilities": [
+      "Levitate"
+    ],
     "weightkg": 0.3,
     "baseSpecies": "Rotom",
     "otherFormes": null
@@ -4606,7 +5170,9 @@
       "spd": 105,
       "spe": 30
     },
-    "ability": "Wandering Spirit",
+    "abilities": [
+      "Wandering Spirit"
+    ],
     "weightkg": 66.6,
     "baseSpecies": null,
     "otherFormes": null
@@ -4627,7 +5193,11 @@
       "spd": 65,
       "spe": 50
     },
-    "ability": "Keen Eye",
+    "abilities": [
+      "Keen Eye",
+      "Stall",
+      "Prankster"
+    ],
     "weightkg": 11,
     "baseSpecies": null,
     "otherFormes": [
@@ -4650,7 +5220,9 @@
       "spd": 115,
       "spe": 20
     },
-    "ability": "Magic Bounce",
+    "abilities": [
+      "Magic Bounce"
+    ],
     "weightkg": 161,
     "baseSpecies": "Sableye",
     "otherFormes": null
@@ -4671,7 +5243,10 @@
       "spd": 60,
       "spe": 117
     },
-    "ability": "Corrosion",
+    "abilities": [
+      "Corrosion",
+      "Oblivious"
+    ],
     "weightkg": 22.2,
     "baseSpecies": null,
     "otherFormes": null
@@ -4691,7 +5266,10 @@
       "spd": 70,
       "spe": 70
     },
-    "ability": "Torrent",
+    "abilities": [
+      "Torrent",
+      "Shell Armor"
+    ],
     "weightkg": 94.6,
     "baseSpecies": null,
     "otherFormes": [
@@ -4701,7 +5279,7 @@
   {
     "id": "samurotthisui",
     "name": "Samurott-Hisui",
-    "nameJa": "ダイケンキ(ヒスイのすがた)",
+    "nameJa": "ヒスイダイケンキ",
     "types": [
       "Water",
       "Dark"
@@ -4714,7 +5292,10 @@
       "spd": 65,
       "spe": 85
     },
-    "ability": "Torrent",
+    "abilities": [
+      "Torrent",
+      "Sharpness"
+    ],
     "weightkg": 58.2,
     "baseSpecies": "Samurott",
     "otherFormes": null
@@ -4734,7 +5315,11 @@
       "spd": 70,
       "spe": 71
     },
-    "ability": "Sand Spit",
+    "abilities": [
+      "Sand Spit",
+      "Shed Skin",
+      "Sand Veil"
+    ],
     "weightkg": 65.5,
     "baseSpecies": null,
     "otherFormes": null
@@ -4755,7 +5340,11 @@
       "spd": 80,
       "spe": 65
     },
-    "ability": "Swarm",
+    "abilities": [
+      "Swarm",
+      "Technician",
+      "Light Metal"
+    ],
     "weightkg": 118,
     "baseSpecies": null,
     "otherFormes": [
@@ -4778,7 +5367,9 @@
       "spd": 100,
       "spe": 75
     },
-    "ability": "Technician",
+    "abilities": [
+      "Technician"
+    ],
     "weightkg": 125,
     "baseSpecies": "Scizor",
     "otherFormes": null
@@ -4799,7 +5390,11 @@
       "spd": 65,
       "spe": 75
     },
-    "ability": "Chlorophyll",
+    "abilities": [
+      "Chlorophyll",
+      "Insomnia",
+      "Moody"
+    ],
     "weightkg": 15,
     "baseSpecies": null,
     "otherFormes": [
@@ -4822,7 +5417,9 @@
       "spd": 85,
       "spe": 75
     },
-    "ability": "Chlorophyll",
+    "abilities": [
+      "Spicy Extract"
+    ],
     "weightkg": 22,
     "baseSpecies": "Scovillain",
     "otherFormes": null
@@ -4842,7 +5439,10 @@
       "spd": 95,
       "spe": 113
     },
-    "ability": "Overgrow",
+    "abilities": [
+      "Overgrow",
+      "Contrary"
+    ],
     "weightkg": 63,
     "baseSpecies": null,
     "otherFormes": null
@@ -4863,7 +5463,10 @@
       "spd": 40,
       "spe": 95
     },
-    "ability": "Rough Skin",
+    "abilities": [
+      "Rough Skin",
+      "Speed Boost"
+    ],
     "weightkg": 88.8,
     "baseSpecies": null,
     "otherFormes": [
@@ -4886,7 +5489,9 @@
       "spd": 65,
       "spe": 105
     },
-    "ability": "Strong Jaw",
+    "abilities": [
+      "Strong Jaw"
+    ],
     "weightkg": 130.3,
     "baseSpecies": "Sharpedo",
     "otherFormes": null
@@ -4906,7 +5511,10 @@
       "spd": 63,
       "spe": 101
     },
-    "ability": "Gluttony",
+    "abilities": [
+      "Gluttony",
+      "Torrent"
+    ],
     "weightkg": 29,
     "baseSpecies": null,
     "otherFormes": null
@@ -4926,7 +5534,10 @@
       "spd": 63,
       "spe": 101
     },
-    "ability": "Gluttony",
+    "abilities": [
+      "Gluttony",
+      "Overgrow"
+    ],
     "weightkg": 30.5,
     "baseSpecies": null,
     "otherFormes": null
@@ -4946,7 +5557,10 @@
       "spd": 63,
       "spe": 101
     },
-    "ability": "Gluttony",
+    "abilities": [
+      "Gluttony",
+      "Blaze"
+    ],
     "weightkg": 28,
     "baseSpecies": null,
     "otherFormes": null
@@ -4967,7 +5581,10 @@
       "spd": 80,
       "spe": 70
     },
-    "ability": "Hospitality",
+    "abilities": [
+      "Hospitality",
+      "Heatproof"
+    ],
     "weightkg": 2.2,
     "baseSpecies": null,
     "otherFormes": [
@@ -4990,7 +5607,9 @@
       "spd": 80,
       "spe": 70
     },
-    "ability": "Hospitality",
+    "abilities": [
+      "Hospitality"
+    ],
     "weightkg": 2.2,
     "baseSpecies": "Sinistcha",
     "otherFormes": null
@@ -5011,7 +5630,11 @@
       "spd": 70,
       "spe": 70
     },
-    "ability": "Keen Eye",
+    "abilities": [
+      "Keen Eye",
+      "Sturdy",
+      "Weak Armor"
+    ],
     "weightkg": 50.5,
     "baseSpecies": null,
     "otherFormes": [
@@ -5034,7 +5657,9 @@
       "spd": 100,
       "spe": 110
     },
-    "ability": "Keen Eye",
+    "abilities": [
+      "Stalwart"
+    ],
     "weightkg": 40.4,
     "baseSpecies": "Skarmory",
     "otherFormes": null
@@ -5055,7 +5680,10 @@
       "spd": 75,
       "spe": 66
     },
-    "ability": "Blaze",
+    "abilities": [
+      "Blaze",
+      "Unaware"
+    ],
     "weightkg": 326.5,
     "baseSpecies": null,
     "otherFormes": null
@@ -5076,7 +5704,11 @@
       "spd": 80,
       "spe": 30
     },
-    "ability": "Oblivious",
+    "abilities": [
+      "Oblivious",
+      "Own Tempo",
+      "Regenerator"
+    ],
     "weightkg": 78.5,
     "baseSpecies": null,
     "otherFormes": [
@@ -5087,7 +5719,7 @@
   {
     "id": "slowbrogalar",
     "name": "Slowbro-Galar",
-    "nameJa": "ヤドラン(ガラルのすがた)",
+    "nameJa": "ガラルヤドラン",
     "types": [
       "Poison",
       "Psychic"
@@ -5100,7 +5732,11 @@
       "spd": 70,
       "spe": 30
     },
-    "ability": "Quick Draw",
+    "abilities": [
+      "Quick Draw",
+      "Own Tempo",
+      "Regenerator"
+    ],
     "weightkg": 70.5,
     "baseSpecies": "Slowbro",
     "otherFormes": null
@@ -5121,7 +5757,9 @@
       "spd": 80,
       "spe": 30
     },
-    "ability": "Shell Armor",
+    "abilities": [
+      "Shell Armor"
+    ],
     "weightkg": 120,
     "baseSpecies": "Slowbro",
     "otherFormes": null
@@ -5142,7 +5780,11 @@
       "spd": 110,
       "spe": 30
     },
-    "ability": "Oblivious",
+    "abilities": [
+      "Oblivious",
+      "Own Tempo",
+      "Regenerator"
+    ],
     "weightkg": 79.5,
     "baseSpecies": null,
     "otherFormes": [
@@ -5152,7 +5794,7 @@
   {
     "id": "slowkinggalar",
     "name": "Slowking-Galar",
-    "nameJa": "ヤドキング(ガラルのすがた)",
+    "nameJa": "ガラルヤドキング",
     "types": [
       "Poison",
       "Psychic"
@@ -5165,7 +5807,11 @@
       "spd": 110,
       "spe": 30
     },
-    "ability": "Curious Medicine",
+    "abilities": [
+      "Curious Medicine",
+      "Own Tempo",
+      "Regenerator"
+    ],
     "weightkg": 79.5,
     "baseSpecies": "Slowking",
     "otherFormes": null
@@ -5185,7 +5831,10 @@
       "spd": 75,
       "spe": 72
     },
-    "ability": "Sweet Veil",
+    "abilities": [
+      "Sweet Veil",
+      "Unburden"
+    ],
     "weightkg": 5,
     "baseSpecies": null,
     "otherFormes": null
@@ -5206,7 +5855,11 @@
       "spd": 80,
       "spe": 120
     },
-    "ability": "Pressure",
+    "abilities": [
+      "Pressure",
+      "Unburden",
+      "Poison Touch"
+    ],
     "weightkg": 43,
     "baseSpecies": null,
     "otherFormes": null
@@ -5226,7 +5879,11 @@
       "spd": 110,
       "spe": 30
     },
-    "ability": "Immunity",
+    "abilities": [
+      "Immunity",
+      "Thick Fat",
+      "Gluttony"
+    ],
     "weightkg": 460,
     "baseSpecies": null,
     "otherFormes": null
@@ -5247,7 +5904,10 @@
       "spd": 108,
       "spe": 35
     },
-    "ability": "Pressure",
+    "abilities": [
+      "Pressure",
+      "Infiltrator"
+    ],
     "weightkg": 108,
     "baseSpecies": null,
     "otherFormes": null
@@ -5268,7 +5928,11 @@
       "spd": 85,
       "spe": 115
     },
-    "ability": "Illuminate",
+    "abilities": [
+      "Illuminate",
+      "Natural Cure",
+      "Analytic"
+    ],
     "weightkg": 80,
     "baseSpecies": null,
     "otherFormes": [
@@ -5285,13 +5949,15 @@
     ],
     "baseStats": {
       "hp": 60,
-      "atk": 140,
+      "atk": 100,
       "def": 105,
       "spa": 130,
       "spd": 105,
       "spe": 120
     },
-    "ability": "Illuminate",
+    "abilities": [
+      "Huge Power"
+    ],
     "weightkg": 80,
     "baseSpecies": "Starmie",
     "otherFormes": null
@@ -5312,7 +5978,11 @@
       "spd": 65,
       "spe": 30
     },
-    "ability": "Rock Head",
+    "abilities": [
+      "Rock Head",
+      "Sturdy",
+      "Sheer Force"
+    ],
     "weightkg": 400,
     "baseSpecies": null,
     "otherFormes": [
@@ -5335,7 +6005,9 @@
       "spd": 95,
       "spe": 30
     },
-    "ability": "Sand Force",
+    "abilities": [
+      "Sand Force"
+    ],
     "weightkg": 740,
     "baseSpecies": "Steelix",
     "otherFormes": null
@@ -5356,7 +6028,11 @@
       "spd": 99,
       "spe": 32
     },
-    "ability": "Static",
+    "abilities": [
+      "Static",
+      "Limber",
+      "Sand Veil"
+    ],
     "weightkg": 11,
     "baseSpecies": null,
     "otherFormes": [
@@ -5366,7 +6042,7 @@
   {
     "id": "stunfiskgalar",
     "name": "Stunfisk-Galar",
-    "nameJa": "マッギョ(ガラルのすがた)",
+    "nameJa": "ガラルマッギョ",
     "types": [
       "Ground",
       "Steel"
@@ -5379,7 +6055,9 @@
       "spd": 84,
       "spe": 32
     },
-    "ability": "Mimicry",
+    "abilities": [
+      "Mimicry"
+    ],
     "weightkg": 20.5,
     "baseSpecies": "Stunfisk",
     "otherFormes": null
@@ -5399,7 +6077,10 @@
       "spd": 130,
       "spe": 60
     },
-    "ability": "Cute Charm",
+    "abilities": [
+      "Cute Charm",
+      "Pixilate"
+    ],
     "weightkg": 23.5,
     "baseSpecies": null,
     "otherFormes": null
@@ -5420,7 +6101,10 @@
       "spd": 69,
       "spe": 126
     },
-    "ability": "Flame Body",
+    "abilities": [
+      "Flame Body",
+      "Gale Wings"
+    ],
     "weightkg": 24.5,
     "baseSpecies": null,
     "otherFormes": null
@@ -5440,7 +6124,11 @@
       "spd": 70,
       "spe": 110
     },
-    "ability": "Intimidate",
+    "abilities": [
+      "Intimidate",
+      "Anger Point",
+      "Sheer Force"
+    ],
     "weightkg": 88.4,
     "baseSpecies": null,
     "otherFormes": [
@@ -5452,7 +6140,7 @@
   {
     "id": "taurospaldeaaqua",
     "name": "Tauros-Paldea-Aqua",
-    "nameJa": "ケンタロス(パルデア・みず)",
+    "nameJa": "パルデアケンタロス(みず)",
     "types": [
       "Fighting",
       "Water"
@@ -5465,7 +6153,11 @@
       "spd": 70,
       "spe": 100
     },
-    "ability": "Intimidate",
+    "abilities": [
+      "Intimidate",
+      "Anger Point",
+      "Cud Chew"
+    ],
     "weightkg": 110,
     "baseSpecies": "Tauros",
     "otherFormes": null
@@ -5473,7 +6165,7 @@
   {
     "id": "taurospaldeablaze",
     "name": "Tauros-Paldea-Blaze",
-    "nameJa": "ケンタロス(パルデア・ほのお)",
+    "nameJa": "パルデアケンタロス(ほのお)",
     "types": [
       "Fighting",
       "Fire"
@@ -5486,7 +6178,11 @@
       "spd": 70,
       "spe": 100
     },
-    "ability": "Intimidate",
+    "abilities": [
+      "Intimidate",
+      "Anger Point",
+      "Cud Chew"
+    ],
     "weightkg": 85,
     "baseSpecies": "Tauros",
     "otherFormes": null
@@ -5494,7 +6190,7 @@
   {
     "id": "taurospaldeacombat",
     "name": "Tauros-Paldea-Combat",
-    "nameJa": "ケンタロス(パルデア・かくとう)",
+    "nameJa": "パルデアケンタロス(かくとう)",
     "types": [
       "Fighting"
     ],
@@ -5506,29 +6202,13 @@
       "spd": 70,
       "spe": 100
     },
-    "ability": "Intimidate",
+    "abilities": [
+      "Intimidate",
+      "Anger Point",
+      "Cud Chew"
+    ],
     "weightkg": 115,
     "baseSpecies": "Tauros",
-    "otherFormes": null
-  },
-  {
-    "id": "terapagosterastal",
-    "name": "Terapagos-Terastal",
-    "nameJa": "テラパゴス(テラスタルフォルム)",
-    "types": [
-      "Normal"
-    ],
-    "baseStats": {
-      "hp": 95,
-      "atk": 95,
-      "def": 110,
-      "spa": 105,
-      "spd": 110,
-      "spe": 85
-    },
-    "ability": "Tera Shell",
-    "weightkg": 16,
-    "baseSpecies": "Terapagos",
     "otherFormes": null
   },
   {
@@ -5547,7 +6227,11 @@
       "spd": 105,
       "spe": 94
     },
-    "ability": "Mold Breaker",
+    "abilities": [
+      "Mold Breaker",
+      "Own Tempo",
+      "Pickpocket"
+    ],
     "weightkg": 112.8,
     "baseSpecies": null,
     "otherFormes": null
@@ -5567,7 +6251,11 @@
       "spd": 70,
       "spe": 20
     },
-    "ability": "White Smoke",
+    "abilities": [
+      "White Smoke",
+      "Drought",
+      "Shell Armor"
+    ],
     "weightkg": 80.4,
     "baseSpecies": null,
     "otherFormes": null
@@ -5588,7 +6276,10 @@
       "spd": 85,
       "spe": 56
     },
-    "ability": "Overgrow",
+    "abilities": [
+      "Overgrow",
+      "Shell Armor"
+    ],
     "weightkg": 310,
     "baseSpecies": null,
     "otherFormes": null
@@ -5609,7 +6300,11 @@
       "spd": 75,
       "spe": 60
     },
-    "ability": "Keen Eye",
+    "abilities": [
+      "Keen Eye",
+      "Skill Link",
+      "Sheer Force"
+    ],
     "weightkg": 26,
     "baseSpecies": null,
     "otherFormes": null
@@ -5630,7 +6325,11 @@
       "spd": 142,
       "spe": 35
     },
-    "ability": "Merciless",
+    "abilities": [
+      "Merciless",
+      "Limber",
+      "Regenerator"
+    ],
     "weightkg": 14.5,
     "baseSpecies": null,
     "otherFormes": null
@@ -5651,7 +6350,11 @@
       "spd": 65,
       "spe": 85
     },
-    "ability": "Anticipation",
+    "abilities": [
+      "Anticipation",
+      "Dry Skin",
+      "Poison Touch"
+    ],
     "weightkg": 44.4,
     "baseSpecies": null,
     "otherFormes": null
@@ -5672,7 +6375,11 @@
       "spd": 82,
       "spe": 56
     },
-    "ability": "Natural Cure",
+    "abilities": [
+      "Natural Cure",
+      "Frisk",
+      "Harvest"
+    ],
     "weightkg": 71,
     "baseSpecies": null,
     "otherFormes": null
@@ -5692,7 +6399,11 @@
       "spd": 98,
       "spe": 72
     },
-    "ability": "Leaf Guard",
+    "abilities": [
+      "Leaf Guard",
+      "Queenly Majesty",
+      "Sweet Veil"
+    ],
     "weightkg": 21.4,
     "baseSpecies": null,
     "otherFormes": null
@@ -5712,7 +6423,10 @@
       "spd": 85,
       "spe": 100
     },
-    "ability": "Blaze",
+    "abilities": [
+      "Blaze",
+      "Flash Fire"
+    ],
     "weightkg": 79.5,
     "baseSpecies": null,
     "otherFormes": [
@@ -5722,7 +6436,7 @@
   {
     "id": "typhlosionhisui",
     "name": "Typhlosion-Hisui",
-    "nameJa": "バクフーン(ヒスイのすがた)",
+    "nameJa": "ヒスイバクフーン",
     "types": [
       "Fire",
       "Ghost"
@@ -5735,7 +6449,10 @@
       "spd": 85,
       "spe": 95
     },
-    "ability": "Blaze",
+    "abilities": [
+      "Blaze",
+      "Frisk"
+    ],
     "weightkg": 69.8,
     "baseSpecies": "Typhlosion",
     "otherFormes": null
@@ -5756,7 +6473,10 @@
       "spd": 100,
       "spe": 61
     },
-    "ability": "Sand Stream",
+    "abilities": [
+      "Sand Stream",
+      "Unnerve"
+    ],
     "weightkg": 202,
     "baseSpecies": null,
     "otherFormes": [
@@ -5779,7 +6499,9 @@
       "spd": 120,
       "spe": 71
     },
-    "ability": "Sand Stream",
+    "abilities": [
+      "Sand Stream"
+    ],
     "weightkg": 255,
     "baseSpecies": "Tyranitar",
     "otherFormes": null
@@ -5800,7 +6522,10 @@
       "spd": 59,
       "spe": 71
     },
-    "ability": "Strong Jaw",
+    "abilities": [
+      "Strong Jaw",
+      "Rock Head"
+    ],
     "weightkg": 270,
     "baseSpecies": null,
     "otherFormes": null
@@ -5820,7 +6545,10 @@
       "spd": 130,
       "spe": 65
     },
-    "ability": "Synchronize",
+    "abilities": [
+      "Synchronize",
+      "Inner Focus"
+    ],
     "weightkg": 27,
     "baseSpecies": null,
     "otherFormes": null
@@ -5840,7 +6568,11 @@
       "spd": 95,
       "spe": 79
     },
-    "ability": "Ice Body",
+    "abilities": [
+      "Ice Body",
+      "Snow Warning",
+      "Weak Armor"
+    ],
     "weightkg": 57.5,
     "baseSpecies": null,
     "otherFormes": null
@@ -5860,7 +6592,10 @@
       "spd": 95,
       "spe": 65
     },
-    "ability": "Water Absorb",
+    "abilities": [
+      "Water Absorb",
+      "Hydration"
+    ],
     "weightkg": 29,
     "baseSpecies": null,
     "otherFormes": null
@@ -5881,7 +6616,10 @@
       "spd": 100,
       "spe": 80
     },
-    "ability": "Overgrow",
+    "abilities": [
+      "Overgrow",
+      "Chlorophyll"
+    ],
     "weightkg": 100,
     "baseSpecies": null,
     "otherFormes": [
@@ -5904,7 +6642,9 @@
       "spd": 120,
       "spe": 80
     },
-    "ability": "Thick Fat",
+    "abilities": [
+      "Thick Fat"
+    ],
     "weightkg": 155.5,
     "baseSpecies": "Venusaur",
     "otherFormes": null
@@ -5925,7 +6665,10 @@
       "spd": 70,
       "spe": 70
     },
-    "ability": "Chlorophyll",
+    "abilities": [
+      "Chlorophyll",
+      "Gluttony"
+    ],
     "weightkg": 15.5,
     "baseSpecies": null,
     "otherFormes": [
@@ -5948,7 +6691,9 @@
       "spd": 95,
       "spe": 70
     },
-    "ability": "Chlorophyll",
+    "abilities": [
+      "Innards Out"
+    ],
     "weightkg": 125.5,
     "baseSpecies": "Victreebel",
     "otherFormes": null
@@ -5969,7 +6714,11 @@
       "spd": 50,
       "spe": 89
     },
-    "ability": "Shield Dust",
+    "abilities": [
+      "Shield Dust",
+      "Compound Eyes",
+      "Friend Guard"
+    ],
     "weightkg": 17,
     "baseSpecies": null,
     "otherFormes": [
@@ -5993,7 +6742,9 @@
       "spd": 50,
       "spe": 89
     },
-    "ability": "Shield Dust",
+    "abilities": [
+      "Shield Dust"
+    ],
     "weightkg": 17,
     "baseSpecies": "Vivillon",
     "otherFormes": null
@@ -6014,7 +6765,9 @@
       "spd": 50,
       "spe": 89
     },
-    "ability": "Shield Dust",
+    "abilities": [
+      "Shield Dust"
+    ],
     "weightkg": 17,
     "baseSpecies": "Vivillon",
     "otherFormes": null
@@ -6035,7 +6788,10 @@
       "spd": 105,
       "spe": 100
     },
-    "ability": "Flame Body",
+    "abilities": [
+      "Flame Body",
+      "Swarm"
+    ],
     "weightkg": 46,
     "baseSpecies": null,
     "otherFormes": null
@@ -6055,7 +6811,11 @@
       "spd": 69,
       "spe": 77
     },
-    "ability": "Illuminate",
+    "abilities": [
+      "Illuminate",
+      "Keen Eye",
+      "Analytic"
+    ],
     "weightkg": 27,
     "baseSpecies": null,
     "otherFormes": null
@@ -6076,7 +6836,10 @@
       "spd": 85,
       "spe": 125
     },
-    "ability": "Pressure",
+    "abilities": [
+      "Pressure",
+      "Pickpocket"
+    ],
     "weightkg": 34,
     "baseSpecies": null,
     "otherFormes": null
@@ -6097,7 +6860,11 @@
       "spd": 75,
       "spe": 116
     },
-    "ability": "Prankster",
+    "abilities": [
+      "Prankster",
+      "Infiltrator",
+      "Chlorophyll"
+    ],
     "weightkg": 6.6,
     "baseSpecies": null,
     "otherFormes": null
@@ -6118,7 +6885,11 @@
       "spd": 75,
       "spe": 65
     },
-    "ability": "Intimidate",
+    "abilities": [
+      "Intimidate",
+      "Frisk",
+      "Sap Sipper"
+    ],
     "weightkg": 95.1,
     "baseSpecies": null,
     "otherFormes": null
@@ -6138,7 +6909,9 @@
       "spd": 60,
       "spe": 105
     },
-    "ability": "Illusion",
+    "abilities": [
+      "Illusion"
+    ],
     "weightkg": 81.1,
     "baseSpecies": null,
     "otherFormes": [
@@ -6148,7 +6921,7 @@
   {
     "id": "zoroarkhisui",
     "name": "Zoroark-Hisui",
-    "nameJa": "ゾロアーク(ヒスイのすがた)",
+    "nameJa": "ヒスイゾロアーク",
     "types": [
       "Normal",
       "Ghost"
@@ -6161,7 +6934,9 @@
       "spd": 60,
       "spe": 110
     },
-    "ability": "Illusion",
+    "abilities": [
+      "Illusion"
+    ],
     "weightkg": 73,
     "baseSpecies": "Zoroark",
     "otherFormes": null
