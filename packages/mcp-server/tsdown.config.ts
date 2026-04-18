@@ -7,4 +7,8 @@ export default defineConfig({
   banner: {
     js: "#!/usr/bin/env node",
   },
+  // @smogon/calc は npm に未 publish のため bundle inline 化
+  deps: {
+    alwaysBundle: ["@smogon/calc"],
+  },
 });
