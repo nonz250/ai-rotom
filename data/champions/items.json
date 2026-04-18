@@ -317,7 +317,7 @@
   {
     "id": "dragoninite",
     "name": "Dragoninite",
-    "nameJa": "カイリューナイト",
+    "nameJa": "カイリュナイト",
     "desc": "If held by a Dragonite, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Dragonite, this item allows it to Mega Evolve in battle.",
     "megaStone": "Dragonite-Mega",
@@ -326,7 +326,7 @@
   {
     "id": "drampanite",
     "name": "Drampanite",
-    "nameJa": "ジジーロンナイト",
+    "nameJa": "ジジーロナイト",
     "desc": "If held by a Drampa, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Drampa, this item allows it to Mega Evolve in battle.",
     "megaStone": "Drampa-Mega",
@@ -335,7 +335,7 @@
   {
     "id": "emboarite",
     "name": "Emboarite",
-    "nameJa": "エンブオーナイト",
+    "nameJa": "エンブオナイト",
     "desc": "If held by an Emboar, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by an Emboar, this item allows it to Mega Evolve in battle.",
     "megaStone": "Emboar-Mega",
@@ -857,7 +857,7 @@
   {
     "id": "scovillainite",
     "name": "Scovillainite",
-    "nameJa": "スコヴィランナイト",
+    "nameJa": "スコヴィラナイト",
     "desc": "",
     "shortDesc": "",
     "megaStone": "Scovillain-Mega",
@@ -965,7 +965,7 @@
   {
     "id": "starminite",
     "name": "Starminite",
-    "nameJa": "スターミーナイト",
+    "nameJa": "スターミナイト",
     "desc": "If held by a Starmie, this item allows it to Mega Evolve in battle.",
     "shortDesc": "If held by a Starmie, this item allows it to Mega Evolve in battle.",
     "megaStone": "Starmie-Mega",
