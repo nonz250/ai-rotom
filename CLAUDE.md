@@ -195,3 +195,62 @@ TS6059 エラーにならないようにしている。
 - **テラスタル**: 未実装（YAGNI、ゲーム側で未対応）
 - **対戦レベル**: 50 固定（定数 `DEFAULT_LEVEL = 50`）
 - **特性**: 各ポケモン基本 1 特性（@smogon/calc Gen 0 仕様）。隠れ特性は pokemon.json で管理
+
+## リリース手順（メンテナ向け）
+
+GitHub Release の作成で npm publish が自動実行される（`.github/workflows/publish.yml`）。
+
+### 初回セットアップ（一度だけ）
+
+本プロジェクトは [Trusted Publisher (OIDC)](https://docs.npmjs.com/trusted-publishers/) で認証するため long-lived な token は保持しない。ただし Trusted Publisher は「既に 1 バージョン以上 publish 済みのパッケージ」にしか設定できないため、初回のみ手動で publish する必要がある。
+
+1. ローカルで初回 publish を実施（一度だけ）:
+
+   ```bash
+   npm login           # 2FA 有効な npm アカウントで
+   npm publish --workspace=ai-rotom --access public
+   ```
+
+   ※ `--provenance` は CI 専用オプションなのでローカルでは付けない。Trusted Publisher 設定後の GitHub Release 経由の publish からは `publish.yml` で自動的に provenance が付与される。
+
+2. npm で Trusted Publisher を設定:
+   - npmjs.com → `ai-rotom` パッケージ → Settings → Trusted Publishers → Add
+   - Publisher: GitHub Actions
+   - Organization or user: `nonz250`
+   - Repository: `ai-rotom`
+   - Workflow filename: `publish.yml`
+   - Environment name: `production`
+
+3. GitHub 側のセキュリティ設定（後述）を行う。
+
+以降の publish は GitHub Release を作成するだけで自動実行される（NPM_TOKEN の Secrets 登録は不要）。
+
+### リリース毎の手順
+
+1. `packages/mcp-server/package.json` の `version` を更新してコミット（main ブランチへ merge）
+2. GitHub で新規 Release を作成。タグ名は `vX.Y.Z`（例: `v0.1.0`。`v` プレフィクス必須、package.json の version と一致）
+3. Release を publish すると自動で npm に公開される
+
+### 自動で実行される検証
+
+- タグ名と `package.json` の version の一致チェック
+- テスト・型チェック・ビルド
+- 同一 version が既に公開済みなら skip（エラーではなく安全停止）
+- npm provenance による署名（GitHub Actions からの公開を証明）
+- `workflow_dispatch` 手動実行は `main` ブランチからのみ許可
+
+### GitHub 側のセキュリティ設定
+
+publish workflow のセキュリティを高めるため、以下を設定する:
+
+- **Settings → Environments → `production`** を作成
+  - Required reviewers に自分を登録（Release published 後、approve するまで publish されない保険）
+  - Deployment branches を `main` のみに制限
+  - Trusted Publisher 使用のためシークレットの登録は不要
+- **Settings → Actions → General**
+  - Workflow permissions: "Read repository contents and packages permissions"
+  - Fork PR workflows: 最低限 "Require approval for first-time contributors"
+- **Settings → Branches → Branch protection (main)**
+  - PR 必須 + CI (`quality`) を required status check に
+- **Settings → Tags → Tag protection rule**
+  - `v*` パターンを protect し、作成権限を admin のみに制限
