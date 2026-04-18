@@ -81,8 +81,7 @@ interface DamageEstimate {
   max: number;
   ohkoChance: string;
   /**
-   * 採用された技（最大ダメージを叩き出した技）。
-   * `bestDamageEstimate` が results[0] を先頭としてソート済みの前提で選ぶ。
+   * 採用された技（計算対象のうち最大ダメージを叩き出した 1 件）。
    */
   move: DamageEstimateMove;
 }

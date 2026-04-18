@@ -157,5 +157,30 @@ describe("analyze_selection logic", () => {
       // 未登録なら英名がそのまま入る（フォールバック挙動）。
       expect(out?.move.nameJa.length).toBeGreaterThan(0);
     });
+
+    it("複数件あるとき results[0] が採用される（ソート済み前提の仕様を固定）", () => {
+      const HIGH_MIN = 90;
+      const HIGH_MAX = 110;
+      const LOW_MIN = 30;
+      const LOW_MAX = 40;
+      const results = [
+        makeResult({
+          move: "HighDamageMove",
+          minPercent: HIGH_MIN,
+          maxPercent: HIGH_MAX,
+        }),
+        makeResult({
+          move: "LowDamageMove",
+          minPercent: LOW_MIN,
+          maxPercent: LOW_MAX,
+        }),
+      ];
+      const out = bestDamageEstimate(results, () => undefined);
+      // 先頭技が採用され、2 件目が採用されないことを固定する。
+      // 実装が results[results.length - 1] 等に変わると失敗する。
+      expect(out?.move.name).toBe("HighDamageMove");
+      expect(out?.max).toBe(HIGH_MAX);
+      expect(out?.min).toBe(HIGH_MIN);
+    });
   });
 });
