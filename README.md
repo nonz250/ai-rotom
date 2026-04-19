@@ -51,8 +51,6 @@ npx -y @nonz250/ai-rotom
 
 標準入出力で MCP プロトコルが動くため、実運用は下記の MCP クライアント経由で行います。
 
-> **注意**: `0.0.1` は `@smogon/calc` が bundle されておらず install 時に解決エラーになります。`0.0.2` 以降を利用してください。計算ロジックは `dist/index.mjs` にバンドル済みのため、利用者側の追加 install は不要です。
-
 ## MCP クライアント設定
 
 ### Claude Code
