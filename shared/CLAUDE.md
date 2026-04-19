@@ -22,6 +22,9 @@
 
 - `@smogon/calc`（Gen 0 Champions 計算エンジン）と `zod` のみ許容
 - それ以外の外部ライブラリは追加しない
+- **publish 時の扱い**: `@smogon/calc` は npm 未 publish のため、
+  mcp-server の publish 対象では tsdown が `dist/index.mjs` に bundle
+  inline 化する。shared 側の import 文は変更しない
 
 ### 型依存
 

@@ -1,0 +1,20 @@
+{
+  "note": "設計的に不変であるべき代表ケース (物理技)。dist bundle からの応答を scratch 起動で初回採取した値。@smogon/calc Gen 0 (Champions) + pokemon.json overrides の計算が変化したときのみ更新する。変更時は PR 説明で根拠を示すこと。",
+  "input": {
+    "attacker": { "name": "ガブリアス" },
+    "defender": { "name": "ドサイドン" },
+    "moveName": "じしん"
+  },
+  "expected": {
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"attacker\":\"Garchomp\",\"defender\":\"Rhyperior\",\"move\":\"Earthquake\",\"damage\":[116,116,120,120,120,122,122,126,126,128,128,132,132,134,134,138],\"min\":116,\"max\":138,\"minPercent\":61.1,\"maxPercent\":72.6,\"koChance\":\"guaranteed 2HKO\",\"description\":\"0 Atk Garchomp Earthquake vs. 0 HP / 0 Def Rhyperior: 116-138 (61 - 72.6%) -- guaranteed 2HKO\"}"
+        }
+      ]
+    },
+    "jsonrpc": "2.0",
+    "id": 100
+  }
+}

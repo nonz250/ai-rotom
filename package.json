@@ -7,12 +7,14 @@
   "scripts": {
     "build": "npm run build --workspaces",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:dist": "vitest run --config vitest.dist.config.ts"
   },
   "engines": {
     "node": ">=24"
   },
   "devDependencies": {
+    "@smogon/calc": "file:vendor/smogon-calc-0.11.0.tgz",
     "tsdown": "0.21.8",
     "typescript": "6.0.2",
     "vitest": "4.1.4"

@@ -60,6 +60,15 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Verify dist has no unbundled @smogon/calc references
+        run: bash scripts/verify-dist-bundle.sh
+
+      - name: Run dist bundle smoke tests
+        run: npm run test:dist
+
+      - name: Pack and install smoke test (pre-publish pre-flight)
+        run: bash scripts/pack-and-install-smoke.sh
+
       - name: Check if version already published
         id: check
         run: |

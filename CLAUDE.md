@@ -97,6 +97,19 @@ shared ──→ @smogon/calc (ランタイム), zod
 - shared が具象データを必要とする場合は **dependency injection 経由**（`PokemonEntryProvider` 等）
 - shared は `@smogon/calc` と `zod` のみランタイム依存を許容する
 
+### publish 物における依存関係
+
+shared コードは `@smogon/calc` をランタイム import するが、mcp-server の
+publish 対象（`dist/index.mjs`）では tsdown の `deps.alwaysBundle` により
+`@smogon/calc` を bundle inline 化する。publish 物の `package.json.dependencies`
+には `@smogon/calc` を含めない（npm registry に未 publish のパッケージのため、
+利用者環境で解決できず install に失敗する）。
+
+- 開発時: monorepo root の `devDependencies` で `file:vendor/...` を解決
+- publish 時: `dist/index.mjs` に全コードがインライン化され、利用者は追加 install 不要
+- ライセンス義務は `packages/mcp-server/THIRD_PARTY_LICENSES.md` で満たす
+- tarball の provenance は `vendor/README.md` に記録
+
 ### Alias 設定
 
 TypeScript / Vitest / tsdown で以下の alias を共有:
@@ -114,9 +127,24 @@ TS6059 エラーにならないようにしている。
 
 ### 配布方法
 
-- `npx @nonz250/ai-rotom` で MCP サーバーを起動できる（`bin: ./dist/index.mjs`）
-- JSON データ・shared のコード・依存パッケージのコードは `dist/index.mjs` にインライン bundle 済み
-- npm publish 時の同梱は `dist/` のみ（`files: ["dist"]`）
+- `npx @nonz250/ai-rotom` で MCP サーバーを起動できる（`bin: dist/index.mjs`）
+- `dist/index.mjs` にインライン bundle するもの:
+  - `data/champions/*.json`（マスターデータ）
+  - `shared/src/*`（共有ライブラリ）
+  - `@smogon/calc`（npm 未 publish のため bundle 必須）
+- bundle しないもの（利用者環境で npm install される）:
+  - `@modelcontextprotocol/sdk`, `zod`（npm registry 公開パッケージ）
+- npm publish 時の同梱は `dist` / `LICENSE` / `THIRD_PARTY_LICENSES.md`（`files` フィールド参照）
+
+### publish 後のチェックリスト
+
+1. `npm view @nonz250/ai-rotom@<version> version` で registry 反映を確認
+2. 空ディレクトリで `npx -y @nonz250/ai-rotom@<version>` を実行し stdio 起動確認
+3. 不具合のあるバージョンが残っている場合は `npm deprecate` でユーザー誘導
+   ```
+   npm deprecate @nonz250/ai-rotom@<broken-version> "<message>"
+   ```
+4. GitHub Release に修正内容と関連バージョン情報を記載
 
 ## IMPORTANT: 外部サービス名の取り扱い
 

@@ -53,16 +53,56 @@ MCP レスポンス
 
 ## 配布設定
 
-- `package.json` の `files: ["dist"]` で dist のみ同梱
-- `bin: { "ai-rotom": "./dist/index.mjs" }`
-- tsdown が JSON を bundle 内にインライン化するので、`data/` の物理同梱は不要
+- `package.json` の `files: ["dist", "LICENSE", "THIRD_PARTY_LICENSES.md"]` で
+  dist とライセンス文書のみ同梱
+- `bin: { "ai-rotom": "dist/index.mjs" }`
+- tsdown が JSON と `@smogon/calc` を bundle 内にインライン化するので、
+  `data/` と `vendor/` の物理同梱は不要
+- `@smogon/calc` は npm 未 publish のため、必ず bundle にインライン化する
+  （`tsdown.config.ts` の `deps.alwaysBundle` で制御）
 
 ## パッケージ依存関係
 
-- `@modelcontextprotocol/sdk`: MCP SDK
-- `@smogon/calc`: ダメージ計算エンジン（`file:vendor/smogon-calc-0.11.0.tgz`）
-- `zod`: 入力検証
-- `@ai-rotom/shared`: **alias 経由で参照するため package.json には書かない**
+### Runtime dependencies（publish 物の `dependencies` に載る）
+
+- `@modelcontextprotocol/sdk`: MCP SDK（npm registry から通常インストール）
+- `zod`: 入力検証（npm registry から通常インストール）
+
+### Bundle inline（publish 物にはファイルとして載るが `dependencies` には出ない）
+
+- `@smogon/calc`: ダメージ計算エンジン。monorepo root の `devDependencies` に
+  `file:vendor/smogon-calc-0.11.0.tgz` として配置し、workspace hoist で
+  `node_modules/@smogon/calc` に解決される。`tsdown.config.ts` の
+  `deps.alwaysBundle` で `dist/index.mjs` にインライン化されるため、
+  本パッケージの `dependencies` / `devDependencies` には含めない
+- `@ai-rotom/shared`: alias 経由で参照するソースディレクトリ
+- `@data/*` (JSON): tsdown が JSON import をインライン化
+
+### テスト実行時の @smogon/calc 解決経路
+
+- 通常の Vitest（`npm test`）: workspace hoist された `node_modules/@smogon/calc`
+  を解決（root の `devDependencies` 経由）
+- dist bundle 検証テスト（`npm run test:dist`）: `dist/index.mjs` に inline 済みの
+  コードを対象。node_modules には依存しない
+
+## 検証スクリプト
+
+- `scripts/verify-dist-bundle.sh`: `dist/index.mjs` に `@smogon/calc` の
+  未 bundle 参照が残っていないか grep 検証
+- `scripts/pack-and-install-smoke.sh`: `npm pack` → tarball 展開検査 →
+  scratch project への `npm install` までを自動化。publish 直前の
+  pre-flight として `publish.yml` で実行される
+
+## `@smogon/calc` バージョン更新の手順
+
+1. `smogon/damage-calc` の該当 commit から tarball を生成（`vendor/README.md` 参照）
+2. `vendor/smogon-calc-<version>.tgz` を差し替え
+3. root `package.json` の `devDependencies` の path を更新
+4. `npm install` で `package-lock.json` の integrity を再生成
+5. `vendor/README.md` と `packages/mcp-server/THIRD_PARTY_LICENSES.md` を更新
+6. 全検証（`npm test` / `npm run build` / `bash scripts/verify-dist-bundle.sh` /
+   `npm run test:dist` / `bash scripts/pack-and-install-smoke.sh`）を通す
+7. `version` bump して publish フローへ
 
 ## 開発コマンド
 

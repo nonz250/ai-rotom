@@ -1,0 +1,20 @@
+{
+  "note": "設計的に不変であるべき代表ケース (特殊技)。dist bundle からの応答を scratch 起動で初回採取した値。@smogon/calc Gen 0 (Champions) + pokemon.json overrides の計算が変化したときのみ更新する。変更時は PR 説明で根拠を示すこと。",
+  "input": {
+    "attacker": { "name": "ギャラドス" },
+    "defender": { "name": "リザードン" },
+    "moveName": "なみのり"
+  },
+  "expected": {
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"attacker\":\"Gyarados\",\"defender\":\"Charizard\",\"move\":\"Surf\",\"damage\":[80,80,80,84,84,84,86,86,86,90,90,90,92,92,92,96],\"min\":80,\"max\":96,\"minPercent\":52.3,\"maxPercent\":62.7,\"koChance\":\"guaranteed 2HKO\",\"description\":\"0 SpA Gyarados Surf vs. 0 HP / 0 SpD Charizard: 80-96 (52.2 - 62.7%) -- guaranteed 2HKO\"}"
+        }
+      ]
+    },
+    "jsonrpc": "2.0",
+    "id": 101
+  }
+}
