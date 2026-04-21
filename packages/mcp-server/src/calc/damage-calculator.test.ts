@@ -246,6 +246,24 @@ describe("DamageCalculatorAdapter", () => {
     const DAMAGE_ROLL_COUNT = 16;
     expect(result.damage).toHaveLength(DAMAGE_ROLL_COUNT);
   });
+
+  it("should populate moveType / isStab / typeMultiplier / effectivePowerMultiplier", () => {
+    // Charizard (Fire/Flying) かえんほうしゃ vs Gyarados (Water/Flying)
+    // Fire is STAB (Charizard's type), Fire vs Water=0.5, Fire vs Flying=1 → 0.5
+    // effectivePowerMultiplier = 1.5 * 0.5 = 0.75
+    const result = adapter.calculate({
+      attacker: { name: "リザードン" },
+      defender: { name: "ギャラドス" },
+      moveName: "かえんほうしゃ",
+    });
+
+    expect(result.moveType).toBe("Fire");
+    expect(result.isStab).toBe(true);
+    const HALF_EFFECTIVE = 0.5;
+    const STAB_TIMES_HALF = 0.75;
+    expect(result.typeMultiplier).toBe(HALF_EFFECTIVE);
+    expect(result.effectivePowerMultiplier).toBe(STAB_TIMES_HALF);
+  });
 });
 
 describe("DamageCalculatorAdapter damage with pokemon.json overrides", () => {
