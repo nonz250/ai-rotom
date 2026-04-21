@@ -17,7 +17,7 @@ import {
 
 const TOOL_NAME = "analyze_matchup";
 const TOOL_DESCRIPTION =
-  "ポケモン2体の対面を分析する。双方向のダメージ計算と素早さ比較を行い、どちらが有利かを判断するためのデータを提供する。ポケモン対戦の対面判断に使用する。";
+  "ポケモン2体の対面を分析する。双方向のダメージ計算と素早さ比較を行い、どちらが有利かを判断するためのデータを提供する。ポケモン対戦の対面判断に使用する。正確な計算のため双方の ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。";
 
 const matchupInputSchema = {
   pokemon1: pokemonSchema.describe("ポケモン1"),

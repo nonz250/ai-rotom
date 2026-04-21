@@ -62,7 +62,8 @@ const STATUS_CATEGORY: MoveCategory = "Status";
 const TOOL_NAME = "find_counters";
 const TOOL_DESCRIPTION =
   "指定したポケモンの対策候補を検索する。候補プール全体に対してダメ計と素早さ比較を行い、スコア順に上位 10 件を返す。"
-  + "`strategy` で対策パターン (speed_kill / tank_then_kill / type_wall) を識別する。ポケモンチャンピオンズ対応。";
+  + "`strategy` で対策パターン (speed_kill / tank_then_kill / type_wall) を識別する。ポケモンチャンピオンズ対応。"
+  + "正確な計算のため target 側の ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。";
 
 const battleFormatValues = ["singles", "doubles"] as const;
 
