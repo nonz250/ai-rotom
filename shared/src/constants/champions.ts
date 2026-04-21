@@ -18,3 +18,9 @@ export const NATURE_MINUS_MULTIPLIER = 0.9;
 
 /** 性格補正: 無補正倍率 */
 export const NATURE_NEUTRAL_MULTIPLIER = 1;
+
+/** タイプ一致 (STAB) 補正倍率。てきおうりょく等の特性補正は含まない通常値 */
+export const STAB_MULTIPLIER = 1.5;
+
+/** タイプ不一致時の威力倍率 (STAB なし) */
+export const NON_STAB_MULTIPLIER = 1;
