@@ -1,9 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { Generations, toID } from "@smogon/calc";
-import {
-  DamageCalculatorAdapter,
-  filterResultsByLearnset,
-} from "@ai-rotom/shared";
+import { DamageCalculatorAdapter } from "@ai-rotom/shared";
 import type { DamageCalcResult } from "@ai-rotom/shared";
 import {
   championsLearnsets,
@@ -196,72 +193,6 @@ describe("analyze_selection logic", () => {
       expect(out?.min).toBe(HIGH_MIN);
     });
 
-  });
-
-  describe("getLearnsetMoveIdSet", () => {
-    it("登録済みポケモン (Charizard) は learnset の技 ID を返す", () => {
-      const ids = getLearnsetMoveIdSet(toDataId("Charizard"));
-      expect(ids.size).toBeGreaterThan(0);
-      expect(ids.has("flamethrower")).toBe(true);
-    });
-
-    it("未登録ポケモン ID は空 Set を返す (フォールバック挙動)", () => {
-      const ids = getLearnsetMoveIdSet("nonexistentpokemon");
-      expect(ids.size).toBe(0);
-    });
-  });
-
-  describe("filterResultsByLearnset", () => {
-    const BASE_MIN_PERCENT = 50;
-    const BASE_MAX_PERCENT = 80;
-    const BASE_MIN_DAMAGE = 60;
-    const BASE_MAX_DAMAGE = 90;
-
-    function makeMoveResult(moveName: string): DamageCalcResult {
-      return {
-        attacker: "Charizard",
-        defender: "Garchomp",
-        move: moveName,
-        damage: [BASE_MIN_DAMAGE, BASE_MAX_DAMAGE],
-        min: BASE_MIN_DAMAGE,
-        max: BASE_MAX_DAMAGE,
-        minPercent: BASE_MIN_PERCENT,
-        maxPercent: BASE_MAX_PERCENT,
-        koChance: "test",
-        description: "test",
-        moveType: "Normal",
-        typeMultiplier: 1,
-        isStab: false,
-        effectivePowerMultiplier: 1,
-      };
-    }
-
-    it("learnset に含まれる技のみを残す", () => {
-      const results = [
-        makeMoveResult("Flamethrower"),
-        makeMoveResult("Blizzard"),
-        makeMoveResult("Splash"),
-      ];
-      const learnsetIds = new Set(["flamethrower"]);
-      const filtered = filterResultsByLearnset(results, learnsetIds, toDataId);
-      expect(filtered.map((r) => r.move)).toEqual(["Flamethrower"]);
-    });
-
-    it("learnset が空のときは元の配列をそのまま返す (フォールバック)", () => {
-      const results = [
-        makeMoveResult("Flamethrower"),
-        makeMoveResult("Blizzard"),
-      ];
-      const filtered = filterResultsByLearnset(results, new Set(), toDataId);
-      expect(filtered.map((r) => r.move)).toEqual(["Flamethrower", "Blizzard"]);
-    });
-
-    it("technique 名の大小 / 空白等は toDataId で正規化して一致判定する", () => {
-      const results = [makeMoveResult("Acid Spray")];
-      const learnsetIds = new Set(["acidspray"]);
-      const filtered = filterResultsByLearnset(results, learnsetIds, toDataId);
-      expect(filtered.length).toBe(1);
-    });
   });
 
   describe("calculateDamageForMatchup - learnset filter integration", () => {
