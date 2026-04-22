@@ -4,6 +4,7 @@ export * from "./constants/champions";
 export * from "./analysis/type-matchup";
 export * from "./analysis/stat-calculator";
 export * from "./analysis/speed-comparator";
+export * from "./analysis/priority-moves";
 export * from "./schemas/pokemon-input";
 export * from "./schemas/stats";
 export type {

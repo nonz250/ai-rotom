@@ -4,8 +4,14 @@ import type { TypeName } from "@smogon/calc/dist/data/interface";
 import {
   DamageCalculatorAdapter,
   calculateTypeEffectiveness,
+  extractPriorityMoves,
 } from "@ai-rotom/shared";
-import { pokemonEntryProvider } from "../../data-store";
+import {
+  championsLearnsets,
+  movesById,
+  pokemonEntryProvider,
+  toDataId,
+} from "../../data-store";
 import {
   pokemonNameResolver,
   moveNameResolver,
@@ -85,6 +91,51 @@ describe("analyze_matchup logic", () => {
       expect(() =>
         adapter.createPokemonObject({ name: "ソニック" }),
       ).toThrow("ポケモン「ソニック」が見つかりません。");
+    });
+  });
+
+  describe("先制技抽出", () => {
+    function priorityMovesFor(resolvedName: string) {
+      const learnsetMoveIds =
+        championsLearnsets[toDataId(resolvedName)] ?? [];
+      return extractPriorityMoves({
+        learnsetMoveIds,
+        resolveMove: (id) => movesById.get(id),
+        toJapanese: (en) => moveNameResolver.toJapanese(en),
+      });
+    }
+
+    it("先制技を持つポケモン（イワパレス）から静的 priority 技が抽出される", () => {
+      const result = priorityMovesFor("Incineroar");
+
+      expect(result.length).toBeGreaterThan(0);
+      const fakeout = result.find((m) => m.move === "Fake Out");
+      expect(fakeout).toBeDefined();
+      expect(fakeout?.priority).toBe(3);
+      expect(fakeout?.moveJa).toBe("ねこだまし");
+      expect(fakeout?.category).toBe("Physical");
+    });
+
+    it("priority 降順でソートされる", () => {
+      const result = priorityMovesFor("Incineroar");
+
+      for (let i = 1; i < result.length; i++) {
+        expect(result[i - 1].priority).toBeGreaterThanOrEqual(
+          result[i].priority,
+        );
+      }
+    });
+
+    it("先制技を持たないポケモン（メタモン）では空配列を返す", () => {
+      const result = priorityMovesFor("Ditto");
+
+      expect(result).toEqual([]);
+    });
+
+    it("learnset が未登録のポケモン名でも空配列を返す（防衛的フォールバック）", () => {
+      const result = priorityMovesFor("NonExistentPokemon");
+
+      expect(result).toEqual([]);
     });
   });
 
