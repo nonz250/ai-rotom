@@ -531,6 +531,15 @@
     "megaEvolves": "Houndoom"
   },
   {
+    "id": "ironball",
+    "name": "Iron Ball",
+    "nameJa": "くろいてっきゅう",
+    "desc": "Holder's Speed is halved. Holder is grounded, and Ground-type moves become neutral against it.",
+    "shortDesc": "Holder is grounded; Ground-type moves hit it neutrally.",
+    "megaStone": null,
+    "megaEvolves": null
+  },
+  {
     "id": "kangaskhanite",
     "name": "Kangaskhanite",
     "nameJa": "ガルーラナイト",
@@ -815,6 +824,15 @@
     "nameJa": "リンドのみ",
     "desc": "Halves damage taken from a supereffective Grass-type attack. Single use.",
     "shortDesc": "Halves damage taken from a supereffective Grass-type attack. Single use.",
+    "megaStone": null,
+    "megaEvolves": null
+  },
+  {
+    "id": "ringtarget",
+    "name": "Ring Target",
+    "nameJa": "リングターゲット",
+    "desc": "Type-based immunities to attacks against the holder are removed.",
+    "shortDesc": "Holder loses type-based immunities (including Ability-based).",
     "megaStone": null,
     "megaEvolves": null
   },
