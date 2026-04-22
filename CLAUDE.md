@@ -64,11 +64,13 @@ ai-rotom/
         │   ├── instructions.ts  # MCP instructions テキスト
         │   ├── data-store.ts    # JSON → Map + PokemonEntryProvider 実装
         │   ├── name-resolvers.ts
+        │   ├── party-store.ts   # ~/.ai-rotom/parties.json の読み書き (atomic)
         │   └── tools/
         │       ├── info/        # 情報取得系
         │       ├── search/      # 逆引き検索系
         │       ├── calc/        # 計算系
-        │       └── analysis/    # 分析系
+        │       ├── analysis/    # 分析系
+        │       └── party/       # パーティ永続化 (save/load/list/delete)
         └── vendor/smogon-calc-0.11.0.tgz
 ```
 
@@ -192,6 +194,15 @@ TS6059 エラーにならないようにしている。
 | `analyze_party_coverage` | パーティ攻撃カバレッジ分析（単一 18 タイプ + 実在複合タイプ） |
 | `analyze_selection` | 6v6 選出判断一括分析 |
 | `find_counters` | 対策候補の双方向ダメ計・素早さ・タイプ相性（判断は AI 側） |
+
+### パーティ永続化系
+自分のパーティを `~/.ai-rotom/parties.json` に CRUD 保存する。
+| ツール | 概要 |
+|---|---|
+| `save_party` | パーティを保存 (同名は upsert)。createdAt は新規時のみ記録、updatedAt は毎回更新 |
+| `load_party` | 保存済みパーティを name 指定で 1 件取得 |
+| `list_parties` | 保存済みパーティのサマリ一覧 (name / memo / updatedAt / memberCount) |
+| `delete_party` | 保存済みパーティを name 指定で削除 |
 
 - MCP SDK: `@modelcontextprotocol/sdk`
 - 入力は日本語名で受け付ける（内部で英語名に変換して `@smogon/calc` に渡す）

@@ -117,6 +117,17 @@ codex mcp add ai-rotom -- npx -y @nonz250/ai-rotom
 | `analyze_selection` | 6v6 選出判断一括分析 |
 | `find_counters` | 対策候補の双方向ダメ計・素早さ・タイプ相性 |
 
+### パーティ永続化
+
+自分のパーティ構築を `~/.ai-rotom/parties.json` に保存し、セッションをまたいで再利用できる。
+
+| ツール | 概要 |
+|---|---|
+| `save_party` | パーティを保存 (同名は上書き) |
+| `load_party` | 保存済みパーティを 1 件取得 |
+| `list_parties` | 保存済みパーティのサマリ一覧 |
+| `delete_party` | 保存済みパーティを削除 |
+
 ## 使用例
 
 AI クライアントに以下のように聞くと、内部でツールが自動で呼ばれます。
