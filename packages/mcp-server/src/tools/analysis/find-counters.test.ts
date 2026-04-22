@@ -370,6 +370,67 @@ describe("find_counters tool レスポンス構造", () => {
     const weavile = output.counters.find((c) => c.pokemon.name === "Weavile");
     expect(weavile?.speedCompare).toBe("faster");
   });
+
+  it("target.priorityMoves は配列として返る", () => {
+    expect(Array.isArray(output.target.priorityMoves)).toBe(true);
+  });
+
+  it("各 CounterEntry.priorityMoves は配列として返る", () => {
+    for (const c of output.counters) {
+      expect(Array.isArray(c.priorityMoves)).toBe(true);
+    }
+  });
+
+  it("Weavile の priorityMoves に こおりのつぶて (Ice Shard, priority 1) が含まれる", () => {
+    const weavile = output.counters.find((c) => c.pokemon.name === "Weavile");
+    expect(weavile).toBeDefined();
+    const iceShard = weavile!.priorityMoves.find((m) => m.move === "Ice Shard");
+    expect(iceShard).toBeDefined();
+    const ICE_SHARD_PRIORITY = 1;
+    expect(iceShard!.priority).toBe(ICE_SHARD_PRIORITY);
+    expect(iceShard!.category).toBe("Physical");
+    expect(iceShard!.moveJa).toBe("こおりのつぶて");
+  });
+
+  it("各 CounterEntry.priorityMoves は priority 降順でソートされる", () => {
+    for (const c of output.counters) {
+      for (let i = 1; i < c.priorityMoves.length; i++) {
+        expect(c.priorityMoves[i - 1].priority).toBeGreaterThanOrEqual(
+          c.priorityMoves[i].priority,
+        );
+      }
+    }
+  });
+
+  it("target (Garchomp) の priorityMoves も priority 降順でソートされる", () => {
+    for (let i = 1; i < output.target.priorityMoves.length; i++) {
+      expect(output.target.priorityMoves[i - 1].priority).toBeGreaterThanOrEqual(
+        output.target.priorityMoves[i].priority,
+      );
+    }
+  });
+
+  it("priorityMoves は先制技 (priority >= 1) のみ含む", () => {
+    const MIN_PRIORITY_FOR_INCLUSION = 1;
+    for (const m of output.target.priorityMoves) {
+      expect(m.priority).toBeGreaterThanOrEqual(MIN_PRIORITY_FOR_INCLUSION);
+    }
+    for (const c of output.counters) {
+      for (const m of c.priorityMoves) {
+        expect(m.priority).toBeGreaterThanOrEqual(MIN_PRIORITY_FOR_INCLUSION);
+      }
+    }
+  });
+});
+
+describe("find_counters priorityMoves (先制技を持たないポケモン)", () => {
+  it("先制技を持たないポケモン (メタモン) を target に指定すると target.priorityMoves は空配列", async () => {
+    const output = await callFindCounters({
+      target: { name: "メタモン" },
+      candidatePool: ["マニューラ"],
+    });
+    expect(output.target.priorityMoves).toEqual([]);
+  });
 });
 
 describe("find_counters Top N 廃止", () => {
