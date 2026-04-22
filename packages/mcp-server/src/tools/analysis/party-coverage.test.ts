@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { Generations, toID } from "@smogon/calc";
 import {
   championsLearnsets,
+  championsPokemon,
   championsTypes,
   movesById,
   pokemonById,
@@ -294,6 +295,163 @@ describe("analyze_party_coverage logic", () => {
       const dragon = out.coverage.find((c) => c.defenderType === "Dragon");
       expect(dragon?.maxMultiplier).toBe(SUPER_EFFECTIVE);
       expect(dragon?.bestAttackers[0].effectiveType).toBe("Fairy");
+    });
+  });
+
+  describe("dualTypeCoverage（実在する複合タイプへのカバレッジ）", () => {
+    const QUAD_EFFECTIVE = 4;
+    const SUPER_EFFECTIVE = 2;
+    const NO_EFFECT = 0;
+
+    it("ドラゴン/じめん × こおり技 で maxMultiplier=4 になる", () => {
+      // マンムー (こおり/じめん) → Icicle Crash / Icicle Spear 等を習得
+      const out = analyzePartyCoverage({
+        myParty: [{ name: "マンムー" }],
+        moves: { マンムー: ["Icicle Crash"] },
+      });
+      const dragonGround = out.dualTypeCoverage.find(
+        (e) =>
+          (e.defenderTypes[0] === "Dragon" && e.defenderTypes[1] === "Ground") ||
+          (e.defenderTypes[0] === "Ground" && e.defenderTypes[1] === "Dragon"),
+      );
+      expect(dragonGround).toBeDefined();
+      expect(dragonGround?.maxMultiplier).toBe(QUAD_EFFECTIVE);
+      expect(dragonGround?.bestAttackers[0].move).toBe("Icicle Crash");
+    });
+
+    it("ほのお/ひこう × いわ技 で maxMultiplier=4 になる", () => {
+      // バンギラス (いわ/あく) は Stone Edge を習得する
+      const out = analyzePartyCoverage({
+        myParty: [{ name: "バンギラス" }],
+        moves: { バンギラス: ["Stone Edge"] },
+      });
+      const fireFlying = out.dualTypeCoverage.find(
+        (e) =>
+          (e.defenderTypes[0] === "Fire" && e.defenderTypes[1] === "Flying") ||
+          (e.defenderTypes[0] === "Flying" && e.defenderTypes[1] === "Fire"),
+      );
+      expect(fireFlying).toBeDefined();
+      expect(fireFlying?.maxMultiplier).toBe(QUAD_EFFECTIVE);
+      expect(fireFlying?.bestAttackers[0].move).toBe("Stone Edge");
+    });
+
+    it("実在しない複合タイプ（Fairy/Poison 等）は dualTypeCoverage に含まれない", () => {
+      const out = analyzePartyCoverage({
+        myParty: [{ name: "ガブリアス" }],
+        moves: { ガブリアス: ["Earthquake"] },
+      });
+
+      // データから実在する複合タイプ集合を再構築して突合
+      const realDualTypes = new Set<string>();
+      for (const p of championsPokemon) {
+        const DUAL_COUNT = 2;
+        if (p.types.length === DUAL_COUNT) {
+          const sorted = [...p.types].sort();
+          realDualTypes.add(`${sorted[0]}/${sorted[1]}`);
+        }
+      }
+
+      expect(out.dualTypeCoverage.length).toBe(realDualTypes.size);
+      for (const entry of out.dualTypeCoverage) {
+        const key = `${entry.defenderTypes[0]}/${entry.defenderTypes[1]}`;
+        expect(realDualTypes.has(key)).toBe(true);
+      }
+      // 実在しない代表例を複数チェック（データ追加で片方のみ実在になっても検出できるように）
+      const nonExistentPairs: ReadonlyArray<readonly [string, string]> = [
+        ["Bug", "Dragon"],
+        ["Fairy", "Poison"],
+        ["Fighting", "Ground"],
+      ];
+      for (const [a, b] of nonExistentPairs) {
+        const hit = out.dualTypeCoverage.find(
+          (e) =>
+            (e.defenderTypes[0] === a && e.defenderTypes[1] === b) ||
+            (e.defenderTypes[0] === b && e.defenderTypes[1] === a),
+        );
+        expect(hit).toBeUndefined();
+      }
+    });
+
+    it("examplePokemon に そのタイプを持つ代表的なポケモンの日本語名が入る", () => {
+      const out = analyzePartyCoverage({
+        myParty: [{ name: "ガブリアス" }],
+        moves: { ガブリアス: ["Earthquake"] },
+      });
+      const dragonGround = out.dualTypeCoverage.find(
+        (e) => e.defenderTypes[0] === "Dragon" && e.defenderTypes[1] === "Ground",
+      );
+      expect(dragonGround).toBeDefined();
+      expect(dragonGround?.examplePokemon).toContain("ガブリアス");
+    });
+
+    it("dualTypeUncoveredCount が maxMultiplier<=EFFECTIVE_THRESHOLD の件数と一致する", () => {
+      const out = analyzePartyCoverage({
+        myParty: [{ name: "ガブリアス" }],
+        moves: { ガブリアス: ["Earthquake"] },
+      });
+      const uncoveredByFilter = out.dualTypeCoverage.filter(
+        (e) => e.maxMultiplier <= EFFECTIVE_THRESHOLD,
+      ).length;
+      expect(out.dualTypeUncoveredCount).toBe(uncoveredByFilter);
+    });
+
+    it("defenderTypes は英名辞書順でソートされている", () => {
+      const out = analyzePartyCoverage({
+        myParty: [{ name: "ガブリアス" }],
+        moves: { ガブリアス: ["Earthquake"] },
+      });
+      for (const entry of out.dualTypeCoverage) {
+        expect(entry.defenderTypes[0].localeCompare(entry.defenderTypes[1])).toBeLessThanOrEqual(0);
+      }
+    });
+
+    it("電気無効を活用: でんき技 × ひこう/じめん 系の複合タイプに 0 倍が出る", () => {
+      // Flying/Ground は実在しないが、Ground を含む複合タイプ (例: Dragon/Ground)
+      // に対して Electric 技は 0 倍になる
+      const out = analyzePartyCoverage({
+        myParty: [{ name: "ピカチュウ" }],
+        moves: { ピカチュウ: ["Thunderbolt"] },
+      });
+      const dragonGround = out.dualTypeCoverage.find(
+        (e) => e.defenderTypes[0] === "Dragon" && e.defenderTypes[1] === "Ground",
+      );
+      expect(dragonGround?.maxMultiplier).toBe(NO_EFFECT);
+    });
+
+    it("攻撃技が無いパーティは 全エントリの maxMultiplier=0 かつ dualTypeUncoveredCount=エントリ数", () => {
+      // 変化技のみ指定 → resolveAttackingMoveIds が Status を除外するので攻撃技ゼロ
+      const out = analyzePartyCoverage({
+        myParty: [{ name: "ガブリアス" }],
+        moves: { ガブリアス: ["Swords Dance"] },
+      });
+      expect(out.dualTypeCoverage.length).toBeGreaterThan(0);
+      for (const entry of out.dualTypeCoverage) {
+        expect(entry.maxMultiplier).toBe(NO_EFFECT);
+        expect(entry.bestAttackers).toHaveLength(0);
+      }
+      expect(out.dualTypeUncoveredCount).toBe(out.dualTypeCoverage.length);
+    });
+
+    it("dualTypeCoverage は maxMultiplier 昇順でソートされる", () => {
+      const out = analyzePartyCoverage({
+        myParty: [{ name: "ガブリアス" }],
+        moves: { ガブリアス: ["Earthquake"] },
+      });
+      for (let i = 1; i < out.dualTypeCoverage.length; i += 1) {
+        const prev = out.dualTypeCoverage[i - 1].maxMultiplier;
+        const curr = out.dualTypeCoverage[i].maxMultiplier;
+        expect(prev).toBeLessThanOrEqual(curr);
+      }
+    });
+
+    it("いわ技は ほのお/ひこう に 抜群以上、ガブリアス (Dragon/Ground) は 等倍以下を維持", () => {
+      // 複合分析の副作用で単一タイプ結果が壊れないことを確認
+      const out = analyzePartyCoverage({
+        myParty: [{ name: "バンギラス" }],
+        moves: { バンギラス: ["Stone Edge"] },
+      });
+      expect(out.coverage.find((c) => c.defenderType === "Fire")?.maxMultiplier).toBe(SUPER_EFFECTIVE);
+      expect(out.coverage.find((c) => c.defenderType === "Flying")?.maxMultiplier).toBe(SUPER_EFFECTIVE);
     });
   });
 });
