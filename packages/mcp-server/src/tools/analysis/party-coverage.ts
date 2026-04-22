@@ -3,6 +3,7 @@ import { z } from "zod";
 import { Generations } from "@smogon/calc";
 import type { TypeName } from "@smogon/calc/dist/data/interface";
 import {
+  applyOffensiveTypeOverride,
   calculateTypeEffectiveness,
   pokemonSchema,
   type PokemonInput,
@@ -18,7 +19,10 @@ import {
   type PokemonEntry,
   type TypeEntry,
 } from "../../data-store.js";
-import { pokemonNameResolver } from "../../name-resolvers.js";
+import {
+  abilityNameResolver,
+  pokemonNameResolver,
+} from "../../name-resolvers.js";
 
 const CHAMPIONS_GEN_NUM = 0;
 
@@ -58,6 +62,11 @@ interface BestAttackerEntry {
   pokemon: string;
   move: string;
   multiplier: number;
+  /**
+   * 特性によってタイプ変換された場合の実効タイプ。
+   * 元タイプと同じ場合は省略する（例: Pixilate + Hyper Beam → "Fairy"）。
+   */
+  effectiveType?: string;
 }
 
 interface CoverageEntry {
@@ -115,6 +124,27 @@ function resolveAttackingMoveIds(
     }
   }
   return moves;
+}
+
+/**
+ * 特性名（日本語 or 英語）を正規化済みの特性 ID に変換する。
+ * 未指定・解決不能な場合は undefined を返す（silent fallback）。
+ *
+ * 未知の特性文字列でエラーにしないのは、party_coverage が
+ * 「構築入力を緩く受け取る」UX を取っているため。
+ * 未知の特性は単に override なし扱いとする。
+ */
+function resolveAbilityId(abilityName: string | undefined): string | undefined {
+  if (abilityName === undefined) {
+    return undefined;
+  }
+  const englishName =
+    abilityNameResolver.toEnglish(abilityName) ??
+    (abilityNameResolver.hasEnglishName(abilityName) ? abilityName : undefined);
+  if (englishName === undefined) {
+    return undefined;
+  }
+  return toDataId(englishName);
 }
 
 /**
@@ -189,6 +219,7 @@ export function analyzePartyCoverage(
   interface MemberWithMoves {
     entry: PokemonEntry;
     attackingMoves: MoveEntry[];
+    abilityId: string | undefined;
   }
 
   const members: MemberWithMoves[] = [];
@@ -198,12 +229,18 @@ export function analyzePartyCoverage(
     const entry = resolvePokemonEntry(member.name);
     const explicitMoves = movesMap.get(entry.id);
     const attackingMoves = resolveAttackingMoveIds(entry, explicitMoves);
+    const abilityId = resolveAbilityId(member.ability);
 
     for (const move of attackingMoves) {
-      attackingTypesSet.add(move.type);
+      const effectiveType = applyOffensiveTypeOverride(
+        move.type as TypeName,
+        move.category,
+        abilityId,
+      );
+      attackingTypesSet.add(effectiveType);
     }
 
-    members.push({ entry, attackingMoves });
+    members.push({ entry, attackingMoves, abilityId });
   }
 
   const attackingTypes: AttackingTypeEntry[] = [];
@@ -227,29 +264,34 @@ export function analyzePartyCoverage(
 
     for (const member of members) {
       for (const move of member.attackingMoves) {
+        const effectiveType = applyOffensiveTypeOverride(
+          move.type as TypeName,
+          move.category,
+          member.abilityId,
+        );
         const multiplier = getEffectivenessForDefenderType(
-          move.type,
+          effectiveType,
           defenderType.name,
           gen,
         );
+        const attacker: BestAttackerEntry = {
+          pokemon: member.entry.name,
+          move: move.name,
+          multiplier,
+        };
+        if (effectiveType !== move.type) {
+          attacker.effectiveType = effectiveType;
+        }
         if (multiplier > maxMultiplier) {
           maxMultiplier = multiplier;
           bestAttackers.length = 0;
-          bestAttackers.push({
-            pokemon: member.entry.name,
-            move: move.name,
-            multiplier,
-          });
+          bestAttackers.push(attacker);
         } else if (multiplier === maxMultiplier && multiplier > 0) {
           const alreadyHasSamePokemon = bestAttackers.some(
             (ba) => ba.pokemon === member.entry.name,
           );
           if (!alreadyHasSamePokemon) {
-            bestAttackers.push({
-              pokemon: member.entry.name,
-              move: move.name,
-              multiplier,
-            });
+            bestAttackers.push(attacker);
           }
         }
       }

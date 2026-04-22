@@ -169,5 +169,112 @@ describe("analyze_party_coverage logic", () => {
       expect(electric?.bestAttackers).toHaveLength(1);
       expect(electric?.bestAttackers[0].move).toBe("Earthquake");
     });
+
+    it("特性なし + ノーマル技は effectiveType が設定されない（regression）", () => {
+      const NORMAL_ATTACKER = { name: "ガブリアス" };
+      const NORMAL_MOVE_SET = { ガブリアス: ["Hyper Beam"] };
+      const out = analyzePartyCoverage({
+        myParty: [NORMAL_ATTACKER],
+        moves: NORMAL_MOVE_SET,
+      });
+      const normal = out.coverage.find((c) => c.defenderType === "Normal");
+      const attacker = normal?.bestAttackers[0];
+      expect(attacker?.move).toBe("Hyper Beam");
+      expect(attacker?.effectiveType).toBeUndefined();
+      expect(out.attackingTypes.some((t) => t.type === "Normal")).toBe(true);
+      expect(out.attackingTypes.some((t) => t.type === "Fairy")).toBe(false);
+    });
+  });
+
+  describe("タイプ変更系特性の反映", () => {
+    // メガチルタリス (altariamega) は pixilate を持つ
+    const PIXILATE_MEGA = {
+      name: "メガチルタリス",
+      ability: "フェアリースキン",
+    };
+
+    it("Pixilate + Hyper Beam → Fairy として評価される", () => {
+      const out = analyzePartyCoverage({
+        myParty: [PIXILATE_MEGA],
+        moves: { メガチルタリス: ["Hyper Beam"] },
+      });
+
+      expect(out.attackingTypes.some((t) => t.type === "Fairy")).toBe(true);
+      expect(out.attackingTypes.some((t) => t.type === "Normal")).toBe(false);
+
+      // Fairy は Dragon に 2 倍
+      const SUPER_EFFECTIVE = 2;
+      const dragon = out.coverage.find((c) => c.defenderType === "Dragon");
+      expect(dragon?.maxMultiplier).toBe(SUPER_EFFECTIVE);
+      expect(dragon?.bestAttackers[0].move).toBe("Hyper Beam");
+      expect(dragon?.bestAttackers[0].effectiveType).toBe("Fairy");
+    });
+
+    it("Pixilate + Hyper Beam は Steel に半減（元ノーマルの等倍から変化）", () => {
+      const HALF_EFFECTIVE = 0.5;
+      const out = analyzePartyCoverage({
+        myParty: [PIXILATE_MEGA],
+        moves: { メガチルタリス: ["Hyper Beam"] },
+      });
+      const steel = out.coverage.find((c) => c.defenderType === "Steel");
+      expect(steel?.maxMultiplier).toBe(HALF_EFFECTIVE);
+      expect(out.uncoveredTypes.some((t) => t.type === "Steel")).toBe(true);
+    });
+
+    it("Pixilate + Earthquake は Ground のまま (非ノーマル技はスルー)", () => {
+      const out = analyzePartyCoverage({
+        myParty: [PIXILATE_MEGA],
+        moves: { メガチルタリス: ["Earthquake"] },
+      });
+
+      expect(out.attackingTypes.some((t) => t.type === "Ground")).toBe(true);
+      expect(out.attackingTypes.some((t) => t.type === "Fairy")).toBe(false);
+
+      // Fire は Ground に 2 倍（Fairy は等倍のため、変換されていたら値が 1 になる）
+      const SUPER_EFFECTIVE = 2;
+      const fire = out.coverage.find((c) => c.defenderType === "Fire");
+      expect(fire?.maxMultiplier).toBe(SUPER_EFFECTIVE);
+      expect(fire?.bestAttackers[0].effectiveType).toBeUndefined();
+    });
+
+    it("Galvanize + Body Slam → Electric として評価される", () => {
+      const GALVANIZE_ATTACKER = {
+        name: "サンダース",
+        ability: "エレキスキン",
+      };
+      const out = analyzePartyCoverage({
+        myParty: [GALVANIZE_ATTACKER],
+        moves: { サンダース: ["Body Slam"] },
+      });
+
+      expect(out.attackingTypes.some((t) => t.type === "Electric")).toBe(true);
+      expect(out.attackingTypes.some((t) => t.type === "Normal")).toBe(false);
+
+      // Electric は Water に 2 倍
+      const SUPER_EFFECTIVE = 2;
+      const water = out.coverage.find((c) => c.defenderType === "Water");
+      expect(water?.maxMultiplier).toBe(SUPER_EFFECTIVE);
+      expect(water?.bestAttackers[0].effectiveType).toBe("Electric");
+
+      // Ground には 0 倍
+      const NO_EFFECT = 0;
+      const ground = out.coverage.find((c) => c.defenderType === "Ground");
+      expect(ground?.maxMultiplier).toBe(NO_EFFECT);
+    });
+
+    it("未知の特性は silent fallback で元タイプ維持", () => {
+      const UNKNOWN_ABILITY_ATTACKER = {
+        name: "ガブリアス",
+        ability: "そんなとくせいない",
+      };
+      const out = analyzePartyCoverage({
+        myParty: [UNKNOWN_ABILITY_ATTACKER],
+        moves: { ガブリアス: ["Hyper Beam"] },
+      });
+
+      expect(out.attackingTypes.some((t) => t.type === "Normal")).toBe(true);
+      const normal = out.coverage.find((c) => c.defenderType === "Normal");
+      expect(normal?.bestAttackers[0].effectiveType).toBeUndefined();
+    });
   });
 });

@@ -6,6 +6,7 @@ export * from "./analysis/stat-calculator";
 export * from "./analysis/speed-comparator";
 export * from "./analysis/priority-moves";
 export * from "./analysis/defensive-ability-overrides";
+export * from "./analysis/offensive-ability-overrides";
 export * from "./schemas/pokemon-input";
 export * from "./schemas/stats";
 export type {
