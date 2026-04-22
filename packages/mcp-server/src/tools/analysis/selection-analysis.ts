@@ -6,14 +6,18 @@ import {
   DamageCalculatorAdapter,
   calculateTypeEffectiveness,
   compareSpeed,
+  extractPriorityMoves,
   filterResultsByLearnset,
   pokemonSchema,
   type BaseStats,
   type DamageCalcResult,
+  type PriorityMoveInfo,
   type SpeedComparison,
 } from "@ai-rotom/shared";
 import {
+  championsLearnsets,
   getLearnsetMoveIdSet,
+  movesById,
   pokemonById,
   pokemonEntryProvider,
   toDataId,
@@ -69,6 +73,11 @@ interface PokemonProfile {
   nameJa: string;
   types: string[];
   actualStats: BaseStats;
+  /**
+   * 覚える先制技の一覧（priority 降順、同 priority は英名昇順）。
+   * 技単位の静的 priority のみ。特性による補正（いたずらごころ等）は含まない。
+   */
+  priorityMoves: PriorityMoveInfo[];
 }
 
 interface DamageEstimateMove {
@@ -322,7 +331,8 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
       function buildMemberContext(input: PokemonInput): PartyMemberContext {
         const { pokemon, resolvedName } =
           calculator.createPokemonObject(input);
-        const entry = pokemonById.get(toDataId(resolvedName));
+        const entryId = toDataId(resolvedName);
+        const entry = pokemonById.get(entryId);
         const nameJa =
           pokemonNameResolver.toJapanese(resolvedName) ?? resolvedName;
 
@@ -330,6 +340,12 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
           entry !== undefined
             ? [...entry.types]
             : [...(pokemon.types as readonly string[])];
+
+        const priorityMoves = extractPriorityMoves({
+          learnsetMoveIds: championsLearnsets[entryId] ?? [],
+          resolveMove: (id) => movesById.get(id),
+          toJapanese: (enName) => moveNameResolver.toJapanese(enName),
+        });
 
         const profile: PokemonProfile = {
           name: resolvedName,
@@ -343,12 +359,13 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
             spd: pokemon.stats.spd,
             spe: pokemon.stats.spe,
           },
+          priorityMoves,
         };
 
         return {
           input,
           profile,
-          entryId: toDataId(resolvedName),
+          entryId,
         };
       }
 

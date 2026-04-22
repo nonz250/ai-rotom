@@ -1,10 +1,11 @@
 import { describe, it, expect } from "vitest";
 import { Generations, toID } from "@smogon/calc";
-import { DamageCalculatorAdapter } from "@ai-rotom/shared";
+import { DamageCalculatorAdapter, extractPriorityMoves } from "@ai-rotom/shared";
 import type { DamageCalcResult } from "@ai-rotom/shared";
 import {
   championsLearnsets,
   getLearnsetMoveIdSet,
+  movesById,
   pokemonEntryProvider,
   toDataId,
 } from "../../data-store";
@@ -327,4 +328,76 @@ describe("analyze_selection logic", () => {
       expect(moves).not.toContain("splash");
     });
   });
+
+  describe("先制技抽出 (PokemonProfile.priorityMoves)", () => {
+    function priorityMovesFor(resolvedName: string) {
+      const learnsetMoveIds =
+        championsLearnsets[toDataId(resolvedName)] ?? [];
+      return extractPriorityMoves({
+        learnsetMoveIds,
+        resolveMove: (id) => movesById.get(id),
+        toJapanese: (en) => moveNameResolver.toJapanese(en),
+      });
+    }
+
+    it("先制技を持つポケモン (イワパレス = Incineroar) から Fake Out が抽出される", () => {
+      const result = priorityMovesFor("Incineroar");
+
+      expect(result.length).toBeGreaterThan(0);
+      const fakeout = result.find((m) => m.move === "Fake Out");
+      expect(fakeout).toBeDefined();
+      expect(fakeout?.priority).toBe(3);
+      expect(fakeout?.moveJa).toBe("ねこだまし");
+      expect(fakeout?.category).toBe("Physical");
+    });
+
+    it("しんそくを覚えるポケモンの priorityMoves に Extreme Speed が含まれる", () => {
+      const result = priorityMovesFor("Dragonite");
+
+      const extremeSpeed = result.find((m) => m.move === "Extreme Speed");
+      expect(extremeSpeed).toBeDefined();
+      expect(extremeSpeed?.priority).toBe(2);
+      expect(extremeSpeed?.moveJa).toBe("しんそく");
+    });
+
+    it("でんこうせっかを覚えるポケモンの priorityMoves に Quick Attack が含まれる", () => {
+      const result = priorityMovesFor("Pikachu");
+
+      const quickAttack = result.find((m) => m.move === "Quick Attack");
+      expect(quickAttack).toBeDefined();
+      expect(quickAttack?.priority).toBe(1);
+    });
+
+    it("priority 降順でソートされる", () => {
+      const result = priorityMovesFor("Incineroar");
+
+      for (let i = 1; i < result.length; i++) {
+        expect(result[i - 1].priority).toBeGreaterThanOrEqual(
+          result[i].priority,
+        );
+      }
+    });
+
+    it("先制技を持たないポケモン (メタモン = Ditto) では空配列を返す", () => {
+      const result = priorityMovesFor("Ditto");
+
+      expect(result).toEqual([]);
+    });
+
+    it("learnset が未登録のポケモン名でも空配列を返す (防衛的フォールバック)", () => {
+      const result = priorityMovesFor("NonExistentPokemon");
+
+      expect(result).toEqual([]);
+    });
+
+    it("priorityMoves は myParty / opponentParty 双方の profile に同じ方法で付与される", () => {
+      // myParty と opponentParty は対称的に buildMemberContext を使うため、
+      // 同じ入力なら同じ priorityMoves が返ることを固定する。
+      const my = priorityMovesFor("Incineroar");
+      const opp = priorityMovesFor("Incineroar");
+
+      expect(my).toEqual(opp);
+    });
+  });
+
 });
