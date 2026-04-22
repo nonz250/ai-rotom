@@ -24,11 +24,11 @@ const damageCalcInputSchema = {
 
 const SINGLE_TOOL_NAME = "calculate_damage_single";
 const SINGLE_TOOL_DESCRIPTION =
-  "ポケモンのダメージ計算を行うツール。攻撃側ポケモンの指定した1技が防御側ポケモンに与えるダメージを計算する。ポケモンチャンピオンズ (Pokemon Champions) の対戦仕様に対応。重要: 能力ポイント(evs) は各ステ 0-32・合計 0-66 で指定すること (従来の努力値 252/510 上限ではない)。レベル 50・個体値 31 固定。育成データは省略可能で、省略時はデフォルト値で計算される。";
+  "ポケモンのダメージ計算を行うツール。攻撃側ポケモンの指定した1技が防御側ポケモンに与えるダメージを計算する。ポケモンチャンピオンズ (Pokemon Champions) の対戦仕様に対応。重要: 能力ポイント(evs) は各ステ 0-32・合計 0-66 で指定すること (従来の努力値 252/510 上限ではない)。レベル 50・個体値 31 固定。育成データは省略可能で、省略時はデフォルト値で計算される。正確な計算のため攻撃側・防御側の ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。";
 
 const ALL_MOVES_TOOL_NAME = "calculate_damage_all_moves";
 const ALL_MOVES_TOOL_DESCRIPTION =
-  "ポケモン対戦で攻撃側ポケモンの全攻撃技のダメージを一括計算する。どの技が最も有効かを比較するときに使用する。ポケモンチャンピオンズ対応。";
+  "ポケモン対戦で攻撃側ポケモンの全攻撃技のダメージを一括計算する。どの技が最も有効かを比較するときに使用する。ポケモンチャンピオンズ対応。正確な計算のため攻撃側・防御側の ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。";
 
 const allMovesInputSchema = {
   attacker: pokemonSchema.describe("攻撃側ポケモン"),
@@ -38,7 +38,7 @@ const allMovesInputSchema = {
 
 const PARTY_MATCHUP_TOOL_NAME = "calculate_damage_party_matchup";
 const PARTY_MATCHUP_TOOL_DESCRIPTION =
-  "パーティ対パーティの全組み合わせダメージ計算を行う。6vs6の全対面での火力関係を一覧する。ポケモン対戦の選出判断やパーティ構築の検討に使用する。";
+  "パーティ対パーティの全組み合わせダメージ計算を行う。6vs6の全対面での火力関係を一覧する。ポケモン対戦の選出判断やパーティ構築の検討に使用する。正確な計算のため各ポケモンの ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。";
 
 const partyMatchupInputSchema = {
   myParty: z.array(pokemonSchema).describe("自分のパーティ"),
