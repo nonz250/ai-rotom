@@ -86,6 +86,19 @@ interface DamageEstimate {
    * 採用された技（計算対象のうち最大ダメージを叩き出した 1 件）。
    */
   move: DamageEstimateMove;
+  /**
+   * 採用技タイプの、防御側複合タイプに対する相性倍率 (0/0.25/0.5/1/2/4)。
+   * `MatchupEntry.typeAdvantage`（ポケモン種族タイプ基準のサマリ）と異なり、
+   * 実際に採用された best 技タイプに対する精密な倍率。
+   */
+  typeMultiplier: number;
+  /** 採用技タイプと攻撃側種族タイプの一致フラグ（通常 STAB のみ）。 */
+  isStab: boolean;
+  /**
+   * STAB × typeMultiplier の概算値。
+   * 通常 STAB (1.5) 前提で、てきおうりょく・天候・状態異常等は含まない。
+   */
+  effectivePowerMultiplier: number;
 }
 
 interface MatchupEntry {
@@ -154,6 +167,9 @@ export function bestDamageEstimate(
     max: best.maxPercent,
     ohkoChance: best.koChance,
     move: { name: best.move, nameJa },
+    typeMultiplier: best.typeMultiplier,
+    isStab: best.isStab,
+    effectivePowerMultiplier: best.effectivePowerMultiplier,
   };
 }
 
