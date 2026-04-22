@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "@smogon/calc": "file:vendor/smogon-calc-0.11.0.tgz",
+    "@types/node": "25.6.0",
     "tsdown": "0.21.9",
     "typescript": "6.0.3",
     "vitest": "4.1.4"
