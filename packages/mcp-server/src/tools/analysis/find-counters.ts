@@ -10,6 +10,7 @@ import {
   pokemonSchema,
   type BaseStats,
   type BoostsInput,
+  type ConditionsInput,
   type DamageCalcResult,
   type EvsInput,
   type PokemonEntry,
@@ -456,6 +457,12 @@ export function registerFindCountersTool(server: McpServer): void {
     try {
       const gen = Generations.get(CHAMPIONS_GEN_NUM);
 
+      // battleFormat (トップレベル入力) を conditions に詰め直し、ダメ計に伝える。
+      // ダブル時は @smogon/calc が全体攻撃技の威力 ×0.75 等のダブル補正を適用する。
+      const damageConditions: ConditionsInput = {
+        battleFormat: args.battleFormat,
+      };
+
       // target を解決
       const targetEntry = resolvePokemonEntry(args.target.name);
       const { pokemon: targetObj, resolvedName: targetName }
@@ -506,6 +513,7 @@ export function registerFindCountersTool(server: McpServer): void {
           const allOutgoing = calculator.calculateAllMoves({
             attacker: candidateInput,
             defender: args.target,
+            conditions: damageConditions,
           });
           const candidateLearnsetIds = getLearnsetMoveIdSet(candidateEntry.id);
           outgoing = filterResultsByLearnset(
@@ -520,6 +528,7 @@ export function registerFindCountersTool(server: McpServer): void {
           const allIncoming = calculator.calculateAllMoves({
             attacker: args.target,
             defender: candidateInput,
+            conditions: damageConditions,
           });
           const targetLearnsetIds = getLearnsetMoveIdSet(targetEntry.id);
           incoming = filterResultsByLearnset(
