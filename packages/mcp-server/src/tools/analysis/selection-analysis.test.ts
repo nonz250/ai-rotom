@@ -80,20 +80,6 @@ describe("analyze_selection logic", () => {
     });
   });
 
-  describe("スコア計算ロジック", () => {
-    it("素早さ勝ち + 抜群 + OHKO はトップスコア", () => {
-      const SCORE_WEIGHT_SPEED_WIN = 2;
-      const SCORE_WEIGHT_TYPE_ADVANTAGE = 3;
-      const SCORE_WEIGHT_DAMAGE_ADVANTAGE = 5;
-      const MAX_POSSIBLE_PER_MATCH =
-        SCORE_WEIGHT_SPEED_WIN +
-        SCORE_WEIGHT_TYPE_ADVANTAGE +
-        SCORE_WEIGHT_DAMAGE_ADVANTAGE;
-      const EXPECTED = 10;
-      expect(MAX_POSSIBLE_PER_MATCH).toBe(EXPECTED);
-    });
-  });
-
   describe("エッジケース", () => {
     it("パーティが 1 体だけでも動作する", () => {
       const { pokemon, resolvedName } = adapter.createPokemonObject({

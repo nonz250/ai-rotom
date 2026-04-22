@@ -32,25 +32,9 @@ import {
 
 const CHAMPIONS_GEN_NUM = 0;
 
-/** 選出推奨のトップ N 件 */
-const RECOMMENDATION_TOP_N = 3;
-
-/** 各スコアの重み */
-const SCORE_WEIGHT_SPEED_WIN = 2;
-const SCORE_WEIGHT_TYPE_ADVANTAGE = 3;
-const SCORE_WEIGHT_DAMAGE_ADVANTAGE = 5;
-const SCORE_WEIGHT_TYPE_DISADVANTAGE = -1;
-
-/** ダメージ閾値（%表記） */
-const OHKO_PERCENT_THRESHOLD = 100;
-const TWO_HKO_PERCENT_THRESHOLD = 50;
-
-/** タイプ抜群判定のしきい値 */
-const SUPER_EFFECTIVE_THRESHOLD = 2;
-
 const TOOL_NAME = "analyze_selection";
 const TOOL_DESCRIPTION =
-  "選出判断の一括分析を行う。自分と相手のパーティから全組み合わせ（最大 6x6）のマトリクスを生成し、タイプ相性・素早さ・ダメージ見積もりと先発/起点交代候補の推奨を返す。ポケモンチャンピオンズ対応。正確な計算のため各ポケモンの ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。";
+  "6v6 パーティ間の全対面（最大 36 エントリ）について、タイプ相性・素早さ比較・最大ダメージ見積もりをマトリクスで返す。選出判断は本ツールが返すデータを元に AI が総合的に行う前提で、ツール側では推奨やスコアリングは行わない。ポケモンチャンピオンズ対応。正確な計算のため各ポケモンの ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。";
 
 const battleFormatValues = ["singles", "doubles"] as const;
 
@@ -118,16 +102,10 @@ interface MatchupEntry {
   damageEstimate: DamageEstimate | null;
 }
 
-interface SelectionRecommendations {
-  lead: string[];
-  pivot: string[];
-}
-
 export interface SelectionAnalysisOutput {
   myParty: PokemonProfile[];
   opponentParty: PokemonProfile[];
   matchupMatrix: MatchupEntry[];
-  recommendations: SelectionRecommendations;
   battleFormat: "singles" | "doubles";
 }
 
@@ -180,72 +158,6 @@ export function bestDamageEstimate(
     isStab: best.isStab,
     effectivePowerMultiplier: best.effectivePowerMultiplier,
   };
-}
-
-/**
- * ポケモンの対面スコア（選出推奨用）を計算する。
- * 大きいほど対面に強い。
- */
-function calcMatchupScore(entry: MatchupEntry): number {
-  let score = 0;
-
-  // 素早さ
-  if (entry.speedCompare === "faster") {
-    score += SCORE_WEIGHT_SPEED_WIN;
-  } else if (entry.speedCompare === "slower") {
-    score -= SCORE_WEIGHT_SPEED_WIN;
-  }
-
-  // タイプ相性
-  if (entry.typeAdvantage.myToOpp >= SUPER_EFFECTIVE_THRESHOLD) {
-    score += SCORE_WEIGHT_TYPE_ADVANTAGE;
-  }
-  if (entry.typeAdvantage.oppToMy >= SUPER_EFFECTIVE_THRESHOLD) {
-    score += SCORE_WEIGHT_TYPE_DISADVANTAGE;
-  }
-
-  // ダメージ優位
-  if (entry.damageEstimate !== null) {
-    if (entry.damageEstimate.max >= OHKO_PERCENT_THRESHOLD) {
-      score += SCORE_WEIGHT_DAMAGE_ADVANTAGE;
-    } else if (entry.damageEstimate.max >= TWO_HKO_PERCENT_THRESHOLD) {
-      score += SCORE_WEIGHT_DAMAGE_ADVANTAGE / 2;
-    }
-  }
-
-  return score;
-}
-
-/**
- * あるポケモンの「合計スコア」を、相手パーティ全員に対するスコア和として算出する。
- */
-function calcTotalScoreForAttacker(
-  attackerName: string,
-  matrix: MatchupEntry[],
-): number {
-  let total = 0;
-  for (const entry of matrix) {
-    if (entry.mine === attackerName) {
-      total += calcMatchupScore(entry);
-    }
-  }
-  return total;
-}
-
-/**
- * 上位 N 件のポケモン名（日本語名）を返す。
- */
-function topPokemonByScore(
-  myParty: readonly PokemonProfile[],
-  scorer: (name: string) => number,
-  topN: number,
-): string[] {
-  const scored = myParty.map((p) => ({
-    nameJa: p.nameJa,
-    score: scorer(p.name),
-  }));
-  scored.sort((a, b) => b.score - a.score);
-  return scored.slice(0, topN).map((s) => s.nameJa);
 }
 
 /**
@@ -427,44 +339,10 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
         }
       }
 
-      // 推奨候補（lead / pivot）
-      const leadScorer = (name: string): number =>
-        calcTotalScoreForAttacker(name, matrix);
-
-      const lead = topPokemonByScore(
-        myMembers.map((m) => m.profile),
-        leadScorer,
-        RECOMMENDATION_TOP_N,
-      );
-
-      // pivot は「最速で倒しにくいが、交代駒として出しやすい」視点。
-      // ここでは素早さ優位が少ないが、相手に抜群を取られにくい候補を pivot とする。
-      const pivotScorer = (name: string): number => {
-        let total = 0;
-        for (const entry of matrix) {
-          if (entry.mine !== name) continue;
-          // タイプで受けきれる = oppToMy が 1 未満
-          if (entry.typeAdvantage.oppToMy < 1) {
-            total += 1;
-          }
-          if (entry.speedCompare === "slower") {
-            total -= 0.5;
-          }
-        }
-        return total;
-      };
-
-      const pivot = topPokemonByScore(
-        myMembers.map((m) => m.profile),
-        pivotScorer,
-        RECOMMENDATION_TOP_N,
-      );
-
       const output: SelectionAnalysisOutput = {
         myParty: myMembers.map((m) => m.profile),
         opponentParty: oppMembers.map((m) => m.profile),
         matchupMatrix: matrix,
-        recommendations: { lead, pivot },
         battleFormat: args.battleFormat,
       };
 
