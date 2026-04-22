@@ -25,6 +25,7 @@ export interface PokemonInput {
 export interface ConditionsInput {
   weather?: string;
   terrain?: string;
+  battleFormat?: "singles" | "doubles";
   isReflect?: boolean;
   isLightScreen?: boolean;
   isAuroraVeil?: boolean;
