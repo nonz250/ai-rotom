@@ -86,4 +86,44 @@ describe("SERVER_INSTRUCTIONS", () => {
     // evs / nature のみ省略許容であることを保証する。
     expect(SERVER_INSTRUCTIONS).not.toContain("evs・nature・ability");
   });
+
+  it("directs clients to call list_parties at session start", () => {
+    // 起動時に保存済みパーティの名前一覧を把握させるため、
+    // 初回ユーザー発話への応答前に list_parties を呼ばせる誘導を固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("セッション開始時");
+    expect(SERVER_INSTRUCTIONS).toContain("list_parties");
+  });
+
+  it("directs clients to call load_party when users mention a saved party name", () => {
+    // ユーザーが保存名に言及した時点で詳細を都度取得させる方針を固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("load_party");
+  });
+
+  it("directs clients to confirm before save_party on new builds", () => {
+    // 新規構築時にユーザー同意を取ってから save_party を呼ぶ方針を固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("save_party");
+    expect(SERVER_INSTRUCTIONS).toContain("保存しますか");
+  });
+
+  it("mentions delete_party for deletion requests", () => {
+    // 削除依頼は delete_party を使う旨を明示する。
+    expect(SERVER_INSTRUCTIONS).toContain("delete_party");
+  });
+
+  it("forbids auto-loading full party details at startup to save tokens", () => {
+    // 起動時に全パーティ詳細を自動読み込みしない方針 (トークン消費抑制) を固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("トークン消費");
+    expect(SERVER_INSTRUCTIONS).toContain("自動読み込み");
+  });
+
+  it("places the party section at the end, after existing sections", () => {
+    // 既存セクション (ability/item 指定) の後にパーティセクションが追加される
+    // という配置設計を固定化する。
+    const abilityItemIndex = SERVER_INSTRUCTIONS.indexOf(
+      "計算・分析系ツールでの ability / item 指定",
+    );
+    const partyIndex = SERVER_INSTRUCTIONS.indexOf("パーティデータの扱い");
+    expect(abilityItemIndex).toBeGreaterThan(-1);
+    expect(partyIndex).toBeGreaterThan(abilityItemIndex);
+  });
 });
