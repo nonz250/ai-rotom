@@ -6,13 +6,14 @@ import {
   DamageCalculatorAdapter,
   calculateTypeEffectiveness,
   compareSpeed,
+  filterResultsByLearnset,
   pokemonSchema,
   type BaseStats,
   type DamageCalcResult,
   type SpeedComparison,
 } from "@ai-rotom/shared";
 import {
-  championsLearnsets,
+  getLearnsetMoveIdSet,
   pokemonById,
   pokemonEntryProvider,
   toDataId,
@@ -242,33 +243,6 @@ function resolveMovesMap(
 }
 
 /**
- * 指定ポケモンの learnset に含まれる技 ID セットを取得する。
- * 未登録のポケモンは空 Set を返す。
- * TODO(#13): shared 昇格後は @ai-rotom/shared の共通実装に差し替える。
- */
-export function getLearnsetMoveIdSet(
-  pokemonId: string,
-): ReadonlySet<string> {
-  const learnset = championsLearnsets[pokemonId];
-  if (learnset === undefined) return new Set();
-  return new Set(learnset);
-}
-
-/**
- * calculateAllMoves の結果を attacker の learnset で絞り込む。
- * @smogon/calc は全技を走査するため、実際に覚えない技で過大評価しないようにフィルタする。
- * learnsetMoveIds が空 (= learnset 未登録) の場合はフォールバックで元の配列をそのまま返す。
- * TODO(#13): shared 昇格後は @ai-rotom/shared の共通実装に差し替える。
- */
-export function filterResultsByLearnset(
-  results: readonly DamageCalcResult[],
-  learnsetMoveIds: ReadonlySet<string>,
-): DamageCalcResult[] {
-  if (learnsetMoveIds.size === 0) return [...results];
-  return results.filter((r) => learnsetMoveIds.has(toDataId(r.move)));
-}
-
-/**
  * attacker vs defender の候補技でダメージを計算する。
  * movesMap に指定があればそれを、無ければ全技で計算する。
  * movesMap 未指定経路では attacker の learnset でフィルタし、覚えない技での過大評価を避ける。
@@ -302,7 +276,7 @@ export function calculateDamageForMatchup(
     return results;
   }
   const allResults = calculator.calculateAllMoves({ attacker, defender });
-  return filterResultsByLearnset(allResults, attackerLearnsetIds);
+  return filterResultsByLearnset(allResults, attackerLearnsetIds, toDataId);
 }
 
 export function registerSelectionAnalysisTool(server: McpServer): void {
