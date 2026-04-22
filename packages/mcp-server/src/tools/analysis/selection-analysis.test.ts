@@ -1,9 +1,13 @@
 import { describe, it, expect } from "vitest";
 import { Generations, toID } from "@smogon/calc";
-import { DamageCalculatorAdapter } from "@ai-rotom/shared";
+import {
+  DamageCalculatorAdapter,
+  filterResultsByLearnset,
+} from "@ai-rotom/shared";
 import type { DamageCalcResult } from "@ai-rotom/shared";
 import {
   championsLearnsets,
+  getLearnsetMoveIdSet,
   pokemonEntryProvider,
   toDataId,
 } from "../../data-store";
@@ -17,8 +21,6 @@ import {
 import {
   bestDamageEstimate,
   calculateDamageForMatchup,
-  filterResultsByLearnset,
-  getLearnsetMoveIdSet,
 } from "./selection-analysis";
 
 const CHAMPIONS_GEN_NUM = 0;
@@ -227,6 +229,10 @@ describe("analyze_selection logic", () => {
         maxPercent: BASE_MAX_PERCENT,
         koChance: "test",
         description: "test",
+        moveType: "Normal",
+        typeMultiplier: 1,
+        isStab: false,
+        effectivePowerMultiplier: 1,
       };
     }
 
@@ -237,7 +243,7 @@ describe("analyze_selection logic", () => {
         makeMoveResult("Splash"),
       ];
       const learnsetIds = new Set(["flamethrower"]);
-      const filtered = filterResultsByLearnset(results, learnsetIds);
+      const filtered = filterResultsByLearnset(results, learnsetIds, toDataId);
       expect(filtered.map((r) => r.move)).toEqual(["Flamethrower"]);
     });
 
@@ -246,14 +252,14 @@ describe("analyze_selection logic", () => {
         makeMoveResult("Flamethrower"),
         makeMoveResult("Blizzard"),
       ];
-      const filtered = filterResultsByLearnset(results, new Set());
+      const filtered = filterResultsByLearnset(results, new Set(), toDataId);
       expect(filtered.map((r) => r.move)).toEqual(["Flamethrower", "Blizzard"]);
     });
 
     it("technique 名の大小 / 空白等は toDataId で正規化して一致判定する", () => {
       const results = [makeMoveResult("Acid Spray")];
       const learnsetIds = new Set(["acidspray"]);
-      const filtered = filterResultsByLearnset(results, learnsetIds);
+      const filtered = filterResultsByLearnset(results, learnsetIds, toDataId);
       expect(filtered.length).toBe(1);
     });
   });
