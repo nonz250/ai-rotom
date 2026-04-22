@@ -115,6 +115,10 @@ describe("analyze_selection logic", () => {
         maxPercent: SAMPLE_MAX_PERCENT,
         koChance: "guaranteed OHKO",
         description: "test",
+        moveType: "Normal",
+        typeMultiplier: 1,
+        isStab: false,
+        effectivePowerMultiplier: 1,
         ...overrides,
       };
     }
