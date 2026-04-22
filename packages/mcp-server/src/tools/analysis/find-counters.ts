@@ -66,6 +66,7 @@ const TOOL_DESCRIPTION =
   "指定したポケモンの対策候補を検索する。候補プール全体に対してダメ計と素早さ比較を行い、スコア順に上位 10 件を返す。"
   + "`strategy` で対策パターン (speed_kill / tank_then_kill / type_wall) を識別する。"
   + "`candidatePool` は文字列（名前のみ）と PokemonInput オブジェクト（ability / item / nature / evs 指定）を混在可能で、同一ポケモンの build 違い比較にも対応する。"
+  + "正確な計算のため target 側の ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。"
   + "ポケモンチャンピオンズ対応。";
 
 const battleFormatValues = ["singles", "doubles"] as const;

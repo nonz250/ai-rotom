@@ -44,7 +44,7 @@ const SUPER_EFFECTIVE_THRESHOLD = 2;
 
 const TOOL_NAME = "analyze_selection";
 const TOOL_DESCRIPTION =
-  "選出判断の一括分析を行う。自分と相手のパーティから全組み合わせ（最大 6x6）のマトリクスを生成し、タイプ相性・素早さ・ダメージ見積もりと先発/起点交代候補の推奨を返す。ポケモンチャンピオンズ対応。";
+  "選出判断の一括分析を行う。自分と相手のパーティから全組み合わせ（最大 6x6）のマトリクスを生成し、タイプ相性・素早さ・ダメージ見積もりと先発/起点交代候補の推奨を返す。ポケモンチャンピオンズ対応。正確な計算のため各ポケモンの ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。";
 
 const battleFormatValues = ["singles", "doubles"] as const;
 
