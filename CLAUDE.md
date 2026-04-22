@@ -134,6 +134,7 @@ TS6059 エラーにならないようにしている。
   - `data/champions/*.json`（マスターデータ）
   - `shared/src/*`（共有ライブラリ）
   - `@smogon/calc`（npm 未 publish のため bundle 必須）
+  - `@pokesol/pokesol-text-parser-ts`（ESM-only / ランタイム依存ゼロ。publish 物の `dependencies` に載せない方針で bundle inline）
 - bundle しないもの（利用者環境で npm install される）:
   - `@modelcontextprotocol/sdk`, `zod`（npm registry 公開パッケージ）
 - npm publish 時の同梱は `dist` / `LICENSE` / `THIRD_PARTY_LICENSES.md`（`files` フィールド参照）
@@ -203,6 +204,7 @@ TS6059 エラーにならないようにしている。
 | `load_party` | 保存済みパーティを name 指定で 1 件取得 |
 | `list_parties` | 保存済みパーティのサマリ一覧 (name / memo / updatedAt / memberCount) |
 | `delete_party` | 保存済みパーティを name 指定で削除 |
+| `import_party_from_text` | ポケソルテキスト (Showdown 風・空行区切り) からパーティを一括取り込みして `save_party` と同じ場所に保存 (upsert) |
 
 - MCP SDK: `@modelcontextprotocol/sdk`
 - 入力は日本語名で受け付ける（内部で英語名に変換して `@smogon/calc` に渡す）
