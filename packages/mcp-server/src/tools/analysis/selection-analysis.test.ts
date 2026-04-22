@@ -100,6 +100,8 @@ describe("analyze_selection logic", () => {
     const SAMPLE_MAX_PERCENT = 120;
     const SAMPLE_MIN_DAMAGE = 100;
     const SAMPLE_MAX_DAMAGE = 150;
+    const SAMPLE_TYPE_MULTIPLIER = 1;
+    const SAMPLE_EFFECTIVE_POWER_MULTIPLIER = 1;
 
     function makeResult(
       overrides: Partial<DamageCalcResult> = {},
@@ -115,6 +117,10 @@ describe("analyze_selection logic", () => {
         maxPercent: SAMPLE_MAX_PERCENT,
         koChance: "guaranteed OHKO",
         description: "test",
+        moveType: "Ice",
+        typeMultiplier: SAMPLE_TYPE_MULTIPLIER,
+        isStab: false,
+        effectivePowerMultiplier: SAMPLE_EFFECTIVE_POWER_MULTIPLIER,
         ...overrides,
       };
     }
@@ -181,6 +187,53 @@ describe("analyze_selection logic", () => {
       expect(out?.move.name).toBe("HighDamageMove");
       expect(out?.max).toBe(HIGH_MAX);
       expect(out?.min).toBe(HIGH_MIN);
+    });
+
+    it("results[0] の typeMultiplier / isStab / effectivePowerMultiplier を引き継ぐ", () => {
+      const STAB_SUPER_EFFECTIVE_POWER = 3;
+      const SUPER_EFFECTIVE_MULTIPLIER = 2;
+      const results = [
+        makeResult({
+          isStab: true,
+          typeMultiplier: SUPER_EFFECTIVE_MULTIPLIER,
+          effectivePowerMultiplier: STAB_SUPER_EFFECTIVE_POWER,
+        }),
+      ];
+      const out = bestDamageEstimate(results, () => undefined);
+      expect(out?.isStab).toBe(true);
+      expect(out?.typeMultiplier).toBe(SUPER_EFFECTIVE_MULTIPLIER);
+      expect(out?.effectivePowerMultiplier).toBe(STAB_SUPER_EFFECTIVE_POWER);
+    });
+
+    it("非 STAB で抜群の場合も倍率を保持する", () => {
+      const SUPER_EFFECTIVE_MULTIPLIER = 2;
+      const NON_STAB_SUPER_EFFECTIVE_POWER = 2;
+      const results = [
+        makeResult({
+          isStab: false,
+          typeMultiplier: SUPER_EFFECTIVE_MULTIPLIER,
+          effectivePowerMultiplier: NON_STAB_SUPER_EFFECTIVE_POWER,
+        }),
+      ];
+      const out = bestDamageEstimate(results, () => undefined);
+      expect(out?.isStab).toBe(false);
+      expect(out?.typeMultiplier).toBe(SUPER_EFFECTIVE_MULTIPLIER);
+      expect(out?.effectivePowerMultiplier).toBe(NON_STAB_SUPER_EFFECTIVE_POWER);
+    });
+
+    it("無効 (typeMultiplier=0) でも数値をそのまま伝搬する", () => {
+      const IMMUNE_MULTIPLIER = 0;
+      const IMMUNE_POWER = 0;
+      const results = [
+        makeResult({
+          isStab: false,
+          typeMultiplier: IMMUNE_MULTIPLIER,
+          effectivePowerMultiplier: IMMUNE_POWER,
+        }),
+      ];
+      const out = bestDamageEstimate(results, () => undefined);
+      expect(out?.typeMultiplier).toBe(IMMUNE_MULTIPLIER);
+      expect(out?.effectivePowerMultiplier).toBe(IMMUNE_POWER);
     });
   });
 });
