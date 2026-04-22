@@ -72,4 +72,18 @@ describe("SERVER_INSTRUCTIONS", () => {
     expect(SERVER_INSTRUCTIONS).toContain("推測");
     expect(SERVER_INSTRUCTIONS).toContain("ユーザーに確認");
   });
+
+  it("recommends specifying ability and item for calc / analysis tools", () => {
+    // 計算・対面分析系ツールで ability / item の指定を推奨する方針を
+    // instructions に明示し、AI クライアントが省略しがちな挙動を抑止する意図を固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("ability");
+    expect(SERVER_INSTRUCTIONS).toContain("item");
+    expect(SERVER_INSTRUCTIONS).toContain("推奨");
+  });
+
+  it("no longer lists ability in the list of omissible fields", () => {
+    // 旧表現「evs・nature・ability 等を省略してよい」から ability を外し、
+    // evs / nature のみ省略許容であることを保証する。
+    expect(SERVER_INSTRUCTIONS).not.toContain("evs・nature・ability");
+  });
 });
