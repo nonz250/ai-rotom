@@ -1,5 +1,6 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeAll } from "vitest";
 import { Generations, toID } from "@smogon/calc";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import {
   championsLearnsets,
   championsTypes,
@@ -12,14 +13,50 @@ import {
   buildCandidateEntries,
   buildSignature,
   extractBuildInfo,
+  registerFindCountersTool,
+  type FindCountersOutput,
 } from "./find-counters";
 
 const CHAMPIONS_GEN_NUM = 0;
 
+type ToolHandler = (args: unknown) => Promise<{
+  content: { type: string; text: string }[];
+  isError?: boolean;
+}>;
+
 /**
- * find_counters のロジック要素を直接検証する。
- * 実際のダメ計シミュレーションは tool 本体が一括で行うため、ここでは前フィルタ・スコア判定・戦略判定の補助関数群を検証する。
+ * find_counters の tool ハンドラを取得する。
+ * registerFindCountersTool が呼び出す server.tool の 4 番目の引数を捕捉する。
  */
+function captureHandler(): ToolHandler {
+  let captured: ToolHandler | undefined;
+  const mockServer = {
+    tool: (
+      _name: string,
+      _description: string,
+      _schema: unknown,
+      handler: ToolHandler,
+    ) => {
+      captured = handler;
+      return {} as never;
+    },
+  } as unknown as McpServer;
+  registerFindCountersTool(mockServer);
+  if (captured === undefined) {
+    throw new Error("find_counters handler was not registered.");
+  }
+  return captured;
+}
+
+async function callFindCounters(
+  args: Record<string, unknown>,
+): Promise<FindCountersOutput> {
+  const handler = captureHandler();
+  const res = await handler(args);
+  expect(res.isError ?? false).toBe(false);
+  return JSON.parse(res.content[0].text) as FindCountersOutput;
+}
+
 describe("find_counters logic", () => {
   const gen = Generations.get(CHAMPIONS_GEN_NUM);
 
@@ -91,55 +128,8 @@ describe("find_counters logic", () => {
     });
   });
 
-  describe("スコア計算の重み", () => {
-    /** Tool 実装と同じ重み定義 */
-    const WEIGHT_TYPE = 5;
-    const WEIGHT_SPEED = 3;
-    const WEIGHT_LOW_INCOMING = 3;
-    const WEIGHT_OHKO = 5;
-    const WEIGHT_2HKO = 2;
-
-    it("タイプ有利 + 素早さ勝ち + 低被弾 + OHKO = 16", () => {
-      const EXPECTED = WEIGHT_TYPE + WEIGHT_SPEED + WEIGHT_LOW_INCOMING + WEIGHT_OHKO;
-      expect(EXPECTED).toBe(16);
-    });
-
-    it("タイプ有利のみは 5 点", () => {
-      expect(WEIGHT_TYPE).toBe(5);
-    });
-
-    it("2HKO は OHKO より低スコア", () => {
-      expect(WEIGHT_2HKO).toBeLessThan(WEIGHT_OHKO);
-    });
-  });
-
-  describe("戦略判定", () => {
-    const STRONG_RESIST_MAX = 0.25;
-    const HALF = 0.5;
-    const IMMUNE = 0;
-    const TWO_HKO_PERCENT_MIN = 50;
-
-    it("incomingMultiplier が 0 なら type_wall", () => {
-      expect(IMMUNE).toBe(0);
-    });
-
-    it("incomingMultiplier が 0.25 以下なら type_wall", () => {
-      expect(STRONG_RESIST_MAX).toBe(0.25);
-    });
-
-    it("incomingMultiplier が 0.5 で 2HKO 以内なら tank_then_kill", () => {
-      const incoming = HALF;
-      const outgoing = TWO_HKO_PERCENT_MIN + 1;
-      const canKill = outgoing >= TWO_HKO_PERCENT_MIN;
-      const strongResist = incoming <= STRONG_RESIST_MAX;
-      expect(strongResist).toBe(false);
-      expect(canKill).toBe(true);
-    });
-  });
-
   describe("候補プール指定", () => {
     it("candidatePool に指定した名前が解決できる", () => {
-      // マニューラ の日本語名解決
       expect(pokemonNameResolver.toEnglish("マニューラ")).toBe("Weavile");
     });
 
@@ -152,7 +142,6 @@ describe("find_counters logic", () => {
     it("Weavile (マニューラ) は Dark/Ice タイプで素早さ 125 (base)", () => {
       const weavile = pokemonById.get(toDataId("Weavile"))!;
       expect(weavile.types).toContain("Ice");
-      // base spe 125
       const WEAVILE_BASE_SPE = 125;
       expect(weavile.baseStats.spe).toBe(WEAVILE_BASE_SPE);
     });
@@ -298,4 +287,102 @@ describe("find_counters logic", () => {
       ).toThrow();
     });
   });
+});
+
+describe("find_counters tool レスポンス構造", () => {
+  let output: FindCountersOutput;
+
+  beforeAll(async () => {
+    output = await callFindCounters({
+      target: { name: "ガブリアス" },
+      candidatePool: ["マニューラ", "マンムー", "ゲッコウガ"],
+    });
+  });
+
+  it("target 情報が返る", () => {
+    expect(output.target.name).toBe("Garchomp");
+    expect(output.target.nameJa).toBe("ガブリアス");
+    expect(output.target.typeWeaknesses.map((w) => w.type)).toEqual(
+      expect.arrayContaining(["Ice", "Dragon", "Fairy"]),
+    );
+    expect(output.target.stats.spe).toBeGreaterThan(0);
+  });
+
+  it("各 CounterEntry は新構造（speedCompare / outgoing / incoming）を持つ", () => {
+    expect(output.counters.length).toBeGreaterThan(0);
+    for (const c of output.counters) {
+      expect(c.pokemon).toBeDefined();
+      expect(c.pokemon.id).toBeTypeOf("string");
+      expect(c.pokemon.name).toBeTypeOf("string");
+      expect(c.pokemon.nameJa).toBeTypeOf("string");
+      expect(Array.isArray(c.pokemon.types)).toBe(true);
+      expect(["faster", "slower", "tie"]).toContain(c.speedCompare);
+      expect(Array.isArray(c.outgoing)).toBe(true);
+      expect(Array.isArray(c.incoming)).toBe(true);
+    }
+  });
+
+  it("旧フィールド（score / strategy / details）を返さない", () => {
+    for (const c of output.counters) {
+      const record = c as unknown as Record<string, unknown>;
+      expect(record.score).toBeUndefined();
+      expect(record.strategy).toBeUndefined();
+      expect(record.details).toBeUndefined();
+    }
+  });
+
+  it("outgoing / incoming は best 1 件ではなく候補の全技を含む", () => {
+    const weavile = output.counters.find((c) => c.pokemon.name === "Weavile");
+    expect(weavile).toBeDefined();
+    expect(weavile!.outgoing.length).toBeGreaterThan(1);
+    expect(weavile!.incoming.length).toBeGreaterThan(1);
+  });
+
+  it("outgoing は attacker の learnset でフィルタされている", () => {
+    const weavile = output.counters.find((c) => c.pokemon.name === "Weavile");
+    expect(weavile).toBeDefined();
+    const weavileLearnset = new Set(
+      championsLearnsets[toDataId("Weavile")] ?? [],
+    );
+    for (const r of weavile!.outgoing) {
+      expect(weavileLearnset.has(toDataId(r.move))).toBe(true);
+    }
+  });
+
+  it("incoming は target (Garchomp) の learnset でフィルタされている", () => {
+    const weavile = output.counters.find((c) => c.pokemon.name === "Weavile");
+    expect(weavile).toBeDefined();
+    const garchompLearnset = new Set(
+      championsLearnsets[toDataId("Garchomp")] ?? [],
+    );
+    for (const r of weavile!.incoming) {
+      expect(garchompLearnset.has(toDataId(r.move))).toBe(true);
+    }
+  });
+
+  it("counters は pokemon.name 英名昇順でソートされている", () => {
+    const names = output.counters.map((c) => c.pokemon.name);
+    const sorted = [...names].sort((a, b) => a.localeCompare(b));
+    expect(names).toEqual(sorted);
+  });
+
+  it("Weavile (base spe 125) は Garchomp (base spe 102) より速い", () => {
+    const weavile = output.counters.find((c) => c.pokemon.name === "Weavile");
+    expect(weavile?.speedCompare).toBe("faster");
+  });
+});
+
+describe("find_counters Top N 廃止", () => {
+  const LONG_RUN_TIMEOUT_MS = 60_000;
+  it(
+    "弱点タイプ攻撃技を覚える候補が 10 件を超える target では counters が 10 件を超える",
+    async () => {
+      const TOP_N_LEGACY = 10;
+      const output = await callFindCounters({
+        target: { name: "ガブリアス" },
+      });
+      expect(output.counters.length).toBeGreaterThan(TOP_N_LEGACY);
+    },
+    LONG_RUN_TIMEOUT_MS,
+  );
 });
