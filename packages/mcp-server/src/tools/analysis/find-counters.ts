@@ -18,6 +18,7 @@ import {
   championsLearnsets,
   championsPokemon,
   championsTypes,
+  getLearnsetMoveIdSet,
   movesById,
   pokemonById,
   pokemonEntryProvider,
@@ -236,18 +237,6 @@ function pickBestMove(
     if (r.max > best.max) best = r;
   }
   return best;
-}
-
-/**
- * 指定ポケモンの learnset に含まれる技 ID セットを取得する。
- * 未登録のポケモンは空 Set を返す。
- * learnset JSON の ID は既に Showdown toID 形式だが、呼び出し側の
- * 正規化関数（{@link toDataId}）との対称性を保つため念のため通している。
- */
-function getLearnsetMoveIdSet(pokemonId: string): ReadonlySet<string> {
-  const learnset = championsLearnsets[pokemonId];
-  if (learnset === undefined) return new Set();
-  return new Set(learnset.map(toDataId));
 }
 
 /**
