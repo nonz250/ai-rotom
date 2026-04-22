@@ -2,8 +2,15 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { Generations } from "@smogon/calc";
 import type { TypeName } from "@smogon/calc/dist/data/interface";
-import { calculateTypeEffectiveness, pokemonSchema } from "@ai-rotom/shared";
 import {
+  applyDefensiveOverrides,
+  calculateTypeEffectiveness,
+  pokemonSchema,
+} from "@ai-rotom/shared";
+import type { DefensiveContextOverrides } from "@ai-rotom/shared";
+import {
+  abilityNameResolver,
+  itemNameResolver,
   pokemonNameResolver,
 } from "../../name-resolvers.js";
 import { pokemonById, toDataId } from "../../data-store.js";
@@ -95,11 +102,28 @@ function resolvePokemonName(name: string): string {
 const UNKNOWN_TYPE_NAME = "???";
 
 /**
+ * 日本語・英語のどちらの名前でも英語名に解決する。
+ * 未知の名前は undefined を返し、呼び出し側で silent ignore する。
+ */
+function resolveOptionalName(
+  resolver: typeof abilityNameResolver,
+  name: string | undefined,
+): string | undefined {
+  if (name === undefined) return undefined;
+  const english = resolver.toEnglish(name);
+  if (english !== undefined) return english;
+  if (resolver.hasEnglishName(name)) return name;
+  return undefined;
+}
+
+/**
  * ポケモンのタイプに対する各攻撃タイプの倍率を計算する。
+ * 特性・もちものが指定されていれば相性補正を適用する。
  */
 function calculateTypeMatchups(
   pokemonTypes: string[],
   gen: ReturnType<typeof Generations.get>,
+  context: DefensiveContextOverrides = {},
 ): {
   weaknesses: TypeMultiplier[];
   resistances: TypeMultiplier[];
@@ -116,11 +140,12 @@ function calculateTypeMatchups(
       continue;
     }
 
-    const multiplier = calculateTypeEffectiveness(
+    const base = calculateTypeEffectiveness(
       gen,
       attackType.name,
       defenderTypes,
     );
+    const multiplier = applyDefensiveOverrides(base, attackType.name, context);
 
     if (multiplier === IMMUNITY_THRESHOLD) {
       immunities.push(attackType.name);
@@ -200,8 +225,20 @@ export function registerPartyAnalysisTool(server: McpServer): void {
           const types = [...entry.types];
           memberTypesList.push(types);
 
+          const resolvedAbility = resolveOptionalName(
+            abilityNameResolver,
+            member.ability,
+          );
+          const resolvedItem = resolveOptionalName(
+            itemNameResolver,
+            member.item,
+          );
+
           const { weaknesses, resistances, immunities } =
-            calculateTypeMatchups(types, gen);
+            calculateTypeMatchups(types, gen, {
+              ability: resolvedAbility,
+              item: resolvedItem,
+            });
 
           members.push({
             name: entry.name,

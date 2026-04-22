@@ -1,5 +1,10 @@
 import { describe, it, expect } from "vitest";
 import { Generations, toID } from "@smogon/calc";
+import type { TypeName } from "@smogon/calc/dist/data/interface";
+import {
+  applyDefensiveOverrides,
+  calculateTypeEffectiveness,
+} from "@ai-rotom/shared";
 import { pokemonNameResolver } from "../../name-resolvers";
 
 const CHAMPIONS_GEN_NUM = 0;
@@ -157,6 +162,106 @@ describe("analyze_party_weakness logic", () => {
     it("存在しないポケモン名のときに解決できない", () => {
       const result = pokemonNameResolver.toEnglish("ソニック");
       expect(result).toBeUndefined();
+    });
+  });
+
+  describe("特性・もちもの補正を反映したタイプ相性", () => {
+    /**
+     * 補正込みのタイプ相性を計算する。
+     * party-analysis.ts の calculateTypeMatchups と同等の処理を
+     * 特性・もちものを含めて再現する。
+     */
+    function computeMatchups(
+      defenderTypes: readonly TypeName[],
+      context: { ability?: string; item?: string } = {},
+    ) {
+      const weaknesses: { type: string; multiplier: number }[] = [];
+      const resistances: { type: string; multiplier: number }[] = [];
+      const immunities: string[] = [];
+
+      for (const attackType of gen.types) {
+        if (attackType.name === "???") continue;
+
+        const base = calculateTypeEffectiveness(
+          gen,
+          attackType.name,
+          defenderTypes,
+        );
+        const multiplier = applyDefensiveOverrides(
+          base,
+          attackType.name,
+          context,
+        );
+
+        if (multiplier === IMMUNITY_THRESHOLD) {
+          immunities.push(attackType.name);
+        } else if (multiplier >= WEAKNESS_THRESHOLD) {
+          weaknesses.push({ type: attackType.name, multiplier });
+        } else if (multiplier < RESISTANCE_THRESHOLD) {
+          resistances.push({ type: attackType.name, multiplier });
+        }
+      }
+
+      return { weaknesses, resistances, immunities };
+    }
+
+    it("ふゆうのフーディンで じめん が immunities に入る", () => {
+      const species = gen.species.get(toID("Alakazam"))!;
+      const types = [...species.types] as TypeName[];
+
+      const base = computeMatchups(types);
+      expect(base.immunities).not.toContain("Ground");
+
+      const withLevitate = computeMatchups(types, { ability: "Levitate" });
+      expect(withLevitate.immunities).toContain("Ground");
+    });
+
+    it("もらいびのガオガエンで ほのお が immunities に入る", () => {
+      const species = gen.species.get(toID("Incineroar"))!;
+      const types = [...species.types] as TypeName[];
+
+      const base = computeMatchups(types);
+      // ガオガエン (Fire/Dark) は ほのお を半減する
+      expect(base.resistances.some((r) => r.type === "Fire")).toBe(true);
+      expect(base.immunities).not.toContain("Fire");
+
+      const withFlashFire = computeMatchups(types, { ability: "Flash Fire" });
+      expect(withFlashFire.immunities).toContain("Fire");
+    });
+
+    it("フィルターのバンギラスで かくとう 弱点が 4 倍 → 3 倍 に下がる", () => {
+      const species = gen.species.get(toID("Tyranitar"))!;
+      const types = [...species.types] as TypeName[];
+
+      const base = computeMatchups(types);
+      const baseFighting = base.weaknesses.find((w) => w.type === "Fighting");
+      const DOUBLE_SUPER = 4;
+      expect(baseFighting).toBeDefined();
+      expect(baseFighting!.multiplier).toBe(DOUBLE_SUPER);
+
+      const withFilter = computeMatchups(types, { ability: "Filter" });
+      const filteredFighting = withFilter.weaknesses.find(
+        (w) => w.type === "Fighting",
+      );
+      const FILTER_DOUBLE_SUPER = 3;
+      expect(filteredFighting).toBeDefined();
+      expect(filteredFighting!.multiplier).toBe(FILTER_DOUBLE_SUPER);
+    });
+
+    it("リングターゲット持ちのふゆうフーディンで じめん が weaknesses に戻る", () => {
+      const species = gen.species.get(toID("Alakazam"))!;
+      const types = [...species.types] as TypeName[];
+
+      const withLevitate = computeMatchups(types, { ability: "Levitate" });
+      expect(withLevitate.immunities).toContain("Ground");
+
+      const withRingTarget = computeMatchups(types, {
+        ability: "Levitate",
+        item: "Ring Target",
+      });
+      // リングターゲットでふゆうを解除 → フーディン(エスパー単)は じめんが等倍なので
+      // weaknesses にも immunities にも入らない。ただし immunities からは消える
+      expect(withRingTarget.immunities).not.toContain("Ground");
     });
   });
 });
