@@ -31,7 +31,8 @@ const TOOL_DESCRIPTION =
   "ダメージ計算を逆引きして、防御側を耐えさせるために必要な最小 SP 配分を探索する。"
   + "`damage` には min/max ダメージと % を、`nHitKo` には確定 X 発の数を、"
   + "`survivalSpConfig` には確定耐えに必要な最小 SP 配分を返す。"
-  + "ポケモンチャンピオンズ仕様（SP 各 0-32 / 合計 0-66）で計算。";
+  + "ポケモンチャンピオンズ仕様（SP 各 0-32 / 合計 0-66）で計算。"
+  + "正確な計算のため攻撃側・防御側の ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。";
 
 const inputSchema = {
   attacker: pokemonSchema.describe("攻撃側ポケモン"),
