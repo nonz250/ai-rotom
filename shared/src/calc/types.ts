@@ -55,6 +55,21 @@ export interface DamageCalcResult {
   maxPercent: number;
   koChance: string;
   description: string;
+  /** 技タイプ（英名）。@smogon/calc の Move.type をそのまま保持する */
+  moveType: string;
+  /** 防御側複合タイプに対する相性倍率 (0/0.25/0.5/1/2/4) */
+  typeMultiplier: number;
+  /**
+   * 技タイプと攻撃側タイプの一致フラグ（通常 STAB のみ）。
+   * てきおうりょく等の特性補正は数値（damage/min/max）側に含まれる。
+   * Protean/Libero 等の型変化特性は考慮しない（species type 基準）。
+   */
+  isStab: boolean;
+  /**
+   * STAB × typeMultiplier の概算値。
+   * 通常 STAB (1.5) 前提で、てきおうりょく・天候・状態異常等は含まない。
+   */
+  effectivePowerMultiplier: number;
 }
 
 /**

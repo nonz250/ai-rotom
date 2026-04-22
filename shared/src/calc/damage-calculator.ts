@@ -1,6 +1,12 @@
 import { calculate, Generations, Pokemon, Move } from "@smogon/calc";
+import type { TypeName } from "@smogon/calc/dist/data/interface";
 import { NameResolver } from "../utils/name-resolver.js";
 import type { PokemonEntryProvider } from "../types/pokemon.js";
+import { calculateTypeEffectiveness } from "../analysis/type-matchup.js";
+import {
+  NON_STAB_MULTIPLIER,
+  STAB_MULTIPLIER,
+} from "../constants/champions.js";
 import {
   resolveNameWithFallback,
   resolveOptionalName,
@@ -17,6 +23,35 @@ import type {
 
 const CHAMPIONS_GEN_NUM = 0;
 const DEFAULT_NATURE_EN = "Serious";
+
+interface TypeMetrics {
+  moveType: string;
+  typeMultiplier: number;
+  isStab: boolean;
+  effectivePowerMultiplier: number;
+}
+
+function buildTypeMetrics(
+  gen: ReturnType<typeof Generations.get>,
+  move: Move,
+  attacker: Pokemon,
+  defender: Pokemon,
+): TypeMetrics {
+  const moveType = move.type as TypeName;
+  const typeMultiplier = calculateTypeEffectiveness(
+    gen,
+    moveType,
+    defender.types as readonly TypeName[],
+  );
+  const isStab = (attacker.types as readonly TypeName[]).includes(moveType);
+  const stabMultiplier = isStab ? STAB_MULTIPLIER : NON_STAB_MULTIPLIER;
+  return {
+    moveType,
+    typeMultiplier,
+    isStab,
+    effectivePowerMultiplier: stabMultiplier * typeMultiplier,
+  };
+}
 
 export interface NameResolvers {
   pokemon: NameResolver;
@@ -134,6 +169,7 @@ export class DamageCalculatorAdapter {
 
     const koResult = result.kochance();
     const damageArray = flattenDamage(result.damage);
+    const typeMetrics = buildTypeMetrics(gen, move, attacker, defender);
 
     return {
       attacker: attackerName,
@@ -146,6 +182,7 @@ export class DamageCalculatorAdapter {
       maxPercent,
       koChance: koResult.text,
       description: result.fullDesc(),
+      ...typeMetrics,
     };
   }
 
@@ -239,6 +276,7 @@ export class DamageCalculatorAdapter {
 
         const koResult = result.kochance();
         const damageArray = flattenDamage(result.damage);
+        const typeMetrics = buildTypeMetrics(gen, move, attacker, defender);
 
         results.push({
           attacker: attackerName,
@@ -251,6 +289,7 @@ export class DamageCalculatorAdapter {
           maxPercent,
           koChance: koResult.text,
           description: result.fullDesc(),
+          ...typeMetrics,
         });
       } catch {
         // 計算不可能な技はスキップする
