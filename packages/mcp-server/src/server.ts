@@ -2,6 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { SERVER_INSTRUCTIONS } from "./instructions.js";
 import { registerAbilityInfoTool } from "./tools/info/ability-info.js";
+import { registerComparePartiesTool } from "./tools/analysis/compare-parties.js";
 import { registerConditionInfoTool } from "./tools/info/condition-info.js";
 import { registerDamageCalculationTools } from "./tools/calc/damage-calculation.js";
 import { registerDamageRangeTool } from "./tools/calc/damage-range.js";
@@ -38,6 +39,7 @@ export function createServer(): McpServer {
   );
 
   registerAbilityInfoTool(server);
+  registerComparePartiesTool(server);
   registerConditionInfoTool(server);
   registerDamageCalculationTools(server);
   registerDamageRangeTool(server);
