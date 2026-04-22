@@ -1,6 +1,11 @@
 import { describe, it, expect } from "vitest";
 import { Generations, Pokemon } from "@smogon/calc";
-import { DamageCalculatorAdapter, extractPriorityMoves } from "@ai-rotom/shared";
+import type { TypeName } from "@smogon/calc/dist/data/interface";
+import {
+  DamageCalculatorAdapter,
+  calculateTypeEffectiveness,
+  extractPriorityMoves,
+} from "@ai-rotom/shared";
 import {
   championsLearnsets,
   movesById,
@@ -131,6 +136,58 @@ describe("analyze_matchup logic", () => {
       const result = priorityMovesFor("NonExistentPokemon");
 
       expect(result).toEqual([]);
+    });
+  });
+
+  describe("STAB・タイプ相性の構造化出力", () => {
+    it("リザードン→ギャラドスの各技に STAB / typeMultiplier / effectivePowerMultiplier が付与される", () => {
+      const results = adapter.calculateAllMoves({
+        attacker: { name: "リザードン" },
+        defender: { name: "ギャラドス" },
+      });
+
+      // かえんほうしゃ: ほのお技（STAB） × みず/ひこう = 0.5 倍
+      const flamethrower = results.find((r) => r.move === "Flamethrower");
+      expect(flamethrower).toBeDefined();
+      expect(flamethrower!.moveType).toBe("Fire");
+      expect(flamethrower!.isStab).toBe(true);
+      expect(flamethrower!.typeMultiplier).toBe(0.5);
+      const STAB_TIMES_HALF = 0.75;
+      expect(flamethrower!.effectivePowerMultiplier).toBe(STAB_TIMES_HALF);
+
+      // 10まんボルト: でんき技（非STAB） × みず/ひこう = 4 倍（抜群×抜群）
+      const thunderbolt = results.find((r) => r.move === "Thunderbolt");
+      expect(thunderbolt).toBeDefined();
+      expect(thunderbolt!.moveType).toBe("Electric");
+      expect(thunderbolt!.isStab).toBe(false);
+      const QUAD_EFFECTIVE = 4;
+      expect(thunderbolt!.typeMultiplier).toBe(QUAD_EFFECTIVE);
+      expect(thunderbolt!.effectivePowerMultiplier).toBe(QUAD_EFFECTIVE);
+    });
+
+    it("typeSummary は両ポケモンのタイプに基づく最大相性倍率を返す", () => {
+      const { pokemon: p1 } = adapter.createPokemonObject({ name: "リザードン" });
+      const { pokemon: p2 } = adapter.createPokemonObject({ name: "ギャラドス" });
+
+      // p1 (ほのお/ひこう) → p2 (みず/ひこう): Fire=0.5, Flying=1 → max 1
+      // p2 (みず/ひこう) → p1 (ほのお/ひこう): Water=2, Flying=1 → max 2
+      const gen = adapter.getGen();
+
+      const p1Max = Math.max(
+        ...(p1.types as readonly TypeName[]).map((t) =>
+          calculateTypeEffectiveness(gen, t, p2.types as readonly TypeName[]),
+        ),
+      );
+      const p2Max = Math.max(
+        ...(p2.types as readonly TypeName[]).map((t) =>
+          calculateTypeEffectiveness(gen, t, p1.types as readonly TypeName[]),
+        ),
+      );
+
+      const EXPECTED_P1_MAX = 1;
+      const EXPECTED_P2_MAX = 2;
+      expect(p1Max).toBe(EXPECTED_P1_MAX);
+      expect(p2Max).toBe(EXPECTED_P2_MAX);
     });
   });
 });

@@ -1,6 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import {
   DamageCalculatorAdapter,
+  calculateTypeEffectiveness,
   compareSpeed,
   conditionsSchema,
   extractPriorityMoves,
@@ -11,6 +12,8 @@ import type {
   MoveInfoForPriority,
   PriorityMoveInfo,
 } from "@ai-rotom/shared";
+import { Generations } from "@smogon/calc";
+import type { TypeName } from "@smogon/calc/dist/data/interface";
 import {
   championsLearnsets,
   movesById,
@@ -27,7 +30,7 @@ import {
 
 const TOOL_NAME = "analyze_matchup";
 const TOOL_DESCRIPTION =
-  "ポケモン2体の対面を分析する。双方向のダメージ計算と素早さ比較を行い、どちらが有利かを判断するためのデータを提供する。ポケモン対戦の対面判断に使用する。pokemon1Faster は静的な素早さ実数値のみの比較のため、素早さ負けでも先制技で逆転できる判断は pokemon{1,2}PriorityMoves を併用すること。";
+  "ポケモン2体の対面を分析する。双方向のダメージ計算と素早さ比較を行い、どちらが有利かを判断するためのデータを提供する。ポケモン対戦の対面判断に使用する。pokemon1Faster は静的な素早さ実数値のみの比較のため、素早さ負けでも先制技で逆転できる判断は pokemon{1,2}PriorityMoves を併用すること。正確な計算のため双方の ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。";
 
 const matchupInputSchema = {
   pokemon1: pokemonSchema.describe("ポケモン1"),
@@ -39,6 +42,13 @@ interface MatchupPokemonInfo {
   name: string;
   nameJa: string;
   speed: number;
+}
+
+interface MatchupTypeSummary {
+  /** pokemon1 のタイプ（種族タイプ）で取れる最大相性倍率 */
+  p1ToP2MaxByPokemonType: number;
+  /** pokemon2 のタイプ（種族タイプ）で取れる最大相性倍率 */
+  p2ToP1MaxByPokemonType: number;
 }
 
 interface MatchupOutput {
@@ -57,6 +67,7 @@ interface MatchupOutput {
    * 技単位の静的 priority のみ。特性補正（いたずらごころ等）は含まない。
    */
   pokemon2PriorityMoves: PriorityMoveInfo[];
+  typeSummary: MatchupTypeSummary;
 }
 
 function resolveMoveForPriority(id: string): MoveInfoForPriority | undefined {
@@ -74,6 +85,31 @@ function priorityMovesFor(resolvedName: string): PriorityMoveInfo[] {
     resolveMove: resolveMoveForPriority,
     toJapanese: moveToJapanese,
   });
+}
+
+/**
+ * 攻撃側タイプ配列から防御側タイプ配列への最大相性倍率を返す。
+ * 攻撃側は自身のタイプ（種族タイプ）の技を出せる前提で、その中の最大値。
+ * 将来的に selection-analysis 側と共通化する予定（#14 スコープ外）。
+ */
+function maxTypeMultiplier(
+  attackerTypes: readonly string[],
+  defenderTypes: readonly string[],
+  gen: ReturnType<typeof Generations.get>,
+): number {
+  let max = 0;
+  const defenders = defenderTypes as readonly TypeName[];
+  for (const attackTypeName of attackerTypes) {
+    const multiplier = calculateTypeEffectiveness(
+      gen,
+      attackTypeName as TypeName,
+      defenders,
+    );
+    if (multiplier > max) {
+      max = multiplier;
+    }
+  }
+  return max;
 }
 
 export function registerMatchupTool(server: McpServer): void {
@@ -118,6 +154,12 @@ export function registerMatchupTool(server: McpServer): void {
           conditions: args.conditions,
         });
 
+        const gen = calculator.getGen();
+        const typeSummary: MatchupTypeSummary = {
+          p1ToP2MaxByPokemonType: maxTypeMultiplier(p1.types, p2.types, gen),
+          p2ToP1MaxByPokemonType: maxTypeMultiplier(p2.types, p1.types, gen),
+        };
+
         const output: MatchupOutput = {
           pokemon1: {
             name: name1,
@@ -134,6 +176,7 @@ export function registerMatchupTool(server: McpServer): void {
           pokemon2Attacks,
           pokemon1PriorityMoves: priorityMovesFor(name1),
           pokemon2PriorityMoves: priorityMovesFor(name2),
+          typeSummary,
         };
 
         return {

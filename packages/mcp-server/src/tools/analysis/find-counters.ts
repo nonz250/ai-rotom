@@ -6,9 +6,12 @@ import {
   DamageCalculatorAdapter,
   calculateTypeEffectiveness,
   compareSpeed,
+  filterResultsByLearnset,
   pokemonSchema,
   type BaseStats,
+  type BoostsInput,
   type DamageCalcResult,
+  type EvsInput,
   type PokemonEntry,
   type PokemonInput,
   type SpeedComparison,
@@ -62,23 +65,32 @@ const STATUS_CATEGORY: MoveCategory = "Status";
 const TOOL_NAME = "find_counters";
 const TOOL_DESCRIPTION =
   "指定したポケモンの対策候補を検索する。候補プール全体に対してダメ計と素早さ比較を行い、スコア順に上位 10 件を返す。"
-  + "`strategy` で対策パターン (speed_kill / tank_then_kill / type_wall) を識別する。ポケモンチャンピオンズ対応。";
+  + "`strategy` で対策パターン (speed_kill / tank_then_kill / type_wall) を識別する。"
+  + "`candidatePool` は文字列（名前のみ）と PokemonInput オブジェクト（ability / item / nature / evs 指定）を混在可能で、同一ポケモンの build 違い比較にも対応する。"
+  + "正確な計算のため target 側の ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。"
+  + "ポケモンチャンピオンズ対応。";
 
 const battleFormatValues = ["singles", "doubles"] as const;
+
+const candidatePoolItemSchema = z.union([z.string(), pokemonSchema]);
 
 const inputSchema = {
   target: pokemonSchema.describe("対策したい相手ポケモン"),
   candidatePool: z
-    .array(z.string())
+    .array(candidatePoolItemSchema)
     .optional()
     .describe(
-      "候補プール（ポケモン名リスト）。未指定時は target の弱点タイプ攻撃技を覚える Champions 全ポケモンから選定。",
+      "候補プール。各要素は「ポケモン名の文字列（簡易指定、デフォルト build で評価）」または「PokemonInput オブジェクト（name に加え ability / item / nature / evs / boosts / status を指定可能）」。"
+      + "同じポケモン名でも build 違いを並列で比較できる。"
+      + "未指定時は target の弱点タイプ攻撃技を覚える Champions 全ポケモンから自動選定（デフォルト build 評価）。",
     ),
   battleFormat: z
     .enum(battleFormatValues)
     .optional()
     .describe("対戦形式（省略時: singles）"),
 };
+
+type CandidatePoolItem = z.infer<typeof candidatePoolItemSchema>;
 
 export type CounterStrategy = "speed_kill" | "tank_then_kill" | "type_wall";
 
@@ -102,6 +114,19 @@ interface IncomingMoveInfo {
   receivedDamagePercent: { min: number; max: number };
 }
 
+/**
+ * 候補が具体 build 指定で評価された場合の指定内容。
+ * 文字列（名前のみ）で指定された候補・自動選定された候補では省略される。
+ */
+export interface CounterBuildInfo {
+  ability?: string;
+  item?: string;
+  nature?: string;
+  evs?: EvsInput;
+  boosts?: BoostsInput;
+  status?: string;
+}
+
 interface CounterPokemonProfile {
   id: string;
   name: string;
@@ -109,6 +134,7 @@ interface CounterPokemonProfile {
   types: string[];
   baseStats: BaseStats;
   abilities: string[];
+  build?: CounterBuildInfo;
 }
 
 interface CounterDetails {
@@ -240,27 +266,13 @@ function pickBestMove(
 /**
  * 指定ポケモンの learnset に含まれる技 ID セットを取得する。
  * 未登録のポケモンは空 Set を返す。
+ * learnset JSON の ID は既に Showdown toID 形式だが、呼び出し側の
+ * 正規化関数（{@link toDataId}）との対称性を保つため念のため通している。
  */
 function getLearnsetMoveIdSet(pokemonId: string): ReadonlySet<string> {
   const learnset = championsLearnsets[pokemonId];
   if (learnset === undefined) return new Set();
-  return new Set(learnset);
-}
-
-/**
- * calculateAllMoves の結果を attacker の learnset で絞り込む。
- * @smogon/calc は全技を走査するため、実際に覚えない技で過大評価しないようにフィルタする。
- */
-function filterResultsByLearnset(
-  results: readonly DamageCalcResult[],
-  attackerPokemonId: string,
-): DamageCalcResult[] {
-  const learnsetIds = getLearnsetMoveIdSet(attackerPokemonId);
-  if (learnsetIds.size === 0) {
-    // learnset データが無い場合はフィルタできないので元のまま返す
-    return [...results];
-  }
-  return results.filter((r) => learnsetIds.has(toDataId(r.move)));
+  return new Set(learnset.map(toDataId));
 }
 
 /**
@@ -354,36 +366,88 @@ function buildWeaknessTypeSet(
 }
 
 /**
- * 候補プールを決定する。
- * - candidatePool 指定時: 名前解決して PokemonEntry 配列を返す。
- * - 未指定時: target のタイプ弱点を攻撃技として持つ全 Champions ポケモンに絞る。
+ * 評価対象の候補。
+ * - entry: pokemon.json から解決された PokemonEntry
+ * - input: DamageCalculatorAdapter に渡す PokemonInput（文字列指定は { name } に正規化済み）
+ * - hasExplicitBuild: 明示的に build が指定された候補か
  */
-function buildCandidateEntries(
-  candidatePool: readonly string[] | undefined,
+export interface CandidateBuild {
+  entry: PokemonEntry;
+  input: PokemonInput;
+  hasExplicitBuild: boolean;
+}
+
+/**
+ * PokemonInput から build 部分（name 以外）を抽出する。
+ * 省略されたフィールドは含めない。
+ */
+export function extractBuildInfo(input: PokemonInput): CounterBuildInfo {
+  const build: CounterBuildInfo = {};
+  if (input.ability !== undefined) build.ability = input.ability;
+  if (input.item !== undefined) build.item = input.item;
+  if (input.nature !== undefined) build.nature = input.nature;
+  if (input.evs !== undefined) build.evs = input.evs;
+  if (input.boosts !== undefined) build.boosts = input.boosts;
+  if (input.status !== undefined) build.status = input.status;
+  return build;
+}
+
+/**
+ * 候補のソート用 tiebreaker として使う安定的な署名を生成する。
+ * 同名ポケモンの build 違いを区別する。build 未指定（string or 自動選定）は "default" 扱い。
+ */
+export function buildSignature(candidate: CandidateBuild): string {
+  if (!candidate.hasExplicitBuild) return "default";
+  return JSON.stringify(extractBuildInfo(candidate.input));
+}
+
+/**
+ * 候補プールを決定する。
+ * - candidatePool 指定時: 各要素（string or PokemonInput）を正規化して CandidateBuild 配列で返す。
+ * - 未指定時: target のタイプ弱点を攻撃技として持つ全 Champions ポケモンに絞る（デフォルト build）。
+ */
+export function buildCandidateEntries(
+  candidatePool: readonly CandidatePoolItem[] | undefined,
   target: PokemonEntry,
   gen: ReturnType<typeof Generations.get>,
-): PokemonEntry[] {
+): CandidateBuild[] {
   if (candidatePool !== undefined) {
-    const entries: PokemonEntry[] = [];
-    for (const name of candidatePool) {
-      entries.push(resolvePokemonEntry(name));
+    const candidates: CandidateBuild[] = [];
+    for (const item of candidatePool) {
+      if (typeof item === "string") {
+        const entry = resolvePokemonEntry(item);
+        candidates.push({
+          entry,
+          input: { name: entry.name },
+          hasExplicitBuild: false,
+        });
+      } else {
+        const entry = resolvePokemonEntry(item.name);
+        candidates.push({
+          entry,
+          input: { ...item, name: entry.name },
+          hasExplicitBuild: true,
+        });
+      }
     }
-    return entries;
+    return candidates;
   }
 
   const weaknessTypes = buildWeaknessTypeSet(target.types, gen);
   // target に弱点タイプが 1 つも無い (Normal 等はほぼ無いが念のため) 場合は全件候補にする
-  if (weaknessTypes.size === 0) {
-    return [...championsPokemon].filter((p) => p.id !== target.id);
-  }
+  const baseEntries
+    = weaknessTypes.size === 0
+      ? [...championsPokemon].filter((p) => p.id !== target.id)
+      : championsPokemon.filter(
+        (p) =>
+          p.id !== target.id && hasAttackingMoveOfAnyType(p.id, weaknessTypes),
+      );
 
-  const candidates: PokemonEntry[] = [];
-  for (const entry of championsPokemon) {
-    if (entry.id === target.id) continue;
-    if (!hasAttackingMoveOfAnyType(entry.id, weaknessTypes)) continue;
-    candidates.push(entry);
-  }
-  return candidates;
+  return baseEntries.map((entry) => ({
+    entry,
+    input: { name: entry.name },
+    hasExplicitBuild: false,
+  }));
 }
 
 export function registerFindCountersTool(server: McpServer): void {
@@ -421,17 +485,18 @@ export function registerFindCountersTool(server: McpServer): void {
       };
 
       // 候補プール選定（前フィルタあり）
-      const candidateEntries = buildCandidateEntries(
+      const candidateBuilds = buildCandidateEntries(
         args.candidatePool,
         targetEntry,
         gen,
       );
 
       // 各候補 vs target のマッチアップをシミュレート
-      const counterEntries: CounterEntry[] = [];
+      const counterEntries: Array<CounterEntry & { sortKey: string }> = [];
 
-      for (const candidate of candidateEntries) {
-        const candidateInput: PokemonInput = { name: candidate.name };
+      for (const candidate of candidateBuilds) {
+        const candidateEntry = candidate.entry;
+        const candidateInput = candidate.input;
 
         let candidateObj: ReturnType<
           typeof calculator.createPokemonObject
@@ -452,7 +517,12 @@ export function registerFindCountersTool(server: McpServer): void {
             attacker: candidateInput,
             defender: args.target,
           });
-          outgoing = filterResultsByLearnset(allOutgoing, candidate.id);
+          const candidateLearnsetIds = getLearnsetMoveIdSet(candidateEntry.id);
+          outgoing = filterResultsByLearnset(
+            allOutgoing,
+            candidateLearnsetIds,
+            toDataId,
+          );
         } catch {
           outgoing = [];
         }
@@ -461,7 +531,12 @@ export function registerFindCountersTool(server: McpServer): void {
             attacker: args.target,
             defender: candidateInput,
           });
-          incoming = filterResultsByLearnset(allIncoming, targetEntry.id);
+          const targetLearnsetIds = getLearnsetMoveIdSet(targetEntry.id);
+          incoming = filterResultsByLearnset(
+            allIncoming,
+            targetLearnsetIds,
+            toDataId,
+          );
         } catch {
           incoming = [];
         }
@@ -503,7 +578,7 @@ export function registerFindCountersTool(server: McpServer): void {
           if (inMoveEntry !== undefined) {
             incomingMultiplier = calcMultiplier(
               inMoveEntry.type,
-              candidate.types,
+              candidateEntry.types,
               gen,
             );
           }
@@ -522,7 +597,7 @@ export function registerFindCountersTool(server: McpServer): void {
           speedAdvantage,
         });
 
-        const nameJa = candidate.nameJa ?? candidate.name;
+        const nameJa = candidateEntry.nameJa ?? candidateEntry.name;
 
         const details: CounterDetails = { speedAdvantage };
 
@@ -556,25 +631,34 @@ export function registerFindCountersTool(server: McpServer): void {
           };
         }
 
+        const pokemonProfile: CounterPokemonProfile = {
+          id: candidateEntry.id,
+          name: candidateEntry.name,
+          nameJa,
+          types: [...candidateEntry.types],
+          baseStats: { ...candidateEntry.baseStats },
+          abilities: [...candidateEntry.abilities],
+        };
+
+        if (candidate.hasExplicitBuild) {
+          pokemonProfile.build = extractBuildInfo(candidateInput);
+        }
+
         counterEntries.push({
-          pokemon: {
-            id: candidate.id,
-            name: candidate.name,
-            nameJa,
-            types: [...candidate.types],
-            baseStats: { ...candidate.baseStats },
-            abilities: [...candidate.abilities],
-          },
+          pokemon: pokemonProfile,
           strategy,
           score,
           details,
+          sortKey: buildSignature(candidate),
         });
       }
 
-      // score 降順、同点は name 昇順
+      // score 降順、同点は name 昇順、更に同じ名前は build 署名で安定化
       counterEntries.sort((a, b) => {
         if (b.score !== a.score) return b.score - a.score;
-        return a.pokemon.name.localeCompare(b.pokemon.name);
+        const nameOrder = a.pokemon.name.localeCompare(b.pokemon.name);
+        if (nameOrder !== 0) return nameOrder;
+        return a.sortKey.localeCompare(b.sortKey);
       });
 
       const output: FindCountersOutput = {
@@ -584,7 +668,7 @@ export function registerFindCountersTool(server: McpServer): void {
           stats: targetStats,
           typeWeaknesses,
         },
-        counters: counterEntries.slice(0, TOP_N),
+        counters: counterEntries.slice(0, TOP_N).map(({ sortKey: _sortKey, ...rest }) => rest),
       };
 
       return {
