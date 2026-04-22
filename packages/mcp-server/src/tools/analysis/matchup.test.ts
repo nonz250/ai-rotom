@@ -4,8 +4,16 @@ import type { TypeName } from "@smogon/calc/dist/data/interface";
 import {
   DamageCalculatorAdapter,
   calculateTypeEffectiveness,
+  extractPriorityMoves,
+  filterResultsByLearnset,
 } from "@ai-rotom/shared";
-import { pokemonEntryProvider } from "../../data-store";
+import {
+  championsLearnsets,
+  getLearnsetMoveIdSet,
+  movesById,
+  pokemonEntryProvider,
+  toDataId,
+} from "../../data-store";
 import {
   pokemonNameResolver,
   moveNameResolver,
@@ -85,6 +93,114 @@ describe("analyze_matchup logic", () => {
       expect(() =>
         adapter.createPokemonObject({ name: "ソニック" }),
       ).toThrow("ポケモン「ソニック」が見つかりません。");
+    });
+  });
+
+  describe("learnset フィルタ適用", () => {
+    it("attacker が覚えない技はダメ計結果から除外される", () => {
+      // ピカチュウ (Electric 単) は hydrocannon / blastburn / frenzyplant を
+      // 覚えない。@smogon/calc は全技 DB を走査するため、フィルタしないと
+      // これらがダメ計結果に混入する。
+      const attacks = adapter.calculateAllMoves({
+        attacker: { name: "ピカチュウ" },
+        defender: { name: "ギャラドス" },
+      });
+
+      const learnsetIds = getLearnsetMoveIdSet(toDataId("Pikachu"));
+      const filtered = filterResultsByLearnset(attacks, learnsetIds, toDataId);
+
+      const filteredMoveIds = new Set(filtered.map((r) => toDataId(r.move)));
+      expect(filteredMoveIds.has("hydrocannon")).toBe(false);
+      expect(filteredMoveIds.has("blastburn")).toBe(false);
+      expect(filteredMoveIds.has("frenzyplant")).toBe(false);
+
+      // 覚える技（かみなり / 10まんボルト等）は残る
+      expect(filteredMoveIds.has("thunderbolt")).toBe(true);
+
+      // 少なくとも 1 件以上削減されている
+      expect(filtered.length).toBeLessThan(attacks.length);
+    });
+
+    it("フィルタ後も攻撃技が 1 件以上残る", () => {
+      const attacks = adapter.calculateAllMoves({
+        attacker: { name: "ピカチュウ" },
+        defender: { name: "ギャラドス" },
+      });
+
+      const learnsetIds = getLearnsetMoveIdSet(toDataId("Pikachu"));
+      const filtered = filterResultsByLearnset(attacks, learnsetIds, toDataId);
+
+      expect(filtered.length).toBeGreaterThan(0);
+    });
+
+    it("learnset 未登録のポケモン（メガ進化後等）は全件返される（フォールバック）", () => {
+      // メガ進化後（例: メガフーディン）は learnset が独立していないため
+      // championsLearnsets[id] === undefined となる。
+      // この場合 filterResultsByLearnset は元の配列をそのまま返す。
+      const megaId = toDataId("Alakazam-Mega");
+      expect(championsLearnsets[megaId]).toBeUndefined();
+
+      const attacks = adapter.calculateAllMoves({
+        attacker: { name: "メガフーディン" },
+        defender: { name: "ギャラドス" },
+      });
+
+      const learnsetIds = getLearnsetMoveIdSet(megaId);
+      expect(learnsetIds.size).toBe(0);
+
+      const filtered = filterResultsByLearnset(attacks, learnsetIds, toDataId);
+      expect(filtered.length).toBe(attacks.length);
+    });
+
+    it("getLearnsetMoveIdSet は learnset JSON の技 ID を正規化して返す", () => {
+      const pikachuIds = getLearnsetMoveIdSet(toDataId("Pikachu"));
+      expect(pikachuIds.size).toBeGreaterThan(0);
+      expect(pikachuIds.has("thunderbolt")).toBe(true);
+    });
+  });
+
+  describe("先制技抽出", () => {
+    function priorityMovesFor(resolvedName: string) {
+      const learnsetMoveIds =
+        championsLearnsets[toDataId(resolvedName)] ?? [];
+      return extractPriorityMoves({
+        learnsetMoveIds,
+        resolveMove: (id) => movesById.get(id),
+        toJapanese: (en) => moveNameResolver.toJapanese(en),
+      });
+    }
+
+    it("先制技を持つポケモン（イワパレス）から静的 priority 技が抽出される", () => {
+      const result = priorityMovesFor("Incineroar");
+
+      expect(result.length).toBeGreaterThan(0);
+      const fakeout = result.find((m) => m.move === "Fake Out");
+      expect(fakeout).toBeDefined();
+      expect(fakeout?.priority).toBe(3);
+      expect(fakeout?.moveJa).toBe("ねこだまし");
+      expect(fakeout?.category).toBe("Physical");
+    });
+
+    it("priority 降順でソートされる", () => {
+      const result = priorityMovesFor("Incineroar");
+
+      for (let i = 1; i < result.length; i++) {
+        expect(result[i - 1].priority).toBeGreaterThanOrEqual(
+          result[i].priority,
+        );
+      }
+    });
+
+    it("先制技を持たないポケモン（メタモン）では空配列を返す", () => {
+      const result = priorityMovesFor("Ditto");
+
+      expect(result).toEqual([]);
+    });
+
+    it("learnset が未登録のポケモン名でも空配列を返す（防衛的フォールバック）", () => {
+      const result = priorityMovesFor("NonExistentPokemon");
+
+      expect(result).toEqual([]);
     });
   });
 

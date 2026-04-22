@@ -6,12 +6,14 @@ import {
   DamageCalculatorAdapter,
   calculateTypeEffectiveness,
   compareSpeed,
+  filterResultsByLearnset,
   pokemonSchema,
   type BaseStats,
   type DamageCalcResult,
   type SpeedComparison,
 } from "@ai-rotom/shared";
 import {
+  getLearnsetMoveIdSet,
   pokemonById,
   pokemonEntryProvider,
   toDataId,
@@ -44,7 +46,7 @@ const SUPER_EFFECTIVE_THRESHOLD = 2;
 
 const TOOL_NAME = "analyze_selection";
 const TOOL_DESCRIPTION =
-  "選出判断の一括分析を行う。自分と相手のパーティから全組み合わせ（最大 6x6）のマトリクスを生成し、タイプ相性・素早さ・ダメージ見積もりと先発/起点交代候補の推奨を返す。ポケモンチャンピオンズ対応。";
+  "選出判断の一括分析を行う。自分と相手のパーティから全組み合わせ（最大 6x6）のマトリクスを生成し、タイプ相性・素早さ・ダメージ見積もりと先発/起点交代候補の推奨を返す。ポケモンチャンピオンズ対応。正確な計算のため各ポケモンの ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。";
 
 const battleFormatValues = ["singles", "doubles"] as const;
 
@@ -259,12 +261,15 @@ function resolveMovesMap(
 /**
  * attacker vs defender の候補技でダメージを計算する。
  * movesMap に指定があればそれを、無ければ全技で計算する。
+ * movesMap 未指定経路では attacker の learnset でフィルタし、覚えない技での過大評価を避ける。
+ * 明示指定経路は learnset フィルタを掛けない（ユーザーの明示選択を尊重する既存仕様を維持）。
  */
-function calculateDamageForMatchup(
+export function calculateDamageForMatchup(
   calculator: DamageCalculatorAdapter,
   attacker: PokemonInput,
   defender: PokemonInput,
   attackerId: string,
+  attackerLearnsetIds: ReadonlySet<string>,
   movesMap: Map<string, string[]>,
 ): DamageCalcResult[] {
   const explicitMoves = movesMap.get(attackerId);
@@ -286,7 +291,8 @@ function calculateDamageForMatchup(
     results.sort((a, b) => b.max - a.max);
     return results;
   }
-  return calculator.calculateAllMoves({ attacker, defender });
+  const allResults = calculator.calculateAllMoves({ attacker, defender });
+  return filterResultsByLearnset(allResults, attackerLearnsetIds, toDataId);
 }
 
 export function registerSelectionAnalysisTool(server: McpServer): void {
@@ -349,6 +355,12 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
       const myMembers = args.myParty.map(buildMemberContext);
       const oppMembers = args.opponentParty.map(buildMemberContext);
 
+      // 各自軍ポケモンの learnset ID セットは対面ごとに変わらないため、外側ループで 1 回だけ引く
+      const myLearnsetIds = new Map<string, ReadonlySet<string>>();
+      for (const mine of myMembers) {
+        myLearnsetIds.set(mine.entryId, getLearnsetMoveIdSet(mine.entryId));
+      }
+
       // マトリクス作成
       const matrix: MatchupEntry[] = [];
 
@@ -377,6 +389,7 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
               mine.input,
               opp.input,
               mine.entryId,
+              myLearnsetIds.get(mine.entryId) ?? new Set(),
               movesMap,
             );
             damageEstimate = bestDamageEstimate(

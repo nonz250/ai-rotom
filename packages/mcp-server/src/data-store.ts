@@ -176,3 +176,18 @@ export const pokemonEntryProvider: PokemonEntryProvider = {
   getByName: (name: string): PokemonEntry | undefined =>
     pokemonById.get(toDataId(name)),
 };
+
+/**
+ * 指定ポケモンの learnset に含まれる技 ID セットを取得する。
+ * 未登録のポケモンは空 Set を返す（shared の filterResultsByLearnset では
+ * 空 Set を「learnset データが無い」フォールバックとして扱う）。
+ * learnset JSON の ID は既に Showdown toID 形式だが、呼び出し側の
+ * 正規化関数（{@link toDataId}）との対称性を保つため念のため通している。
+ */
+export function getLearnsetMoveIdSet(
+  pokemonId: string,
+): ReadonlySet<string> {
+  const learnset = championsLearnsets[pokemonId];
+  if (learnset === undefined) return new Set();
+  return new Set(learnset.map(toDataId));
+}

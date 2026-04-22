@@ -2,7 +2,12 @@ import { describe, it, expect } from "vitest";
 import { Generations, toID } from "@smogon/calc";
 import { DamageCalculatorAdapter } from "@ai-rotom/shared";
 import type { DamageCalcResult } from "@ai-rotom/shared";
-import { pokemonEntryProvider } from "../../data-store";
+import {
+  championsLearnsets,
+  getLearnsetMoveIdSet,
+  pokemonEntryProvider,
+  toDataId,
+} from "../../data-store";
 import {
   pokemonNameResolver,
   moveNameResolver,
@@ -10,7 +15,10 @@ import {
   itemNameResolver,
   natureNameResolver,
 } from "../../name-resolvers";
-import { bestDamageEstimate } from "./selection-analysis";
+import {
+  bestDamageEstimate,
+  calculateDamageForMatchup,
+} from "./selection-analysis";
 
 const CHAMPIONS_GEN_NUM = 0;
 
@@ -182,8 +190,6 @@ describe("analyze_selection logic", () => {
         }),
       ];
       const out = bestDamageEstimate(results, () => undefined);
-      // 先頭技が採用され、2 件目が採用されないことを固定する。
-      // 実装が results[results.length - 1] 等に変わると失敗する。
       expect(out?.move.name).toBe("HighDamageMove");
       expect(out?.max).toBe(HIGH_MAX);
       expect(out?.min).toBe(HIGH_MIN);
@@ -234,6 +240,91 @@ describe("analyze_selection logic", () => {
       const out = bestDamageEstimate(results, () => undefined);
       expect(out?.typeMultiplier).toBe(IMMUNE_MULTIPLIER);
       expect(out?.effectivePowerMultiplier).toBe(IMMUNE_POWER);
+    });
+  });
+
+  describe("calculateDamageForMatchup - learnset filter integration", () => {
+    it("movesMap 未指定時は attacker が覚えない技を候補から除外する", () => {
+      const attackerId = toDataId("Charizard");
+      const learnsetIds = getLearnsetMoveIdSet(attackerId);
+
+      // 前提: charizard の learnset は登録済みで、blizzard / splash 等は含まれない
+      expect(learnsetIds.size).toBeGreaterThan(0);
+      expect(learnsetIds.has("blizzard")).toBe(false);
+      expect(learnsetIds.has("splash")).toBe(false);
+
+      const results = calculateDamageForMatchup(
+        adapter,
+        { name: "リザードン" },
+        { name: "ギャラドス" },
+        attackerId,
+        learnsetIds,
+        new Map(),
+      );
+
+      expect(results.length).toBeGreaterThan(0);
+      for (const r of results) {
+        expect(learnsetIds.has(toDataId(r.move))).toBe(true);
+      }
+    });
+
+    it("movesMap 明示指定時は learnset 外の技もフィルタされず計算される (既存仕様維持)", () => {
+      const attackerId = toDataId("Charizard");
+      const learnsetIds = getLearnsetMoveIdSet(attackerId);
+
+      // 「ふぶき」(Blizzard) は charizard の learnset に含まれない想定を念押し
+      expect(learnsetIds.has("blizzard")).toBe(false);
+
+      const movesMap = new Map<string, string[]>([[attackerId, ["Blizzard"]]]);
+
+      const results = calculateDamageForMatchup(
+        adapter,
+        { name: "リザードン" },
+        { name: "ギャラドス" },
+        attackerId,
+        learnsetIds,
+        movesMap,
+      );
+
+      expect(results.length).toBe(1);
+      expect(results[0].move).toBe("Blizzard");
+    });
+
+    it("learnset 未登録ポケモンは全技を通す (フォールバック挙動)", () => {
+      const attackerId = toDataId("Charizard");
+      const results = calculateDamageForMatchup(
+        adapter,
+        { name: "リザードン" },
+        { name: "ギャラドス" },
+        attackerId,
+        new Set(), // learnset 未登録相当
+        new Map(),
+      );
+      // フォールバックで空 Set の場合、@smogon/calc の calculateAllMoves 結果をそのまま返す
+      // learnset 登録済みの charizard で実際に絞った結果より件数が多いことを確認
+      const filteredResults = calculateDamageForMatchup(
+        adapter,
+        { name: "リザードン" },
+        { name: "ギャラドス" },
+        attackerId,
+        getLearnsetMoveIdSet(attackerId),
+        new Map(),
+      );
+      expect(results.length).toBeGreaterThan(filteredResults.length);
+    });
+  });
+
+  describe("learnset データ前提確認", () => {
+    // 下流テストの前提 (charizard が覚える/覚えない技) を固定する
+    it("charizard の learnset に flamethrower が含まれる", () => {
+      expect(championsLearnsets["charizard"]).toBeDefined();
+      expect(championsLearnsets["charizard"]).toContain("flamethrower");
+    });
+
+    it("charizard の learnset に blizzard / splash は含まれない", () => {
+      const moves = championsLearnsets["charizard"] ?? [];
+      expect(moves).not.toContain("blizzard");
+      expect(moves).not.toContain("splash");
     });
   });
 });

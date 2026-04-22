@@ -4,6 +4,7 @@ export * from "./constants/champions";
 export * from "./analysis/type-matchup";
 export * from "./analysis/stat-calculator";
 export * from "./analysis/speed-comparator";
+export * from "./analysis/priority-moves";
 export * from "./schemas/pokemon-input";
 export * from "./schemas/stats";
 export type {
@@ -25,3 +26,4 @@ export type {
   DamageCalcResult,
   StatusName,
 } from "./calc/types.js";
+export { filterResultsByLearnset } from "./calc/filters/learnset-filter.js";
