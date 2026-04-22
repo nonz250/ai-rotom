@@ -8,7 +8,11 @@
   "bin": {
     "ai-rotom": "dist/index.mjs"
   },
-  "files": ["dist", "LICENSE", "THIRD_PARTY_LICENSES.md"],
+  "files": [
+    "dist",
+    "LICENSE",
+    "THIRD_PARTY_LICENSES.md"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nonz250/ai-rotom.git",
@@ -38,6 +42,7 @@
     "zod": "4.3.6"
   },
   "devDependencies": {
+    "@pokesol/pokesol-text-parser-ts": "^1.0.0",
     "tsdown": "0.21.8"
   }
 }
