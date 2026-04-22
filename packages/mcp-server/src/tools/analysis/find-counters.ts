@@ -6,6 +6,7 @@ import {
   DamageCalculatorAdapter,
   calculateTypeEffectiveness,
   compareSpeed,
+  filterResultsByLearnset,
   pokemonSchema,
   type BaseStats,
   type BoostsInput,
@@ -265,27 +266,13 @@ function pickBestMove(
 /**
  * 指定ポケモンの learnset に含まれる技 ID セットを取得する。
  * 未登録のポケモンは空 Set を返す。
+ * learnset JSON の ID は既に Showdown toID 形式だが、呼び出し側の
+ * 正規化関数（{@link toDataId}）との対称性を保つため念のため通している。
  */
 function getLearnsetMoveIdSet(pokemonId: string): ReadonlySet<string> {
   const learnset = championsLearnsets[pokemonId];
   if (learnset === undefined) return new Set();
-  return new Set(learnset);
-}
-
-/**
- * calculateAllMoves の結果を attacker の learnset で絞り込む。
- * @smogon/calc は全技を走査するため、実際に覚えない技で過大評価しないようにフィルタする。
- */
-function filterResultsByLearnset(
-  results: readonly DamageCalcResult[],
-  attackerPokemonId: string,
-): DamageCalcResult[] {
-  const learnsetIds = getLearnsetMoveIdSet(attackerPokemonId);
-  if (learnsetIds.size === 0) {
-    // learnset データが無い場合はフィルタできないので元のまま返す
-    return [...results];
-  }
-  return results.filter((r) => learnsetIds.has(toDataId(r.move)));
+  return new Set(learnset.map(toDataId));
 }
 
 /**
@@ -530,7 +517,12 @@ export function registerFindCountersTool(server: McpServer): void {
             attacker: candidateInput,
             defender: args.target,
           });
-          outgoing = filterResultsByLearnset(allOutgoing, candidateEntry.id);
+          const candidateLearnsetIds = getLearnsetMoveIdSet(candidateEntry.id);
+          outgoing = filterResultsByLearnset(
+            allOutgoing,
+            candidateLearnsetIds,
+            toDataId,
+          );
         } catch {
           outgoing = [];
         }
@@ -539,7 +531,12 @@ export function registerFindCountersTool(server: McpServer): void {
             attacker: args.target,
             defender: candidateInput,
           });
-          incoming = filterResultsByLearnset(allIncoming, targetEntry.id);
+          const targetLearnsetIds = getLearnsetMoveIdSet(targetEntry.id);
+          incoming = filterResultsByLearnset(
+            allIncoming,
+            targetLearnsetIds,
+            toDataId,
+          );
         } catch {
           incoming = [];
         }
