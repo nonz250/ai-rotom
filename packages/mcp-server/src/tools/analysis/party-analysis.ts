@@ -2,7 +2,13 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { Generations } from "@smogon/calc";
 import type { TypeName } from "@smogon/calc/dist/data/interface";
-import { calculateTypeEffectiveness, pokemonSchema } from "@ai-rotom/shared";
+import {
+  calculateTypeEffectiveness,
+  classifyPokemonTypeMatchups,
+  pokemonSchema,
+  WEAKNESS_THRESHOLD,
+  type TypeMultiplier,
+} from "@ai-rotom/shared";
 import {
   pokemonNameResolver,
 } from "../../name-resolvers.js";
@@ -18,42 +24,11 @@ const partyAnalysisInputSchema = {
   party: z.array(pokemonSchema).describe("パーティメンバー"),
 };
 
-/** タイプ相性の倍率しきい値 */
-const WEAKNESS_THRESHOLD = 2;
-const RESISTANCE_THRESHOLD = 1;
-const IMMUNITY_THRESHOLD = 0;
-
 /** 致命的弱点とみなすための最低弱点数 */
 const CRITICAL_WEAKNESS_MIN_COUNT = 2;
 
-/**
- * タイプ名の英語→日本語マッピング。
- */
-const TYPE_NAME_EN_TO_JA: ReadonlyMap<string, string> = new Map([
-  ["Normal", "ノーマル"],
-  ["Grass", "くさ"],
-  ["Fire", "ほのお"],
-  ["Water", "みず"],
-  ["Electric", "でんき"],
-  ["Ice", "こおり"],
-  ["Flying", "ひこう"],
-  ["Bug", "むし"],
-  ["Poison", "どく"],
-  ["Ground", "じめん"],
-  ["Rock", "いわ"],
-  ["Fighting", "かくとう"],
-  ["Psychic", "エスパー"],
-  ["Ghost", "ゴースト"],
-  ["Dragon", "ドラゴン"],
-  ["Dark", "あく"],
-  ["Steel", "はがね"],
-  ["Fairy", "フェアリー"],
-]);
-
-interface TypeMultiplier {
-  type: string;
-  multiplier: number;
-}
+/** ???タイプは計算対象から除外するためのマーカー */
+const UNKNOWN_TYPE_NAME = "???";
 
 interface MemberAnalysis {
   name: string;
@@ -99,49 +74,6 @@ function resolvePokemonName(name: string): string {
   const suggestionMessage =
     suggestions.length > 0 ? ` もしかして: ${suggestions.join(", ")}` : "";
   throw new Error(`ポケモン「${name}」が見つかりません。${suggestionMessage}`);
-}
-
-/** ???タイプは計算対象から除外するためのマーカー */
-const UNKNOWN_TYPE_NAME = "???";
-
-/**
- * ポケモンのタイプに対する各攻撃タイプの倍率を計算する。
- */
-function calculateTypeMatchups(
-  pokemonTypes: string[],
-  gen: ReturnType<typeof Generations.get>,
-): {
-  weaknesses: TypeMultiplier[];
-  resistances: TypeMultiplier[];
-  immunities: string[];
-} {
-  const weaknesses: TypeMultiplier[] = [];
-  const resistances: TypeMultiplier[] = [];
-  const immunities: string[] = [];
-
-  const defenderTypes = pokemonTypes as readonly TypeName[];
-
-  for (const attackType of gen.types) {
-    if (attackType.name === UNKNOWN_TYPE_NAME) {
-      continue;
-    }
-
-    const multiplier = calculateTypeEffectiveness(
-      gen,
-      attackType.name,
-      defenderTypes,
-    );
-
-    if (multiplier === IMMUNITY_THRESHOLD) {
-      immunities.push(attackType.name);
-    } else if (multiplier >= WEAKNESS_THRESHOLD) {
-      weaknesses.push({ type: attackType.name, multiplier });
-    } else if (multiplier < RESISTANCE_THRESHOLD) {
-      resistances.push({ type: attackType.name, multiplier });
-    }
-  }
-
-  return { weaknesses, resistances, immunities };
 }
 
 /**
@@ -212,7 +144,7 @@ export function registerPartyAnalysisTool(server: McpServer): void {
           memberTypesList.push(types);
 
           const { weaknesses, resistances, immunities } =
-            calculateTypeMatchups(types, gen);
+            classifyPokemonTypeMatchups(types, gen);
 
           members.push({
             name: entry.name,
