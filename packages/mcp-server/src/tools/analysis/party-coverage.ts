@@ -51,6 +51,7 @@ const TOOL_DESCRIPTION =
   "パーティの攻撃カバレッジを分析する。各防御タイプ（18種）に対して、パーティのどの技が最も効果的かを算出し、抜群を取れないタイプを洗い出す。"
   + " `uncoveredTypes` は『抜群（>1 倍）を取れる技が 1 つも無い防御タイプ』を列挙する（等倍 1 倍も含む）。抜群倍率の内訳は `coverage[].maxMultiplier` を参照。"
   + " 実在する複合タイプ（データ内に 1 匹以上存在する 2 タイプ組合せ）に対するカバレッジは `dualTypeCoverage` を参照。抜群を取れない複合タイプ数は `dualTypeUncoveredCount`。"
+  + " 攻撃側のタイプ変換系特性（Pixilate 等）は単一/複合カバレッジ双方に反映される。"
   + " ポケモンチャンピオンズ対応。";
 
 const inputSchema = {
@@ -311,6 +312,48 @@ export interface AnalyzePartyCoverageInput {
 }
 
 /**
+ * 攻撃技の effectiveType を前計算済みのパーティメンバー。
+ *
+ * 単一タイプ coverage と dualTypeCoverage の両ループが同じ effectiveType
+ * を参照できるよう、`attackingTypesSet` 構築時に一度だけ算出しておく。
+ * `ability` は effectiveType に吸収されるためここでは保持しない。
+ */
+interface PrecomputedMember {
+  entry: PokemonEntry;
+  attackingMoves: Array<{ move: MoveEntry; effectiveType: TypeName }>;
+}
+
+/**
+ * 候補の attacker で `bestAttackers` を更新する共通ロジック。
+ *
+ * - `candidate.multiplier > currentMax` の場合は bestAttackers をクリアして入れ替え、新しい max を返す
+ * - タイの場合は同一ポケモンが未登録であれば追加する（multiplier > 0 のときのみ、0 倍無効は列挙しない）
+ * - それ以外は現状維持
+ *
+ * bestAttackers は in-place で更新する。maxMultiplier は戻り値として返す。
+ */
+function updateBestAttackers(
+  currentMax: number,
+  bestAttackers: BestAttackerEntry[],
+  candidate: BestAttackerEntry,
+): number {
+  if (candidate.multiplier > currentMax) {
+    bestAttackers.length = 0;
+    bestAttackers.push(candidate);
+    return candidate.multiplier;
+  }
+  if (candidate.multiplier === currentMax && candidate.multiplier > 0) {
+    const alreadyHasSamePokemon = bestAttackers.some(
+      (ba) => ba.pokemon === candidate.pokemon,
+    );
+    if (!alreadyHasSamePokemon) {
+      bestAttackers.push(candidate);
+    }
+  }
+  return currentMax;
+}
+
+/**
  * パーティの攻撃カバレッジを計算する純関数。
  * MCP tool handler からも直接テストからも呼び出せる。
  */
@@ -320,31 +363,27 @@ export function analyzePartyCoverage(
   const gen = Generations.get(CHAMPIONS_GEN_NUM);
   const movesMap = normalizeMovesMap(args.moves);
 
-  interface MemberWithMoves {
-    entry: PokemonEntry;
-    attackingMoves: MoveEntry[];
-    ability: string | undefined;
-  }
-
-  const members: MemberWithMoves[] = [];
+  const members: PrecomputedMember[] = [];
   const attackingTypesSet = new Set<string>();
 
   for (const member of args.myParty) {
     const entry = resolvePokemonEntry(member.name);
     const explicitMoves = movesMap.get(entry.id);
-    const attackingMoves = resolveAttackingMoveIds(entry, explicitMoves);
+    const rawAttackingMoves = resolveAttackingMoveIds(entry, explicitMoves);
     const ability = resolveOptionalName(abilityNameResolver, member.ability);
 
-    for (const move of attackingMoves) {
+    const attackingMoves: Array<{ move: MoveEntry; effectiveType: TypeName }> = [];
+    for (const move of rawAttackingMoves) {
       const effectiveType = applyOffensiveTypeOverride(
         move.type as TypeName,
         move.category,
         ability,
       );
       attackingTypesSet.add(effectiveType);
+      attackingMoves.push({ move, effectiveType });
     }
 
-    members.push({ entry, attackingMoves, ability });
+    members.push({ entry, attackingMoves });
   }
 
   const attackingTypes: AttackingTypeEntry[] = [];
@@ -367,12 +406,7 @@ export function analyzePartyCoverage(
     const bestAttackers: BestAttackerEntry[] = [];
 
     for (const member of members) {
-      for (const move of member.attackingMoves) {
-        const effectiveType = applyOffensiveTypeOverride(
-          move.type as TypeName,
-          move.category,
-          member.ability,
-        );
+      for (const { move, effectiveType } of member.attackingMoves) {
         const multiplier = getEffectivenessForDefenderType(
           effectiveType,
           defenderType.name,
@@ -386,18 +420,7 @@ export function analyzePartyCoverage(
         if (effectiveType !== move.type) {
           attacker.effectiveType = effectiveType;
         }
-        if (multiplier > maxMultiplier) {
-          maxMultiplier = multiplier;
-          bestAttackers.length = 0;
-          bestAttackers.push(attacker);
-        } else if (multiplier === maxMultiplier && multiplier > 0) {
-          const alreadyHasSamePokemon = bestAttackers.some(
-            (ba) => ba.pokemon === member.entry.name,
-          );
-          if (!alreadyHasSamePokemon) {
-            bestAttackers.push(attacker);
-          }
-        }
+        maxMultiplier = updateBestAttackers(maxMultiplier, bestAttackers, attacker);
       }
     }
 
@@ -425,28 +448,17 @@ export function analyzePartyCoverage(
     const bestAttackers: BestAttackerEntry[] = [];
 
     for (const member of members) {
-      for (const move of member.attackingMoves) {
-        const multiplier = getEffectivenessForDualTypes(move.type, types, gen);
-        if (multiplier > maxMultiplier) {
-          maxMultiplier = multiplier;
-          bestAttackers.length = 0;
-          bestAttackers.push({
-            pokemon: member.entry.name,
-            move: move.name,
-            multiplier,
-          });
-        } else if (multiplier === maxMultiplier && multiplier > 0) {
-          const alreadyHasSamePokemon = bestAttackers.some(
-            (ba) => ba.pokemon === member.entry.name,
-          );
-          if (!alreadyHasSamePokemon) {
-            bestAttackers.push({
-              pokemon: member.entry.name,
-              move: move.name,
-              multiplier,
-            });
-          }
+      for (const { move, effectiveType } of member.attackingMoves) {
+        const multiplier = getEffectivenessForDualTypes(effectiveType, types, gen);
+        const attacker: BestAttackerEntry = {
+          pokemon: member.entry.name,
+          move: move.name,
+          multiplier,
+        };
+        if (effectiveType !== move.type) {
+          attacker.effectiveType = effectiveType;
         }
+        maxMultiplier = updateBestAttackers(maxMultiplier, bestAttackers, attacker);
       }
     }
 
