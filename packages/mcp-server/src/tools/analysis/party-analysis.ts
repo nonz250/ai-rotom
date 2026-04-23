@@ -10,7 +10,6 @@ import {
 import type { DefensiveContextOverrides } from "@ai-rotom/shared";
 import {
   abilityNameResolver,
-  itemNameResolver,
   pokemonNameResolver,
 } from "../../name-resolvers.js";
 import { pokemonById, toDataId } from "../../data-store.js";
@@ -229,15 +228,10 @@ export function registerPartyAnalysisTool(server: McpServer): void {
             abilityNameResolver,
             member.ability,
           );
-          const resolvedItem = resolveOptionalName(
-            itemNameResolver,
-            member.item,
-          );
 
           const { weaknesses, resistances, immunities } =
             calculateTypeMatchups(types, gen, {
               ability: resolvedAbility,
-              item: resolvedItem,
             });
 
           members.push({

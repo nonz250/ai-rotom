@@ -165,15 +165,15 @@ describe("analyze_party_weakness logic", () => {
     });
   });
 
-  describe("特性・もちもの補正を反映したタイプ相性", () => {
+  describe("特性補正を反映したタイプ相性", () => {
     /**
      * 補正込みのタイプ相性を計算する。
      * party-analysis.ts の calculateTypeMatchups と同等の処理を
-     * 特性・もちものを含めて再現する。
+     * 特性を含めて再現する。
      */
     function computeMatchups(
       defenderTypes: readonly TypeName[],
-      context: { ability?: string; item?: string } = {},
+      context: { ability?: string } = {},
     ) {
       const weaknesses: { type: string; multiplier: number }[] = [];
       const resistances: { type: string; multiplier: number }[] = [];
@@ -248,20 +248,5 @@ describe("analyze_party_weakness logic", () => {
       expect(filteredFighting!.multiplier).toBe(FILTER_DOUBLE_SUPER);
     });
 
-    it("リングターゲット持ちのふゆうフーディンで じめん が weaknesses に戻る", () => {
-      const species = gen.species.get(toID("Alakazam"))!;
-      const types = [...species.types] as TypeName[];
-
-      const withLevitate = computeMatchups(types, { ability: "Levitate" });
-      expect(withLevitate.immunities).toContain("Ground");
-
-      const withRingTarget = computeMatchups(types, {
-        ability: "Levitate",
-        item: "Ring Target",
-      });
-      // リングターゲットでふゆうを解除 → フーディン(エスパー単)は じめんが等倍なので
-      // weaknesses にも immunities にも入らない。ただし immunities からは消える
-      expect(withRingTarget.immunities).not.toContain("Ground");
-    });
   });
 });
