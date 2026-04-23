@@ -518,24 +518,21 @@ describe("find_counters の outgoing / incoming に STAB / タイプ相性フィ
   });
 
   it("STAB 判定は attacker 基準 (同じ技でも outgoing と incoming で値が逆になる)", () => {
-    // Weavile (Dark/Ice) は Dig (Ground) を覚える → outgoing で isStab=false
-    // Garchomp (Dragon/Ground) も Dig を覚える → incoming で isStab=true
+    // Dig (Ground) は Weavile (Dark/Ice) と Garchomp (Dragon/Ground) 双方の
+    // learnset に存在する前提で、attacker 基準 STAB 判定の対称性を確定的にアサートする。
     const weavile = getWeavile();
 
     const outgoingDig = weavile.outgoing.find((r) => r.move === "Dig");
     const incomingDig = weavile.incoming.find((r) => r.move === "Dig");
 
-    if (outgoingDig !== undefined && incomingDig !== undefined) {
-      expect(outgoingDig.moveType).toBe("Ground");
-      expect(outgoingDig.isStab).toBe(false);
+    expect(outgoingDig).toBeDefined();
+    expect(incomingDig).toBeDefined();
 
-      expect(incomingDig.moveType).toBe("Ground");
-      expect(incomingDig.isStab).toBe(true);
-    } else {
-      // 学習データに依存するため技が無い場合はスキップ相当（明示的にアサート）
-      const sharedGround = weavile.outgoing.find((r) => r.moveType === "Ground");
-      expect(sharedGround).toBeDefined();
-    }
+    expect(outgoingDig!.moveType).toBe("Ground");
+    expect(outgoingDig!.isStab).toBe(false);
+
+    expect(incomingDig!.moveType).toBe("Ground");
+    expect(incomingDig!.isStab).toBe(true);
   });
 
   it("複合タイプに対する typeMultiplier は二つのタイプの積になる", () => {
