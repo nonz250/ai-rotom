@@ -86,4 +86,43 @@ describe("SERVER_INSTRUCTIONS", () => {
     // evs / nature のみ省略許容であることを保証する。
     expect(SERVER_INSTRUCTIONS).not.toContain("evs・nature・ability");
   });
+
+  it("declares the responsibility split between tools and AI", () => {
+    // ツールは判断の根拠データを返すのみで、最終判断は返さないという
+    // 責務分担の方針を instructions に固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("## 判断と計算の役割分担");
+    expect(SERVER_INSTRUCTIONS).toContain("最終判断は返しません");
+  });
+
+  it("describes scored candidate lists as only a rough guide", () => {
+    // find_counters 等のスコア付きリストはあくまで候補抽出の目安であり、
+    // 最終採用は AI が総合判断する旨を instructions に固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("候補抽出のための目安");
+  });
+
+  it("places the responsibility split section before the usage recommendations", () => {
+    // 「判断と計算の役割分担」は使い方ガイドより前に提示する設計。
+    // 先に責務分担を伝えた上で具体的な使い方に進める順序を固定化する。
+    const responsibilityIndex = SERVER_INSTRUCTIONS.indexOf(
+      "## 判断と計算の役割分担",
+    );
+    const usageIndex = SERVER_INSTRUCTIONS.indexOf("## 推奨される使い方");
+    expect(responsibilityIndex).toBeGreaterThan(-1);
+    expect(usageIndex).toBeGreaterThan(-1);
+    expect(responsibilityIndex).toBeLessThan(usageIndex);
+  });
+
+  it("keeps the champions-specific spec block intact before the responsibility split", () => {
+    // 「能力ポイント (SP)」から始まる固有仕様ブロックを、
+    // 「判断と計算の役割分担」の挿入で分断しないことを固定化する。
+    const statPointsIndex = SERVER_INSTRUCTIONS.indexOf(
+      "## 能力ポイント (SP) について",
+    );
+    const responsibilityIndex = SERVER_INSTRUCTIONS.indexOf(
+      "## 判断と計算の役割分担",
+    );
+    expect(statPointsIndex).toBeGreaterThan(-1);
+    expect(responsibilityIndex).toBeGreaterThan(-1);
+    expect(statPointsIndex).toBeLessThan(responsibilityIndex);
+  });
 });
