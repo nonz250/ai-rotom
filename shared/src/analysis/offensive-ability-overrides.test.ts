@@ -35,6 +35,18 @@ describe("applyOffensiveTypeOverride", () => {
         applyOffensiveTypeOverride("Normal", "Physical", "aerilate"),
       ).toBe("Flying");
     });
+
+    it("英語名（先頭大文字）でも正規化されて変換される (Pixilate)", () => {
+      expect(
+        applyOffensiveTypeOverride("Normal", "Physical", "Pixilate"),
+      ).toBe("Fairy");
+    });
+
+    it("ハイフン・空白混じりでも正規化で通る ('  Pix-ilate ')", () => {
+      expect(
+        applyOffensiveTypeOverride("Normal", "Physical", "  Pix-ilate "),
+      ).toBe("Fairy");
+    });
   });
 
   describe("変換されないケース", () => {

@@ -276,5 +276,24 @@ describe("analyze_party_coverage logic", () => {
       const normal = out.coverage.find((c) => c.defenderType === "Normal");
       expect(normal?.bestAttackers[0].effectiveType).toBeUndefined();
     });
+
+    it("日本語特性名（フェアリースキン）でも解決されて変換される", () => {
+      const PIXILATE_JA = {
+        name: "メガチルタリス",
+        ability: "フェアリースキン",
+      };
+      const out = analyzePartyCoverage({
+        myParty: [PIXILATE_JA],
+        moves: { メガチルタリス: ["Hyper Beam"] },
+      });
+
+      expect(out.attackingTypes.some((t) => t.type === "Fairy")).toBe(true);
+      expect(out.attackingTypes.some((t) => t.type === "Normal")).toBe(false);
+
+      const SUPER_EFFECTIVE = 2;
+      const dragon = out.coverage.find((c) => c.defenderType === "Dragon");
+      expect(dragon?.maxMultiplier).toBe(SUPER_EFFECTIVE);
+      expect(dragon?.bestAttackers[0].effectiveType).toBe("Fairy");
+    });
   });
 });

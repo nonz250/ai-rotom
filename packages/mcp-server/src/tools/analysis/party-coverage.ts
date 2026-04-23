@@ -127,24 +127,22 @@ function resolveAttackingMoveIds(
 }
 
 /**
- * 特性名（日本語 or 英語）を正規化済みの特性 ID に変換する。
- * 未指定・解決不能な場合は undefined を返す（silent fallback）。
+ * 日本語・英語のどちらの名前でも英語名に解決する。
+ * 未知の名前は undefined を返し、呼び出し側で silent ignore する。
  *
  * 未知の特性文字列でエラーにしないのは、party_coverage が
  * 「構築入力を緩く受け取る」UX を取っているため。
  * 未知の特性は単に override なし扱いとする。
  */
-function resolveAbilityId(abilityName: string | undefined): string | undefined {
-  if (abilityName === undefined) {
-    return undefined;
-  }
-  const englishName =
-    abilityNameResolver.toEnglish(abilityName) ??
-    (abilityNameResolver.hasEnglishName(abilityName) ? abilityName : undefined);
-  if (englishName === undefined) {
-    return undefined;
-  }
-  return toDataId(englishName);
+function resolveOptionalName(
+  resolver: typeof abilityNameResolver,
+  name: string | undefined,
+): string | undefined {
+  if (name === undefined) return undefined;
+  const english = resolver.toEnglish(name);
+  if (english !== undefined) return english;
+  if (resolver.hasEnglishName(name)) return name;
+  return undefined;
 }
 
 /**
@@ -219,7 +217,7 @@ export function analyzePartyCoverage(
   interface MemberWithMoves {
     entry: PokemonEntry;
     attackingMoves: MoveEntry[];
-    abilityId: string | undefined;
+    ability: string | undefined;
   }
 
   const members: MemberWithMoves[] = [];
@@ -229,18 +227,18 @@ export function analyzePartyCoverage(
     const entry = resolvePokemonEntry(member.name);
     const explicitMoves = movesMap.get(entry.id);
     const attackingMoves = resolveAttackingMoveIds(entry, explicitMoves);
-    const abilityId = resolveAbilityId(member.ability);
+    const ability = resolveOptionalName(abilityNameResolver, member.ability);
 
     for (const move of attackingMoves) {
       const effectiveType = applyOffensiveTypeOverride(
         move.type as TypeName,
         move.category,
-        abilityId,
+        ability,
       );
       attackingTypesSet.add(effectiveType);
     }
 
-    members.push({ entry, attackingMoves, abilityId });
+    members.push({ entry, attackingMoves, ability });
   }
 
   const attackingTypes: AttackingTypeEntry[] = [];
@@ -267,7 +265,7 @@ export function analyzePartyCoverage(
         const effectiveType = applyOffensiveTypeOverride(
           move.type as TypeName,
           move.category,
-          member.abilityId,
+          member.ability,
         );
         const multiplier = getEffectivenessForDefenderType(
           effectiveType,
