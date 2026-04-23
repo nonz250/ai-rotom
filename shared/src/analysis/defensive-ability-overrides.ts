@@ -1,19 +1,15 @@
 import type { TypeName } from "@smogon/calc/dist/data/interface";
 
 /**
- * 防御側の特性・もちものに応じて、タイプ相性倍率を補正するための入力。
+ * 防御側の特性に応じて、タイプ相性倍率を補正するための入力。
  *
- * ability / item は英語名（@smogon/calc 互換の "Levitate" / "Ring Target" 等）
- * または ID（"levitate" / "ringtarget" 等）を受け付ける。呼び出し側で事前に
- * 正規化して渡すこと。未知の値はそのまま無視する。
+ * ability は英語名（@smogon/calc 互換の "Levitate" 等）または ID
+ * （"levitate" 等）を受け付ける。呼び出し側で事前に正規化して渡すこと。
+ * 未知の値はそのまま無視する。
  */
 export interface DefensiveContextOverrides {
   ability?: string;
-  item?: string;
 }
-
-/** 等倍 */
-const NEUTRAL_MULTIPLIER = 1;
 
 /** 無効（0 倍） */
 const IMMUNE_MULTIPLIER = 0;
@@ -52,24 +48,16 @@ const FILTER_LIKE_ABILITIES: ReadonlySet<string> = new Set([
   "prismarmor",
 ]);
 
-/** リングターゲット: 特性・タイプによる無効化を解除する */
-const RING_TARGET_ITEM_ID = "ringtarget";
-
-/** くろいてっきゅう: じめん技の無効化を解除する（タイプ・特性の両方） */
-const IRON_BALL_ITEM_ID = "ironball";
-
 /**
- * 特性・もちものを加味したタイプ相性補正を適用する。
+ * 特性を加味したタイプ相性補正を適用する。
  *
  * 優先順位:
- *   1. もちもの（リングターゲット / くろいてっきゅう）による無効解除
- *      → 特性の無効化・タイプによる 0 倍化の両方をキャンセルする
- *   2. 特性による無効化（もちもので解除されていない場合）
- *   3. フィルター系の 0.75 倍（抜群時のみ）
+ *   1. 特性による無効化
+ *   2. フィルター系の 0.75 倍（抜群時のみ）
  *
  * @param baseMultiplier 純粋なタイプ相性計算の結果
  * @param attackingType 攻撃側の技タイプ
- * @param context 防御側の ability / item（英語名 or ID）
+ * @param context 防御側の ability（英語名 or ID）
  * @returns 補正後の倍率
  */
 export function applyDefensiveOverrides(
@@ -79,29 +67,11 @@ export function applyDefensiveOverrides(
 ): number {
   const abilityId =
     context.ability !== undefined ? toId(context.ability) : undefined;
-  const itemId = context.item !== undefined ? toId(context.item) : undefined;
-
-  const hasRingTarget = itemId === RING_TARGET_ITEM_ID;
-  const hasIronBall = itemId === IRON_BALL_ITEM_ID;
 
   let multiplier = baseMultiplier;
 
-  // もちものによる「タイプ由来の 0 倍化」解除。
-  // - リングターゲット: あらゆるタイプ無効を等倍に戻す
-  // - くろいてっきゅう: じめん技の無効（ひこう / ふゆう等の合成結果）を等倍に戻す
-  if (multiplier === IMMUNE_MULTIPLIER) {
-    if (hasRingTarget) {
-      multiplier = NEUTRAL_MULTIPLIER;
-    } else if (hasIronBall && attackingType === "Ground") {
-      multiplier = NEUTRAL_MULTIPLIER;
-    }
-  }
-
   // 特性による無効化判定。
-  // リングターゲット所持時、または くろいてっきゅう 所持時の じめん技 は特性を上書きしない。
-  const ignoreAbilityImmunity =
-    hasRingTarget || (hasIronBall && attackingType === "Ground");
-  if (abilityId !== undefined && !ignoreAbilityImmunity) {
+  if (abilityId !== undefined) {
     const immuneType = TYPE_IMMUNITY_ABILITIES.get(abilityId);
     if (immuneType !== undefined && attackingType === immuneType) {
       return IMMUNE_MULTIPLIER;
