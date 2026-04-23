@@ -454,4 +454,203 @@ describe("analyze_party_coverage logic", () => {
       expect(out.coverage.find((c) => c.defenderType === "Flying")?.maxMultiplier).toBe(SUPER_EFFECTIVE);
     });
   });
+
+  describe("dualTypeCoverage × タイプ変更系特性の反映", () => {
+    // タイプ相性の倍率
+    const QUAD_EFFECTIVE = 4;
+    const SUPER_EFFECTIVE = 2;
+    const NO_EFFECT = 0;
+
+    // 防御側の代表的な複合タイプ（英名辞書順）
+    const DARK_DRAGON: readonly [string, string] = ["Dark", "Dragon"];
+
+    // 攻撃側のパーティ定義
+    const PIXILATE_MEGA_ALTARIA = {
+      name: "メガチルタリス",
+      ability: "Pixilate",
+    };
+    const PIXILATE_MEGA_ALTARIA_JA = {
+      name: "メガチルタリス",
+      ability: "フェアリースキン",
+    };
+    const HYPER_BEAM_MOVES = { メガチルタリス: ["Hyper Beam"] };
+    const DRAGON_PULSE_MOVES = { メガチルタリス: ["Dragon Pulse"] };
+
+    const GALVANIZE_JOLTEON = {
+      name: "サンダース",
+      ability: "エレキスキン",
+    };
+    const BODY_SLAM_MOVES = { サンダース: ["Body Slam"] };
+
+    /**
+     * 指定した複合タイプのエントリを `dualTypeCoverage` から取り出す。
+     * `defenderTypes` は英名辞書順でソート済みなので、与えた順序どおりに検索する。
+     */
+    function findDualTypeEntry(
+      out: ReturnType<typeof analyzePartyCoverage>,
+      types: readonly [string, string],
+    ): ReturnType<typeof analyzePartyCoverage>["dualTypeCoverage"][number] | undefined {
+      return out.dualTypeCoverage.find(
+        (e) => e.defenderTypes[0] === types[0] && e.defenderTypes[1] === types[1],
+      );
+    }
+
+    it("サザンドラ (Dark/Dragon) は Pixilate 存在確認のデータ前提を満たす", () => {
+      // テスト対象の前提: サザンドラが実在し Dark/Dragon 複合タイプであること
+      const hydreigon = championsPokemon.find((p) => p.name === "Hydreigon");
+      expect(hydreigon).toBeDefined();
+      expect(hydreigon?.types).toEqual(["Dark", "Dragon"]);
+    });
+
+    it("Pixilate + Hyper Beam は サザンドラ (Dark/Dragon) に 4 倍になる", () => {
+      // Arrange
+      const party = {
+        myParty: [PIXILATE_MEGA_ALTARIA],
+        moves: HYPER_BEAM_MOVES,
+      };
+
+      // Act
+      const out = analyzePartyCoverage(party);
+      const darkDragon = findDualTypeEntry(out, DARK_DRAGON);
+
+      // Assert: Fairy は Dark 2倍 × Dragon 2倍 = 4 倍
+      expect(darkDragon).toBeDefined();
+      expect(darkDragon?.maxMultiplier).toBe(QUAD_EFFECTIVE);
+      expect(darkDragon?.bestAttackers).toHaveLength(1);
+      expect(darkDragon?.bestAttackers[0].move).toBe("Hyper Beam");
+      expect(darkDragon?.bestAttackers[0].effectiveType).toBe("Fairy");
+    });
+
+    it("Pixilate + 非ノーマル技（Dragon Pulse）では effectiveType が付与されない（regression）", () => {
+      // Arrange: ノーマル技でない技はタイプ変更対象外
+      const party = {
+        myParty: [PIXILATE_MEGA_ALTARIA],
+        moves: DRAGON_PULSE_MOVES,
+      };
+
+      // Act
+      const out = analyzePartyCoverage(party);
+
+      // Assert: dualTypeCoverage の全エントリで effectiveType は未設定
+      expect(out.dualTypeCoverage.length).toBeGreaterThan(0);
+      for (const entry of out.dualTypeCoverage) {
+        for (const attacker of entry.bestAttackers) {
+          expect(attacker.effectiveType).toBeUndefined();
+        }
+      }
+      // 攻撃タイプは Dragon のまま（Fairy に変換されていない）
+      expect(out.attackingTypes.some((t) => t.type === "Dragon")).toBe(true);
+      expect(out.attackingTypes.some((t) => t.type === "Fairy")).toBe(false);
+    });
+
+    it("未知特性は silent fallback し Normal として評価される（dualType 側）", () => {
+      // Arrange: ガブリアス + 未知特性 + Hyper Beam
+      const UNKNOWN_ABILITY_PARTY = {
+        myParty: [{ name: "ガブリアス", ability: "そんなとくせいない" }],
+        moves: { ガブリアス: ["Hyper Beam"] },
+      };
+
+      // Act
+      const out = analyzePartyCoverage(UNKNOWN_ABILITY_PARTY);
+
+      // Assert: 攻撃タイプは Normal のまま、effectiveType は付与されない
+      expect(out.attackingTypes.some((t) => t.type === "Normal")).toBe(true);
+      expect(out.attackingTypes.some((t) => t.type === "Fairy")).toBe(false);
+      expect(out.dualTypeCoverage.length).toBeGreaterThan(0);
+      for (const entry of out.dualTypeCoverage) {
+        for (const attacker of entry.bestAttackers) {
+          expect(attacker.effectiveType).toBeUndefined();
+        }
+      }
+    });
+
+    it("日本語特性名（フェアリースキン）でも dualTypeCoverage に反映される", () => {
+      // Arrange: 英語名 "Pixilate" と同じ挙動になるはず
+      const party = {
+        myParty: [PIXILATE_MEGA_ALTARIA_JA],
+        moves: HYPER_BEAM_MOVES,
+      };
+
+      // Act
+      const out = analyzePartyCoverage(party);
+      const darkDragon = findDualTypeEntry(out, DARK_DRAGON);
+
+      // Assert
+      expect(darkDragon?.maxMultiplier).toBe(QUAD_EFFECTIVE);
+      expect(darkDragon?.bestAttackers[0].effectiveType).toBe("Fairy");
+    });
+
+    it("単一 coverage と dualTypeCoverage で effectiveType が一致する（対称性）", () => {
+      // Arrange: 同一パーティ・同一特性
+      const party = {
+        myParty: [PIXILATE_MEGA_ALTARIA],
+        moves: HYPER_BEAM_MOVES,
+      };
+
+      // Act
+      const out = analyzePartyCoverage(party);
+      const singleDragon = out.coverage.find((c) => c.defenderType === "Dragon");
+      const darkDragon = findDualTypeEntry(out, DARK_DRAGON);
+
+      // Assert: 単一 Dragon に対して Fairy として 2 倍、複合 Dark/Dragon に対しても Fairy として 4 倍
+      expect(singleDragon?.maxMultiplier).toBe(SUPER_EFFECTIVE);
+      expect(singleDragon?.bestAttackers[0].effectiveType).toBe("Fairy");
+      expect(darkDragon?.maxMultiplier).toBe(QUAD_EFFECTIVE);
+      expect(darkDragon?.bestAttackers[0].effectiveType).toBe("Fairy");
+      // 両側が同じ effectiveType であること（対称性）
+      expect(singleDragon?.bestAttackers[0].effectiveType).toBe(
+        darkDragon?.bestAttackers[0].effectiveType,
+      );
+    });
+
+    it("Galvanize + Body Slam は Electric として dualType 側でも評価される", () => {
+      // Arrange: Ground を含む複合タイプは でんき技に 0 倍
+      const GROUND_ROCK: readonly [string, string] = ["Ground", "Rock"];
+      const party = {
+        myParty: [GALVANIZE_JOLTEON],
+        moves: BODY_SLAM_MOVES,
+      };
+
+      // Act
+      const out = analyzePartyCoverage(party);
+      const groundRock = findDualTypeEntry(out, GROUND_ROCK);
+
+      // Assert: Ground を含むので でんき技は 0 倍
+      expect(groundRock).toBeDefined();
+      expect(groundRock?.maxMultiplier).toBe(NO_EFFECT);
+      // 0 倍エントリは bestAttackers に列挙しない仕様
+      expect(groundRock?.bestAttackers).toHaveLength(0);
+
+      // 単一 Ground タイプ側も 0 倍で、Electric 技しかないパーティなので uncovered
+      const single = out.coverage.find((c) => c.defenderType === "Ground");
+      expect(single?.maxMultiplier).toBe(NO_EFFECT);
+    });
+
+    it("Galvanize + Body Slam は Water タイプ複合に Electric として 2 倍を出す（単一-複合の対称性）", () => {
+      // Arrange: Water/X (X != Ground) なら Electric は 2 倍
+      // 実在する Water 複合として Water/Flying (ギャラドス等) を採用
+      const WATER_FLYING: readonly [string, string] = ["Flying", "Water"];
+      const party = {
+        myParty: [GALVANIZE_JOLTEON],
+        moves: BODY_SLAM_MOVES,
+      };
+
+      // Act
+      const out = analyzePartyCoverage(party);
+      const waterFlying = findDualTypeEntry(out, WATER_FLYING);
+      const singleWater = out.coverage.find((c) => c.defenderType === "Water");
+
+      // Assert: Water/Flying は Electric に 4 倍（Water 2倍 × Flying 2倍）
+      expect(waterFlying?.maxMultiplier).toBe(QUAD_EFFECTIVE);
+      expect(waterFlying?.bestAttackers[0].move).toBe("Body Slam");
+      expect(waterFlying?.bestAttackers[0].effectiveType).toBe("Electric");
+
+      // 単一 Water 側は 2 倍 + effectiveType === "Electric"（対称性）
+      expect(singleWater?.maxMultiplier).toBe(SUPER_EFFECTIVE);
+      expect(singleWater?.bestAttackers[0].effectiveType).toBe("Electric");
+      expect(singleWater?.bestAttackers[0].effectiveType).toBe(
+        waterFlying?.bestAttackers[0].effectiveType,
+      );
+    });
+  });
 });
