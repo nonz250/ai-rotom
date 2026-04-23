@@ -386,3 +386,163 @@ describe("find_counters Top N 廃止", () => {
     LONG_RUN_TIMEOUT_MS,
   );
 });
+
+/**
+ * #23: outgoing / incoming の各 DamageCalcResult に
+ * moveType / typeMultiplier / isStab / effectivePowerMultiplier が
+ * 流れてくることを検証する。shared 側の拡張 (#14) が
+ * find_counters の出力にそのまま伝播することが狙い。
+ */
+describe("find_counters の outgoing / incoming に STAB / タイプ相性フィールドが含まれる", () => {
+  let output: FindCountersOutput;
+
+  /** ガブリアス (Dragon/Ground) の対策候補に Dark/Ice と Ice/Ground を置く */
+  beforeAll(async () => {
+    output = await callFindCounters({
+      target: { name: "ガブリアス" },
+      candidatePool: ["マニューラ", "マンムー"],
+    });
+  });
+
+  /** 対称性のあるダブル弱点倍率: Ice vs Dragon/Ground = 4x */
+  const QUAD_EFFECTIVE = 4;
+  /** 等倍 */
+  const NEUTRAL = 1;
+  /** 通常 STAB 倍率 */
+  const STAB = 1.5;
+
+  function getWeavile() {
+    const entry = output.counters.find((c) => c.pokemon.name === "Weavile");
+    expect(entry).toBeDefined();
+    return entry!;
+  }
+
+  function getMamoswine() {
+    const entry = output.counters.find((c) => c.pokemon.name === "Mamoswine");
+    expect(entry).toBeDefined();
+    return entry!;
+  }
+
+  it("outgoing の各要素に moveType / typeMultiplier / isStab / effectivePowerMultiplier が設定されている", () => {
+    const weavile = getWeavile();
+    expect(weavile.outgoing.length).toBeGreaterThan(0);
+    for (const r of weavile.outgoing) {
+      expect(typeof r.moveType).toBe("string");
+      expect(r.moveType.length).toBeGreaterThan(0);
+      expect(typeof r.typeMultiplier).toBe("number");
+      expect(typeof r.isStab).toBe("boolean");
+      expect(typeof r.effectivePowerMultiplier).toBe("number");
+    }
+  });
+
+  it("incoming の各要素に moveType / typeMultiplier / isStab / effectivePowerMultiplier が設定されている", () => {
+    const weavile = getWeavile();
+    expect(weavile.incoming.length).toBeGreaterThan(0);
+    for (const r of weavile.incoming) {
+      expect(typeof r.moveType).toBe("string");
+      expect(r.moveType.length).toBeGreaterThan(0);
+      expect(typeof r.typeMultiplier).toBe("number");
+      expect(typeof r.isStab).toBe("boolean");
+      expect(typeof r.effectivePowerMultiplier).toBe("number");
+    }
+  });
+
+  it("マニューラ (Dark/Ice) の Ice 技は Garchomp (Dragon/Ground) に STAB 4 倍で刺さる", () => {
+    const weavile = getWeavile();
+    const iceMoves = weavile.outgoing.filter((r) => r.moveType === "Ice");
+    expect(iceMoves.length).toBeGreaterThan(0);
+    for (const r of iceMoves) {
+      expect(r.isStab).toBe(true);
+      expect(r.typeMultiplier).toBe(QUAD_EFFECTIVE);
+      // STAB (1.5) × 4x = 6
+      expect(r.effectivePowerMultiplier).toBeCloseTo(STAB * QUAD_EFFECTIVE);
+    }
+  });
+
+  it("マニューラ (Dark/Ice) の Dark 技は Garchomp (Dragon/Ground) に STAB 等倍で刺さる", () => {
+    const weavile = getWeavile();
+    const darkMoves = weavile.outgoing.filter((r) => r.moveType === "Dark");
+    expect(darkMoves.length).toBeGreaterThan(0);
+    for (const r of darkMoves) {
+      expect(r.isStab).toBe(true);
+      expect(r.typeMultiplier).toBe(NEUTRAL);
+      expect(r.effectivePowerMultiplier).toBeCloseTo(STAB * NEUTRAL);
+    }
+  });
+
+  it("マニューラ (Dark/Ice) の非 STAB 技は isStab=false で effectivePowerMultiplier に STAB がかからない", () => {
+    const weavile = getWeavile();
+    const nonStab = weavile.outgoing.filter(
+      (r) => r.moveType !== "Dark" && r.moveType !== "Ice",
+    );
+    expect(nonStab.length).toBeGreaterThan(0);
+    for (const r of nonStab) {
+      expect(r.isStab).toBe(false);
+      // isStab=false のとき stabMultiplier は 1、つまり
+      // effectivePowerMultiplier === typeMultiplier
+      expect(r.effectivePowerMultiplier).toBeCloseTo(r.typeMultiplier);
+    }
+  });
+
+  it("マンムー (Ice/Ground) の Ice 技も Garchomp に対して STAB 4 倍", () => {
+    const mamoswine = getMamoswine();
+    const iceMoves = mamoswine.outgoing.filter((r) => r.moveType === "Ice");
+    expect(iceMoves.length).toBeGreaterThan(0);
+    for (const r of iceMoves) {
+      expect(r.isStab).toBe(true);
+      expect(r.typeMultiplier).toBe(QUAD_EFFECTIVE);
+      expect(r.effectivePowerMultiplier).toBeCloseTo(STAB * QUAD_EFFECTIVE);
+    }
+  });
+
+  it("incoming の Ground 技は Garchomp 側の STAB で、候補ポケモンのタイプに応じて倍率が変わる", () => {
+    // Weavile (Dark/Ice) への Ground 技: Dark/Ice どちらにも 1x → 等倍
+    const weavile = getWeavile();
+    const weavileGround = weavile.incoming.filter(
+      (r) => r.moveType === "Ground",
+    );
+    expect(weavileGround.length).toBeGreaterThan(0);
+    for (const r of weavileGround) {
+      expect(r.isStab).toBe(true); // Garchomp が Ground 型なので STAB
+      expect(r.typeMultiplier).toBe(NEUTRAL);
+    }
+
+    // Mamoswine (Ice/Ground) への Ground 技: Ice=1x, Ground=1x → 等倍
+    const mamoswine = getMamoswine();
+    const mamoGround = mamoswine.incoming.filter((r) => r.moveType === "Ground");
+    expect(mamoGround.length).toBeGreaterThan(0);
+    for (const r of mamoGround) {
+      expect(r.isStab).toBe(true);
+      expect(r.typeMultiplier).toBe(NEUTRAL);
+    }
+  });
+
+  it("STAB 判定は attacker 基準 (同じ技でも outgoing と incoming で値が逆になる)", () => {
+    // Dig (Ground) は Weavile (Dark/Ice) と Garchomp (Dragon/Ground) 双方の
+    // learnset に存在する前提で、attacker 基準 STAB 判定の対称性を確定的にアサートする。
+    const weavile = getWeavile();
+
+    const outgoingDig = weavile.outgoing.find((r) => r.move === "Dig");
+    const incomingDig = weavile.incoming.find((r) => r.move === "Dig");
+
+    expect(outgoingDig).toBeDefined();
+    expect(incomingDig).toBeDefined();
+
+    expect(outgoingDig!.moveType).toBe("Ground");
+    expect(outgoingDig!.isStab).toBe(false);
+
+    expect(incomingDig!.moveType).toBe("Ground");
+    expect(incomingDig!.isStab).toBe(true);
+  });
+
+  it("複合タイプに対する typeMultiplier は二つのタイプの積になる", () => {
+    const weavile = getWeavile();
+    // Ice vs Dragon = 2, Ice vs Ground = 2 → 4
+    const iceSample = weavile.outgoing.find((r) => r.moveType === "Ice");
+    expect(iceSample?.typeMultiplier).toBe(QUAD_EFFECTIVE);
+
+    // Dark vs Dragon = 1, Dark vs Ground = 1 → 1
+    const darkSample = weavile.outgoing.find((r) => r.moveType === "Dark");
+    expect(darkSample?.typeMultiplier).toBe(NEUTRAL);
+  });
+});
