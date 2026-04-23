@@ -386,4 +386,81 @@ describe("analyze_selection logic", () => {
     });
   });
 
+  describe("battleFormat による AoE 技のダメージ補正", () => {
+    // 全体攻撃技 (target: allAdjacent / allAdjacentFoes) は doubles で威力 ×0.75 になる。
+    // @smogon/calc Gen 0 champions mechanics が自動適用する想定。
+    const AOE_DOUBLES_MULTIPLIER = 3072 / 4096;
+    const TOLERANCE = 0.06;
+
+    it("じしん (allAdjacent) はダブル指定時にシングル比でおおむね 0.75 倍になる", () => {
+      // 防御側は Ground 無効を持たないポケモン (カビゴンは Normal 単タイプ)。
+      const attacker = { name: "ガブリアス" };
+      const defender = { name: "カビゴン" };
+
+      const singlesResult = adapter.calculate({
+        attacker,
+        defender,
+        moveName: "じしん",
+        conditions: { battleFormat: "singles" },
+      });
+
+      const doublesResult = adapter.calculate({
+        attacker,
+        defender,
+        moveName: "じしん",
+        conditions: { battleFormat: "doubles" },
+      });
+
+      expect(singlesResult.max).toBeGreaterThan(0);
+      expect(doublesResult.max).toBeGreaterThan(0);
+
+      const ratio = doublesResult.max / singlesResult.max;
+      expect(ratio).toBeGreaterThan(AOE_DOUBLES_MULTIPLIER - TOLERANCE);
+      expect(ratio).toBeLessThan(AOE_DOUBLES_MULTIPLIER + TOLERANCE);
+    });
+
+    it("単体技 (れいとうビーム) はダブル指定でもダメージが変わらない", () => {
+      const attacker = { name: "リザードン" };
+      const defender = { name: "ガブリアス" };
+
+      const singlesResult = adapter.calculate({
+        attacker,
+        defender,
+        moveName: "れいとうビーム",
+        conditions: { battleFormat: "singles" },
+      });
+
+      const doublesResult = adapter.calculate({
+        attacker,
+        defender,
+        moveName: "れいとうビーム",
+        conditions: { battleFormat: "doubles" },
+      });
+
+      expect(singlesResult.max).toBe(doublesResult.max);
+      expect(singlesResult.min).toBe(doublesResult.min);
+    });
+
+    it("conditions 省略時は singles 扱い (既存挙動と同じ)", () => {
+      // 防御側は Ground 無効を持たないポケモン (カビゴンは Normal 単タイプ)。
+      const attacker = { name: "ガブリアス" };
+      const defender = { name: "カビゴン" };
+
+      const noConditionsResult = adapter.calculate({
+        attacker,
+        defender,
+        moveName: "じしん",
+      });
+
+      const singlesResult = adapter.calculate({
+        attacker,
+        defender,
+        moveName: "じしん",
+        conditions: { battleFormat: "singles" },
+      });
+
+      expect(noConditionsResult.max).toBe(singlesResult.max);
+      expect(noConditionsResult.min).toBe(singlesResult.min);
+    });
+  });
 });

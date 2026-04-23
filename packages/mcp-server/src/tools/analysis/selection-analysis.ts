@@ -10,6 +10,7 @@ import {
   filterResultsByLearnset,
   pokemonSchema,
   type BaseStats,
+  type ConditionsInput,
   type DamageCalcResult,
   type PriorityMoveInfo,
   type SpeedComparison,
@@ -184,6 +185,7 @@ function resolveMovesMap(
  * movesMap に指定があればそれを、無ければ全技で計算する。
  * movesMap 未指定経路では attacker の learnset でフィルタし、覚えない技での過大評価を避ける。
  * 明示指定経路は learnset フィルタを掛けない（ユーザーの明示選択を尊重する既存仕様を維持）。
+ * conditions (battleFormat 等) を calculator に伝える。
  */
 export function calculateDamageForMatchup(
   calculator: DamageCalculatorAdapter,
@@ -192,6 +194,7 @@ export function calculateDamageForMatchup(
   attackerId: string,
   attackerLearnsetIds: ReadonlySet<string>,
   movesMap: Map<string, string[]>,
+  conditions?: ConditionsInput,
 ): DamageCalcResult[] {
   const explicitMoves = movesMap.get(attackerId);
   if (explicitMoves !== undefined && explicitMoves.length > 0) {
@@ -203,6 +206,7 @@ export function calculateDamageForMatchup(
             attacker,
             defender,
             moveName,
+            conditions,
           }),
         );
       } catch {
@@ -212,7 +216,7 @@ export function calculateDamageForMatchup(
     results.sort((a, b) => b.max - a.max);
     return results;
   }
-  const allResults = calculator.calculateAllMoves({ attacker, defender });
+  const allResults = calculator.calculateAllMoves({ attacker, defender, conditions });
   return filterResultsByLearnset(allResults, attackerLearnsetIds, toDataId);
 }
 
@@ -232,6 +236,12 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
     try {
       const gen = Generations.get(CHAMPIONS_GEN_NUM);
       const movesMap = resolveMovesMap(args.moves);
+
+      // battleFormat (トップレベル) を conditions に詰め直してダメ計に伝える。
+      // これがないと @smogon/calc 側でダブル補正 (AoE 技 ×0.75 等) が効かない。
+      const damageConditions: ConditionsInput = {
+        battleFormat: args.battleFormat,
+      };
 
       // プロフィール作成
       interface PartyMemberContext {
@@ -320,6 +330,7 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
               mine.entryId,
               myLearnsetIds.get(mine.entryId) ?? new Set(),
               movesMap,
+              damageConditions,
             );
             damageEstimate = bestDamageEstimate(
               results,
