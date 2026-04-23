@@ -191,7 +191,7 @@ TS6059 エラーにならないようにしている。
 | `analyze_party_weakness` | パーティ弱点分析 |
 | `analyze_party_coverage` | パーティ攻撃カバレッジ分析 |
 | `analyze_selection` | 6v6 選出判断一括分析 |
-| `find_counters` | 対策候補 TOP 10 |
+| `find_counters` | 対策候補の双方向ダメ計・素早さ・タイプ相性（判断は AI 側） |
 
 - MCP SDK: `@modelcontextprotocol/sdk`
 - 入力は日本語名で受け付ける（内部で英語名に変換して `@smogon/calc` に渡す）
