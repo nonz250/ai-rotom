@@ -69,6 +69,7 @@ const TOOL_DESCRIPTION =
   + "`strategy` で対策パターン (speed_kill / tank_then_kill / type_wall) を識別する。"
   + "`candidatePool` は文字列（名前のみ）と PokemonInput オブジェクト（ability / item / nature / evs 指定）を混在可能で、同一ポケモンの build 違い比較にも対応する。"
   + "正確な計算のため target 側の ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。"
+  + "スコアは候補抽出のための目安であり、最終的な採用判断はダメ計・素早さ・対面状況を元に AI が総合的に行う前提。"
   + "ポケモンチャンピオンズ対応。";
 
 const battleFormatValues = ["singles", "doubles"] as const;
