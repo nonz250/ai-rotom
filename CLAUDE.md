@@ -189,7 +189,7 @@ TS6059 エラーにならないようにしている。
 |---|---|
 | `analyze_matchup` | 2 体対面分析 |
 | `analyze_party_weakness` | パーティ弱点分析 |
-| `analyze_party_coverage` | パーティ攻撃カバレッジ分析 |
+| `analyze_party_coverage` | パーティ攻撃カバレッジ分析（単一 18 タイプ + 実在複合タイプ） |
 | `analyze_selection` | 6v6 選出判断一括分析 |
 | `find_counters` | 対策候補の双方向ダメ計・素早さ・タイプ相性（判断は AI 側） |
 
