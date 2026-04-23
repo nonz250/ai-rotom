@@ -127,7 +127,7 @@ e.g.) `find_counters` が呼ばれ、カバルドンの弱点タイプ（みず/
 
 > 「リザードン、ギャラドス、ピカチュウの 3 体パーティに足りないタイプ耐性は？」
 
-e.g.) `analyze_party_weakness` が呼ばれ、致命的弱点・カバーが薄いタイプをレポートします。
+e.g.) `analyze_party_weakness` が呼ばれ、各タイプを弱点に持つメンバー数（`teamWeaknesses`）と抜群を取れないタイプ（`uncoveredTypes`）を返します。致命性の判断は AI が文脈で行います。
 
 ## 既知の制限
 
