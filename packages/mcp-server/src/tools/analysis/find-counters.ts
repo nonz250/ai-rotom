@@ -6,6 +6,7 @@ import {
   DamageCalculatorAdapter,
   calculateTypeEffectiveness,
   compareSpeed,
+  extractPriorityMoves,
   filterResultsByLearnset,
   pokemonSchema,
   type BaseStats,
@@ -13,8 +14,10 @@ import {
   type ConditionsInput,
   type DamageCalcResult,
   type EvsInput,
+  type MoveInfoForPriority,
   type PokemonEntry,
   type PokemonInput,
+  type PriorityMoveInfo,
   type SpeedComparison,
 } from "@ai-rotom/shared";
 import {
@@ -107,6 +110,11 @@ export interface CounterEntry {
   speedCompare: SpeedComparison;
   outgoing: DamageCalcResult[];
   incoming: DamageCalcResult[];
+  /**
+   * 候補が覚える先制技の一覧（priority 降順）。
+   * 技単位の静的 priority のみ。特性補正（いたずらごころ等）は含まない。
+   */
+  priorityMoves: PriorityMoveInfo[];
 }
 
 export interface TargetInfo {
@@ -114,11 +122,42 @@ export interface TargetInfo {
   nameJa: string;
   stats: BaseStats;
   typeWeaknesses: TargetTypeWeakness[];
+  /**
+   * target が覚える先制技の一覧（priority 降順）。
+   * 技単位の静的 priority のみ。特性補正（いたずらごころ等）は含まない。
+   */
+  priorityMoves: PriorityMoveInfo[];
 }
 
 export interface FindCountersOutput {
   target: TargetInfo;
   counters: CounterEntry[];
+}
+
+/**
+ * extractPriorityMoves 用の move 解決。learnset ID から MoveEntry を引く。
+ */
+function resolveMoveForPriority(id: string): MoveInfoForPriority | undefined {
+  return movesById.get(id);
+}
+
+/**
+ * extractPriorityMoves 用の日本語名解決。
+ */
+function moveToJapanese(en: string): string | undefined {
+  return moveNameResolver.toJapanese(en);
+}
+
+/**
+ * 指定ポケモン ID の learnset から先制技のみを抽出する。
+ * learnset データが無い場合は空配列を返す。
+ */
+function buildPriorityMoves(pokemonId: string): PriorityMoveInfo[] {
+  return extractPriorityMoves({
+    learnsetMoveIds: championsLearnsets[pokemonId] ?? [],
+    resolveMove: resolveMoveForPriority,
+    toJapanese: moveToJapanese,
+  });
 }
 
 /**
@@ -426,6 +465,7 @@ export function registerFindCountersTool(server: McpServer): void {
           speedCompare,
           outgoing,
           incoming,
+          priorityMoves: buildPriorityMoves(candidateEntry.id),
           sortKey: buildSignature(candidate),
         });
       }
@@ -442,6 +482,7 @@ export function registerFindCountersTool(server: McpServer): void {
           nameJa: targetNameJa,
           stats: targetStats,
           typeWeaknesses,
+          priorityMoves: buildPriorityMoves(targetEntry.id),
         },
         counters: counterEntries.map(({ sortKey: _sortKey, ...rest }) => rest),
       };
