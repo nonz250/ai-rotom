@@ -125,4 +125,37 @@ describe("SERVER_INSTRUCTIONS", () => {
     expect(responsibilityIndex).toBeGreaterThan(-1);
     expect(statPointsIndex).toBeLessThan(responsibilityIndex);
   });
+
+  it("guides clients to call list_parties at session start", () => {
+    // セッション開始時に保存済みパーティの名前一覧を把握させるため、
+    // list_parties を呼ぶ誘導が instructions に存在することを固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("## パーティデータの扱い");
+    expect(SERVER_INSTRUCTIONS).toContain("セッション開始時");
+    expect(SERVER_INSTRUCTIONS).toContain("list_parties");
+  });
+
+  it("guides clients to load full details only on demand", () => {
+    // 起動時の詳細自動読み込みを禁止し、ユーザーの言及時に load_party で
+    // 詳細を取得する運用を固定化する (トークン消費抑制)。
+    expect(SERVER_INSTRUCTIONS).toContain("load_party");
+    expect(SERVER_INSTRUCTIONS).toContain("トークン消費");
+  });
+
+  it("guides clients to confirm before save_party and delete_party", () => {
+    // ユーザー同意なしに save_party / delete_party を呼ばせない方針を
+    // instructions に固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("save_party");
+    expect(SERVER_INSTRUCTIONS).toContain("delete_party");
+    expect(SERVER_INSTRUCTIONS).toContain("確認");
+  });
+
+  it("places party data section after existing usage guidance", () => {
+    // 既存の固有仕様・使い方ガイドの後ろに「パーティデータの扱い」を
+    // 追加する設計順序を固定化する。
+    const usageIndex = SERVER_INSTRUCTIONS.indexOf("## 推奨される使い方");
+    const partyIndex = SERVER_INSTRUCTIONS.indexOf("## パーティデータの扱い");
+    expect(usageIndex).toBeGreaterThan(-1);
+    expect(partyIndex).toBeGreaterThan(-1);
+    expect(usageIndex).toBeLessThan(partyIndex);
+  });
 });
