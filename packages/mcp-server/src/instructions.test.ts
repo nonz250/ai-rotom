@@ -158,4 +158,52 @@ describe("SERVER_INSTRUCTIONS", () => {
     expect(partyIndex).toBeGreaterThan(-1);
     expect(usageIndex).toBeLessThan(partyIndex);
   });
+
+  it("guides the interactive party registration workflow", () => {
+    // テキスト貼付できないユーザー向けに、AI が段階的ヒアリングを行う
+    // 対話スタイルを instructions で誘導する設計意図を固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("パーティ登録の対話スタイル");
+    expect(SERVER_INSTRUCTIONS).toContain("ケース A");
+    expect(SERVER_INSTRUCTIONS).toContain("ケース B");
+  });
+
+  it("routes pasted text / screenshot cases through import_party_from_text", () => {
+    // テキスト貼付・スクショ添付いずれも同じツールに集約する方針を固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("import_party_from_text");
+    expect(SERVER_INSTRUCTIONS).toContain("ポケソルテキスト");
+    expect(SERVER_INSTRUCTIONS).toContain("スクショ");
+  });
+
+  it("mandates pokesol-text confirmation step before import", () => {
+    // ハルシネーション対策として、対話結果をポケソルテキスト形式に整理し、
+    // ユーザー確認を取ってから import を呼ぶフローを固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("整理ステップ");
+    expect(SERVER_INSTRUCTIONS).toContain("ユーザーに確認");
+    expect(SERVER_INSTRUCTIONS).toContain("calculate_stats");
+  });
+
+  it("forbids direct save_party with AI-constructed JSON", () => {
+    // B-1 方式 (JSON を組み立てて save_party に直接渡す) を明示的に禁止する
+    // 設計意図を固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("save_party を直接呼ばない");
+    expect(SERVER_INSTRUCTIONS).toContain("ユーザー確認なしに save / import を実行しない");
+  });
+
+  it("lists the ordered fields to collect during interactive hearing", () => {
+    // 1 匹あたりのヒアリング順序 (名前 → 性格 → 特性 → もちもの → 技 → SP) を
+    // instructions で明示する設計意図を固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("ポケモン名");
+    expect(SERVER_INSTRUCTIONS).toContain("性格");
+    expect(SERVER_INSTRUCTIONS).toContain("特性");
+    expect(SERVER_INSTRUCTIONS).toContain("もちもの");
+    expect(SERVER_INSTRUCTIONS).toContain("SP 配分");
+  });
+
+  it("keeps SP range in the interactive guide aligned with constants", () => {
+    // 対話中に SP 範囲を提示する箇所がマジックナンバー化せず、
+    // 既存定数 (MAX_STAT_POINT_PER_STAT / MAX_STAT_POINT_TOTAL) と整合することを保証する。
+    expect(SERVER_INSTRUCTIONS).toContain(
+      `各 0〜${MAX_STAT_POINT_PER_STAT} / 合計 0〜${MAX_STAT_POINT_TOTAL}`,
+    );
+  });
 });
