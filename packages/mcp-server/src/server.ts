@@ -7,6 +7,7 @@ import { registerConditionInfoTool } from "./tools/info/condition-info.js";
 import { registerDamageCalculationTools } from "./tools/calc/damage-calculation.js";
 import { registerDamageRangeTool } from "./tools/calc/damage-range.js";
 import { registerFindCountersTool } from "./tools/analysis/find-counters.js";
+import { registerImportPartyFromTextTool } from "./tools/party/import-party-from-text.js";
 import { registerItemInfoTool } from "./tools/info/item-info.js";
 import { registerLearnsetTool } from "./tools/info/learnset.js";
 import { registerMatchupTool } from "./tools/analysis/matchup.js";
@@ -45,6 +46,7 @@ export function createServer(): McpServer {
   registerDamageCalculationTools(server);
   registerDamageRangeTool(server);
   registerFindCountersTool(server);
+  registerImportPartyFromTextTool(server);
   registerItemInfoTool(server);
   registerLearnsetTool(server);
   registerMatchupTool(server);
