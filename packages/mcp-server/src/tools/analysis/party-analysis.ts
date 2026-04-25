@@ -1,13 +1,14 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { Generations } from "@smogon/calc";
-import type { TypeName } from "@smogon/calc/dist/data/interface";
 import {
-  applyDefensiveOverrides,
+  classifyPokemonTypeMatchups,
   calculateTypeEffectiveness,
   pokemonSchema,
+  WEAKNESS_THRESHOLD,
 } from "@ai-rotom/shared";
-import type { DefensiveContextOverrides } from "@ai-rotom/shared";
+import type { TypeName } from "@smogon/calc/dist/data/interface";
+import type { TypeMultiplier } from "@ai-rotom/shared";
 import {
   abilityNameResolver,
   pokemonNameResolver,
@@ -24,39 +25,8 @@ const partyAnalysisInputSchema = {
   party: z.array(pokemonSchema).describe("パーティメンバー"),
 };
 
-/** タイプ相性の倍率しきい値 */
-const WEAKNESS_THRESHOLD = 2;
-const RESISTANCE_THRESHOLD = 1;
-const IMMUNITY_THRESHOLD = 0;
-
-/**
- * タイプ名の英語→日本語マッピング。
- */
-const TYPE_NAME_EN_TO_JA: ReadonlyMap<string, string> = new Map([
-  ["Normal", "ノーマル"],
-  ["Grass", "くさ"],
-  ["Fire", "ほのお"],
-  ["Water", "みず"],
-  ["Electric", "でんき"],
-  ["Ice", "こおり"],
-  ["Flying", "ひこう"],
-  ["Bug", "むし"],
-  ["Poison", "どく"],
-  ["Ground", "じめん"],
-  ["Rock", "いわ"],
-  ["Fighting", "かくとう"],
-  ["Psychic", "エスパー"],
-  ["Ghost", "ゴースト"],
-  ["Dragon", "ドラゴン"],
-  ["Dark", "あく"],
-  ["Steel", "はがね"],
-  ["Fairy", "フェアリー"],
-]);
-
-interface TypeMultiplier {
-  type: string;
-  multiplier: number;
-}
+/** ???タイプは計算対象から除外するためのマーカー */
+const UNKNOWN_TYPE_NAME = "???";
 
 interface MemberAnalysis {
   name: string;
@@ -97,9 +67,6 @@ function resolvePokemonName(name: string): string {
   throw new Error(`ポケモン「${name}」が見つかりません。${suggestionMessage}`);
 }
 
-/** ???タイプは計算対象から除外するためのマーカー */
-const UNKNOWN_TYPE_NAME = "???";
-
 /**
  * 日本語・英語のどちらの名前でも英語名に解決する。
  * 未知の名前は undefined を返し、呼び出し側で silent ignore する。
@@ -113,49 +80,6 @@ function resolveOptionalName(
   if (english !== undefined) return english;
   if (resolver.hasEnglishName(name)) return name;
   return undefined;
-}
-
-/**
- * ポケモンのタイプに対する各攻撃タイプの倍率を計算する。
- * 特性・もちものが指定されていれば相性補正を適用する。
- */
-function calculateTypeMatchups(
-  pokemonTypes: string[],
-  gen: ReturnType<typeof Generations.get>,
-  context: DefensiveContextOverrides = {},
-): {
-  weaknesses: TypeMultiplier[];
-  resistances: TypeMultiplier[];
-  immunities: string[];
-} {
-  const weaknesses: TypeMultiplier[] = [];
-  const resistances: TypeMultiplier[] = [];
-  const immunities: string[] = [];
-
-  const defenderTypes = pokemonTypes as readonly TypeName[];
-
-  for (const attackType of gen.types) {
-    if (attackType.name === UNKNOWN_TYPE_NAME) {
-      continue;
-    }
-
-    const base = calculateTypeEffectiveness(
-      gen,
-      attackType.name,
-      defenderTypes,
-    );
-    const multiplier = applyDefensiveOverrides(base, attackType.name, context);
-
-    if (multiplier === IMMUNITY_THRESHOLD) {
-      immunities.push(attackType.name);
-    } else if (multiplier >= WEAKNESS_THRESHOLD) {
-      weaknesses.push({ type: attackType.name, multiplier });
-    } else if (multiplier < RESISTANCE_THRESHOLD) {
-      resistances.push({ type: attackType.name, multiplier });
-    }
-  }
-
-  return { weaknesses, resistances, immunities };
 }
 
 /**
@@ -230,7 +154,7 @@ export function registerPartyAnalysisTool(server: McpServer): void {
           );
 
           const { weaknesses, resistances, immunities } =
-            calculateTypeMatchups(types, gen, {
+            classifyPokemonTypeMatchups(types, gen, {
               ability: resolvedAbility,
             });
 
