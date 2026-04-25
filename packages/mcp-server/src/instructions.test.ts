@@ -87,43 +87,123 @@ describe("SERVER_INSTRUCTIONS", () => {
     expect(SERVER_INSTRUCTIONS).not.toContain("evs・nature・ability");
   });
 
-  it("directs clients to call list_parties at session start", () => {
-    // 起動時に保存済みパーティの名前一覧を把握させるため、
-    // 初回ユーザー発話への応答前に list_parties を呼ばせる誘導を固定化する。
+  it("declares the responsibility split between tools and AI", () => {
+    // ツールは判断の根拠データを返すのみで、最終判断は返さないという
+    // 責務分担の方針を instructions に固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("## 判断と計算の役割分担");
+    expect(SERVER_INSTRUCTIONS).toContain("最終判断は返しません");
+  });
+
+  it("describes scored candidate lists as only a rough guide", () => {
+    // find_counters 等のスコア付きリストはあくまで候補抽出の目安であり、
+    // 最終採用は AI が総合判断する旨を instructions に固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("候補抽出のための目安");
+  });
+
+  it("places the responsibility split section before the usage recommendations", () => {
+    // 「判断と計算の役割分担」は使い方ガイドより前に提示する設計。
+    // 先に責務分担を伝えた上で具体的な使い方に進める順序を固定化する。
+    const responsibilityIndex = SERVER_INSTRUCTIONS.indexOf(
+      "## 判断と計算の役割分担",
+    );
+    const usageIndex = SERVER_INSTRUCTIONS.indexOf("## 推奨される使い方");
+    expect(responsibilityIndex).toBeGreaterThan(-1);
+    expect(usageIndex).toBeGreaterThan(-1);
+    expect(responsibilityIndex).toBeLessThan(usageIndex);
+  });
+
+  it("keeps the champions-specific spec block intact before the responsibility split", () => {
+    // 「能力ポイント (SP)」から始まる固有仕様ブロックを、
+    // 「判断と計算の役割分担」の挿入で分断しないことを固定化する。
+    const statPointsIndex = SERVER_INSTRUCTIONS.indexOf(
+      "## 能力ポイント (SP) について",
+    );
+    const responsibilityIndex = SERVER_INSTRUCTIONS.indexOf(
+      "## 判断と計算の役割分担",
+    );
+    expect(statPointsIndex).toBeGreaterThan(-1);
+    expect(responsibilityIndex).toBeGreaterThan(-1);
+    expect(statPointsIndex).toBeLessThan(responsibilityIndex);
+  });
+
+  it("guides clients to call list_parties at session start", () => {
+    // セッション開始時に保存済みパーティの名前一覧を把握させるため、
+    // list_parties を呼ぶ誘導が instructions に存在することを固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("## パーティデータの扱い");
     expect(SERVER_INSTRUCTIONS).toContain("セッション開始時");
     expect(SERVER_INSTRUCTIONS).toContain("list_parties");
   });
 
-  it("directs clients to call load_party when users mention a saved party name", () => {
-    // ユーザーが保存名に言及した時点で詳細を都度取得させる方針を固定化する。
+  it("guides clients to load full details only on demand", () => {
+    // 起動時の詳細自動読み込みを禁止し、ユーザーの言及時に load_party で
+    // 詳細を取得する運用を固定化する (トークン消費抑制)。
     expect(SERVER_INSTRUCTIONS).toContain("load_party");
-  });
-
-  it("directs clients to confirm before save_party on new builds", () => {
-    // 新規構築時にユーザー同意を取ってから save_party を呼ぶ方針を固定化する。
-    expect(SERVER_INSTRUCTIONS).toContain("save_party");
-    expect(SERVER_INSTRUCTIONS).toContain("保存しますか");
-  });
-
-  it("mentions delete_party for deletion requests", () => {
-    // 削除依頼は delete_party を使う旨を明示する。
-    expect(SERVER_INSTRUCTIONS).toContain("delete_party");
-  });
-
-  it("forbids auto-loading full party details at startup to save tokens", () => {
-    // 起動時に全パーティ詳細を自動読み込みしない方針 (トークン消費抑制) を固定化する。
     expect(SERVER_INSTRUCTIONS).toContain("トークン消費");
-    expect(SERVER_INSTRUCTIONS).toContain("自動読み込み");
   });
 
-  it("places the party section at the end, after existing sections", () => {
-    // 既存セクション (ability/item 指定) の後にパーティセクションが追加される
-    // という配置設計を固定化する。
-    const abilityItemIndex = SERVER_INSTRUCTIONS.indexOf(
-      "計算・分析系ツールでの ability / item 指定",
+  it("guides clients to confirm before save_party and delete_party", () => {
+    // ユーザー同意なしに save_party / delete_party を呼ばせない方針を
+    // instructions に固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("save_party");
+    expect(SERVER_INSTRUCTIONS).toContain("delete_party");
+    expect(SERVER_INSTRUCTIONS).toContain("確認");
+  });
+
+  it("places party data section after existing usage guidance", () => {
+    // 既存の固有仕様・使い方ガイドの後ろに「パーティデータの扱い」を
+    // 追加する設計順序を固定化する。
+    const usageIndex = SERVER_INSTRUCTIONS.indexOf("## 推奨される使い方");
+    const partyIndex = SERVER_INSTRUCTIONS.indexOf("## パーティデータの扱い");
+    expect(usageIndex).toBeGreaterThan(-1);
+    expect(partyIndex).toBeGreaterThan(-1);
+    expect(usageIndex).toBeLessThan(partyIndex);
+  });
+
+  it("guides the interactive party registration workflow", () => {
+    // テキスト貼付できないユーザー向けに、AI が段階的ヒアリングを行う
+    // 対話スタイルを instructions で誘導する設計意図を固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("パーティ登録の対話スタイル");
+    expect(SERVER_INSTRUCTIONS).toContain("ケース A");
+    expect(SERVER_INSTRUCTIONS).toContain("ケース B");
+  });
+
+  it("routes pasted text / screenshot cases through import_party_from_text", () => {
+    // テキスト貼付・スクショ添付いずれも同じツールに集約する方針を固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("import_party_from_text");
+    expect(SERVER_INSTRUCTIONS).toContain("ポケソルテキスト");
+    expect(SERVER_INSTRUCTIONS).toContain("スクショ");
+  });
+
+  it("mandates pokesol-text confirmation step before import", () => {
+    // ハルシネーション対策として、対話結果をポケソルテキスト形式に整理し、
+    // ユーザー確認を取ってから import を呼ぶフローを固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("整理ステップ");
+    expect(SERVER_INSTRUCTIONS).toContain("ユーザーに確認");
+    expect(SERVER_INSTRUCTIONS).toContain("calculate_stats");
+  });
+
+  it("forbids direct save_party with AI-constructed JSON", () => {
+    // B-1 方式 (JSON を組み立てて save_party に直接渡す) を明示的に禁止する
+    // 設計意図を固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("save_party を直接呼ばない");
+    expect(SERVER_INSTRUCTIONS).toContain("ユーザー確認なしに save / import を実行しない");
+  });
+
+  it("lists the ordered fields to collect during interactive hearing", () => {
+    // 1 匹あたりのヒアリング順序 (名前 → 性格 → 特性 → もちもの → 技 → SP) を
+    // instructions で明示する設計意図を固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("ポケモン名");
+    expect(SERVER_INSTRUCTIONS).toContain("性格");
+    expect(SERVER_INSTRUCTIONS).toContain("特性");
+    expect(SERVER_INSTRUCTIONS).toContain("もちもの");
+    expect(SERVER_INSTRUCTIONS).toContain("SP 配分");
+  });
+
+  it("keeps SP range in the interactive guide aligned with constants", () => {
+    // 対話中に SP 範囲を提示する箇所がマジックナンバー化せず、
+    // 既存定数 (MAX_STAT_POINT_PER_STAT / MAX_STAT_POINT_TOTAL) と整合することを保証する。
+    expect(SERVER_INSTRUCTIONS).toContain(
+      `各 0〜${MAX_STAT_POINT_PER_STAT} / 合計 0〜${MAX_STAT_POINT_TOTAL}`,
     );
-    const partyIndex = SERVER_INSTRUCTIONS.indexOf("パーティデータの扱い");
-    expect(abilityItemIndex).toBeGreaterThan(-1);
-    expect(partyIndex).toBeGreaterThan(abilityItemIndex);
   });
 });

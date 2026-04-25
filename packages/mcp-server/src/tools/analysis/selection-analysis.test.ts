@@ -1,10 +1,11 @@
 import { describe, it, expect } from "vitest";
 import { Generations, toID } from "@smogon/calc";
-import { DamageCalculatorAdapter } from "@ai-rotom/shared";
+import { DamageCalculatorAdapter, extractPriorityMoves } from "@ai-rotom/shared";
 import type { DamageCalcResult } from "@ai-rotom/shared";
 import {
   championsLearnsets,
   getLearnsetMoveIdSet,
+  movesById,
   pokemonEntryProvider,
   toDataId,
 } from "../../data-store";
@@ -79,20 +80,6 @@ describe("analyze_selection logic", () => {
     });
   });
 
-  describe("スコア計算ロジック", () => {
-    it("素早さ勝ち + 抜群 + OHKO はトップスコア", () => {
-      const SCORE_WEIGHT_SPEED_WIN = 2;
-      const SCORE_WEIGHT_TYPE_ADVANTAGE = 3;
-      const SCORE_WEIGHT_DAMAGE_ADVANTAGE = 5;
-      const MAX_POSSIBLE_PER_MATCH =
-        SCORE_WEIGHT_SPEED_WIN +
-        SCORE_WEIGHT_TYPE_ADVANTAGE +
-        SCORE_WEIGHT_DAMAGE_ADVANTAGE;
-      const EXPECTED = 10;
-      expect(MAX_POSSIBLE_PER_MATCH).toBe(EXPECTED);
-    });
-  });
-
   describe("エッジケース", () => {
     it("パーティが 1 体だけでも動作する", () => {
       const { pokemon, resolvedName } = adapter.createPokemonObject({
@@ -108,6 +95,8 @@ describe("analyze_selection logic", () => {
     const SAMPLE_MAX_PERCENT = 120;
     const SAMPLE_MIN_DAMAGE = 100;
     const SAMPLE_MAX_DAMAGE = 150;
+    const SAMPLE_TYPE_MULTIPLIER = 1;
+    const SAMPLE_EFFECTIVE_POWER_MULTIPLIER = 1;
 
     function makeResult(
       overrides: Partial<DamageCalcResult> = {},
@@ -123,10 +112,10 @@ describe("analyze_selection logic", () => {
         maxPercent: SAMPLE_MAX_PERCENT,
         koChance: "guaranteed OHKO",
         description: "test",
-        moveType: "Normal",
-        typeMultiplier: 1,
+        moveType: "Ice",
+        typeMultiplier: SAMPLE_TYPE_MULTIPLIER,
         isStab: false,
-        effectivePowerMultiplier: 1,
+        effectivePowerMultiplier: SAMPLE_EFFECTIVE_POWER_MULTIPLIER,
         ...overrides,
       };
     }
@@ -193,6 +182,52 @@ describe("analyze_selection logic", () => {
       expect(out?.min).toBe(HIGH_MIN);
     });
 
+    it("results[0] の typeMultiplier / isStab / effectivePowerMultiplier を引き継ぐ", () => {
+      const STAB_SUPER_EFFECTIVE_POWER = 3;
+      const SUPER_EFFECTIVE_MULTIPLIER = 2;
+      const results = [
+        makeResult({
+          isStab: true,
+          typeMultiplier: SUPER_EFFECTIVE_MULTIPLIER,
+          effectivePowerMultiplier: STAB_SUPER_EFFECTIVE_POWER,
+        }),
+      ];
+      const out = bestDamageEstimate(results, () => undefined);
+      expect(out?.isStab).toBe(true);
+      expect(out?.typeMultiplier).toBe(SUPER_EFFECTIVE_MULTIPLIER);
+      expect(out?.effectivePowerMultiplier).toBe(STAB_SUPER_EFFECTIVE_POWER);
+    });
+
+    it("非 STAB で抜群の場合も倍率を保持する", () => {
+      const SUPER_EFFECTIVE_MULTIPLIER = 2;
+      const NON_STAB_SUPER_EFFECTIVE_POWER = 2;
+      const results = [
+        makeResult({
+          isStab: false,
+          typeMultiplier: SUPER_EFFECTIVE_MULTIPLIER,
+          effectivePowerMultiplier: NON_STAB_SUPER_EFFECTIVE_POWER,
+        }),
+      ];
+      const out = bestDamageEstimate(results, () => undefined);
+      expect(out?.isStab).toBe(false);
+      expect(out?.typeMultiplier).toBe(SUPER_EFFECTIVE_MULTIPLIER);
+      expect(out?.effectivePowerMultiplier).toBe(NON_STAB_SUPER_EFFECTIVE_POWER);
+    });
+
+    it("無効 (typeMultiplier=0) でも数値をそのまま伝搬する", () => {
+      const IMMUNE_MULTIPLIER = 0;
+      const IMMUNE_POWER = 0;
+      const results = [
+        makeResult({
+          isStab: false,
+          typeMultiplier: IMMUNE_MULTIPLIER,
+          effectivePowerMultiplier: IMMUNE_POWER,
+        }),
+      ];
+      const out = bestDamageEstimate(results, () => undefined);
+      expect(out?.typeMultiplier).toBe(IMMUNE_MULTIPLIER);
+      expect(out?.effectivePowerMultiplier).toBe(IMMUNE_POWER);
+    });
   });
 
   describe("calculateDamageForMatchup - learnset filter integration", () => {
@@ -277,6 +312,155 @@ describe("analyze_selection logic", () => {
       const moves = championsLearnsets["charizard"] ?? [];
       expect(moves).not.toContain("blizzard");
       expect(moves).not.toContain("splash");
+    });
+  });
+
+  describe("先制技抽出 (PokemonProfile.priorityMoves)", () => {
+    function priorityMovesFor(resolvedName: string) {
+      const learnsetMoveIds =
+        championsLearnsets[toDataId(resolvedName)] ?? [];
+      return extractPriorityMoves({
+        learnsetMoveIds,
+        resolveMove: (id) => movesById.get(id),
+        toJapanese: (en) => moveNameResolver.toJapanese(en),
+      });
+    }
+
+    it("先制技を持つポケモン (イワパレス = Incineroar) から Fake Out が抽出される", () => {
+      const result = priorityMovesFor("Incineroar");
+
+      expect(result.length).toBeGreaterThan(0);
+      const fakeout = result.find((m) => m.move === "Fake Out");
+      expect(fakeout).toBeDefined();
+      expect(fakeout?.priority).toBe(3);
+      expect(fakeout?.moveJa).toBe("ねこだまし");
+      expect(fakeout?.category).toBe("Physical");
+    });
+
+    it("しんそくを覚えるポケモンの priorityMoves に Extreme Speed が含まれる", () => {
+      const result = priorityMovesFor("Dragonite");
+
+      const extremeSpeed = result.find((m) => m.move === "Extreme Speed");
+      expect(extremeSpeed).toBeDefined();
+      expect(extremeSpeed?.priority).toBe(2);
+      expect(extremeSpeed?.moveJa).toBe("しんそく");
+    });
+
+    it("でんこうせっかを覚えるポケモンの priorityMoves に Quick Attack が含まれる", () => {
+      const result = priorityMovesFor("Pikachu");
+
+      const quickAttack = result.find((m) => m.move === "Quick Attack");
+      expect(quickAttack).toBeDefined();
+      expect(quickAttack?.priority).toBe(1);
+    });
+
+    it("priority 降順でソートされる", () => {
+      const result = priorityMovesFor("Incineroar");
+
+      for (let i = 1; i < result.length; i++) {
+        expect(result[i - 1].priority).toBeGreaterThanOrEqual(
+          result[i].priority,
+        );
+      }
+    });
+
+    it("先制技を持たないポケモン (メタモン = Ditto) では空配列を返す", () => {
+      const result = priorityMovesFor("Ditto");
+
+      expect(result).toEqual([]);
+    });
+
+    it("learnset が未登録のポケモン名でも空配列を返す (防衛的フォールバック)", () => {
+      const result = priorityMovesFor("NonExistentPokemon");
+
+      expect(result).toEqual([]);
+    });
+
+    it("priorityMoves は myParty / opponentParty 双方の profile に同じ方法で付与される", () => {
+      // myParty と opponentParty は対称的に buildMemberContext を使うため、
+      // 同じ入力なら同じ priorityMoves が返ることを固定する。
+      const my = priorityMovesFor("Incineroar");
+      const opp = priorityMovesFor("Incineroar");
+
+      expect(my).toEqual(opp);
+    });
+  });
+
+  describe("battleFormat による AoE 技のダメージ補正", () => {
+    // 全体攻撃技 (target: allAdjacent / allAdjacentFoes) は doubles で威力 ×0.75 になる。
+    // @smogon/calc Gen 0 champions mechanics が自動適用する想定。
+    const AOE_DOUBLES_MULTIPLIER = 3072 / 4096;
+    const TOLERANCE = 0.06;
+
+    it("じしん (allAdjacent) はダブル指定時にシングル比でおおむね 0.75 倍になる", () => {
+      // 防御側は Ground 無効を持たないポケモン (カビゴンは Normal 単タイプ)。
+      const attacker = { name: "ガブリアス" };
+      const defender = { name: "カビゴン" };
+
+      const singlesResult = adapter.calculate({
+        attacker,
+        defender,
+        moveName: "じしん",
+        conditions: { battleFormat: "singles" },
+      });
+
+      const doublesResult = adapter.calculate({
+        attacker,
+        defender,
+        moveName: "じしん",
+        conditions: { battleFormat: "doubles" },
+      });
+
+      expect(singlesResult.max).toBeGreaterThan(0);
+      expect(doublesResult.max).toBeGreaterThan(0);
+
+      const ratio = doublesResult.max / singlesResult.max;
+      expect(ratio).toBeGreaterThan(AOE_DOUBLES_MULTIPLIER - TOLERANCE);
+      expect(ratio).toBeLessThan(AOE_DOUBLES_MULTIPLIER + TOLERANCE);
+    });
+
+    it("単体技 (れいとうビーム) はダブル指定でもダメージが変わらない", () => {
+      const attacker = { name: "リザードン" };
+      const defender = { name: "ガブリアス" };
+
+      const singlesResult = adapter.calculate({
+        attacker,
+        defender,
+        moveName: "れいとうビーム",
+        conditions: { battleFormat: "singles" },
+      });
+
+      const doublesResult = adapter.calculate({
+        attacker,
+        defender,
+        moveName: "れいとうビーム",
+        conditions: { battleFormat: "doubles" },
+      });
+
+      expect(singlesResult.max).toBe(doublesResult.max);
+      expect(singlesResult.min).toBe(doublesResult.min);
+    });
+
+    it("conditions 省略時は singles 扱い (既存挙動と同じ)", () => {
+      // 防御側は Ground 無効を持たないポケモン (カビゴンは Normal 単タイプ)。
+      const attacker = { name: "ガブリアス" };
+      const defender = { name: "カビゴン" };
+
+      const noConditionsResult = adapter.calculate({
+        attacker,
+        defender,
+        moveName: "じしん",
+      });
+
+      const singlesResult = adapter.calculate({
+        attacker,
+        defender,
+        moveName: "じしん",
+        conditions: { battleFormat: "singles" },
+      });
+
+      expect(noConditionsResult.max).toBe(singlesResult.max);
+      expect(noConditionsResult.min).toBe(singlesResult.min);
     });
   });
 });

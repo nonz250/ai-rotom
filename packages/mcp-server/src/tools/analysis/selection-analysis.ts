@@ -6,14 +6,19 @@ import {
   DamageCalculatorAdapter,
   calculateTypeEffectiveness,
   compareSpeed,
+  extractPriorityMoves,
   filterResultsByLearnset,
   pokemonSchema,
   type BaseStats,
+  type ConditionsInput,
   type DamageCalcResult,
+  type PriorityMoveInfo,
   type SpeedComparison,
 } from "@ai-rotom/shared";
 import {
+  championsLearnsets,
   getLearnsetMoveIdSet,
+  movesById,
   pokemonById,
   pokemonEntryProvider,
   toDataId,
@@ -28,25 +33,9 @@ import {
 
 const CHAMPIONS_GEN_NUM = 0;
 
-/** 選出推奨のトップ N 件 */
-const RECOMMENDATION_TOP_N = 3;
-
-/** 各スコアの重み */
-const SCORE_WEIGHT_SPEED_WIN = 2;
-const SCORE_WEIGHT_TYPE_ADVANTAGE = 3;
-const SCORE_WEIGHT_DAMAGE_ADVANTAGE = 5;
-const SCORE_WEIGHT_TYPE_DISADVANTAGE = -1;
-
-/** ダメージ閾値（%表記） */
-const OHKO_PERCENT_THRESHOLD = 100;
-const TWO_HKO_PERCENT_THRESHOLD = 50;
-
-/** タイプ抜群判定のしきい値 */
-const SUPER_EFFECTIVE_THRESHOLD = 2;
-
 const TOOL_NAME = "analyze_selection";
 const TOOL_DESCRIPTION =
-  "選出判断の一括分析を行う。自分と相手のパーティから全組み合わせ（最大 6x6）のマトリクスを生成し、タイプ相性・素早さ・ダメージ見積もりと先発/起点交代候補の推奨を返す。ポケモンチャンピオンズ対応。正確な計算のため各ポケモンの ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。";
+  "6v6 パーティ間の全対面（最大 36 エントリ）について、タイプ相性・素早さ比較・最大ダメージ見積もりをマトリクスで返す。選出判断は本ツールが返すデータを元に AI が総合的に行う前提で、ツール側では推奨やスコアリングは行わない。ポケモンチャンピオンズ対応。正確な計算のため各ポケモンの ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。";
 
 const battleFormatValues = ["singles", "doubles"] as const;
 
@@ -69,6 +58,11 @@ interface PokemonProfile {
   nameJa: string;
   types: string[];
   actualStats: BaseStats;
+  /**
+   * 覚える先制技の一覧（priority 降順、同 priority は英名昇順）。
+   * 技単位の静的 priority のみ。特性による補正（いたずらごころ等）は含まない。
+   */
+  priorityMoves: PriorityMoveInfo[];
 }
 
 interface DamageEstimateMove {
@@ -86,6 +80,19 @@ interface DamageEstimate {
    * 採用された技（計算対象のうち最大ダメージを叩き出した 1 件）。
    */
   move: DamageEstimateMove;
+  /**
+   * 採用技タイプの、防御側複合タイプに対する相性倍率 (0/0.25/0.5/1/2/4)。
+   * `MatchupEntry.typeAdvantage`（ポケモン種族タイプ基準のサマリ）と異なり、
+   * 実際に採用された best 技タイプに対する精密な倍率。
+   */
+  typeMultiplier: number;
+  /** 採用技タイプと攻撃側種族タイプの一致フラグ（通常 STAB のみ）。 */
+  isStab: boolean;
+  /**
+   * STAB × typeMultiplier の概算値。
+   * 通常 STAB (1.5) 前提で、てきおうりょく・天候・状態異常等は含まない。
+   */
+  effectivePowerMultiplier: number;
 }
 
 interface MatchupEntry {
@@ -96,16 +103,10 @@ interface MatchupEntry {
   damageEstimate: DamageEstimate | null;
 }
 
-interface SelectionRecommendations {
-  lead: string[];
-  pivot: string[];
-}
-
 export interface SelectionAnalysisOutput {
   myParty: PokemonProfile[];
   opponentParty: PokemonProfile[];
   matchupMatrix: MatchupEntry[];
-  recommendations: SelectionRecommendations;
   battleFormat: "singles" | "doubles";
 }
 
@@ -154,73 +155,10 @@ export function bestDamageEstimate(
     max: best.maxPercent,
     ohkoChance: best.koChance,
     move: { name: best.move, nameJa },
+    typeMultiplier: best.typeMultiplier,
+    isStab: best.isStab,
+    effectivePowerMultiplier: best.effectivePowerMultiplier,
   };
-}
-
-/**
- * ポケモンの対面スコア（選出推奨用）を計算する。
- * 大きいほど対面に強い。
- */
-function calcMatchupScore(entry: MatchupEntry): number {
-  let score = 0;
-
-  // 素早さ
-  if (entry.speedCompare === "faster") {
-    score += SCORE_WEIGHT_SPEED_WIN;
-  } else if (entry.speedCompare === "slower") {
-    score -= SCORE_WEIGHT_SPEED_WIN;
-  }
-
-  // タイプ相性
-  if (entry.typeAdvantage.myToOpp >= SUPER_EFFECTIVE_THRESHOLD) {
-    score += SCORE_WEIGHT_TYPE_ADVANTAGE;
-  }
-  if (entry.typeAdvantage.oppToMy >= SUPER_EFFECTIVE_THRESHOLD) {
-    score += SCORE_WEIGHT_TYPE_DISADVANTAGE;
-  }
-
-  // ダメージ優位
-  if (entry.damageEstimate !== null) {
-    if (entry.damageEstimate.max >= OHKO_PERCENT_THRESHOLD) {
-      score += SCORE_WEIGHT_DAMAGE_ADVANTAGE;
-    } else if (entry.damageEstimate.max >= TWO_HKO_PERCENT_THRESHOLD) {
-      score += SCORE_WEIGHT_DAMAGE_ADVANTAGE / 2;
-    }
-  }
-
-  return score;
-}
-
-/**
- * あるポケモンの「合計スコア」を、相手パーティ全員に対するスコア和として算出する。
- */
-function calcTotalScoreForAttacker(
-  attackerName: string,
-  matrix: MatchupEntry[],
-): number {
-  let total = 0;
-  for (const entry of matrix) {
-    if (entry.mine === attackerName) {
-      total += calcMatchupScore(entry);
-    }
-  }
-  return total;
-}
-
-/**
- * 上位 N 件のポケモン名（日本語名）を返す。
- */
-function topPokemonByScore(
-  myParty: readonly PokemonProfile[],
-  scorer: (name: string) => number,
-  topN: number,
-): string[] {
-  const scored = myParty.map((p) => ({
-    nameJa: p.nameJa,
-    score: scorer(p.name),
-  }));
-  scored.sort((a, b) => b.score - a.score);
-  return scored.slice(0, topN).map((s) => s.nameJa);
 }
 
 /**
@@ -247,6 +185,7 @@ function resolveMovesMap(
  * movesMap に指定があればそれを、無ければ全技で計算する。
  * movesMap 未指定経路では attacker の learnset でフィルタし、覚えない技での過大評価を避ける。
  * 明示指定経路は learnset フィルタを掛けない（ユーザーの明示選択を尊重する既存仕様を維持）。
+ * conditions (battleFormat 等) を calculator に伝える。
  */
 export function calculateDamageForMatchup(
   calculator: DamageCalculatorAdapter,
@@ -255,6 +194,7 @@ export function calculateDamageForMatchup(
   attackerId: string,
   attackerLearnsetIds: ReadonlySet<string>,
   movesMap: Map<string, string[]>,
+  conditions?: ConditionsInput,
 ): DamageCalcResult[] {
   const explicitMoves = movesMap.get(attackerId);
   if (explicitMoves !== undefined && explicitMoves.length > 0) {
@@ -266,6 +206,7 @@ export function calculateDamageForMatchup(
             attacker,
             defender,
             moveName,
+            conditions,
           }),
         );
       } catch {
@@ -275,7 +216,7 @@ export function calculateDamageForMatchup(
     results.sort((a, b) => b.max - a.max);
     return results;
   }
-  const allResults = calculator.calculateAllMoves({ attacker, defender });
+  const allResults = calculator.calculateAllMoves({ attacker, defender, conditions });
   return filterResultsByLearnset(allResults, attackerLearnsetIds, toDataId);
 }
 
@@ -296,6 +237,12 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
       const gen = Generations.get(CHAMPIONS_GEN_NUM);
       const movesMap = resolveMovesMap(args.moves);
 
+      // battleFormat (トップレベル) を conditions に詰め直してダメ計に伝える。
+      // これがないと @smogon/calc 側でダブル補正 (AoE 技 ×0.75 等) が効かない。
+      const damageConditions: ConditionsInput = {
+        battleFormat: args.battleFormat,
+      };
+
       // プロフィール作成
       interface PartyMemberContext {
         input: PokemonInput;
@@ -306,7 +253,8 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
       function buildMemberContext(input: PokemonInput): PartyMemberContext {
         const { pokemon, resolvedName } =
           calculator.createPokemonObject(input);
-        const entry = pokemonById.get(toDataId(resolvedName));
+        const entryId = toDataId(resolvedName);
+        const entry = pokemonById.get(entryId);
         const nameJa =
           pokemonNameResolver.toJapanese(resolvedName) ?? resolvedName;
 
@@ -314,6 +262,12 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
           entry !== undefined
             ? [...entry.types]
             : [...(pokemon.types as readonly string[])];
+
+        const priorityMoves = extractPriorityMoves({
+          learnsetMoveIds: championsLearnsets[entryId] ?? [],
+          resolveMove: (id) => movesById.get(id),
+          toJapanese: (enName) => moveNameResolver.toJapanese(enName),
+        });
 
         const profile: PokemonProfile = {
           name: resolvedName,
@@ -327,12 +281,13 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
             spd: pokemon.stats.spd,
             spe: pokemon.stats.spe,
           },
+          priorityMoves,
         };
 
         return {
           input,
           profile,
-          entryId: toDataId(resolvedName),
+          entryId,
         };
       }
 
@@ -375,6 +330,7 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
               mine.entryId,
               myLearnsetIds.get(mine.entryId) ?? new Set(),
               movesMap,
+              damageConditions,
             );
             damageEstimate = bestDamageEstimate(
               results,
@@ -394,44 +350,10 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
         }
       }
 
-      // 推奨候補（lead / pivot）
-      const leadScorer = (name: string): number =>
-        calcTotalScoreForAttacker(name, matrix);
-
-      const lead = topPokemonByScore(
-        myMembers.map((m) => m.profile),
-        leadScorer,
-        RECOMMENDATION_TOP_N,
-      );
-
-      // pivot は「最速で倒しにくいが、交代駒として出しやすい」視点。
-      // ここでは素早さ優位が少ないが、相手に抜群を取られにくい候補を pivot とする。
-      const pivotScorer = (name: string): number => {
-        let total = 0;
-        for (const entry of matrix) {
-          if (entry.mine !== name) continue;
-          // タイプで受けきれる = oppToMy が 1 未満
-          if (entry.typeAdvantage.oppToMy < 1) {
-            total += 1;
-          }
-          if (entry.speedCompare === "slower") {
-            total -= 0.5;
-          }
-        }
-        return total;
-      };
-
-      const pivot = topPokemonByScore(
-        myMembers.map((m) => m.profile),
-        pivotScorer,
-        RECOMMENDATION_TOP_N,
-      );
-
       const output: SelectionAnalysisOutput = {
         myParty: myMembers.map((m) => m.profile),
         opponentParty: oppMembers.map((m) => m.profile),
         matchupMatrix: matrix,
-        recommendations: { lead, pivot },
         battleFormat: args.battleFormat,
       };
 
