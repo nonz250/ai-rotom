@@ -86,4 +86,76 @@ describe("SERVER_INSTRUCTIONS", () => {
     // evs / nature のみ省略許容であることを保証する。
     expect(SERVER_INSTRUCTIONS).not.toContain("evs・nature・ability");
   });
+
+  it("declares the responsibility split between tools and AI", () => {
+    // ツールは判断の根拠データを返すのみで、最終判断は返さないという
+    // 責務分担の方針を instructions に固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("## 判断と計算の役割分担");
+    expect(SERVER_INSTRUCTIONS).toContain("最終判断は返しません");
+  });
+
+  it("describes scored candidate lists as only a rough guide", () => {
+    // find_counters 等のスコア付きリストはあくまで候補抽出の目安であり、
+    // 最終採用は AI が総合判断する旨を instructions に固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("候補抽出のための目安");
+  });
+
+  it("places the responsibility split section before the usage recommendations", () => {
+    // 「判断と計算の役割分担」は使い方ガイドより前に提示する設計。
+    // 先に責務分担を伝えた上で具体的な使い方に進める順序を固定化する。
+    const responsibilityIndex = SERVER_INSTRUCTIONS.indexOf(
+      "## 判断と計算の役割分担",
+    );
+    const usageIndex = SERVER_INSTRUCTIONS.indexOf("## 推奨される使い方");
+    expect(responsibilityIndex).toBeGreaterThan(-1);
+    expect(usageIndex).toBeGreaterThan(-1);
+    expect(responsibilityIndex).toBeLessThan(usageIndex);
+  });
+
+  it("keeps the champions-specific spec block intact before the responsibility split", () => {
+    // 「能力ポイント (SP)」から始まる固有仕様ブロックを、
+    // 「判断と計算の役割分担」の挿入で分断しないことを固定化する。
+    const statPointsIndex = SERVER_INSTRUCTIONS.indexOf(
+      "## 能力ポイント (SP) について",
+    );
+    const responsibilityIndex = SERVER_INSTRUCTIONS.indexOf(
+      "## 判断と計算の役割分担",
+    );
+    expect(statPointsIndex).toBeGreaterThan(-1);
+    expect(responsibilityIndex).toBeGreaterThan(-1);
+    expect(statPointsIndex).toBeLessThan(responsibilityIndex);
+  });
+
+  it("guides clients to call list_parties at session start", () => {
+    // セッション開始時に保存済みパーティの名前一覧を把握させるため、
+    // list_parties を呼ぶ誘導が instructions に存在することを固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("## パーティデータの扱い");
+    expect(SERVER_INSTRUCTIONS).toContain("セッション開始時");
+    expect(SERVER_INSTRUCTIONS).toContain("list_parties");
+  });
+
+  it("guides clients to load full details only on demand", () => {
+    // 起動時の詳細自動読み込みを禁止し、ユーザーの言及時に load_party で
+    // 詳細を取得する運用を固定化する (トークン消費抑制)。
+    expect(SERVER_INSTRUCTIONS).toContain("load_party");
+    expect(SERVER_INSTRUCTIONS).toContain("トークン消費");
+  });
+
+  it("guides clients to confirm before save_party and delete_party", () => {
+    // ユーザー同意なしに save_party / delete_party を呼ばせない方針を
+    // instructions に固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("save_party");
+    expect(SERVER_INSTRUCTIONS).toContain("delete_party");
+    expect(SERVER_INSTRUCTIONS).toContain("確認");
+  });
+
+  it("places party data section after existing usage guidance", () => {
+    // 既存の固有仕様・使い方ガイドの後ろに「パーティデータの扱い」を
+    // 追加する設計順序を固定化する。
+    const usageIndex = SERVER_INSTRUCTIONS.indexOf("## 推奨される使い方");
+    const partyIndex = SERVER_INSTRUCTIONS.indexOf("## パーティデータの扱い");
+    expect(usageIndex).toBeGreaterThan(-1);
+    expect(partyIndex).toBeGreaterThan(-1);
+    expect(usageIndex).toBeLessThan(partyIndex);
+  });
 });

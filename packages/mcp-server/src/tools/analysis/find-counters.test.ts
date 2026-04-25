@@ -1,5 +1,6 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeAll } from "vitest";
 import { Generations, toID } from "@smogon/calc";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import {
   championsLearnsets,
   championsTypes,
@@ -12,14 +13,50 @@ import {
   buildCandidateEntries,
   buildSignature,
   extractBuildInfo,
+  registerFindCountersTool,
+  type FindCountersOutput,
 } from "./find-counters";
 
 const CHAMPIONS_GEN_NUM = 0;
 
+type ToolHandler = (args: unknown) => Promise<{
+  content: { type: string; text: string }[];
+  isError?: boolean;
+}>;
+
 /**
- * find_counters のロジック要素を直接検証する。
- * 実際のダメ計シミュレーションは tool 本体が一括で行うため、ここでは前フィルタ・スコア判定・戦略判定の補助関数群を検証する。
+ * find_counters の tool ハンドラを取得する。
+ * registerFindCountersTool が呼び出す server.tool の 4 番目の引数を捕捉する。
  */
+function captureHandler(): ToolHandler {
+  let captured: ToolHandler | undefined;
+  const mockServer = {
+    tool: (
+      _name: string,
+      _description: string,
+      _schema: unknown,
+      handler: ToolHandler,
+    ) => {
+      captured = handler;
+      return {} as never;
+    },
+  } as unknown as McpServer;
+  registerFindCountersTool(mockServer);
+  if (captured === undefined) {
+    throw new Error("find_counters handler was not registered.");
+  }
+  return captured;
+}
+
+async function callFindCounters(
+  args: Record<string, unknown>,
+): Promise<FindCountersOutput> {
+  const handler = captureHandler();
+  const res = await handler(args);
+  expect(res.isError ?? false).toBe(false);
+  return JSON.parse(res.content[0].text) as FindCountersOutput;
+}
+
 describe("find_counters logic", () => {
   const gen = Generations.get(CHAMPIONS_GEN_NUM);
 
@@ -91,55 +128,8 @@ describe("find_counters logic", () => {
     });
   });
 
-  describe("スコア計算の重み", () => {
-    /** Tool 実装と同じ重み定義 */
-    const WEIGHT_TYPE = 5;
-    const WEIGHT_SPEED = 3;
-    const WEIGHT_LOW_INCOMING = 3;
-    const WEIGHT_OHKO = 5;
-    const WEIGHT_2HKO = 2;
-
-    it("タイプ有利 + 素早さ勝ち + 低被弾 + OHKO = 16", () => {
-      const EXPECTED = WEIGHT_TYPE + WEIGHT_SPEED + WEIGHT_LOW_INCOMING + WEIGHT_OHKO;
-      expect(EXPECTED).toBe(16);
-    });
-
-    it("タイプ有利のみは 5 点", () => {
-      expect(WEIGHT_TYPE).toBe(5);
-    });
-
-    it("2HKO は OHKO より低スコア", () => {
-      expect(WEIGHT_2HKO).toBeLessThan(WEIGHT_OHKO);
-    });
-  });
-
-  describe("戦略判定", () => {
-    const STRONG_RESIST_MAX = 0.25;
-    const HALF = 0.5;
-    const IMMUNE = 0;
-    const TWO_HKO_PERCENT_MIN = 50;
-
-    it("incomingMultiplier が 0 なら type_wall", () => {
-      expect(IMMUNE).toBe(0);
-    });
-
-    it("incomingMultiplier が 0.25 以下なら type_wall", () => {
-      expect(STRONG_RESIST_MAX).toBe(0.25);
-    });
-
-    it("incomingMultiplier が 0.5 で 2HKO 以内なら tank_then_kill", () => {
-      const incoming = HALF;
-      const outgoing = TWO_HKO_PERCENT_MIN + 1;
-      const canKill = outgoing >= TWO_HKO_PERCENT_MIN;
-      const strongResist = incoming <= STRONG_RESIST_MAX;
-      expect(strongResist).toBe(false);
-      expect(canKill).toBe(true);
-    });
-  });
-
   describe("候補プール指定", () => {
     it("candidatePool に指定した名前が解決できる", () => {
-      // マニューラ の日本語名解決
       expect(pokemonNameResolver.toEnglish("マニューラ")).toBe("Weavile");
     });
 
@@ -152,7 +142,6 @@ describe("find_counters logic", () => {
     it("Weavile (マニューラ) は Dark/Ice タイプで素早さ 125 (base)", () => {
       const weavile = pokemonById.get(toDataId("Weavile"))!;
       expect(weavile.types).toContain("Ice");
-      // base spe 125
       const WEAVILE_BASE_SPE = 125;
       expect(weavile.baseStats.spe).toBe(WEAVILE_BASE_SPE);
     });
@@ -297,5 +286,324 @@ describe("find_counters logic", () => {
         ),
       ).toThrow();
     });
+  });
+});
+
+describe("find_counters tool レスポンス構造", () => {
+  let output: FindCountersOutput;
+
+  beforeAll(async () => {
+    output = await callFindCounters({
+      target: { name: "ガブリアス" },
+      candidatePool: ["マニューラ", "マンムー", "ゲッコウガ"],
+    });
+  });
+
+  it("target 情報が返る", () => {
+    expect(output.target.name).toBe("Garchomp");
+    expect(output.target.nameJa).toBe("ガブリアス");
+    expect(output.target.typeWeaknesses.map((w) => w.type)).toEqual(
+      expect.arrayContaining(["Ice", "Dragon", "Fairy"]),
+    );
+    expect(output.target.stats.spe).toBeGreaterThan(0);
+  });
+
+  it("各 CounterEntry は新構造（speedCompare / outgoing / incoming）を持つ", () => {
+    expect(output.counters.length).toBeGreaterThan(0);
+    for (const c of output.counters) {
+      expect(c.pokemon).toBeDefined();
+      expect(c.pokemon.id).toBeTypeOf("string");
+      expect(c.pokemon.name).toBeTypeOf("string");
+      expect(c.pokemon.nameJa).toBeTypeOf("string");
+      expect(Array.isArray(c.pokemon.types)).toBe(true);
+      expect(["faster", "slower", "tie"]).toContain(c.speedCompare);
+      expect(Array.isArray(c.outgoing)).toBe(true);
+      expect(Array.isArray(c.incoming)).toBe(true);
+    }
+  });
+
+  it("旧フィールド（score / strategy / details）を返さない", () => {
+    for (const c of output.counters) {
+      const record = c as unknown as Record<string, unknown>;
+      expect(record.score).toBeUndefined();
+      expect(record.strategy).toBeUndefined();
+      expect(record.details).toBeUndefined();
+    }
+  });
+
+  it("outgoing / incoming は best 1 件ではなく候補の全技を含む", () => {
+    const weavile = output.counters.find((c) => c.pokemon.name === "Weavile");
+    expect(weavile).toBeDefined();
+    expect(weavile!.outgoing.length).toBeGreaterThan(1);
+    expect(weavile!.incoming.length).toBeGreaterThan(1);
+  });
+
+  it("outgoing は attacker の learnset でフィルタされている", () => {
+    const weavile = output.counters.find((c) => c.pokemon.name === "Weavile");
+    expect(weavile).toBeDefined();
+    const weavileLearnset = new Set(
+      championsLearnsets[toDataId("Weavile")] ?? [],
+    );
+    for (const r of weavile!.outgoing) {
+      expect(weavileLearnset.has(toDataId(r.move))).toBe(true);
+    }
+  });
+
+  it("incoming は target (Garchomp) の learnset でフィルタされている", () => {
+    const weavile = output.counters.find((c) => c.pokemon.name === "Weavile");
+    expect(weavile).toBeDefined();
+    const garchompLearnset = new Set(
+      championsLearnsets[toDataId("Garchomp")] ?? [],
+    );
+    for (const r of weavile!.incoming) {
+      expect(garchompLearnset.has(toDataId(r.move))).toBe(true);
+    }
+  });
+
+  it("counters は pokemon.name 英名昇順でソートされている", () => {
+    const names = output.counters.map((c) => c.pokemon.name);
+    const sorted = [...names].sort((a, b) => a.localeCompare(b));
+    expect(names).toEqual(sorted);
+  });
+
+  it("Weavile (base spe 125) は Garchomp (base spe 102) より速い", () => {
+    const weavile = output.counters.find((c) => c.pokemon.name === "Weavile");
+    expect(weavile?.speedCompare).toBe("faster");
+  });
+
+  it("target.priorityMoves は配列として返る", () => {
+    expect(Array.isArray(output.target.priorityMoves)).toBe(true);
+  });
+
+  it("各 CounterEntry.priorityMoves は配列として返る", () => {
+    for (const c of output.counters) {
+      expect(Array.isArray(c.priorityMoves)).toBe(true);
+    }
+  });
+
+  it("Weavile の priorityMoves に こおりのつぶて (Ice Shard, priority 1) が含まれる", () => {
+    const weavile = output.counters.find((c) => c.pokemon.name === "Weavile");
+    expect(weavile).toBeDefined();
+    const iceShard = weavile!.priorityMoves.find((m) => m.move === "Ice Shard");
+    expect(iceShard).toBeDefined();
+    const ICE_SHARD_PRIORITY = 1;
+    expect(iceShard!.priority).toBe(ICE_SHARD_PRIORITY);
+    expect(iceShard!.category).toBe("Physical");
+    expect(iceShard!.moveJa).toBe("こおりのつぶて");
+  });
+
+  it("各 CounterEntry.priorityMoves は priority 降順でソートされる", () => {
+    for (const c of output.counters) {
+      for (let i = 1; i < c.priorityMoves.length; i++) {
+        expect(c.priorityMoves[i - 1].priority).toBeGreaterThanOrEqual(
+          c.priorityMoves[i].priority,
+        );
+      }
+    }
+  });
+
+  it("target (Garchomp) の priorityMoves も priority 降順でソートされる", () => {
+    for (let i = 1; i < output.target.priorityMoves.length; i++) {
+      expect(output.target.priorityMoves[i - 1].priority).toBeGreaterThanOrEqual(
+        output.target.priorityMoves[i].priority,
+      );
+    }
+  });
+
+  it("priorityMoves は先制技 (priority >= 1) のみ含む", () => {
+    const MIN_PRIORITY_FOR_INCLUSION = 1;
+    for (const m of output.target.priorityMoves) {
+      expect(m.priority).toBeGreaterThanOrEqual(MIN_PRIORITY_FOR_INCLUSION);
+    }
+    for (const c of output.counters) {
+      for (const m of c.priorityMoves) {
+        expect(m.priority).toBeGreaterThanOrEqual(MIN_PRIORITY_FOR_INCLUSION);
+      }
+    }
+  });
+});
+
+describe("find_counters priorityMoves (先制技を持たないポケモン)", () => {
+  it("先制技を持たないポケモン (メタモン) を target に指定すると target.priorityMoves は空配列", async () => {
+    const output = await callFindCounters({
+      target: { name: "メタモン" },
+      candidatePool: ["マニューラ"],
+    });
+    expect(output.target.priorityMoves).toEqual([]);
+  });
+});
+
+describe("find_counters Top N 廃止", () => {
+  const LONG_RUN_TIMEOUT_MS = 60_000;
+  it(
+    "弱点タイプ攻撃技を覚える候補が 10 件を超える target では counters が 10 件を超える",
+    async () => {
+      const TOP_N_LEGACY = 10;
+      const output = await callFindCounters({
+        target: { name: "ガブリアス" },
+      });
+      expect(output.counters.length).toBeGreaterThan(TOP_N_LEGACY);
+    },
+    LONG_RUN_TIMEOUT_MS,
+  );
+});
+
+/**
+ * #23: outgoing / incoming の各 DamageCalcResult に
+ * moveType / typeMultiplier / isStab / effectivePowerMultiplier が
+ * 流れてくることを検証する。shared 側の拡張 (#14) が
+ * find_counters の出力にそのまま伝播することが狙い。
+ */
+describe("find_counters の outgoing / incoming に STAB / タイプ相性フィールドが含まれる", () => {
+  let output: FindCountersOutput;
+
+  /** ガブリアス (Dragon/Ground) の対策候補に Dark/Ice と Ice/Ground を置く */
+  beforeAll(async () => {
+    output = await callFindCounters({
+      target: { name: "ガブリアス" },
+      candidatePool: ["マニューラ", "マンムー"],
+    });
+  });
+
+  /** 対称性のあるダブル弱点倍率: Ice vs Dragon/Ground = 4x */
+  const QUAD_EFFECTIVE = 4;
+  /** 等倍 */
+  const NEUTRAL = 1;
+  /** 通常 STAB 倍率 */
+  const STAB = 1.5;
+
+  function getWeavile() {
+    const entry = output.counters.find((c) => c.pokemon.name === "Weavile");
+    expect(entry).toBeDefined();
+    return entry!;
+  }
+
+  function getMamoswine() {
+    const entry = output.counters.find((c) => c.pokemon.name === "Mamoswine");
+    expect(entry).toBeDefined();
+    return entry!;
+  }
+
+  it("outgoing の各要素に moveType / typeMultiplier / isStab / effectivePowerMultiplier が設定されている", () => {
+    const weavile = getWeavile();
+    expect(weavile.outgoing.length).toBeGreaterThan(0);
+    for (const r of weavile.outgoing) {
+      expect(typeof r.moveType).toBe("string");
+      expect(r.moveType.length).toBeGreaterThan(0);
+      expect(typeof r.typeMultiplier).toBe("number");
+      expect(typeof r.isStab).toBe("boolean");
+      expect(typeof r.effectivePowerMultiplier).toBe("number");
+    }
+  });
+
+  it("incoming の各要素に moveType / typeMultiplier / isStab / effectivePowerMultiplier が設定されている", () => {
+    const weavile = getWeavile();
+    expect(weavile.incoming.length).toBeGreaterThan(0);
+    for (const r of weavile.incoming) {
+      expect(typeof r.moveType).toBe("string");
+      expect(r.moveType.length).toBeGreaterThan(0);
+      expect(typeof r.typeMultiplier).toBe("number");
+      expect(typeof r.isStab).toBe("boolean");
+      expect(typeof r.effectivePowerMultiplier).toBe("number");
+    }
+  });
+
+  it("マニューラ (Dark/Ice) の Ice 技は Garchomp (Dragon/Ground) に STAB 4 倍で刺さる", () => {
+    const weavile = getWeavile();
+    const iceMoves = weavile.outgoing.filter((r) => r.moveType === "Ice");
+    expect(iceMoves.length).toBeGreaterThan(0);
+    for (const r of iceMoves) {
+      expect(r.isStab).toBe(true);
+      expect(r.typeMultiplier).toBe(QUAD_EFFECTIVE);
+      // STAB (1.5) × 4x = 6
+      expect(r.effectivePowerMultiplier).toBeCloseTo(STAB * QUAD_EFFECTIVE);
+    }
+  });
+
+  it("マニューラ (Dark/Ice) の Dark 技は Garchomp (Dragon/Ground) に STAB 等倍で刺さる", () => {
+    const weavile = getWeavile();
+    const darkMoves = weavile.outgoing.filter((r) => r.moveType === "Dark");
+    expect(darkMoves.length).toBeGreaterThan(0);
+    for (const r of darkMoves) {
+      expect(r.isStab).toBe(true);
+      expect(r.typeMultiplier).toBe(NEUTRAL);
+      expect(r.effectivePowerMultiplier).toBeCloseTo(STAB * NEUTRAL);
+    }
+  });
+
+  it("マニューラ (Dark/Ice) の非 STAB 技は isStab=false で effectivePowerMultiplier に STAB がかからない", () => {
+    const weavile = getWeavile();
+    const nonStab = weavile.outgoing.filter(
+      (r) => r.moveType !== "Dark" && r.moveType !== "Ice",
+    );
+    expect(nonStab.length).toBeGreaterThan(0);
+    for (const r of nonStab) {
+      expect(r.isStab).toBe(false);
+      // isStab=false のとき stabMultiplier は 1、つまり
+      // effectivePowerMultiplier === typeMultiplier
+      expect(r.effectivePowerMultiplier).toBeCloseTo(r.typeMultiplier);
+    }
+  });
+
+  it("マンムー (Ice/Ground) の Ice 技も Garchomp に対して STAB 4 倍", () => {
+    const mamoswine = getMamoswine();
+    const iceMoves = mamoswine.outgoing.filter((r) => r.moveType === "Ice");
+    expect(iceMoves.length).toBeGreaterThan(0);
+    for (const r of iceMoves) {
+      expect(r.isStab).toBe(true);
+      expect(r.typeMultiplier).toBe(QUAD_EFFECTIVE);
+      expect(r.effectivePowerMultiplier).toBeCloseTo(STAB * QUAD_EFFECTIVE);
+    }
+  });
+
+  it("incoming の Ground 技は Garchomp 側の STAB で、候補ポケモンのタイプに応じて倍率が変わる", () => {
+    // Weavile (Dark/Ice) への Ground 技: Dark/Ice どちらにも 1x → 等倍
+    const weavile = getWeavile();
+    const weavileGround = weavile.incoming.filter(
+      (r) => r.moveType === "Ground",
+    );
+    expect(weavileGround.length).toBeGreaterThan(0);
+    for (const r of weavileGround) {
+      expect(r.isStab).toBe(true); // Garchomp が Ground 型なので STAB
+      expect(r.typeMultiplier).toBe(NEUTRAL);
+    }
+
+    // Mamoswine (Ice/Ground) への Ground 技: Ice=1x, Ground=1x → 等倍
+    const mamoswine = getMamoswine();
+    const mamoGround = mamoswine.incoming.filter((r) => r.moveType === "Ground");
+    expect(mamoGround.length).toBeGreaterThan(0);
+    for (const r of mamoGround) {
+      expect(r.isStab).toBe(true);
+      expect(r.typeMultiplier).toBe(NEUTRAL);
+    }
+  });
+
+  it("STAB 判定は attacker 基準 (同じ技でも outgoing と incoming で値が逆になる)", () => {
+    // Dig (Ground) は Weavile (Dark/Ice) と Garchomp (Dragon/Ground) 双方の
+    // learnset に存在する前提で、attacker 基準 STAB 判定の対称性を確定的にアサートする。
+    const weavile = getWeavile();
+
+    const outgoingDig = weavile.outgoing.find((r) => r.move === "Dig");
+    const incomingDig = weavile.incoming.find((r) => r.move === "Dig");
+
+    expect(outgoingDig).toBeDefined();
+    expect(incomingDig).toBeDefined();
+
+    expect(outgoingDig!.moveType).toBe("Ground");
+    expect(outgoingDig!.isStab).toBe(false);
+
+    expect(incomingDig!.moveType).toBe("Ground");
+    expect(incomingDig!.isStab).toBe(true);
+  });
+
+  it("複合タイプに対する typeMultiplier は二つのタイプの積になる", () => {
+    const weavile = getWeavile();
+    // Ice vs Dragon = 2, Ice vs Ground = 2 → 4
+    const iceSample = weavile.outgoing.find((r) => r.moveType === "Ice");
+    expect(iceSample?.typeMultiplier).toBe(QUAD_EFFECTIVE);
+
+    // Dark vs Dragon = 1, Dark vs Ground = 1 → 1
+    const darkSample = weavile.outgoing.find((r) => r.moveType === "Dark");
+    expect(darkSample?.typeMultiplier).toBe(NEUTRAL);
   });
 });

@@ -6,14 +6,18 @@ import {
   DamageCalculatorAdapter,
   calculateTypeEffectiveness,
   compareSpeed,
+  extractPriorityMoves,
   filterResultsByLearnset,
   pokemonSchema,
   type BaseStats,
   type BoostsInput,
+  type ConditionsInput,
   type DamageCalcResult,
   type EvsInput,
+  type MoveInfoForPriority,
   type PokemonEntry,
   type PokemonInput,
+  type PriorityMoveInfo,
   type SpeedComparison,
 } from "@ai-rotom/shared";
 import {
@@ -37,39 +41,18 @@ import {
 
 const CHAMPIONS_GEN_NUM = 0;
 
-/** 結果の最大件数 */
-const TOP_N = 10;
-
-/** スコア重み */
-const SCORE_TYPE_ADVANTAGE = 5;
-const SCORE_SPEED_WIN = 3;
-const SCORE_LOW_INCOMING_DAMAGE = 3;
-const SCORE_OHKO = 5;
-const SCORE_2HKO = 2;
-
-/** タイプ相性しきい値 */
+/** 弱点タイプ判定のしきい値（候補プール抽出で使用） */
 const SUPER_EFFECTIVE_MIN = 2;
-const HALF_EFFECTIVE_MAX = 0.5;
-const IMMUNITY_MULTIPLIER = 0;
-
-/** ダメージ割合（%）のしきい値 */
-const LOW_INCOMING_DAMAGE_PERCENT_MAX = 30;
-const OHKO_PERCENT_MIN = 100;
-const TWO_HKO_PERCENT_MIN = 50;
-
-/** 4 倍耐性以上（強耐性）しきい値: 0.25 */
-const STRONG_RESIST_MAX = 0.25;
 
 /** Status 技 */
 const STATUS_CATEGORY: MoveCategory = "Status";
 
 const TOOL_NAME = "find_counters";
 const TOOL_DESCRIPTION =
-  "指定したポケモンの対策候補を検索する。候補プール全体に対してダメ計と素早さ比較を行い、スコア順に上位 10 件を返す。"
-  + "`strategy` で対策パターン (speed_kill / tank_then_kill / type_wall) を識別する。"
+  "target の弱点タイプ攻撃技を持つポケモンを候補プールとして抽出し、各候補の双方向ダメ計・素早さ・タイプ相性を返す。"
   + "`candidatePool` は文字列（名前のみ）と PokemonInput オブジェクト（ability / item / nature / evs 指定）を混在可能で、同一ポケモンの build 違い比較にも対応する。"
   + "正確な計算のため target 側の ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。"
-  + "ポケモンチャンピオンズ対応。";
+  + "判断（受け型か速度勝ち型か等）は AI が行う前提。ポケモンチャンピオンズ対応。";
 
 const battleFormatValues = ["singles", "doubles"] as const;
 
@@ -93,26 +76,10 @@ const inputSchema = {
 
 type CandidatePoolItem = z.infer<typeof candidatePoolItemSchema>;
 
-export type CounterStrategy = "speed_kill" | "tank_then_kill" | "type_wall";
-
 interface TargetTypeWeakness {
   type: string;
   nameJa: string;
   multiplier: number;
-}
-
-interface CounterMoveInfo {
-  name: string;
-  nameJa: string;
-  type: string;
-  expectedDamagePercent: { min: number; max: number };
-}
-
-interface IncomingMoveInfo {
-  name: string;
-  nameJa: string;
-  type: string;
-  receivedDamagePercent: { min: number; max: number };
 }
 
 /**
@@ -138,17 +105,16 @@ interface CounterPokemonProfile {
   build?: CounterBuildInfo;
 }
 
-interface CounterDetails {
-  speedAdvantage: SpeedComparison;
-  bestMove?: CounterMoveInfo;
-  incomingBestMove?: IncomingMoveInfo;
-}
-
 export interface CounterEntry {
   pokemon: CounterPokemonProfile;
-  strategy: CounterStrategy;
-  score: number;
-  details: CounterDetails;
+  speedCompare: SpeedComparison;
+  outgoing: DamageCalcResult[];
+  incoming: DamageCalcResult[];
+  /**
+   * 候補が覚える先制技の一覧（priority 降順）。
+   * 技単位の静的 priority のみ。特性補正（いたずらごころ等）は含まない。
+   */
+  priorityMoves: PriorityMoveInfo[];
 }
 
 export interface TargetInfo {
@@ -156,11 +122,42 @@ export interface TargetInfo {
   nameJa: string;
   stats: BaseStats;
   typeWeaknesses: TargetTypeWeakness[];
+  /**
+   * target が覚える先制技の一覧（priority 降順）。
+   * 技単位の静的 priority のみ。特性補正（いたずらごころ等）は含まない。
+   */
+  priorityMoves: PriorityMoveInfo[];
 }
 
 export interface FindCountersOutput {
   target: TargetInfo;
   counters: CounterEntry[];
+}
+
+/**
+ * extractPriorityMoves 用の move 解決。learnset ID から MoveEntry を引く。
+ */
+function resolveMoveForPriority(id: string): MoveInfoForPriority | undefined {
+  return movesById.get(id);
+}
+
+/**
+ * extractPriorityMoves 用の日本語名解決。
+ */
+function moveToJapanese(en: string): string | undefined {
+  return moveNameResolver.toJapanese(en);
+}
+
+/**
+ * 指定ポケモン ID の learnset から先制技のみを抽出する。
+ * learnset データが無い場合は空配列を返す。
+ */
+function buildPriorityMoves(pokemonId: string): PriorityMoveInfo[] {
+  return extractPriorityMoves({
+    learnsetMoveIds: championsLearnsets[pokemonId] ?? [],
+    resolveMove: resolveMoveForPriority,
+    toJapanese: moveToJapanese,
+  });
 }
 
 /**
@@ -251,93 +248,6 @@ function hasAttackingMoveOfAnyType(
 }
 
 /**
- * DamageCalcResult 一覧から最大ダメ割合（max）の技を返す。
- */
-function pickBestMove(
-  results: readonly DamageCalcResult[],
-): DamageCalcResult | undefined {
-  if (results.length === 0) return undefined;
-  let best = results[0];
-  for (const r of results) {
-    if (r.max > best.max) best = r;
-  }
-  return best;
-}
-
-/**
- * 被ダメージ % の最大値を元に LowIncoming 判定する。
- */
-function isLowIncomingDamage(incomingMaxPercent: number): boolean {
-  return incomingMaxPercent <= LOW_INCOMING_DAMAGE_PERCENT_MAX;
-}
-
-/**
- * 対策スコアを計算する。設計書の重みに従う。
- */
-function calcCounterScore(args: {
-  typeAdvantage: boolean;
-  speedAdvantage: SpeedComparison;
-  incomingMaxPercent: number | null;
-  outgoingMaxPercent: number | null;
-}): number {
-  let score = 0;
-  if (args.typeAdvantage) score += SCORE_TYPE_ADVANTAGE;
-  if (args.speedAdvantage === "faster") score += SCORE_SPEED_WIN;
-  if (
-    args.incomingMaxPercent !== null
-    && isLowIncomingDamage(args.incomingMaxPercent)
-  ) {
-    score += SCORE_LOW_INCOMING_DAMAGE;
-  }
-  if (args.outgoingMaxPercent !== null) {
-    if (args.outgoingMaxPercent >= OHKO_PERCENT_MIN) {
-      score += SCORE_OHKO;
-    } else if (args.outgoingMaxPercent >= TWO_HKO_PERCENT_MIN) {
-      score += SCORE_2HKO;
-    }
-  }
-  return score;
-}
-
-/**
- * 戦略カテゴリを判定する。優先順: type_wall > speed_kill > tank_then_kill
- * - type_wall: target からの攻撃を無効化 or 0.25 倍以下で受ける
- * - speed_kill: 自分が先制 + 2 発以内で倒せる（OHKO or 2HKO）
- * - tank_then_kill: 半減以下で受け + OHKO/2HKO
- * それ以外はデフォルトで tank_then_kill 扱い（type_wall 未満の耐性 + 倒しきれる想定）。
- */
-function classifyStrategy(args: {
-  incomingMultiplier: number;
-  outgoingMaxPercent: number | null;
-  speedAdvantage: SpeedComparison;
-}): CounterStrategy {
-  const canKillIn2
-    = args.outgoingMaxPercent !== null
-    && args.outgoingMaxPercent >= TWO_HKO_PERCENT_MIN;
-
-  // type_wall: ほぼ無傷で受けきれる
-  if (
-    args.incomingMultiplier === IMMUNITY_MULTIPLIER
-    || args.incomingMultiplier <= STRONG_RESIST_MAX
-  ) {
-    return "type_wall";
-  }
-
-  // speed_kill: 先制 + 2 発以内で倒せる
-  if (args.speedAdvantage === "faster" && canKillIn2) {
-    return "speed_kill";
-  }
-
-  // 半減で受けつつ倒せる
-  if (args.incomingMultiplier <= HALF_EFFECTIVE_MAX && canKillIn2) {
-    return "tank_then_kill";
-  }
-
-  // デフォルト: tank_then_kill (受けきりながら削る想定)
-  return "tank_then_kill";
-}
-
-/**
  * ターゲットのタイプに対して弱点となるタイプ集合を算出する。
  */
 function buildWeaknessTypeSet(
@@ -423,7 +333,6 @@ export function buildCandidateEntries(
   }
 
   const weaknessTypes = buildWeaknessTypeSet(target.types, gen);
-  // target に弱点タイプが 1 つも無い (Normal 等はほぼ無いが念のため) 場合は全件候補にする
   const baseEntries
     = weaknessTypes.size === 0
       ? [...championsPokemon].filter((p) => p.id !== target.id)
@@ -455,7 +364,10 @@ export function registerFindCountersTool(server: McpServer): void {
     try {
       const gen = Generations.get(CHAMPIONS_GEN_NUM);
 
-      // target を解決
+      const damageConditions: ConditionsInput = {
+        battleFormat: args.battleFormat,
+      };
+
       const targetEntry = resolvePokemonEntry(args.target.name);
       const { pokemon: targetObj, resolvedName: targetName }
         = calculator.createPokemonObject(args.target);
@@ -473,14 +385,12 @@ export function registerFindCountersTool(server: McpServer): void {
         spe: targetObj.stats.spe,
       };
 
-      // 候補プール選定（前フィルタあり）
       const candidateBuilds = buildCandidateEntries(
         args.candidatePool,
         targetEntry,
         gen,
       );
 
-      // 各候補 vs target のマッチアップをシミュレート
       const counterEntries: Array<CounterEntry & { sortKey: string }> = [];
 
       for (const candidate of candidateBuilds) {
@@ -494,17 +404,16 @@ export function registerFindCountersTool(server: McpServer): void {
           const created = calculator.createPokemonObject(candidateInput);
           candidateObj = created.pokemon;
         } catch {
-          // ポケモンオブジェクト作成できない場合はスキップ
           continue;
         }
 
-        // 両方向ダメ計（learnset でフィルタして実際に覚える技のみ評価する）
         let outgoing: DamageCalcResult[] = [];
         let incoming: DamageCalcResult[] = [];
         try {
           const allOutgoing = calculator.calculateAllMoves({
             attacker: candidateInput,
             defender: args.target,
+            conditions: damageConditions,
           });
           const candidateLearnsetIds = getLearnsetMoveIdSet(candidateEntry.id);
           outgoing = filterResultsByLearnset(
@@ -519,6 +428,7 @@ export function registerFindCountersTool(server: McpServer): void {
           const allIncoming = calculator.calculateAllMoves({
             attacker: args.target,
             defender: candidateInput,
+            conditions: damageConditions,
           });
           const targetLearnsetIds = getLearnsetMoveIdSet(targetEntry.id);
           incoming = filterResultsByLearnset(
@@ -530,95 +440,12 @@ export function registerFindCountersTool(server: McpServer): void {
           incoming = [];
         }
 
-        const bestOutgoing = pickBestMove(outgoing);
-        const bestIncoming = pickBestMove(incoming);
-
-        const speedAdvantage = compareSpeed(
+        const speedCompare = compareSpeed(
           candidateObj.stats.spe,
           targetObj.stats.spe,
         );
 
-        const outgoingMaxPercent
-          = bestOutgoing !== undefined ? bestOutgoing.maxPercent : null;
-        const incomingMaxPercent
-          = bestIncoming !== undefined ? bestIncoming.maxPercent : null;
-
-        // タイプ有利判定: candidate に 2 倍以上の攻撃技が存在するか
-        let typeAdvantage = false;
-        if (bestOutgoing !== undefined) {
-          // 具体的な move の type を参照
-          const outMoveEntry = movesById.get(toDataId(bestOutgoing.move));
-          if (outMoveEntry !== undefined) {
-            const m = calcMultiplier(
-              outMoveEntry.type,
-              targetEntry.types,
-              gen,
-            );
-            if (m >= SUPER_EFFECTIVE_MIN) {
-              typeAdvantage = true;
-            }
-          }
-        }
-
-        // 被ダメタイプ倍率 (strategy 判定用): target が放つ最大ダメ技の 倍率
-        let incomingMultiplier = 1;
-        if (bestIncoming !== undefined) {
-          const inMoveEntry = movesById.get(toDataId(bestIncoming.move));
-          if (inMoveEntry !== undefined) {
-            incomingMultiplier = calcMultiplier(
-              inMoveEntry.type,
-              candidateEntry.types,
-              gen,
-            );
-          }
-        }
-
-        const score = calcCounterScore({
-          typeAdvantage,
-          speedAdvantage,
-          incomingMaxPercent,
-          outgoingMaxPercent,
-        });
-
-        const strategy = classifyStrategy({
-          incomingMultiplier,
-          outgoingMaxPercent,
-          speedAdvantage,
-        });
-
         const nameJa = candidateEntry.nameJa ?? candidateEntry.name;
-
-        const details: CounterDetails = { speedAdvantage };
-
-        if (bestOutgoing !== undefined) {
-          const outMoveEntry = movesById.get(toDataId(bestOutgoing.move));
-          const outNameJa
-            = moveNameResolver.toJapanese(bestOutgoing.move) ?? bestOutgoing.move;
-          details.bestMove = {
-            name: bestOutgoing.move,
-            nameJa: outNameJa,
-            type: outMoveEntry?.type ?? "",
-            expectedDamagePercent: {
-              min: bestOutgoing.minPercent,
-              max: bestOutgoing.maxPercent,
-            },
-          };
-        }
-
-        if (bestIncoming !== undefined) {
-          const inMoveEntry = movesById.get(toDataId(bestIncoming.move));
-          const inNameJa
-            = moveNameResolver.toJapanese(bestIncoming.move) ?? bestIncoming.move;
-          details.incomingBestMove = {
-            name: bestIncoming.move,
-            nameJa: inNameJa,
-            type: inMoveEntry?.type ?? "",
-            receivedDamagePercent: {
-              min: bestIncoming.minPercent,
-              max: bestIncoming.maxPercent,
-            },
-          };
-        }
 
         const pokemonProfile: CounterPokemonProfile = {
           id: candidateEntry.id,
@@ -635,16 +462,15 @@ export function registerFindCountersTool(server: McpServer): void {
 
         counterEntries.push({
           pokemon: pokemonProfile,
-          strategy,
-          score,
-          details,
+          speedCompare,
+          outgoing,
+          incoming,
+          priorityMoves: buildPriorityMoves(candidateEntry.id),
           sortKey: buildSignature(candidate),
         });
       }
 
-      // score 降順、同点は name 昇順、更に同じ名前は build 署名で安定化
       counterEntries.sort((a, b) => {
-        if (b.score !== a.score) return b.score - a.score;
         const nameOrder = a.pokemon.name.localeCompare(b.pokemon.name);
         if (nameOrder !== 0) return nameOrder;
         return a.sortKey.localeCompare(b.sortKey);
@@ -656,8 +482,9 @@ export function registerFindCountersTool(server: McpServer): void {
           nameJa: targetNameJa,
           stats: targetStats,
           typeWeaknesses,
+          priorityMoves: buildPriorityMoves(targetEntry.id),
         },
-        counters: counterEntries.slice(0, TOP_N).map(({ sortKey: _sortKey, ...rest }) => rest),
+        counters: counterEntries.map(({ sortKey: _sortKey, ...rest }) => rest),
       };
 
       return {

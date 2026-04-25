@@ -1,6 +1,6 @@
 {
   "name": "@nonz250/ai-rotom",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Pokemon Champions battle advisor MCP server",
   "license": "MIT",
   "private": false,
@@ -43,6 +43,6 @@
   },
   "devDependencies": {
     "@pokesol/pokesol-text-parser-ts": "^1.0.0",
-    "tsdown": "0.21.8"
+    "tsdown": "0.21.9"
   }
 }
