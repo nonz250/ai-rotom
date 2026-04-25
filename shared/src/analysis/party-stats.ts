@@ -1,5 +1,9 @@
 import type { Generation, TypeName } from "@smogon/calc/dist/data/interface";
 import { calculateTypeEffectiveness } from "./type-matchup.js";
+import {
+  applyDefensiveOverrides,
+  type DefensiveContextOverrides,
+} from "./defensive-ability-overrides.js";
 import type { BaseStats } from "../types/pokemon.js";
 
 /** 弱点判定のしきい値 (2 倍以上を弱点とみなす) */
@@ -36,10 +40,14 @@ export interface PokemonTypeMatchups {
 /**
  * 単体ポケモンのタイプ構成に対する全攻撃タイプの相性を分類する。
  * 倍率 >= 2 を weaknesses、< 1 を resistances、0 を immunities に振り分ける。
+ *
+ * `context` を渡すと特性 (Levitate / Filter 等) を加味した補正を適用する。
+ * 省略時は純粋なタイプ相性のみで分類する。
  */
 export function classifyPokemonTypeMatchups(
   pokemonTypes: readonly string[],
   gen: Generation,
+  context: DefensiveContextOverrides = {},
 ): PokemonTypeMatchups {
   const weaknesses: TypeMultiplier[] = [];
   const resistances: TypeMultiplier[] = [];
@@ -52,11 +60,12 @@ export function classifyPokemonTypeMatchups(
       continue;
     }
 
-    const multiplier = calculateTypeEffectiveness(
+    const base = calculateTypeEffectiveness(
       gen,
       attackType.name,
       defenderTypes,
     );
+    const multiplier = applyDefensiveOverrides(base, attackType.name, context);
 
     if (multiplier === IMMUNITY_THRESHOLD) {
       immunities.push(attackType.name);

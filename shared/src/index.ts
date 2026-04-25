@@ -6,13 +6,17 @@ export * from "./analysis/stat-calculator";
 export * from "./analysis/speed-comparator";
 export * from "./analysis/priority-moves";
 export * from "./analysis/party-stats";
+export * from "./analysis/defensive-ability-overrides";
+export * from "./analysis/offensive-ability-overrides";
 export * from "./schemas/pokemon-input";
 export * from "./schemas/stats";
+export * from "./schemas/party";
 export type {
   BaseStats,
   PokemonEntry,
   PokemonEntryProvider,
 } from "./types/pokemon.js";
+export type { Party, PartyMember, PartiesFile } from "./types/party.js";
 
 // ダメージ計算モジュール。
 // calc/types.ts の PokemonInput / ConditionsInput は

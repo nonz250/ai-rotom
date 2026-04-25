@@ -14,6 +14,7 @@ import { registerMoveInfoTool } from "./tools/info/move-info.js";
 import { registerNatureInfoTool } from "./tools/info/nature-info.js";
 import { registerPartyAnalysisTool } from "./tools/analysis/party-analysis.js";
 import { registerPartyCoverageTool } from "./tools/analysis/party-coverage.js";
+import { registerPartyTools } from "./tools/party/party-tools.js";
 import { registerPokemonInfoTools } from "./tools/info/pokemon-info.js";
 import { registerPokemonSummaryTool } from "./tools/info/pokemon-summary.js";
 import { registerSearchByAbilityTool } from "./tools/search/search-by-ability.js";
@@ -51,6 +52,7 @@ export function createServer(): McpServer {
   registerNatureInfoTool(server);
   registerPartyAnalysisTool(server);
   registerPartyCoverageTool(server);
+  registerPartyTools(server);
   registerPokemonInfoTools(server);
   registerPokemonSummaryTool(server);
   registerSearchByAbilityTool(server);
