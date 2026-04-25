@@ -1,9 +1,16 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { Generations } from "@smogon/calc";
-import type { TypeName } from "@smogon/calc/dist/data/interface";
-import { calculateTypeEffectiveness, pokemonSchema } from "@ai-rotom/shared";
 import {
+  classifyPokemonTypeMatchups,
+  calculateTypeEffectiveness,
+  pokemonSchema,
+  WEAKNESS_THRESHOLD,
+} from "@ai-rotom/shared";
+import type { TypeName } from "@smogon/calc/dist/data/interface";
+import type { TypeMultiplier } from "@ai-rotom/shared";
+import {
+  abilityNameResolver,
   pokemonNameResolver,
 } from "../../name-resolvers.js";
 import { pokemonById, toDataId } from "../../data-store.js";
@@ -12,48 +19,14 @@ const CHAMPIONS_GEN_NUM = 0;
 
 const TOOL_NAME = "analyze_party_weakness";
 const TOOL_DESCRIPTION =
-  "パーティのタイプ相性を分析し、弱点と攻撃範囲の穴を洗い出す。パーティ構築の改善やバランスの確認に使用する。ポケモンチャンピオンズ対応。";
+  "パーティ各メンバーのタイプ相性データを集計する。どのタイプが何匹の弱点か（teamWeaknesses）、どのタイプに抜群を取れないか（uncoveredTypes）を返す。致命性の判断は AI が文脈で行う前提。ポケモンチャンピオンズ対応。";
 
 const partyAnalysisInputSchema = {
   party: z.array(pokemonSchema).describe("パーティメンバー"),
 };
 
-/** タイプ相性の倍率しきい値 */
-const WEAKNESS_THRESHOLD = 2;
-const RESISTANCE_THRESHOLD = 1;
-const IMMUNITY_THRESHOLD = 0;
-
-/** 致命的弱点とみなすための最低弱点数 */
-const CRITICAL_WEAKNESS_MIN_COUNT = 2;
-
-/**
- * タイプ名の英語→日本語マッピング。
- */
-const TYPE_NAME_EN_TO_JA: ReadonlyMap<string, string> = new Map([
-  ["Normal", "ノーマル"],
-  ["Grass", "くさ"],
-  ["Fire", "ほのお"],
-  ["Water", "みず"],
-  ["Electric", "でんき"],
-  ["Ice", "こおり"],
-  ["Flying", "ひこう"],
-  ["Bug", "むし"],
-  ["Poison", "どく"],
-  ["Ground", "じめん"],
-  ["Rock", "いわ"],
-  ["Fighting", "かくとう"],
-  ["Psychic", "エスパー"],
-  ["Ghost", "ゴースト"],
-  ["Dragon", "ドラゴン"],
-  ["Dark", "あく"],
-  ["Steel", "はがね"],
-  ["Fairy", "フェアリー"],
-]);
-
-interface TypeMultiplier {
-  type: string;
-  multiplier: number;
-}
+/** ???タイプは計算対象から除外するためのマーカー */
+const UNKNOWN_TYPE_NAME = "???";
 
 interface MemberAnalysis {
   name: string;
@@ -69,17 +42,10 @@ interface TeamWeaknessEntry {
   members: string[];
 }
 
-interface CriticalWeakness {
-  type: string;
-  weakCount: number;
-  resistCount: number;
-}
-
 interface PartyAnalysisOutput {
   members: MemberAnalysis[];
   teamWeaknesses: Record<string, TeamWeaknessEntry>;
   uncoveredTypes: string[];
-  criticalWeaknesses: CriticalWeakness[];
 }
 
 /**
@@ -101,47 +67,19 @@ function resolvePokemonName(name: string): string {
   throw new Error(`ポケモン「${name}」が見つかりません。${suggestionMessage}`);
 }
 
-/** ???タイプは計算対象から除外するためのマーカー */
-const UNKNOWN_TYPE_NAME = "???";
-
 /**
- * ポケモンのタイプに対する各攻撃タイプの倍率を計算する。
+ * 日本語・英語のどちらの名前でも英語名に解決する。
+ * 未知の名前は undefined を返し、呼び出し側で silent ignore する。
  */
-function calculateTypeMatchups(
-  pokemonTypes: string[],
-  gen: ReturnType<typeof Generations.get>,
-): {
-  weaknesses: TypeMultiplier[];
-  resistances: TypeMultiplier[];
-  immunities: string[];
-} {
-  const weaknesses: TypeMultiplier[] = [];
-  const resistances: TypeMultiplier[] = [];
-  const immunities: string[] = [];
-
-  const defenderTypes = pokemonTypes as readonly TypeName[];
-
-  for (const attackType of gen.types) {
-    if (attackType.name === UNKNOWN_TYPE_NAME) {
-      continue;
-    }
-
-    const multiplier = calculateTypeEffectiveness(
-      gen,
-      attackType.name,
-      defenderTypes,
-    );
-
-    if (multiplier === IMMUNITY_THRESHOLD) {
-      immunities.push(attackType.name);
-    } else if (multiplier >= WEAKNESS_THRESHOLD) {
-      weaknesses.push({ type: attackType.name, multiplier });
-    } else if (multiplier < RESISTANCE_THRESHOLD) {
-      resistances.push({ type: attackType.name, multiplier });
-    }
-  }
-
-  return { weaknesses, resistances, immunities };
+function resolveOptionalName(
+  resolver: typeof abilityNameResolver,
+  name: string | undefined,
+): string | undefined {
+  if (name === undefined) return undefined;
+  const english = resolver.toEnglish(name);
+  if (english !== undefined) return english;
+  if (resolver.hasEnglishName(name)) return name;
+  return undefined;
 }
 
 /**
@@ -194,7 +132,6 @@ export function registerPartyAnalysisTool(server: McpServer): void {
         const gen = Generations.get(CHAMPIONS_GEN_NUM);
         const members: MemberAnalysis[] = [];
         const teamWeaknesses: Record<string, TeamWeaknessEntry> = {};
-        const teamResistances: Record<string, number> = {};
         const memberTypesList: string[][] = [];
 
         for (const member of args.party) {
@@ -211,8 +148,15 @@ export function registerPartyAnalysisTool(server: McpServer): void {
           const types = [...entry.types];
           memberTypesList.push(types);
 
+          const resolvedAbility = resolveOptionalName(
+            abilityNameResolver,
+            member.ability,
+          );
+
           const { weaknesses, resistances, immunities } =
-            calculateTypeMatchups(types, gen);
+            classifyPokemonTypeMatchups(types, gen, {
+              ability: resolvedAbility,
+            });
 
           members.push({
             name: entry.name,
@@ -231,33 +175,7 @@ export function registerPartyAnalysisTool(server: McpServer): void {
             teamWeaknesses[weakness.type].count += 1;
             teamWeaknesses[weakness.type].members.push(entry.name);
           }
-
-          // パーティ全体の耐性を集計
-          for (const resistance of resistances) {
-            teamResistances[resistance.type] =
-              (teamResistances[resistance.type] ?? 0) + 1;
-          }
-          for (const immuneType of immunities) {
-            teamResistances[immuneType] =
-              (teamResistances[immuneType] ?? 0) + 1;
-          }
         }
-
-        // 致命的弱点: 弱点を突かれるメンバーが多く、耐性を持つメンバーが少ないタイプ
-        const criticalWeaknesses: CriticalWeakness[] = [];
-        for (const [type, entry] of Object.entries(teamWeaknesses)) {
-          const resistCount = teamResistances[type] ?? 0;
-          if (entry.count >= CRITICAL_WEAKNESS_MIN_COUNT) {
-            criticalWeaknesses.push({
-              type,
-              weakCount: entry.count,
-              resistCount,
-            });
-          }
-        }
-
-        // 弱点数の多い順にソート
-        criticalWeaknesses.sort((a, b) => b.weakCount - a.weakCount);
 
         // 攻撃範囲の穴を分析
         const uncoveredTypes = findUncoveredTypes(memberTypesList, gen);
@@ -266,7 +184,6 @@ export function registerPartyAnalysisTool(server: McpServer): void {
           members,
           teamWeaknesses,
           uncoveredTypes,
-          criticalWeaknesses,
         };
 
         return {

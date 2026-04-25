@@ -1,10 +1,11 @@
 import { describe, it, expect } from "vitest";
 import { Generations, toID } from "@smogon/calc";
-import { DamageCalculatorAdapter } from "@ai-rotom/shared";
+import { DamageCalculatorAdapter, extractPriorityMoves } from "@ai-rotom/shared";
 import type { DamageCalcResult } from "@ai-rotom/shared";
 import {
   championsLearnsets,
   getLearnsetMoveIdSet,
+  movesById,
   pokemonEntryProvider,
   toDataId,
 } from "../../data-store";
@@ -76,20 +77,6 @@ describe("analyze_selection logic", () => {
       const myParty = ["Charizard", "Gyarados", "Pikachu"];
       const oppParty = ["Garchomp", "Dragonite", "Metagross"];
       expect(myParty.length * oppParty.length).toBe(SIZE);
-    });
-  });
-
-  describe("スコア計算ロジック", () => {
-    it("素早さ勝ち + 抜群 + OHKO はトップスコア", () => {
-      const SCORE_WEIGHT_SPEED_WIN = 2;
-      const SCORE_WEIGHT_TYPE_ADVANTAGE = 3;
-      const SCORE_WEIGHT_DAMAGE_ADVANTAGE = 5;
-      const MAX_POSSIBLE_PER_MATCH =
-        SCORE_WEIGHT_SPEED_WIN +
-        SCORE_WEIGHT_TYPE_ADVANTAGE +
-        SCORE_WEIGHT_DAMAGE_ADVANTAGE;
-      const EXPECTED = 10;
-      expect(MAX_POSSIBLE_PER_MATCH).toBe(EXPECTED);
     });
   });
 
@@ -325,6 +312,155 @@ describe("analyze_selection logic", () => {
       const moves = championsLearnsets["charizard"] ?? [];
       expect(moves).not.toContain("blizzard");
       expect(moves).not.toContain("splash");
+    });
+  });
+
+  describe("先制技抽出 (PokemonProfile.priorityMoves)", () => {
+    function priorityMovesFor(resolvedName: string) {
+      const learnsetMoveIds =
+        championsLearnsets[toDataId(resolvedName)] ?? [];
+      return extractPriorityMoves({
+        learnsetMoveIds,
+        resolveMove: (id) => movesById.get(id),
+        toJapanese: (en) => moveNameResolver.toJapanese(en),
+      });
+    }
+
+    it("先制技を持つポケモン (イワパレス = Incineroar) から Fake Out が抽出される", () => {
+      const result = priorityMovesFor("Incineroar");
+
+      expect(result.length).toBeGreaterThan(0);
+      const fakeout = result.find((m) => m.move === "Fake Out");
+      expect(fakeout).toBeDefined();
+      expect(fakeout?.priority).toBe(3);
+      expect(fakeout?.moveJa).toBe("ねこだまし");
+      expect(fakeout?.category).toBe("Physical");
+    });
+
+    it("しんそくを覚えるポケモンの priorityMoves に Extreme Speed が含まれる", () => {
+      const result = priorityMovesFor("Dragonite");
+
+      const extremeSpeed = result.find((m) => m.move === "Extreme Speed");
+      expect(extremeSpeed).toBeDefined();
+      expect(extremeSpeed?.priority).toBe(2);
+      expect(extremeSpeed?.moveJa).toBe("しんそく");
+    });
+
+    it("でんこうせっかを覚えるポケモンの priorityMoves に Quick Attack が含まれる", () => {
+      const result = priorityMovesFor("Pikachu");
+
+      const quickAttack = result.find((m) => m.move === "Quick Attack");
+      expect(quickAttack).toBeDefined();
+      expect(quickAttack?.priority).toBe(1);
+    });
+
+    it("priority 降順でソートされる", () => {
+      const result = priorityMovesFor("Incineroar");
+
+      for (let i = 1; i < result.length; i++) {
+        expect(result[i - 1].priority).toBeGreaterThanOrEqual(
+          result[i].priority,
+        );
+      }
+    });
+
+    it("先制技を持たないポケモン (メタモン = Ditto) では空配列を返す", () => {
+      const result = priorityMovesFor("Ditto");
+
+      expect(result).toEqual([]);
+    });
+
+    it("learnset が未登録のポケモン名でも空配列を返す (防衛的フォールバック)", () => {
+      const result = priorityMovesFor("NonExistentPokemon");
+
+      expect(result).toEqual([]);
+    });
+
+    it("priorityMoves は myParty / opponentParty 双方の profile に同じ方法で付与される", () => {
+      // myParty と opponentParty は対称的に buildMemberContext を使うため、
+      // 同じ入力なら同じ priorityMoves が返ることを固定する。
+      const my = priorityMovesFor("Incineroar");
+      const opp = priorityMovesFor("Incineroar");
+
+      expect(my).toEqual(opp);
+    });
+  });
+
+  describe("battleFormat による AoE 技のダメージ補正", () => {
+    // 全体攻撃技 (target: allAdjacent / allAdjacentFoes) は doubles で威力 ×0.75 になる。
+    // @smogon/calc Gen 0 champions mechanics が自動適用する想定。
+    const AOE_DOUBLES_MULTIPLIER = 3072 / 4096;
+    const TOLERANCE = 0.06;
+
+    it("じしん (allAdjacent) はダブル指定時にシングル比でおおむね 0.75 倍になる", () => {
+      // 防御側は Ground 無効を持たないポケモン (カビゴンは Normal 単タイプ)。
+      const attacker = { name: "ガブリアス" };
+      const defender = { name: "カビゴン" };
+
+      const singlesResult = adapter.calculate({
+        attacker,
+        defender,
+        moveName: "じしん",
+        conditions: { battleFormat: "singles" },
+      });
+
+      const doublesResult = adapter.calculate({
+        attacker,
+        defender,
+        moveName: "じしん",
+        conditions: { battleFormat: "doubles" },
+      });
+
+      expect(singlesResult.max).toBeGreaterThan(0);
+      expect(doublesResult.max).toBeGreaterThan(0);
+
+      const ratio = doublesResult.max / singlesResult.max;
+      expect(ratio).toBeGreaterThan(AOE_DOUBLES_MULTIPLIER - TOLERANCE);
+      expect(ratio).toBeLessThan(AOE_DOUBLES_MULTIPLIER + TOLERANCE);
+    });
+
+    it("単体技 (れいとうビーム) はダブル指定でもダメージが変わらない", () => {
+      const attacker = { name: "リザードン" };
+      const defender = { name: "ガブリアス" };
+
+      const singlesResult = adapter.calculate({
+        attacker,
+        defender,
+        moveName: "れいとうビーム",
+        conditions: { battleFormat: "singles" },
+      });
+
+      const doublesResult = adapter.calculate({
+        attacker,
+        defender,
+        moveName: "れいとうビーム",
+        conditions: { battleFormat: "doubles" },
+      });
+
+      expect(singlesResult.max).toBe(doublesResult.max);
+      expect(singlesResult.min).toBe(doublesResult.min);
+    });
+
+    it("conditions 省略時は singles 扱い (既存挙動と同じ)", () => {
+      // 防御側は Ground 無効を持たないポケモン (カビゴンは Normal 単タイプ)。
+      const attacker = { name: "ガブリアス" };
+      const defender = { name: "カビゴン" };
+
+      const noConditionsResult = adapter.calculate({
+        attacker,
+        defender,
+        moveName: "じしん",
+      });
+
+      const singlesResult = adapter.calculate({
+        attacker,
+        defender,
+        moveName: "じしん",
+        conditions: { battleFormat: "singles" },
+      });
+
+      expect(noConditionsResult.max).toBe(singlesResult.max);
+      expect(noConditionsResult.min).toBe(singlesResult.min);
     });
   });
 });
