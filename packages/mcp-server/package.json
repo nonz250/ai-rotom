@@ -1,6 +1,6 @@
 {
   "name": "@nonz250/ai-rotom",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Pokemon Champions battle advisor MCP server",
   "license": "MIT",
   "private": false,
