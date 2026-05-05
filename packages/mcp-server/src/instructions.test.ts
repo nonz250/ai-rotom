@@ -85,6 +85,8 @@ describe("SERVER_INSTRUCTIONS", () => {
     // 旧表現「evs・nature・ability 等を省略してよい」から ability を外し、
     // evs / nature のみ省略許容であることを保証する。
     expect(SERVER_INSTRUCTIONS).not.toContain("evs・nature・ability");
+    // リファクタで省略可フィールドの表記が消えてしまわないよう正の検証も併記する。
+    expect(SERVER_INSTRUCTIONS).toContain("evs・nature");
   });
 
   it("declares the responsibility split between tools and AI", () => {
@@ -106,7 +108,7 @@ describe("SERVER_INSTRUCTIONS", () => {
     const responsibilityIndex = SERVER_INSTRUCTIONS.indexOf(
       "## 判断と計算の役割分担",
     );
-    const usageIndex = SERVER_INSTRUCTIONS.indexOf("## 推奨される使い方");
+    const usageIndex = SERVER_INSTRUCTIONS.indexOf("## ツール利用方針（必須）");
     expect(responsibilityIndex).toBeGreaterThan(-1);
     expect(usageIndex).toBeGreaterThan(-1);
     expect(responsibilityIndex).toBeLessThan(usageIndex);
@@ -152,11 +154,49 @@ describe("SERVER_INSTRUCTIONS", () => {
   it("places party data section after existing usage guidance", () => {
     // 既存の固有仕様・使い方ガイドの後ろに「パーティデータの扱い」を
     // 追加する設計順序を固定化する。
-    const usageIndex = SERVER_INSTRUCTIONS.indexOf("## 推奨される使い方");
+    const usageIndex = SERVER_INSTRUCTIONS.indexOf("## ツール利用方針（必須）");
     const partyIndex = SERVER_INSTRUCTIONS.indexOf("## パーティデータの扱い");
     expect(usageIndex).toBeGreaterThan(-1);
     expect(partyIndex).toBeGreaterThan(-1);
     expect(usageIndex).toBeLessThan(partyIndex);
+  });
+
+  it("forbids answering pokemon facts from memory before calling a tool", () => {
+    // ポケモン名・技名・特性・素早さ等の固有名詞や数値が話題に出た時点で
+    // ツールを呼ばせる方針を instructions に固定化する (記憶ベースで即答しない)。
+    expect(SERVER_INSTRUCTIONS).toContain(
+      "まず本サーバーのツールを呼んで事実を取得してから回答すること",
+    );
+    expect(SERVER_INSTRUCTIONS).toContain("記憶");
+  });
+
+  it("guides search-style pokemon questions to the search tools", () => {
+    // 「○○ってどんなポケモン？」「条件で絞り込み」等の検索話題を
+    // search_pokemon 系ツールに明示的にルーティングする設計を固定化する。
+    // サブセクションヘッダ自体を直接検証して位置をピンポイントで固定する。
+    expect(SERVER_INSTRUCTIONS).toContain("### ポケモン検索・情報取得");
+    expect(SERVER_INSTRUCTIONS).toContain("search_pokemon");
+    expect(SERVER_INSTRUCTIONS).toContain("search_pokemon_by_move");
+    expect(SERVER_INSTRUCTIONS).toContain("search_pokemon_by_ability");
+    expect(SERVER_INSTRUCTIONS).toContain(
+      "search_pokemon_by_type_effectiveness",
+    );
+  });
+
+  it("guides attack / move questions to the move and damage tools", () => {
+    // 技・攻撃・攻撃範囲の話題を get_move_info / analyze_party_coverage /
+    // calculate_damage_* に集約する設計意図を固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("### 技・攻撃まわり");
+    expect(SERVER_INSTRUCTIONS).toContain("analyze_party_coverage");
+    expect(SERVER_INSTRUCTIONS).toContain("calculate_damage_all_moves");
+  });
+
+  it("guides speed-tier questions to the speed tools", () => {
+    // 素早さ (S ライン) の話題を calculate_stats / list_speed_tiers /
+    // analyze_matchup にルーティングする設計を固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("### 素早さ (S ライン)");
+    expect(SERVER_INSTRUCTIONS).toContain("list_speed_tiers");
+    expect(SERVER_INSTRUCTIONS).toContain("calculate_stats");
   });
 
   it("guides the interactive party registration workflow", () => {
