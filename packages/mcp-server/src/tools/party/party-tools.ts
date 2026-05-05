@@ -16,7 +16,7 @@ import {
   resolvePartiesFilePath,
   savePartiesFile,
 } from "../../party-store.js";
-import { TOOL_RESPONSE_HINT_CONTENT } from "../../tool-response-hint.js";
+import { toErrorResponse, toTextResponse } from "../../tool-response-hint.js";
 
 const SAVE_TOOL_NAME = "save_party";
 const SAVE_TOOL_DESCRIPTION =
@@ -133,26 +133,6 @@ interface PartySummary {
   memo?: string;
   updatedAt: string;
   memberCount: number;
-}
-
-function toErrorResponse(error: unknown) {
-  const message =
-    error instanceof Error ? error.message : "不明なエラーが発生しました";
-  return {
-    content: [
-      { type: "text" as const, text: JSON.stringify({ error: message }) },
-    ],
-    isError: true,
-  };
-}
-
-function toTextResponse(value: unknown) {
-  return {
-    content: [
-      { type: "text" as const, text: JSON.stringify(value) },
-      TOOL_RESPONSE_HINT_CONTENT,
-    ],
-  };
 }
 
 function toSummary(party: Party): PartySummary {

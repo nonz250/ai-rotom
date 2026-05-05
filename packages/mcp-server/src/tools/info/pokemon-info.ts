@@ -12,7 +12,7 @@ import {
   type BaseStats,
   type PokemonEntry,
 } from "../../data-store.js";
-import { TOOL_RESPONSE_HINT_CONTENT } from "../../tool-response-hint.js";
+import { withHint } from "../../tool-response-hint.js";
 
 const DEFAULT_SEARCH_LIMIT = 20;
 
@@ -204,12 +204,7 @@ export function registerPokemonInfoTools(server: McpServer): void {
 
         const result = buildPokemonInfoResult(entry);
 
-        return {
-          content: [
-            { type: "text" as const, text: JSON.stringify(result) },
-            TOOL_RESPONSE_HINT_CONTENT,
-          ],
-        };
+        return withHint({ type: "text" as const, text: JSON.stringify(result) });
       } catch (error: unknown) {
         const message =
           error instanceof Error
@@ -321,12 +316,7 @@ export function registerPokemonInfoTools(server: McpServer): void {
           }
         }
 
-        return {
-          content: [
-            { type: "text" as const, text: JSON.stringify(results) },
-            TOOL_RESPONSE_HINT_CONTENT,
-          ],
-        };
+        return withHint({ type: "text" as const, text: JSON.stringify(results) });
       } catch (error: unknown) {
         const message =
           error instanceof Error

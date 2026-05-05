@@ -14,7 +14,7 @@ import {
   itemNameResolver,
   natureNameResolver,
 } from "../../name-resolvers.js";
-import { TOOL_RESPONSE_HINT_CONTENT } from "../../tool-response-hint.js";
+import { toErrorResponse, withHint } from "../../tool-response-hint.js";
 
 const damageCalcInputSchema = {
   attacker: pokemonSchema.describe("攻撃側ポケモン"),
@@ -81,18 +81,6 @@ function createCalculator(): DamageCalculatorAdapter {
   );
 }
 
-function formatErrorResponse(error: unknown): {
-  content: { type: "text"; text: string }[];
-  isError: true;
-} {
-  const message =
-    error instanceof Error ? error.message : "不明なエラーが発生しました";
-  return {
-    content: [{ type: "text" as const, text: JSON.stringify({ error: message }) }],
-    isError: true,
-  };
-}
-
 function extractBestMove(
   results: DamageCalcResult[],
   defenderNameEn: string,
@@ -131,14 +119,9 @@ export function registerDamageCalculationTools(server: McpServer): void {
           conditions: args.conditions,
         });
 
-        return {
-          content: [
-            { type: "text" as const, text: JSON.stringify(result) },
-            TOOL_RESPONSE_HINT_CONTENT,
-          ],
-        };
+        return withHint({ type: "text" as const, text: JSON.stringify(result) });
       } catch (error: unknown) {
-        return formatErrorResponse(error);
+        return toErrorResponse(error);
       }
     },
   );
@@ -173,14 +156,9 @@ export function registerDamageCalculationTools(server: McpServer): void {
           results,
         };
 
-        return {
-          content: [
-            { type: "text" as const, text: JSON.stringify(output) },
-            TOOL_RESPONSE_HINT_CONTENT,
-          ],
-        };
+        return withHint({ type: "text" as const, text: JSON.stringify(output) });
       } catch (error: unknown) {
-        return formatErrorResponse(error);
+        return toErrorResponse(error);
       }
     },
   );
@@ -243,14 +221,9 @@ export function registerDamageCalculationTools(server: McpServer): void {
           output.matchups.push(attackerEntry);
         }
 
-        return {
-          content: [
-            { type: "text" as const, text: JSON.stringify(output) },
-            TOOL_RESPONSE_HINT_CONTENT,
-          ],
-        };
+        return withHint({ type: "text" as const, text: JSON.stringify(output) });
       } catch (error: unknown) {
-        return formatErrorResponse(error);
+        return toErrorResponse(error);
       }
     },
   );
