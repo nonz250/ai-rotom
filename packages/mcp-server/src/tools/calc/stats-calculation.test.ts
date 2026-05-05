@@ -105,19 +105,23 @@ describe("calculate_stats logic", () => {
       expect(entry.baseStats.spe).toBe(CHARIZARD_BASE_SPE);
     });
 
-    it("メガスターミーの atk は pokemon.json の修正値 100 で計算される", () => {
-      // @smogon/calc の内蔵データは atk=140 だが、pokemon.json で 100 に修正済み
+    it("メガスターミーの atk は override 経由・非経由で同値（pokemon.json 修正値と upstream が一致）", () => {
+      // pokemon.json の修正値を保持していることをデータ整合性として確認する。
+      // upstream @smogon/calc 側も 0.11.0 リリース後の master 更新で同値に
+      // 揃ったため、override 経由と非経由の両者は同じ実数値になる。
+      // upstream が将来再び乖離した場合、後段の equality アサーションで検知する。
+      // override 機構自体が値を反映する動作確認は
+      // packages/mcp-server/src/calc/damage-calculator.test.ts の
+      // "should apply pokemon.json overrides" 側で担保している。
       const STARMIE_MEGA_BASE_ATK = 100;
       const entry = pokemonById.get(toDataId("Starmie-Mega"))!;
       expect(entry.baseStats.atk).toBe(STARMIE_MEGA_BASE_ATK);
 
-      // overrides なしで計算した場合と比較すると、atk が異なるはず
       const gen = Generations.get(CHAMPIONS_GEN_NUM);
       const withOverride = createChampionsPokemon("Starmie-Mega");
       const withoutOverride = new Pokemon(gen, "Starmie-Mega");
 
-      // 修正後は atk の実数値が内蔵データ計算時より小さくなる
-      expect(withOverride.stats.atk).toBeLessThan(withoutOverride.stats.atk);
+      expect(withOverride.stats.atk).toBe(withoutOverride.stats.atk);
     });
   });
 
