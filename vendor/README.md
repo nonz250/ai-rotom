@@ -10,19 +10,25 @@ monorepo root の `devDependencies` から `file:vendor/...` で参照する。
 | Package | `@smogon/calc` |
 | Version | `0.11.0` |
 | Upstream | https://github.com/smogon/damage-calc |
-| Upstream commit SHA | 記録なし（tarball 内 `package.json.gitHead` 欠落のため確定不能） |
+| Upstream commit SHA | `20f43c4ec138950900a45e9804a5fc5fd148dbec` (2026-05-05, master HEAD 時点) |
 | License | MIT (詳細は `packages/mcp-server/THIRD_PARTY_LICENSES.md`) |
-| Integrity (sha512) | `sha512-N6QXidvn22hvcZMao22XTO8svpnnh3wYu1gwNj5HXOf4smHZGMcWafp7kNkbeqEhcxmTy8htnPfBXtps2EBzSQ==` |
+| Integrity (sha512) | `sha512-M3OBfhSEUm0AwdlP8h6Pk+vrr1g2Ob5PzmAm4Jy7bMzowdtlWOqGUxekY+dxHYvuKVkU3BGXSmSZ4vQRuXu9lQ==` |
 
-### Chain of custody（現行 0.11.0 について）
+### バージョン番号について
 
-- 現行 tarball は `gitHead` を含まずに生成されたため、upstream の commit
-  SHA を後追いで特定できない。Chain of custody の一意指紋としては上記
-  `Integrity (sha512)` を**唯一の検証値**として扱う
+upstream の `calc/package.json` は 2026-03-11 に `v0.11.0` がタグ打ちされて以降、
+版数が bump されないまま master に Pokemon Champions サポート (commit
+`c0bee8660f`, 2026-04-16) と複数の Champions 修正が積まれている。
+当 tarball のバージョンも upstream に合わせて `0.11.0` 表記のままにしているが、
+**npm registry に公開されている `@smogon/calc@0.11.0` (2026-03-11 タグ) とは
+中身が異なる**。判別は上記 Integrity (sha512) と Upstream commit SHA で行う。
+
+### Chain of custody
+
+- 当 tarball も `package.json.gitHead` は欠落するが、生成元 commit SHA を
+  上表に明示記録している
 - `package-lock.json` の `node_modules/@smogon/calc` エントリの `integrity`
-  値と常に一致していることを `npm install` / CI の検証で担保する
-- 次回の差し替え（0.12.0 以降 / 再ビルド）からは、生成時に commit SHA を
-  明示記録する運用を開始する（下記「生成手順」と「チェックリスト」参照）
+  値と上表の Integrity が常に一致していることを `npm install` / CI の検証で担保する
 
 ### 生成手順
 
