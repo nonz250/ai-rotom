@@ -8,6 +8,7 @@ import {
   toDataId,
 } from "../../data-store.js";
 import { moveNameResolver } from "../../name-resolvers.js";
+import { TOOL_RESPONSE_HINT_CONTENT } from "../../tool-response-hint.js";
 
 const TOOL_NAME = "search_pokemon_by_move";
 const TOOL_DESCRIPTION =
@@ -104,7 +105,10 @@ export function registerSearchByMoveTool(server: McpServer): void {
       };
 
       return {
-        content: [{ type: "text" as const, text: JSON.stringify(output) }],
+        content: [
+          { type: "text" as const, text: JSON.stringify(output) },
+          TOOL_RESPONSE_HINT_CONTENT,
+        ],
       };
     } catch (error: unknown) {
       const message =

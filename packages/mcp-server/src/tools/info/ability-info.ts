@@ -2,6 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { abilitiesById, toDataId } from "../../data-store.js";
 import { abilityNameResolver } from "../../name-resolvers.js";
+import { TOOL_RESPONSE_HINT_CONTENT } from "../../tool-response-hint.js";
 
 const TOOL_NAME = "get_ability_info";
 const TOOL_DESCRIPTION =
@@ -60,7 +61,10 @@ export function registerAbilityInfoTool(server: McpServer): void {
       };
 
       return {
-        content: [{ type: "text" as const, text: JSON.stringify(output) }],
+        content: [
+          { type: "text" as const, text: JSON.stringify(output) },
+          TOOL_RESPONSE_HINT_CONTENT,
+        ],
       };
     } catch (error: unknown) {
       const message =

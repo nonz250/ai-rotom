@@ -12,6 +12,7 @@ import {
   type BaseStats,
   type PokemonEntry,
 } from "../../data-store.js";
+import { TOOL_RESPONSE_HINT_CONTENT } from "../../tool-response-hint.js";
 
 const DEFAULT_SEARCH_LIMIT = 20;
 
@@ -206,6 +207,7 @@ export function registerPokemonInfoTools(server: McpServer): void {
         return {
           content: [
             { type: "text" as const, text: JSON.stringify(result) },
+            TOOL_RESPONSE_HINT_CONTENT,
           ],
         };
       } catch (error: unknown) {
@@ -322,6 +324,7 @@ export function registerPokemonInfoTools(server: McpServer): void {
         return {
           content: [
             { type: "text" as const, text: JSON.stringify(results) },
+            TOOL_RESPONSE_HINT_CONTENT,
           ],
         };
       } catch (error: unknown) {

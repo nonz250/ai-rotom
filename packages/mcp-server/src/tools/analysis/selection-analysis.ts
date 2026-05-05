@@ -30,6 +30,7 @@ import {
   natureNameResolver,
   pokemonNameResolver,
 } from "../../name-resolvers.js";
+import { TOOL_RESPONSE_HINT_CONTENT } from "../../tool-response-hint.js";
 
 const CHAMPIONS_GEN_NUM = 0;
 
@@ -358,7 +359,10 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
       };
 
       return {
-        content: [{ type: "text" as const, text: JSON.stringify(output) }],
+        content: [
+          { type: "text" as const, text: JSON.stringify(output) },
+          TOOL_RESPONSE_HINT_CONTENT,
+        ],
       };
     } catch (error: unknown) {
       const message =

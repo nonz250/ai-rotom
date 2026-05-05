@@ -14,6 +14,7 @@ import {
   itemNameResolver,
   natureNameResolver,
 } from "../../name-resolvers.js";
+import { TOOL_RESPONSE_HINT_CONTENT } from "../../tool-response-hint.js";
 
 const damageCalcInputSchema = {
   attacker: pokemonSchema.describe("攻撃側ポケモン"),
@@ -131,7 +132,10 @@ export function registerDamageCalculationTools(server: McpServer): void {
         });
 
         return {
-          content: [{ type: "text" as const, text: JSON.stringify(result) }],
+          content: [
+            { type: "text" as const, text: JSON.stringify(result) },
+            TOOL_RESPONSE_HINT_CONTENT,
+          ],
         };
       } catch (error: unknown) {
         return formatErrorResponse(error);
@@ -170,7 +174,10 @@ export function registerDamageCalculationTools(server: McpServer): void {
         };
 
         return {
-          content: [{ type: "text" as const, text: JSON.stringify(output) }],
+          content: [
+            { type: "text" as const, text: JSON.stringify(output) },
+            TOOL_RESPONSE_HINT_CONTENT,
+          ],
         };
       } catch (error: unknown) {
         return formatErrorResponse(error);
@@ -237,7 +244,10 @@ export function registerDamageCalculationTools(server: McpServer): void {
         }
 
         return {
-          content: [{ type: "text" as const, text: JSON.stringify(output) }],
+          content: [
+            { type: "text" as const, text: JSON.stringify(output) },
+            TOOL_RESPONSE_HINT_CONTENT,
+          ],
         };
       } catch (error: unknown) {
         return formatErrorResponse(error);

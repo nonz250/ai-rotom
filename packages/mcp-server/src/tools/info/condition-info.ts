@@ -2,6 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import type { ConditionEntry } from "../../data-store.js";
 import { championsConditions } from "../../data-store.js";
+import { TOOL_RESPONSE_HINT_CONTENT } from "../../tool-response-hint.js";
 
 const TOOL_NAME = "get_condition_info";
 const TOOL_DESCRIPTION =
@@ -83,7 +84,10 @@ export function registerConditionInfoTool(server: McpServer): void {
       }
 
       return {
-        content: [{ type: "text" as const, text: JSON.stringify(output) }],
+        content: [
+          { type: "text" as const, text: JSON.stringify(output) },
+          TOOL_RESPONSE_HINT_CONTENT,
+        ],
       };
     } catch (error: unknown) {
       const message =
