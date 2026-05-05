@@ -25,13 +25,13 @@ function listToolImplFiles(dir: string): string[] {
 }
 
 describe("TOOL_RESPONSE_HINT_TEXT", () => {
-  it("instructs the AI client to call ai-rotom tools instead of relying on memory", () => {
-    // ツールレスポンス末尾に毎回付与する誘導テキストの設計意図 (記憶ベース即答禁止 +
-    // ai-rotom 呼び出し誘導) を固定化する。文言の細部は後で調整され得るが、
-    // 「ai-rotom のツールを呼ぶこと」「知識ベースで答えず」は外せないキーフレーズ。
+  it("recommends ai-rotom tools rather than commanding the AI client", () => {
+    // ツールレスポンス末尾に毎回付与する誘導テキストの設計意図
+    // (ai-rotom 呼び出しを推奨する recency reminder) を固定化する。
+    // 命令調はプロンプトインジェクション検出にフラグされ UX を悪化させるため、
+    // 「ai-rotom」と「推奨」を含む推奨調表現を必須キーフレーズとする。
     expect(TOOL_RESPONSE_HINT_TEXT).toContain("ai-rotom");
-    expect(TOOL_RESPONSE_HINT_TEXT).toContain("知識ベースで答えず");
-    expect(TOOL_RESPONSE_HINT_TEXT).toContain("ツールを呼ぶ");
+    expect(TOOL_RESPONSE_HINT_TEXT).toContain("推奨");
   });
 
   it("explicitly lists pokemon name, move name, and speed as triggers", () => {
@@ -40,6 +40,12 @@ describe("TOOL_RESPONSE_HINT_TEXT", () => {
     expect(TOOL_RESPONSE_HINT_TEXT).toContain("ポケモン名");
     expect(TOOL_RESPONSE_HINT_TEXT).toContain("技名");
     expect(TOOL_RESPONSE_HINT_TEXT).toContain("素早さ");
+  });
+
+  it("references Pokemon Champions to justify the recommendation", () => {
+    // 推奨の根拠 (従来作と仕様が異なる) を明示することで AI クライアント側に
+    // 判断材料を与え、命令調に頼らずに recency reminder を機能させる設計意図を固定化する。
+    expect(TOOL_RESPONSE_HINT_TEXT).toContain("Pokemon Champions");
   });
 });
 
