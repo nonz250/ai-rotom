@@ -58,7 +58,7 @@ describe("parsePokesolTextMultiple", () => {
     expect(results).toHaveLength(1);
     expect(results[0]!.pokemonName).toBe("ガブリアス");
     expect(results[0]!.itemName).toBe("こだわりスカーフ");
-    expect(results[0]!.abilityName).toBe("さめはだ");
+    expect(results[0]!.abilityNames).toEqual(["さめはだ"]);
     expect(results[0]!.natureName).toBe("いじっぱり");
     expect(results[0]!.moveNames).toEqual([
       "じしん",
@@ -106,8 +106,7 @@ describe("parsePokesolTextMultiple", () => {
 能力補正: いじっぱり`;
     const results = parsePokesolTextMultiple(text);
     expect(results).toHaveLength(1);
-    expect(results[0]!.abilityName).toBe("すなのちから");
-    expect(results[0]!.preMegaAbilityName).toBe("さめはだ");
+    expect(results[0]!.abilityNames).toEqual(["すなのちから", "さめはだ"]);
   });
 
   it("`@` を省略した (持ち物なし) ポケモンをパースする", () => {
