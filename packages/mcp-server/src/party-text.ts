@@ -42,7 +42,7 @@ export function parsePokesolTextMultiple(
 
 /**
  * パーサー出力 (`PokesolTextParseReult`) を `PartyMember` に変換する。
- * - メガ前特性 (`preMegaAbilityName`) が存在すればそれを `ability` として保存
+ * - `abilityNames[1]` (メガ前特性) が存在すればそれを `ability` として保存
  *   (通常状態の特性が基本。メガ進化時の特性変化は計算側の責務)
  * - `natureName` が null の場合は `DEFAULT_NATURE_NAME` で補完
  * - `terastalName` が存在する場合はポケチャン未対応のため無視
@@ -68,15 +68,16 @@ export function mapPokesolResultToPartyMember(
     member.item = result.itemName;
   }
 
-  if (result.preMegaAbilityName !== null) {
-    member.ability = result.preMegaAbilityName;
-    if (result.abilityName !== null && result.abilityName !== result.preMegaAbilityName) {
+  const [primaryAbility, preMegaAbility] = result.abilityNames;
+  if (preMegaAbility !== undefined) {
+    member.ability = preMegaAbility;
+    if (primaryAbility !== undefined && primaryAbility !== preMegaAbility) {
       warnings.push(
-        `ブロック ${blockNumber}: メガ進化特性「${result.abilityName}」は無視し、メガ前特性「${result.preMegaAbilityName}」を ability として保存しました。`,
+        `ブロック ${blockNumber}: メガ進化特性「${primaryAbility}」は無視し、メガ前特性「${preMegaAbility}」を ability として保存しました。`,
       );
     }
-  } else if (result.abilityName !== null) {
-    member.ability = result.abilityName;
+  } else if (primaryAbility !== undefined) {
+    member.ability = primaryAbility;
   }
 
   if (result.natureName !== null) {
