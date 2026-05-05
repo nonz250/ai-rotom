@@ -29,7 +29,7 @@ import {
   itemNameResolver,
   natureNameResolver,
 } from "../../name-resolvers.js";
-import { TOOL_RESPONSE_HINT_CONTENT } from "../../tool-response-hint.js";
+import { withHint } from "../../tool-response-hint.js";
 
 const TOOL_NAME = "analyze_matchup";
 const TOOL_DESCRIPTION =
@@ -197,12 +197,7 @@ export function registerMatchupTool(server: McpServer): void {
           typeSummary,
         };
 
-        return {
-          content: [
-            { type: "text" as const, text: JSON.stringify(output) },
-            TOOL_RESPONSE_HINT_CONTENT,
-          ],
-        };
+        return withHint({ type: "text" as const, text: JSON.stringify(output) });
       } catch (error: unknown) {
         const message =
           error instanceof Error

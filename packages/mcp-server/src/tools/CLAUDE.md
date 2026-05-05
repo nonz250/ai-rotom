@@ -28,7 +28,7 @@ import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { pokemonNameResolver } from "../../name-resolvers.js";
 import { pokemonById, toDataId } from "../../data-store.js";
-import { TOOL_RESPONSE_HINT_CONTENT } from "../../tool-response-hint.js";
+import { toErrorResponse, withHint } from "../../tool-response-hint.js";
 
 const inputSchema = { name: z.string() };
 
@@ -43,25 +43,13 @@ export function registerFooTool(server: McpServer): void {
     async (args) => {
       try {
         const result = /* ロジック */;
-        // 成功レスポンスは content 末尾に必ず TOOL_RESPONSE_HINT_CONTENT を append する
-        // (recency bias を使ってツール再呼び出しを誘導する設計)。
-        return {
-          content: [
-            { type: "text", text: JSON.stringify(result) },
-            TOOL_RESPONSE_HINT_CONTENT,
-          ],
-        };
+        // 成功レスポンスは withHint 経由で返す。ヘルパー内で content 末尾に
+        // TOOL_RESPONSE_HINT_CONTENT を必ず append し、recency bias を使って
+        // 次手のツール再呼び出しを誘導する設計を構造的に強制する。
+        return withHint({ type: "text" as const, text: JSON.stringify(result) });
       } catch (error) {
-        // エラーレスポンスには hint を付けない (ノイズになるため)。
-        return {
-          content: [{
-            type: "text",
-            text: JSON.stringify({
-              error: error instanceof Error ? error.message : String(error),
-            }),
-          }],
-          isError: true,
-        };
+        // エラー時は共通の toErrorResponse を使う (hint なし。ノイズ回避)。
+        return toErrorResponse(error);
       }
     },
   );

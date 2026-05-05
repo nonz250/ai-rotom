@@ -24,7 +24,7 @@ import {
   abilityNameResolver,
   pokemonNameResolver,
 } from "../../name-resolvers.js";
-import { TOOL_RESPONSE_HINT_CONTENT } from "../../tool-response-hint.js";
+import { withHint } from "../../tool-response-hint.js";
 
 const CHAMPIONS_GEN_NUM = 0;
 
@@ -503,12 +503,7 @@ export function registerPartyCoverageTool(server: McpServer): void {
     try {
       const output = analyzePartyCoverage(args);
 
-      return {
-        content: [
-          { type: "text" as const, text: JSON.stringify(output) },
-          TOOL_RESPONSE_HINT_CONTENT,
-        ],
-      };
+      return withHint({ type: "text" as const, text: JSON.stringify(output) });
     } catch (error: unknown) {
       const message =
         error instanceof Error ? error.message : "不明なエラーが発生しました";

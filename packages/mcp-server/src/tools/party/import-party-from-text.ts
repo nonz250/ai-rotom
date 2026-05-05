@@ -22,7 +22,7 @@ import {
   resolvePartiesFilePath,
   savePartiesFile,
 } from "../../party-store.js";
-import { TOOL_RESPONSE_HINT_CONTENT } from "../../tool-response-hint.js";
+import { toErrorResponse, toTextResponse } from "../../tool-response-hint.js";
 import {
   mapPokesolResultToPartyMember,
   splitPokesolTextBlocks,
@@ -93,26 +93,6 @@ interface ImportInput {
   text: string;
   name: string;
   memo?: string;
-}
-
-function toErrorResponse(error: unknown) {
-  const message =
-    error instanceof Error ? error.message : "不明なエラーが発生しました";
-  return {
-    content: [
-      { type: "text" as const, text: JSON.stringify({ error: message }) },
-    ],
-    isError: true,
-  };
-}
-
-function toTextResponse(value: unknown) {
-  return {
-    content: [
-      { type: "text" as const, text: JSON.stringify(value) },
-      TOOL_RESPONSE_HINT_CONTENT,
-    ],
-  };
 }
 
 /**
