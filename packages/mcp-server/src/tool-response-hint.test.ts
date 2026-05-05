@@ -1,8 +1,28 @@
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, it, expect } from "vitest";
 import {
   TOOL_RESPONSE_HINT_CONTENT,
   TOOL_RESPONSE_HINT_TEXT,
 } from "./tool-response-hint";
+
+/**
+ * tools/ 配下の実装ファイル (.ts、テストファイル除く) を再帰的に列挙する。
+ * 全ツール registration が hint を必ず import していることを保証するための
+ * 回帰テストで使う。
+ */
+function listToolImplFiles(dir: string): string[] {
+  const files: string[] = [];
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...listToolImplFiles(full));
+    } else if (entry.name.endsWith(".ts") && !entry.name.endsWith(".test.ts")) {
+      files.push(full);
+    }
+  }
+  return files;
+}
 
 describe("TOOL_RESPONSE_HINT_TEXT", () => {
   it("instructs the AI client to call ai-rotom tools instead of relying on memory", () => {
@@ -32,5 +52,26 @@ describe("TOOL_RESPONSE_HINT_CONTENT", () => {
       type: "text",
       text: TOOL_RESPONSE_HINT_TEXT,
     });
+  });
+});
+
+describe("hint import coverage", () => {
+  it("every tool implementation file imports TOOL_RESPONSE_HINT_CONTENT", () => {
+    // 新規ツール追加時に hint append を忘れる退行を機械的に検出する回帰テスト。
+    // tools/ 配下の実装ファイル (テスト除く) すべてが hint をどこかで参照していることを保証する。
+    // 共通ヘルパー (party-tools.ts の toTextResponse 等) 経由で適用するファイルも
+    // 当該ヘルパー定義ファイル自身が hint を import しているはず。
+    const toolsDir = join(import.meta.dirname, "tools");
+    const toolFiles = listToolImplFiles(toolsDir);
+
+    // tools/ 配下に実装ファイルが存在することを確認 (再帰列挙が壊れていないことの保証)。
+    expect(toolFiles.length).toBeGreaterThan(0);
+
+    const filesMissingHint = toolFiles.filter((file) => {
+      const content = readFileSync(file, "utf-8");
+      return !content.includes("TOOL_RESPONSE_HINT_CONTENT");
+    });
+
+    expect(filesMissingHint).toEqual([]);
   });
 });
