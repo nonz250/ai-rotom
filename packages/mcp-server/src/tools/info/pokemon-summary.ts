@@ -35,6 +35,7 @@ const STATUS_CATEGORY: MoveCategory = "Status";
 const TOOL_NAME = "get_pokemon_summary";
 const TOOL_DESCRIPTION =
   "ポケモンの総合プロファイル（基本情報・防御相性・覚える技の集計・実数値）を一度に取得する。"
+  + "ユーザー発話にポケモン名が出てきて詳細な分析や役割評価が必要な場合は、知識ベースで即答せず、まずこのツールを呼んでデータを引くこと。"
   + "対戦での役割把握や初期分析に使用する。ポケモンチャンピオンズ対応。";
 
 const inputSchema = {

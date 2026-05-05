@@ -23,7 +23,11 @@ const AROUND_WINDOW = 10;
 
 const TOOL_NAME = "list_speed_tiers";
 const TOOL_DESCRIPTION =
-  "素早さの実数値ライン一覧を取得する。around で指定ポケモン付近、range で実数値範囲を指定できる。省略時は全ポケモンを返す。ポケモンチャンピオンズ仕様（Lv50・IV31・SP 0〜32）で計算。";
+  "素早さの実数値ライン一覧を取得する。"
+  + "各エントリには finalSpeed（無振り無補正）・withNeutralMax（準速＝無補正性格で素早さに 32 SP 振り切り）・withJollyMax（最速＝補正性格で素早さに 32 SP 振り切り）の 3 列をデフォルトで含めて返す。"
+  + "S ライン比較や対面の先後判定では準速・最速の双方を必ずユーザーに提示すること（最速だけ示すと準速個体を取りこぼす）。"
+  + "around で指定ポケモン付近、range で実数値範囲を指定できる。省略時は全ポケモンを返す。"
+  + "ポケモンチャンピオンズ仕様（Lv50・IV31・SP 0〜32）で計算。";
 
 const rangeSchema = z
   .object({
