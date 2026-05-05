@@ -24,6 +24,7 @@ import {
   abilityNameResolver,
   pokemonNameResolver,
 } from "../../name-resolvers.js";
+import { TOOL_RESPONSE_HINT_CONTENT } from "../../tool-response-hint.js";
 
 const CHAMPIONS_GEN_NUM = 0;
 
@@ -503,7 +504,10 @@ export function registerPartyCoverageTool(server: McpServer): void {
       const output = analyzePartyCoverage(args);
 
       return {
-        content: [{ type: "text" as const, text: JSON.stringify(output) }],
+        content: [
+          { type: "text" as const, text: JSON.stringify(output) },
+          TOOL_RESPONSE_HINT_CONTENT,
+        ],
       };
     } catch (error: unknown) {
       const message =

@@ -28,6 +28,7 @@ import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { pokemonNameResolver } from "../../name-resolvers.js";
 import { pokemonById, toDataId } from "../../data-store.js";
+import { TOOL_RESPONSE_HINT_CONTENT } from "../../tool-response-hint.js";
 
 const inputSchema = { name: z.string() };
 
@@ -42,8 +43,16 @@ export function registerFooTool(server: McpServer): void {
     async (args) => {
       try {
         const result = /* ロジック */;
-        return { content: [{ type: "text", text: JSON.stringify(result) }] };
+        // 成功レスポンスは content 末尾に必ず TOOL_RESPONSE_HINT_CONTENT を append する
+        // (recency bias を使ってツール再呼び出しを誘導する設計)。
+        return {
+          content: [
+            { type: "text", text: JSON.stringify(result) },
+            TOOL_RESPONSE_HINT_CONTENT,
+          ],
+        };
       } catch (error) {
+        // エラーレスポンスには hint を付けない (ノイズになるため)。
         return {
           content: [{
             type: "text",

@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { MoveCategory } from "../../data-store.js";
 import { movesById, toDataId } from "../../data-store.js";
 import { moveNameResolver } from "../../name-resolvers.js";
+import { TOOL_RESPONSE_HINT_CONTENT } from "../../tool-response-hint.js";
 
 const TOOL_NAME = "get_move_info";
 const TOOL_DESCRIPTION =
@@ -92,7 +93,10 @@ export function registerMoveInfoTool(server: McpServer): void {
       };
 
       return {
-        content: [{ type: "text" as const, text: JSON.stringify(output) }],
+        content: [
+          { type: "text" as const, text: JSON.stringify(output) },
+          TOOL_RESPONSE_HINT_CONTENT,
+        ],
       };
     } catch (error: unknown) {
       const message =

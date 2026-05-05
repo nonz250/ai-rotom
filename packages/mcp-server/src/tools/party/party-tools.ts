@@ -16,6 +16,7 @@ import {
   resolvePartiesFilePath,
   savePartiesFile,
 } from "../../party-store.js";
+import { TOOL_RESPONSE_HINT_CONTENT } from "../../tool-response-hint.js";
 
 const SAVE_TOOL_NAME = "save_party";
 const SAVE_TOOL_DESCRIPTION =
@@ -147,7 +148,10 @@ function toErrorResponse(error: unknown) {
 
 function toTextResponse(value: unknown) {
   return {
-    content: [{ type: "text" as const, text: JSON.stringify(value) }],
+    content: [
+      { type: "text" as const, text: JSON.stringify(value) },
+      TOOL_RESPONSE_HINT_CONTENT,
+    ],
   };
 }
 

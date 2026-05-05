@@ -12,12 +12,16 @@ import {
   type BaseStats,
   type PokemonEntry,
 } from "../../data-store.js";
+import { TOOL_RESPONSE_HINT_CONTENT } from "../../tool-response-hint.js";
 
 const DEFAULT_SEARCH_LIMIT = 20;
 
 const GET_POKEMON_INFO_TOOL_NAME = "get_pokemon_info";
 const GET_POKEMON_INFO_DESCRIPTION =
-  "ポケモンの詳細情報（種族値・タイプ・特性・体重）を取得する。ポケモンの強さや役割を把握するために使用する。ポケモン対戦、パーティ構築、ダメージ計算の前提情報として活用できる。";
+  "ポケモンの詳細情報（種族値・タイプ・特性・体重）を取得する。"
+  + "ユーザー発話にポケモン名が出てきたら、知識ベースで即答せず、まずこのツールを呼んでデータを引くこと"
+  + "（ポケモンチャンピオンズは従来作と種族値・タイプ・特性等で差異がある）。"
+  + "ポケモンの強さや役割の把握、パーティ構築、ダメージ計算の前提情報として活用できる。";
 
 const SEARCH_POKEMON_TOOL_NAME = "search_pokemon";
 const SEARCH_POKEMON_DESCRIPTION =
@@ -203,6 +207,7 @@ export function registerPokemonInfoTools(server: McpServer): void {
         return {
           content: [
             { type: "text" as const, text: JSON.stringify(result) },
+            TOOL_RESPONSE_HINT_CONTENT,
           ],
         };
       } catch (error: unknown) {
@@ -319,6 +324,7 @@ export function registerPokemonInfoTools(server: McpServer): void {
         return {
           content: [
             { type: "text" as const, text: JSON.stringify(results) },
+            TOOL_RESPONSE_HINT_CONTENT,
           ],
         };
       } catch (error: unknown) {

@@ -2,10 +2,14 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { championsLearnsets, movesById, toDataId } from "../../data-store.js";
 import { pokemonNameResolver } from "../../name-resolvers.js";
+import { TOOL_RESPONSE_HINT_CONTENT } from "../../tool-response-hint.js";
 
 const TOOL_NAME = "get_learnset";
 const TOOL_DESCRIPTION =
-  "ポケモンチャンピオンズで特定のポケモンが覚える技の一覧を取得する。パーティ構築や技構成の検討に使用する。チャンピオンズ固有の技プール変更（没収技等）を反映。";
+  "ポケモンチャンピオンズで特定のポケモンが覚える技の一覧を取得する。"
+  + "「○○は何を覚える？」のようにポケモン名と覚える技が話題に出たら、知識ベースで即答せず、まずこのツールを呼んでデータを引くこと"
+  + "（チャンピオンズ固有の技プール変更=没収技等が反映される）。"
+  + "パーティ構築や技構成の検討に使用する。";
 
 const inputSchema = {
   name: z.string().describe("ポケモン名（日本語 or 英語）"),
@@ -79,7 +83,10 @@ export function registerLearnsetTool(server: McpServer): void {
       };
 
       return {
-        content: [{ type: "text" as const, text: JSON.stringify(output) }],
+        content: [
+          { type: "text" as const, text: JSON.stringify(output) },
+          TOOL_RESPONSE_HINT_CONTENT,
+        ],
       };
     } catch (error: unknown) {
       const message =
