@@ -191,6 +191,52 @@ describe("SERVER_INSTRUCTIONS", () => {
     expect(SERVER_INSTRUCTIONS).toContain("calculate_damage_all_moves");
   });
 
+  it("guides AI to propose purpose-driven SP allocation instead of 32-max-out", () => {
+    // ポケチャンの SP 仕様 (1 SP 単位 / 合計 66) を活かして、
+    // 目的駆動の SP 振り提案 (ブッパではなく刻み) を AI に促す方針を固定化する。
+    // AI クライアントが従来作流の「とりあえず最速 / HP252」で雑に振らないようにする狙い。
+    expect(SERVER_INSTRUCTIONS).toContain("## SP 振りの実践（重要）");
+    expect(SERVER_INSTRUCTIONS).toContain("ブッパ");
+    expect(SERVER_INSTRUCTIONS).toContain("目的駆動");
+  });
+
+  it("lists the three SP allocation categories (damage / defense / speed)", () => {
+    // 火力調整 / 耐久調整 / 素早さ調整 (S 調整振り) の 3 カテゴリーを
+    // instructions に明示する設計意図を固定化する。
+    expect(SERVER_INSTRUCTIONS).toContain("### 火力調整");
+    expect(SERVER_INSTRUCTIONS).toContain("### 耐久調整");
+    expect(SERVER_INSTRUCTIONS).toContain("### 素早さ調整");
+    expect(SERVER_INSTRUCTIONS).toContain("S 調整振り");
+  });
+
+  it("includes a proposal flow template for SP allocation", () => {
+    // 提案フローのテンプレート (役割・対面相手の確認 → 計算ツールで逆算 →
+    // 配分案の提示) を instructions で固定化する。AI クライアントが
+    // 即興で振り分けを返すのではなく、ヒアリング起点で提案するよう誘導する。
+    expect(SERVER_INSTRUCTIONS).toContain("提案フローのテンプレート");
+    expect(SERVER_INSTRUCTIONS).toContain("対面相手");
+  });
+
+  it("places SP allocation practice between the SP spec and other rules", () => {
+    // 「## SP 振りの実践（重要）」を「## 能力ポイント (SP) について」の直後・
+    // 「## その他の固有仕様」の前に配置する設計順序を固定化する
+    // (仕様 → 実践 → その他 の流れで AI が読みやすくする)。
+    const spSpecIndex = SERVER_INSTRUCTIONS.indexOf(
+      "## 能力ポイント (SP) について",
+    );
+    const practiceIndex = SERVER_INSTRUCTIONS.indexOf(
+      "## SP 振りの実践（重要）",
+    );
+    const otherRulesIndex = SERVER_INSTRUCTIONS.indexOf(
+      "## その他の固有仕様",
+    );
+    expect(spSpecIndex).toBeGreaterThan(-1);
+    expect(practiceIndex).toBeGreaterThan(-1);
+    expect(otherRulesIndex).toBeGreaterThan(-1);
+    expect(spSpecIndex).toBeLessThan(practiceIndex);
+    expect(practiceIndex).toBeLessThan(otherRulesIndex);
+  });
+
   it("guides speed-tier questions to the speed tools", () => {
     // 素早さ (S ライン) の話題を calculate_stats / list_speed_tiers /
     // analyze_matchup にルーティングする設計を固定化する。
