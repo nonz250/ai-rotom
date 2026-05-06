@@ -19,8 +19,8 @@ export interface MegaResolution {
 
 /**
  * 日本語メガストーン名 → メガ進化解決情報。
- * pokechamp の `dict.megaStoneToMegaSpecies` 相当を items.json + pokemon.json から
- * 動的に構築する。pokechamp 独自辞書の取り込みは不要。
+ * items.json (megaStone フィールド) + pokemon.json から
+ * 動的に構築する。独自辞書ファイルは不要。
  */
 export const megaStoneToMega: ReadonlyMap<string, MegaResolution> = (() => {
   const map = new Map<string, MegaResolution>();

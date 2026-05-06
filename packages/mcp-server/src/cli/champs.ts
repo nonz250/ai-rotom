@@ -5,7 +5,7 @@ import { buildAdapter } from "./register-all.js";
 import type { CliMcpAdapter, RegisteredTool } from "./adapter.js";
 
 /**
- * pokechamp 風サブコマンド名 → 正式 MCP ツール名のエイリアス。
+ * 短縮サブコマンド名 → 正式 MCP ツール名のエイリアス。
  * `champs describe ガブリアス` のような短縮形を許容する。
  */
 const ALIASES: Record<string, string> = {

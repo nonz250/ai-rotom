@@ -4,7 +4,7 @@ import { resolveMegaStone } from "./mega-resolver.js";
 
 /**
  * pokedb.tokyo (champs.pokedb.tokyo) クライアント。
- * pokechamp tools.js の HTTP / HTML パーサ層を TypeScript 移植。
+ * pokedb.tokyo HTTP / HTML パーサ層 (Node 標準 https + 正規表現)。
  * - HTTP: Node 標準 https モジュール、UA 必須、503/429 で指数バックオフ最大 5 回
  * - パース: 正規表現 + tag2pipe (cheerio/jsdom 不採用)
  * - キャッシュ: ~/.cache/ai-rotom/ に 24h TTL
