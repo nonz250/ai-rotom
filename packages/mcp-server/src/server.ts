@@ -25,6 +25,11 @@ import { registerSelectionAnalysisTool } from "./tools/analysis/selection-analys
 import { registerSpeedTiersTool } from "./tools/calc/speed-tiers.js";
 import { registerStatsCalculationTool } from "./tools/calc/stats-calculation.js";
 import { registerTypeInfoTool } from "./tools/info/type-info.js";
+// pokechamp 由来の追加ツール (フォーク統合)。upstream マージ性のため新規ファイル化。
+import { registerFetchMetaTopTool } from "./tools/meta/fetch-meta-top.js";
+import { registerFetchPokemonMetaTool } from "./tools/meta/fetch-pokemon-meta.js";
+import { registerFetchTypicalSetTool } from "./tools/meta/fetch-typical-set.js";
+import { registerWarmMetaCacheTool } from "./tools/meta/warm-meta-cache.js";
 
 const SERVER_NAME = "ai-rotom";
 const SERVER_VERSION = "0.0.1";
@@ -64,6 +69,12 @@ export function createServer(): McpServer {
   registerSpeedTiersTool(server);
   registerStatsCalculationTool(server);
   registerTypeInfoTool(server);
+
+  // pokechamp 由来 (フォーク統合)
+  registerFetchMetaTopTool(server);
+  registerFetchPokemonMetaTool(server);
+  registerFetchTypicalSetTool(server);
+  registerWarmMetaCacheTool(server);
 
   return server;
 }

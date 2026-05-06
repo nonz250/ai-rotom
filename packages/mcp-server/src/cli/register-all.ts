@@ -22,6 +22,11 @@ import { registerSelectionAnalysisTool } from "../tools/analysis/selection-analy
 import { registerSpeedTiersTool } from "../tools/calc/speed-tiers.js";
 import { registerStatsCalculationTool } from "../tools/calc/stats-calculation.js";
 import { registerTypeInfoTool } from "../tools/info/type-info.js";
+// pokechamp 由来の追加ツール (フォーク統合)
+import { registerFetchMetaTopTool } from "../tools/meta/fetch-meta-top.js";
+import { registerFetchPokemonMetaTool } from "../tools/meta/fetch-pokemon-meta.js";
+import { registerFetchTypicalSetTool } from "../tools/meta/fetch-typical-set.js";
+import { registerWarmMetaCacheTool } from "../tools/meta/warm-meta-cache.js";
 import { CliMcpAdapter } from "./adapter.js";
 
 /**
@@ -57,6 +62,12 @@ export function buildAdapter(): CliMcpAdapter {
   registerSpeedTiersTool(server);
   registerStatsCalculationTool(server);
   registerTypeInfoTool(server);
+
+  // pokechamp 由来 (フォーク統合)
+  registerFetchMetaTopTool(server);
+  registerFetchPokemonMetaTool(server);
+  registerFetchTypicalSetTool(server);
+  registerWarmMetaCacheTool(server);
 
   return adapter;
 }
