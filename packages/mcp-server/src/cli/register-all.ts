@@ -27,6 +27,7 @@ import { registerFetchMetaTopTool } from "../tools/meta/fetch-meta-top.js";
 import { registerFetchPokemonMetaTool } from "../tools/meta/fetch-pokemon-meta.js";
 import { registerFetchTypicalSetTool } from "../tools/meta/fetch-typical-set.js";
 import { registerWarmMetaCacheTool } from "../tools/meta/warm-meta-cache.js";
+import { registerCalculateDamageWithProtectionTool } from "../tools/calc/damage-with-protection.js";
 import { CliMcpAdapter } from "./adapter.js";
 
 /**
@@ -68,6 +69,7 @@ export function buildAdapter(): CliMcpAdapter {
   registerFetchPokemonMetaTool(server);
   registerFetchTypicalSetTool(server);
   registerWarmMetaCacheTool(server);
+  registerCalculateDamageWithProtectionTool(server);
 
   return adapter;
 }
