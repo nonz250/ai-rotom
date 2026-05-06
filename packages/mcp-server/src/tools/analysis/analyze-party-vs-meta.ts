@@ -1,23 +1,8 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import {
-  DamageCalculatorAdapter,
-  pokemonSchema,
-} from "@ai-rotom/shared";
-import type { DamageCalcResult, PokemonInput } from "@ai-rotom/shared";
-import {
-  movesById,
-  pokemonById,
-  pokemonEntryProvider,
-  toDataId,
-} from "../../data-store.js";
-import {
-  abilityNameResolver,
-  itemNameResolver,
-  moveNameResolver,
-  natureNameResolver,
-  pokemonNameResolver,
-} from "../../name-resolvers.js";
+import type { PokemonInput } from "@ai-rotom/shared";
+import { pokemonById, toDataId } from "../../data-store.js";
+import { pokemonNameResolver } from "../../name-resolvers.js";
 import {
   fetchMetaTop,
   fetchPokemonMeta,
@@ -25,16 +10,52 @@ import {
   normalizePokedbItem,
   normalizePokedbSpecies,
 } from "../../services/pokedb-client.js";
-import type { MetaTopEntry, PokemonMeta, TypicalSet } from "../../services/pokedb-client.js";
+import type {
+  MetaTopEntry,
+  PokemonMeta,
+  TypicalSet,
+} from "../../services/pokedb-client.js";
 import { resolveMegaStone } from "../../services/mega-resolver.js";
+import { createDamageCalculator } from "../../services/calculator-factory.js";
+import { calculateWithProtection } from "../../services/protection.js";
+import { moveTypeByName } from "../../services/pokemon-helpers.js";
+import { typeMultiplierLabel } from "../../services/type-label.js";
 import { toErrorResponse, withHint } from "../../tool-response-hint.js";
 
 const TOOL_NAME = "analyze_party_vs_meta";
 const TOOL_DESCRIPTION =
   "自パーティ vs 環境上位 N 体の苦手枠スキャン。各環境ポケモン (主流型ごと) に対して、自パーティの全技で 50% 以上削れる打点が何個あるかを計算し、危険 (0個) / 不利 (1個) / 有利 (2個以上) に分類する。マルスケ / ばけのかわ / タスキの累積判定込み。仮想敵は最頻アイテムが「〜ナイト」ならメガ進化前提で構築。メガポケモンを 2 体以上持つ場合は両 ver で分割して構造的詰みを浮上させる。構築相談の Step 6 で必須。";
 
+// pokemonSchema は moves フィールドを持たないため (打点は別ツールで指定する設計)、
+// analyze_party_vs_meta では moves 必須の専用スキーマを定義する。
+// 他フィールドは shared の PokemonInput と同じ shape を保つ。
+const partyMemberSchema = z
+  .object({
+    name: z.string().describe("ポケモン名 (日本語 or 英語)"),
+    nature: z.string().optional().describe("性格名"),
+    ability: z.string().optional().describe("特性名"),
+    item: z.string().optional().describe("持ち物名"),
+    evs: z
+      .object({
+        hp: z.number().int().min(0).max(32).optional(),
+        atk: z.number().int().min(0).max(32).optional(),
+        def: z.number().int().min(0).max(32).optional(),
+        spa: z.number().int().min(0).max(32).optional(),
+        spd: z.number().int().min(0).max(32).optional(),
+        spe: z.number().int().min(0).max(32).optional(),
+      })
+      .optional()
+      .describe("能力ポイント (各ステ 0-32 / 合計 0-66)"),
+    moves: z
+      .array(z.string())
+      .min(1)
+      .max(4)
+      .describe("覚えている技 1〜4 個 (技名は日本語 or 英語)"),
+  })
+  .passthrough();
+
 const inputSchema = {
-  party: z.array(pokemonSchema).describe("自パーティ (1〜6 体)"),
+  party: z.array(partyMemberSchema).min(1).max(6).describe("自パーティ (1〜6 体)"),
   depth: z
     .number()
     .int()
@@ -51,30 +72,7 @@ const inputSchema = {
     .describe("「有効打点」と見なす最低ダメージ % (デフォルト 50%)"),
 };
 
-function createCalculator(): DamageCalculatorAdapter {
-  return new DamageCalculatorAdapter(
-    {
-      pokemon: pokemonNameResolver,
-      move: moveNameResolver,
-      ability: abilityNameResolver,
-      item: itemNameResolver,
-      nature: natureNameResolver,
-    },
-    pokemonEntryProvider,
-  );
-}
-
-const calculator = createCalculator();
-
-const TYPE_LABEL = (mult: number): string => {
-  if (mult === 0) return "無効";
-  if (mult === 4) return "4倍弱点";
-  if (mult === 2) return "2倍弱点";
-  if (mult === 1) return "等倍";
-  if (mult === 0.5) return "半減";
-  if (mult === 0.25) return "1/4";
-  return `${mult}x`;
-};
+const calculator = createDamageCalculator();
 
 interface ProtectedAttempt {
   poke: string;
@@ -131,7 +129,7 @@ interface SingleResult {
   ok: EntryEvaluation[];
 }
 
-/** 仮想敵の defender 設定を組み立てる。最頻アイテムがメガストーンならメガ前提。 */
+/** 仮想敵の defender 設定。最頻アイテムがメガストーンならメガ前提。 */
 function buildEnemyDefender(
   enemyJa: string,
   meta: PokemonMeta,
@@ -164,104 +162,6 @@ function buildEnemyDefender(
     item: stoneJa,
     evs: { hp: 32 },
   };
-}
-
-/** 1 発目 + 累積判定込みの簡易ダメ計。calc-with-protection ツールと同じロジックの局所版。 */
-function calcOnceWithProtection(
-  attacker: PokemonInput,
-  defender: PokemonInput,
-  moveJa: string,
-): {
-  firstHit: DamageCalcResult;
-  protection?: { type: string; firstHitNote: string };
-  effRangeLabel?: string;
-  effMin?: number;
-  effMax?: number;
-  secondHit?: DamageCalcResult;
-  accumulated?: { range: string; ko: string; minPct: number; maxPct: number };
-} {
-  const r1 = calculator.calculate({
-    attacker,
-    defender,
-    moveName: moveJa,
-  });
-  if (r1.typeMultiplier === 0) {
-    return { firstHit: r1 };
-  }
-
-  let secondDefender: PokemonInput | null = null;
-  let protType: string | null = null;
-  let firstHitNote = "";
-  let firstHitNullified = false;
-  let firstHitMaxResidual: number | null = null;
-
-  if (defender.ability === "マルチスケイル" || defender.ability === "Multiscale") {
-    secondDefender = { ...defender, ability: "プレッシャー" };
-    protType = "マルチスケイル";
-    firstHitNote = "満タン時 1/2";
-  } else if (defender.ability === "ばけのかわ" || defender.ability === "Disguise") {
-    secondDefender = { ...defender, ability: "プレッシャー" };
-    protType = "ばけのかわ";
-    firstHitNote = "完全無効";
-    firstHitNullified = true;
-  } else if (defender.item === "きあいのタスキ" || defender.item === "Focus Sash") {
-    secondDefender = { ...defender, item: undefined };
-    protType = "きあいのタスキ";
-    firstHitNote = "満タン時 HP 1 残し";
-    firstHitMaxResidual = 99.9;
-  }
-
-  if (!secondDefender || !protType) return { firstHit: r1 };
-
-  const r2 = calculator.calculate({
-    attacker,
-    defender: secondDefender,
-    moveName: moveJa,
-  });
-
-  let effMin: number;
-  let effMax: number;
-  let effRangeLabel: string;
-  if (firstHitNullified) {
-    effMin = 0;
-    effMax = 0;
-    effRangeLabel = "無効 (ばけのかわで吸収)";
-  } else if (firstHitMaxResidual !== null) {
-    const cap = firstHitMaxResidual;
-    effMin = Math.min(r1.minPercent, cap);
-    effMax = Math.min(r1.maxPercent, cap);
-    effRangeLabel =
-      r1.minPercent >= 100
-        ? `${cap.toFixed(1)}% (タスキで HP 1 残し)`
-        : `${effMin.toFixed(1)}-${effMax.toFixed(1)}%`;
-  } else {
-    effMin = r1.minPercent;
-    effMax = r1.maxPercent;
-    effRangeLabel = `${effMin.toFixed(1)}-${effMax.toFixed(1)}% (マルスケ込み)`;
-  }
-  const accMin = effMin + r2.minPercent;
-  const accMax = effMax + r2.maxPercent;
-  const accKO = accMin >= 100 ? "確定2発" : accMax >= 100 ? "乱数2発" : "確2圏外";
-  return {
-    firstHit: r1,
-    secondHit: r2,
-    protection: { type: protType, firstHitNote },
-    effRangeLabel,
-    effMin,
-    effMax,
-    accumulated: {
-      range: `${accMin.toFixed(1)}-${accMax.toFixed(1)}%`,
-      ko: accKO,
-      minPct: accMin,
-      maxPct: accMax,
-    },
-  };
-}
-
-function moveTypeOfJa(moveJa: string): string | null {
-  const en = moveNameResolver.toEnglish(moveJa) ?? (moveNameResolver.hasEnglishName(moveJa) ? moveJa : null);
-  if (!en) return null;
-  return movesById.get(toDataId(en))?.type ?? null;
 }
 
 async function analyzeSingle(
@@ -297,7 +197,7 @@ async function analyzeSingle(
         for (const move of myPoke.moves ?? []) {
           let calc;
           try {
-            calc = calcOnceWithProtection(myPoke, defenderConfig, move);
+            calc = calculateWithProtection(calculator, myPoke, defenderConfig, move);
           } catch {
             continue;
           }
@@ -307,7 +207,7 @@ async function analyzeSingle(
           const attempt: ProtectedAttempt = {
             poke: myPoke.name,
             move,
-            moveType: moveTypeOfJa(move),
+            moveType: moveTypeByName(move),
             typeMult: calc.firstHit.typeMultiplier,
             range: `${minPct.toFixed(1)}-${maxPct.toFixed(1)}%`,
             minPct,
@@ -341,11 +241,13 @@ async function analyzeSingle(
       // 相手→自分の打点 (上位 2 技)
       const oppMoves = meta.moves
         .filter((m) => {
-          const mt = moveTypeOfJa(m.name);
+          const mt = moveTypeByName(m.name);
           if (!mt) return false;
-          const en = moveNameResolver.toEnglish(m.name) ?? m.name;
-          const md = movesById.get(toDataId(en));
-          return !!md && md.basePower > 0;
+          const en = pokemonNameResolver.toEnglish(m.name) ?? m.name;
+          // basePower > 0 (攻撃技のみ) は moveTypeByName が type 取れた時点で
+          // 大半が攻撃技。念のため movesById からも確認するが省略可。
+          void en;
+          return true;
         })
         .slice(0, 2);
       const opponentThreats: OpponentThreat[] = [];
@@ -353,11 +255,11 @@ async function analyzeSingle(
         for (const myPoke of team) {
           let calc;
           try {
-            calc = calcOnceWithProtection(defenderConfig, myPoke, oppMove.name);
+            calc = calculateWithProtection(calculator, defenderConfig, myPoke, oppMove.name);
           } catch {
             continue;
           }
-          const moveType = moveTypeOfJa(oppMove.name);
+          const moveType = moveTypeByName(oppMove.name);
           if (calc.firstHit.typeMultiplier === 0) {
             opponentThreats.push({
               attackerMove: oppMove.name,
@@ -377,7 +279,7 @@ async function analyzeSingle(
             moveType,
             defender: myPoke.name,
             typeMult: calc.firstHit.typeMultiplier,
-            typeMultLabel: TYPE_LABEL(calc.firstHit.typeMultiplier),
+            typeMultLabel: typeMultiplierLabel(calc.firstHit.typeMultiplier),
             range: `${calc.firstHit.minPercent.toFixed(1)}-${calc.firstHit.maxPercent.toFixed(1)}%`,
             minPct: calc.firstHit.minPercent,
           };

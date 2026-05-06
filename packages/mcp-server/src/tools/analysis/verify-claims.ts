@@ -2,27 +2,26 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { Generations } from "@smogon/calc";
 import type { TypeName } from "@smogon/calc";
-import {
-  DamageCalculatorAdapter,
-  calculateTypeEffectiveness,
-  pokemonSchema,
-} from "@ai-rotom/shared";
+import { calculateTypeEffectiveness } from "@ai-rotom/shared";
 import {
   abilitiesById,
   itemsById,
   movesById,
   pokemonById,
-  pokemonEntryProvider,
   toDataId,
 } from "../../data-store.js";
 import {
   abilityNameResolver,
   itemNameResolver,
   moveNameResolver,
-  natureNameResolver,
-  pokemonNameResolver,
 } from "../../name-resolvers.js";
-import { fetchPokemonMeta, fetchTypicalSet } from "../../services/pokedb-client.js";
+import {
+  fetchPokemonMeta,
+  fetchTypicalSet,
+} from "../../services/pokedb-client.js";
+import { createDamageCalculator } from "../../services/calculator-factory.js";
+import { resolvePokemonByName } from "../../services/pokemon-helpers.js";
+import { typeMultiplierLabel } from "../../services/type-label.js";
 import { toErrorResponse, withHint } from "../../tool-response-hint.js";
 
 const TOOL_NAME = "verify_claims";
@@ -31,6 +30,7 @@ const TOOL_DESCRIPTION =
 
 const TOLERANCE_PCT = 2.0;
 const gen = Generations.get(0);
+const calculator = createDamageCalculator();
 
 type ClaimType =
   | "typing"
@@ -64,42 +64,14 @@ interface VerifyResult {
   note?: string;
 }
 
-const TYPE_LABEL = (mult: number): string => {
-  if (mult === 0) return "無効";
-  if (mult === 4) return "4倍弱点";
-  if (mult === 2) return "2倍弱点";
-  if (mult === 1) return "等倍";
-  if (mult === 0.5) return "半減";
-  if (mult === 0.25) return "1/4";
-  return `${mult}x`;
-};
-
-function resolvePokemonTypes(jaOrEn: string): {
-  types: TypeName[];
-  nameJa: string | null;
-  nameEn: string;
-} | null {
-  const en =
-    pokemonNameResolver.toEnglish(jaOrEn) ??
-    (pokemonNameResolver.hasEnglishName(jaOrEn) ? jaOrEn : null);
-  if (!en) return null;
-  const entry = pokemonById.get(toDataId(en));
-  if (!entry) return null;
-  return {
-    types: entry.types as TypeName[],
-    nameJa: entry.nameJa,
-    nameEn: entry.name,
-  };
-}
-
 function verifyTyping(c: Record<string, unknown>): VerifyResult {
   const poke = c.poke as string;
   const moveType = c.moveType as TypeName;
   const claim = c.claim as string;
-  const resolved = resolvePokemonTypes(poke);
+  const resolved = resolvePokemonByName(poke);
   if (!resolved) return { ok: false, mismatch: `ポケモン「${poke}」が見つかりません` };
   const mult = calculateTypeEffectiveness(gen, moveType, resolved.types);
-  const actualLabel = TYPE_LABEL(mult);
+  const actualLabel = typeMultiplierLabel(mult);
   const ok = actualLabel === claim;
   return {
     ok,
@@ -109,21 +81,6 @@ function verifyTyping(c: Record<string, unknown>): VerifyResult {
       : `claim「${claim}」 vs 実際「${actualLabel}」(${moveType} → ${resolved.types.join("/")} = ${mult}x)`,
   };
 }
-
-function createCalculator(): DamageCalculatorAdapter {
-  return new DamageCalculatorAdapter(
-    {
-      pokemon: pokemonNameResolver,
-      move: moveNameResolver,
-      ability: abilityNameResolver,
-      item: itemNameResolver,
-      nature: natureNameResolver,
-    },
-    pokemonEntryProvider,
-  );
-}
-
-const calculator = createCalculator();
 
 function verifyDamage(c: Record<string, unknown>): VerifyResult {
   const result = calculator.calculate({
@@ -318,18 +275,20 @@ function verifyMegaTyping(c: Record<string, unknown>): VerifyResult {
   const poke = c.poke as string;
   const moveType = c.moveType as TypeName;
   const claim = c.claim as string;
-  const resolved = resolvePokemonTypes(poke);
+  const resolved = resolvePokemonByName(poke);
   if (!resolved) return { ok: false, mismatch: `ポケモン「${poke}」が見つかりません` };
   const mult = calculateTypeEffectiveness(gen, moveType, resolved.types);
-  const actualLabel = TYPE_LABEL(mult);
+  const actualLabel = typeMultiplierLabel(mult);
 
-  // メガ前 (baseSpecies) の倍率も計算 (差分提示)
-  const entry = pokemonById.get(toDataId(resolved.nameEn));
   let beforeMult: number | null = null;
-  if (entry?.baseSpecies) {
-    const baseEntry = pokemonById.get(toDataId(entry.baseSpecies));
+  if (resolved.baseSpecies) {
+    const baseEntry = pokemonById.get(toDataId(resolved.baseSpecies));
     if (baseEntry) {
-      beforeMult = calculateTypeEffectiveness(gen, moveType, baseEntry.types as TypeName[]);
+      beforeMult = calculateTypeEffectiveness(
+        gen,
+        moveType,
+        baseEntry.types as TypeName[],
+      );
     }
   }
   const ok = actualLabel === claim;
@@ -352,7 +311,7 @@ function verifyStatusImmunity(c: Record<string, unknown>): VerifyResult {
   const poke = c.poke as string;
   const status = c.status as string;
   const claim = (c.claim as string) ?? "";
-  const resolved = resolvePokemonTypes(poke);
+  const resolved = resolvePokemonByName(poke);
   if (!resolved) return { ok: false, mismatch: `ポケモン「${poke}」が見つかりません` };
   const types = resolved.types;
   let immune = false;
@@ -425,9 +384,6 @@ async function verifyOne(claim: Record<string, unknown>): Promise<VerifyResult> 
       return { ok: false, mismatch: `unknown type: ${type}` };
   }
 }
-
-// pokemonSchema は型補完のために import (verifyDamage で使う) が、参照だけ。
-void pokemonSchema;
 
 export function registerVerifyClaimsTool(server: McpServer): void {
   server.tool(TOOL_NAME, TOOL_DESCRIPTION, inputSchema, async (args) => {
