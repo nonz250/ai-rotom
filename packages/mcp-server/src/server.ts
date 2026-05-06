@@ -31,6 +31,7 @@ import { registerFetchPokemonMetaTool } from "./tools/meta/fetch-pokemon-meta.js
 import { registerFetchTypicalSetTool } from "./tools/meta/fetch-typical-set.js";
 import { registerWarmMetaCacheTool } from "./tools/meta/warm-meta-cache.js";
 import { registerCalculateDamageWithProtectionTool } from "./tools/calc/damage-with-protection.js";
+import { registerVerifyClaimsTool } from "./tools/analysis/verify-claims.js";
 
 const SERVER_NAME = "ai-rotom";
 const SERVER_VERSION = "0.0.1";
@@ -77,6 +78,7 @@ export function createServer(): McpServer {
   registerFetchTypicalSetTool(server);
   registerWarmMetaCacheTool(server);
   registerCalculateDamageWithProtectionTool(server);
+  registerVerifyClaimsTool(server);
 
   return server;
 }
