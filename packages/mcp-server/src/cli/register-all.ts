@@ -29,6 +29,7 @@ import { registerFetchTypicalSetTool } from "../tools/meta/fetch-typical-set.js"
 import { registerWarmMetaCacheTool } from "../tools/meta/warm-meta-cache.js";
 import { registerCalculateDamageWithProtectionTool } from "../tools/calc/damage-with-protection.js";
 import { registerVerifyClaimsTool } from "../tools/analysis/verify-claims.js";
+import { registerAnalyzePartyVsMetaTool } from "../tools/analysis/analyze-party-vs-meta.js";
 import { CliMcpAdapter } from "./adapter.js";
 
 /**
@@ -72,6 +73,7 @@ export function buildAdapter(): CliMcpAdapter {
   registerWarmMetaCacheTool(server);
   registerCalculateDamageWithProtectionTool(server);
   registerVerifyClaimsTool(server);
+  registerAnalyzePartyVsMetaTool(server);
 
   return adapter;
 }

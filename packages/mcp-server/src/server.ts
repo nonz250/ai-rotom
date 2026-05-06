@@ -32,6 +32,7 @@ import { registerFetchTypicalSetTool } from "./tools/meta/fetch-typical-set.js";
 import { registerWarmMetaCacheTool } from "./tools/meta/warm-meta-cache.js";
 import { registerCalculateDamageWithProtectionTool } from "./tools/calc/damage-with-protection.js";
 import { registerVerifyClaimsTool } from "./tools/analysis/verify-claims.js";
+import { registerAnalyzePartyVsMetaTool } from "./tools/analysis/analyze-party-vs-meta.js";
 
 const SERVER_NAME = "ai-rotom";
 const SERVER_VERSION = "0.0.1";
@@ -79,6 +80,7 @@ export function createServer(): McpServer {
   registerWarmMetaCacheTool(server);
   registerCalculateDamageWithProtectionTool(server);
   registerVerifyClaimsTool(server);
+  registerAnalyzePartyVsMetaTool(server);
 
   return server;
 }
