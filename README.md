@@ -10,6 +10,44 @@ Claude Desktop / Claude Code / Gemini CLI すべてで動作する。
 
 ---
 
+## CLI 化の真の目的: スマホ Claude からも対戦アシスタントとして使う
+
+このフォークの最大の意義は、ai-rotom を **CLI として** 動かせるようにすることで、
+**Claude Desktop (Project) に登録すれば Claude モバイルアプリ (iOS / Android) からも
+同じツールが使えるようになる** 点にある。
+
+MCP サーバーは Stdio 接続で別プロセスを起動する仕組みのため、モバイル端末から
+直接接続できない。一方 **CLI ならフロントエンド側の Code Execution 環境で起動できる**
+ため、スマホからチャットで質問するだけで内部的に `champs <subcommand>` が
+実行され、実データに基づく回答が返る。
+
+### スマホ運用のセットアップ
+
+1. claude.ai (デスクトップ版) で新規 Project を作成
+2. **Add content from GitHub** でこのリポジトリを Project Knowledge に追加
+3. Project の system instructions に `system_prompt.md` を貼り付ける
+4. Code Execution が有効な Plan (Pro / Team / Enterprise 等) を利用
+5. 以降は Claude モバイルアプリ・PC どちらからでも同じ Project に入って質問できる
+
+Project 内 chat で Claude が `champs <subcommand>` を Code Execution で起動し、
+そのまま回答に組み込んで返す。MCP サーバー設定は不要。
+
+### 想定ユースケース (スマホ運用)
+
+- **対戦中アシスト** (1 ターン 45 秒制限): 「相手はメガリザX。今出てる
+  カバルドンで残すか、ミミッキュに引くか?」と聞くと `analyze_matchup` で
+  双方向ダメ計と素早さ比較を即返答
+- **対戦待ち時間の構築調整**: 「主力構築1 の苦手枠を analyze で出して」で
+  6 体構築の苦手枠スキャン結果を返答 (詰み枠・メガ依存詰み・累積判定込み)
+- **移動中のメタ調査**: 「環境上位 50 体の素早さ表」「フシギバナの主流型は?」
+  を即座に pokedb.tokyo から取得
+- **対戦後の復習**: 「アシレーヌのムーンフォース、メガカイリュー (マルスケ)
+  に確 2 入る?」を `calculate_damage_with_protection` で累積判定込み確認
+- **構築アイデアのメモ**: 思いついた振り構成を `import_party_from_text` で
+  保存、後で PC から `analyze_party_vs_meta` にかける
+
+---
+
 ## 著作権・商標
 
 本プロジェクトはポケモンの **ファンメイドツール** です。
