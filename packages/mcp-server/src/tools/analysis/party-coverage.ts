@@ -22,6 +22,7 @@ import {
 } from "../../data-store.js";
 import {
   abilityNameResolver,
+  moveNameResolver,
   pokemonNameResolver,
 } from "../../name-resolvers.js";
 import { withHint } from "../../tool-response-hint.js";
@@ -136,6 +137,29 @@ export interface PartyCoverageOutput {
 }
 
 /**
+ * 技名を英語名に解決する。日本語名・英語名どちらでも受け付ける。
+ * 未知の名前は類似サジェスト付きでエラーを throw する。
+ *
+ * `resolvePokemonEntry` と同様の方針で、未知名は silent skip せずに
+ * 呼び出し側へエラーとして伝える（silent skip だと「指定 moves が
+ * 0 件 → 全タイプ uncovered」のような不可視バグを引き起こすため）。
+ */
+function resolveMoveEnglishName(name: string): string {
+  const fromJa = moveNameResolver.toEnglish(name);
+  if (fromJa !== undefined) {
+    return fromJa;
+  }
+  if (moveNameResolver.hasEnglishName(name)) {
+    return name;
+  }
+
+  const suggestions = moveNameResolver.suggestSimilar(name);
+  const suggestionMessage =
+    suggestions.length > 0 ? ` もしかして: ${suggestions.join(", ")}` : "";
+  throw new Error(`技「${name}」が見つかりません。${suggestionMessage}`);
+}
+
+/**
  * 1 メンバー分の「覚えている攻撃技 ID」を取得する。
  * moves 指定があればそれを使い、未指定時は learnset から category !== Status の技を全て拾う。
  */
@@ -146,7 +170,8 @@ function resolveAttackingMoveIds(
   if (explicitMoves !== undefined) {
     const result: MoveEntry[] = [];
     for (const moveName of explicitMoves) {
-      const moveId = toDataId(moveName);
+      const englishName = resolveMoveEnglishName(moveName);
+      const moveId = toDataId(englishName);
       const move = movesById.get(moveId);
       if (move !== undefined && move.category !== STATUS_CATEGORY) {
         result.push(move);
