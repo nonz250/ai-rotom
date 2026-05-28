@@ -108,7 +108,6 @@ describe("analyze_party_coverage logic", () => {
     //   等倍 (1倍): Normal / Water / Psychic / Ice / Dragon / Dark / Fairy / Ghost / Ground / Fighting
     //   抜群 (2倍): Electric / Poison / Rock / Steel / Fire
     const GROUND_ATTACKER = { name: "ガブリアス" };
-    // 現仕様では moves に指定する技は英語名で渡す必要がある（日本語技名対応は別改修）
     const GROUND_MOVE_SET = { ガブリアス: ["Earthquake"] };
 
     it("しきい値定数は等倍（1倍）である仕様", () => {
@@ -184,6 +183,106 @@ describe("analyze_party_coverage logic", () => {
       expect(attacker?.effectiveType).toBeUndefined();
       expect(out.attackingTypes.some((t) => t.type === "Normal")).toBe(true);
       expect(out.attackingTypes.some((t) => t.type === "Fairy")).toBe(false);
+    });
+  });
+
+  describe("moves パラメータの技名解決（日本語・英語両対応）", () => {
+    const SUPER_EFFECTIVE = 2;
+
+    it("日本語技名（じしん）でも attackingTypes に Ground が含まれる", () => {
+      const out = analyzePartyCoverage({
+        myParty: [{ name: "ガブリアス" }],
+        moves: { ガブリアス: ["じしん"] },
+      });
+
+      expect(out.attackingTypes.some((t) => t.type === "Ground")).toBe(true);
+      const electric = out.coverage.find((c) => c.defenderType === "Electric");
+      expect(electric?.maxMultiplier).toBe(SUPER_EFFECTIVE);
+      expect(electric?.bestAttackers[0].move).toBe("Earthquake");
+    });
+
+    it("日本語名と英語名が混在する moves マップでも動作する", () => {
+      const out = analyzePartyCoverage({
+        myParty: [{ name: "ガブリアス" }],
+        moves: { ガブリアス: ["じしん", "Hyper Beam"] },
+      });
+
+      expect(out.attackingTypes.some((t) => t.type === "Ground")).toBe(true);
+      expect(out.attackingTypes.some((t) => t.type === "Normal")).toBe(true);
+    });
+
+    it("Issue #80 再現ケース: 日本語技名で attackingTypes が空にならず正しい攻撃タイプ集合が得られる", () => {
+      // Issue #80 で報告された構築・moves セット。修正前は attackingTypes: [] だった。
+      const out = analyzePartyCoverage({
+        myParty: [
+          { name: "ヒスイダイケンキ", nature: "いじっぱり", ability: "きれあじ", item: "くろいメガネ" },
+          { name: "オオニューラ", nature: "いじっぱり", ability: "かるわざ", item: "しろいハーブ" },
+          { name: "カイリュー", nature: "ひかえめ", ability: "マルチスケイル", item: "カイリュナイト" },
+        ],
+        moves: {
+          ヒスイダイケンキ: ["ひけん・ちえなみ", "シェルブレード", "せいなるつるぎ", "ふいうち"],
+          オオニューラ: ["フェイタルクロー", "インファイト", "ねこだまし", "ちょうはつ"],
+          カイリュー: ["りゅうせいぐん", "かえんほうしゃ", "１０まんボルト", "ぼうふう"],
+        },
+      });
+
+      // 修正前は attackingTypes が空配列だったので、空でないことを最低限保証する
+      expect(out.attackingTypes.length).toBeGreaterThan(0);
+      // 各メンバーの代表的な攻撃タイプが反映されていること
+      // ヒスイダイケンキ: あく (ふいうち) / みず (シェルブレード) / かくとう (せいなるつるぎ) を含む
+      const types = out.attackingTypes.map((t) => t.type);
+      expect(types).toContain("Dark");
+      expect(types).toContain("Water");
+      expect(types).toContain("Fighting");
+      // オオニューラ: どく (フェイタルクロー) など
+      expect(types).toContain("Poison");
+      // カイリュー: ドラゴン / ほのお / でんき / ひこう を含む
+      expect(types).toContain("Dragon");
+      expect(types).toContain("Fire");
+      expect(types).toContain("Electric");
+      expect(types).toContain("Flying");
+
+      // 全タイプの maxMultiplier=0 にはならない（少なくとも 1 タイプ以上は抜群を取れる）
+      const hasAnyEffectiveCoverage = out.coverage.some((c) => c.maxMultiplier > EFFECTIVE_THRESHOLD);
+      expect(hasAnyEffectiveCoverage).toBe(true);
+      // dualTypeUncoveredCount は 93（全エントリ uncovered）ではない
+      expect(out.dualTypeUncoveredCount).toBeLessThan(out.dualTypeCoverage.length);
+    });
+
+    it("日本語技名でも Pixilate のタイプ変換特性が反映される", () => {
+      const out = analyzePartyCoverage({
+        myParty: [{ name: "メガチルタリス", ability: "フェアリースキン" }],
+        moves: { メガチルタリス: ["はかいこうせん"] },
+      });
+
+      expect(out.attackingTypes.some((t) => t.type === "Fairy")).toBe(true);
+      expect(out.attackingTypes.some((t) => t.type === "Normal")).toBe(false);
+
+      const dragon = out.coverage.find((c) => c.defenderType === "Dragon");
+      expect(dragon?.maxMultiplier).toBe(SUPER_EFFECTIVE);
+      expect(dragon?.bestAttackers[0].effectiveType).toBe("Fairy");
+    });
+
+    it("未知の技名はサジェスト付きエラーで throw される（silent skip しない）", () => {
+      expect(() =>
+        analyzePartyCoverage({
+          myParty: [{ name: "ガブリアス" }],
+          moves: { ガブリアス: ["そんなわざない"] },
+        }),
+      ).toThrow(/技「そんなわざない」が見つかりません/);
+    });
+
+    it("日本語の変化技（つるぎのまい）は silent skip される（既存仕様の維持）", () => {
+      const NO_EFFECT = 0;
+      const out = analyzePartyCoverage({
+        myParty: [{ name: "ガブリアス" }],
+        moves: { ガブリアス: ["つるぎのまい"] },
+      });
+      // 変化技のみ指定 → 攻撃技ゼロ扱い
+      expect(out.attackingTypes).toHaveLength(0);
+      for (const entry of out.coverage) {
+        expect(entry.maxMultiplier).toBe(NO_EFFECT);
+      }
     });
   });
 
