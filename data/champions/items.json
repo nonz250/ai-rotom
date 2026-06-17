@@ -99,6 +99,15 @@
     "megaEvolves": "Banette"
   },
   {
+    "id": "barbaracite",
+    "name": "Barbaracite",
+    "nameJa": "ガメノデスナイト",
+    "desc": "If held by a Barbaracle, this item allows it to Mega Evolve in battle.",
+    "shortDesc": "If held by a Barbaracle, this item allows it to Mega Evolve in battle.",
+    "megaStone": "Barbaracle-Mega",
+    "megaEvolves": "Barbaracle"
+  },
+  {
     "id": "beedrillite",
     "name": "Beedrillite",
     "nameJa": "スピアナイト",
@@ -106,6 +115,13 @@
     "shortDesc": "If held by a Beedrill, this item allows it to Mega Evolve in battle.",
     "megaStone": "Beedrill-Mega",
     "megaEvolves": "Beedrill"
+  },
+  {
+    "id": "bigroot",
+    "name": "Big Root",
+    "nameJa": "おおきなねっこ",
+    "desc": "Holder gains 1.3x HP from draining/Aqua Ring/Ingrain/Leech Seed/Strength Sap.",
+    "shortDesc": "Holder gains 1.3x HP from draining moves, Aqua Ring, Ingrain, Leech Seed, and Strength Sap."
   },
   {
     "id": "blackbelt",
@@ -133,6 +149,15 @@
     "shortDesc": "If held by a Blastoise, this item allows it to Mega Evolve in battle.",
     "megaStone": "Blastoise-Mega",
     "megaEvolves": "Blastoise"
+  },
+  {
+    "id": "blazikenite",
+    "name": "Blazikenite",
+    "nameJa": "バシャーモナイト",
+    "desc": "If held by a Blaziken, this item allows it to Mega Evolve in battle.",
+    "shortDesc": "If held by a Blaziken, this item allows it to Mega Evolve in battle.",
+    "megaStone": "Blaziken-Mega",
+    "megaEvolves": "Blaziken"
   },
   {
     "id": "brightpowder",
@@ -297,6 +322,13 @@
     "megaEvolves": "Crabominable"
   },
   {
+    "id": "damprock",
+    "name": "Damp Rock",
+    "nameJa": "しめったいわ",
+    "desc": "Holder's use of Rain Dance lasts 8 turns instead of 5.",
+    "shortDesc": "Holder's use of Rain Dance lasts 8 turns instead of 5."
+  },
+  {
     "id": "delphoxite",
     "name": "Delphoxite",
     "nameJa": "マフォクシナイト",
@@ -304,6 +336,15 @@
     "shortDesc": "If held by a Delphox, this item allows it to Mega Evolve in battle.",
     "megaStone": "Delphox-Mega",
     "megaEvolves": "Delphox"
+  },
+  {
+    "id": "dragalgite",
+    "name": "Dragalgite",
+    "nameJa": "ドラミドナイト",
+    "desc": "If held by a Dragalge, this item allows it to Mega Evolve in battle.",
+    "shortDesc": "If held by a Dragalge, this item allows it to Mega Evolve in battle.",
+    "megaStone": "Dragalge-Mega",
+    "megaEvolves": "Dragalge"
   },
   {
     "id": "dragonfang",
@@ -333,6 +374,15 @@
     "megaEvolves": "Drampa"
   },
   {
+    "id": "eelektrossite",
+    "name": "Eelektrossite",
+    "nameJa": "シビルドナイト",
+    "desc": "If held by an Eelektross, this item allows it to Mega Evolve in battle.",
+    "shortDesc": "If held by an Eelektross, this item allows it to Mega Evolve in battle.",
+    "megaStone": "Eelektross-Mega",
+    "megaEvolves": "Eelektross"
+  },
+  {
     "id": "emboarite",
     "name": "Emboarite",
     "nameJa": "エンブオナイト",
@@ -351,6 +401,13 @@
     "megaEvolves": "Excadrill"
   },
   {
+    "id": "expertbelt",
+    "name": "Expert Belt",
+    "nameJa": "たつじんのおび",
+    "desc": "Holder's supereffective attacks do 1.2x damage.",
+    "shortDesc": "Holder's supereffective attacks do 1.2x damage."
+  },
+  {
     "id": "fairyfeather",
     "name": "Fairy Feather",
     "nameJa": "ようせいのハネ",
@@ -358,6 +415,15 @@
     "shortDesc": "Holder's Fairy-type attacks have 1.2x power.",
     "megaStone": null,
     "megaEvolves": null
+  },
+  {
+    "id": "falinksite",
+    "name": "Falinksite",
+    "nameJa": "タイレーツナイト",
+    "desc": "If held by a Falinks, this item allows it to Mega Evolve in battle.",
+    "shortDesc": "If held by a Falinks, this item allows it to Mega Evolve in battle.",
+    "megaStone": "Falinks-Mega",
+    "megaEvolves": "Falinks"
   },
   {
     "id": "feraligite",
@@ -513,6 +579,13 @@
     "megaEvolves": "Hawlucha"
   },
   {
+    "id": "heatrock",
+    "name": "Heat Rock",
+    "nameJa": "あついいわ",
+    "desc": "Holder's use of Sunny Day lasts 8 turns instead of 5.",
+    "shortDesc": "Holder's use of Sunny Day lasts 8 turns instead of 5."
+  },
+  {
     "id": "heracronite",
     "name": "Heracronite",
     "nameJa": "ヘラクロスナイト",
@@ -529,6 +602,20 @@
     "shortDesc": "If held by a Houndoom, this item allows it to Mega Evolve in battle.",
     "megaStone": "Houndoom-Mega",
     "megaEvolves": "Houndoom"
+  },
+  {
+    "id": "icyrock",
+    "name": "Icy Rock",
+    "nameJa": "つめたいいわ",
+    "desc": "Holder's use of Hail lasts 8 turns instead of 5.",
+    "shortDesc": "Holder's use of Hail lasts 8 turns instead of 5."
+  },
+  {
+    "id": "ironball",
+    "name": "Iron Ball",
+    "nameJa": "くろいてっきゅう",
+    "desc": "Holder's Speed is halved. The holder is grounded.",
+    "shortDesc": "Holder's Speed is halved. The holder is grounded."
   },
   {
     "id": "kangaskhanite",
@@ -585,6 +672,13 @@
     "megaEvolves": null
   },
   {
+    "id": "lifeorb",
+    "name": "Life Orb",
+    "nameJa": "いのちのたま",
+    "desc": "Holder's attacks do 1.3x damage, and it loses 1/10 its max HP after the attack.",
+    "shortDesc": "Holder's attacks do 1.3x damage, and it loses 1/10 its max HP after the attack."
+  },
+  {
     "id": "lightball",
     "name": "Light Ball",
     "nameJa": "でんきだま",
@@ -592,6 +686,13 @@
     "shortDesc": "If held by a Pikachu, its Attack and Sp. Atk are doubled.",
     "megaStone": null,
     "megaEvolves": null
+  },
+  {
+    "id": "lightclay",
+    "name": "Light Clay",
+    "nameJa": "ひかりのねんど",
+    "desc": "Holder's use of Aurora Veil, Light Screen, or Reflect lasts 8 turns instead of 5.",
+    "shortDesc": "Holder's use of Aurora Veil, Light Screen, or Reflect lasts 8 turns instead of 5."
   },
   {
     "id": "lopunnite",
@@ -630,6 +731,15 @@
     "megaEvolves": null
   },
   {
+    "id": "malamarite",
+    "name": "Malamarite",
+    "nameJa": "カラマネナイト",
+    "desc": "If held by a Malamar, this item allows it to Mega Evolve in battle.",
+    "shortDesc": "If held by a Malamar, this item allows it to Mega Evolve in battle.",
+    "megaStone": "Malamar-Mega",
+    "megaEvolves": "Malamar"
+  },
+  {
     "id": "manectite",
     "name": "Manectite",
     "nameJa": "ライボルトナイト",
@@ -637,6 +747,15 @@
     "shortDesc": "If held by a Manectric, this item allows it to Mega Evolve in battle.",
     "megaStone": "Manectric-Mega",
     "megaEvolves": "Manectric"
+  },
+  {
+    "id": "mawilite",
+    "name": "Mawilite",
+    "nameJa": "クチートナイト",
+    "desc": "If held by a Mawile, this item allows it to Mega Evolve in battle.",
+    "shortDesc": "If held by a Mawile, this item allows it to Mega Evolve in battle.",
+    "megaStone": "Mawile-Mega",
+    "megaEvolves": "Mawile"
   },
   {
     "id": "medichamite",
@@ -675,6 +794,15 @@
     "megaEvolves": "Meowstic"
   },
   {
+    "id": "metagrossite",
+    "name": "Metagrossite",
+    "nameJa": "メタグロスナイト",
+    "desc": "If held by a Metagross, this item allows it to Mega Evolve in battle.",
+    "shortDesc": "If held by a Metagross, this item allows it to Mega Evolve in battle.",
+    "megaStone": "Metagross-Mega",
+    "megaEvolves": "Metagross"
+  },
+  {
     "id": "metalcoat",
     "name": "Metal Coat",
     "nameJa": "メタルコート",
@@ -684,6 +812,13 @@
     "megaEvolves": null
   },
   {
+    "id": "metronome",
+    "name": "Metronome",
+    "nameJa": "メトロノーム",
+    "desc": "Damage of moves used on consecutive turns is increased. Max 2x after 5 turns.",
+    "shortDesc": "Damage of moves used on consecutive turns is increased. Max 2x after 5 turns."
+  },
+  {
     "id": "miracleseed",
     "name": "Miracle Seed",
     "nameJa": "きせきのタネ",
@@ -691,6 +826,13 @@
     "shortDesc": "Holder's Grass-type attacks have 1.2x power.",
     "megaStone": null,
     "megaEvolves": null
+  },
+  {
+    "id": "muscleband",
+    "name": "Muscle Band",
+    "nameJa": "ちからのハチマキ",
+    "desc": "Holder's physical moves have 1.1x power.",
+    "shortDesc": "Holder's physical moves have 1.1x power."
   },
   {
     "id": "mysticwater",
@@ -792,6 +934,15 @@
     "megaEvolves": null
   },
   {
+    "id": "pyroarite",
+    "name": "Pyroarite",
+    "nameJa": "カエンジシナイト",
+    "desc": "If held by a Pyroar, this item allows it to Mega Evolve in battle.",
+    "shortDesc": "If held by a Pyroar, this item allows it to Mega Evolve in battle.",
+    "megaStone": "Pyroar-Mega",
+    "megaEvolves": "Pyroar"
+  },
+  {
     "id": "quickclaw",
     "name": "Quick Claw",
     "nameJa": "せんせいのツメ",
@@ -799,6 +950,24 @@
     "shortDesc": "Each turn, holder has a 20% chance to move first in its priority bracket.",
     "megaStone": null,
     "megaEvolves": null
+  },
+  {
+    "id": "raichunitex",
+    "name": "Raichunite X",
+    "nameJa": "ライチュウナイトＸ",
+    "desc": "If held by a Raichu, this item allows it to Mega Evolve in battle.",
+    "shortDesc": "If held by a Raichu, this item allows it to Mega Evolve in battle.",
+    "megaStone": "Raichu-Mega-X",
+    "megaEvolves": "Raichu"
+  },
+  {
+    "id": "raichunitey",
+    "name": "Raichunite Y",
+    "nameJa": "ライチュウナイトＹ",
+    "desc": "If held by a Raichu, this item allows it to Mega Evolve in battle.",
+    "shortDesc": "If held by a Raichu, this item allows it to Mega Evolve in battle.",
+    "megaStone": "Raichu-Mega-Y",
+    "megaEvolves": "Raichu"
   },
   {
     "id": "rawstberry",
@@ -837,6 +1006,15 @@
     "megaEvolves": "Sableye"
   },
   {
+    "id": "sceptilite",
+    "name": "Sceptilite",
+    "nameJa": "ジュカインナイト",
+    "desc": "If held by a Sceptile, this item allows it to Mega Evolve in battle.",
+    "shortDesc": "If held by a Sceptile, this item allows it to Mega Evolve in battle.",
+    "megaStone": "Sceptile-Mega",
+    "megaEvolves": "Sceptile"
+  },
+  {
     "id": "scizorite",
     "name": "Scizorite",
     "nameJa": "ハッサムナイト",
@@ -844,6 +1022,15 @@
     "shortDesc": "If held by a Scizor, this item allows it to Mega Evolve in battle.",
     "megaStone": "Scizor-Mega",
     "megaEvolves": "Scizor"
+  },
+  {
+    "id": "scolipite",
+    "name": "Scolipite",
+    "nameJa": "ペンドラナイト",
+    "desc": "If held by a Scolipede, this item allows it to Mega Evolve in battle.",
+    "shortDesc": "If held by a Scolipede, this item allows it to Mega Evolve in battle.",
+    "megaStone": "Scolipede-Mega",
+    "megaEvolves": "Scolipede"
   },
   {
     "id": "scopelens",
@@ -864,6 +1051,15 @@
     "megaEvolves": "Scovillain"
   },
   {
+    "id": "scraftinite",
+    "name": "Scraftinite",
+    "nameJa": "ズルズキナイト",
+    "desc": "If held by a Scrafty, this item allows it to Mega Evolve in battle.",
+    "shortDesc": "If held by a Scrafty, this item allows it to Mega Evolve in battle.",
+    "megaStone": "Scrafty-Mega",
+    "megaEvolves": "Scrafty"
+  },
+  {
     "id": "sharpbeak",
     "name": "Sharp Beak",
     "nameJa": "するどいくちばし",
@@ -880,6 +1076,13 @@
     "shortDesc": "If held by a Sharpedo, this item allows it to Mega Evolve in battle.",
     "megaStone": "Sharpedo-Mega",
     "megaEvolves": "Sharpedo"
+  },
+  {
+    "id": "shedshell",
+    "name": "Shed Shell",
+    "nameJa": "きれいなぬけがら",
+    "desc": "Holder may switch out even when trapped by another Pokemon, or by Ingrain.",
+    "shortDesc": "Holder may switch out even when trapped by another Pokemon, or by Ingrain."
   },
   {
     "id": "shellbell",
@@ -945,6 +1148,13 @@
     "megaEvolves": "Slowbro"
   },
   {
+    "id": "smoothrock",
+    "name": "Smooth Rock",
+    "nameJa": "さらさらいわ",
+    "desc": "Holder's use of Sandstorm lasts 8 turns instead of 5.",
+    "shortDesc": "Holder's use of Sandstorm lasts 8 turns instead of 5."
+  },
+  {
     "id": "softsand",
     "name": "Soft Sand",
     "nameJa": "やわらかいすな",
@@ -963,6 +1173,15 @@
     "megaEvolves": null
   },
   {
+    "id": "staraptite",
+    "name": "Staraptite",
+    "nameJa": "ムクホークナイト",
+    "desc": "If held by a Staraptor, this item allows it to Mega Evolve in battle.",
+    "shortDesc": "If held by a Staraptor, this item allows it to Mega Evolve in battle.",
+    "megaStone": "Staraptor-Mega",
+    "megaEvolves": "Staraptor"
+  },
+  {
     "id": "starminite",
     "name": "Starminite",
     "nameJa": "スターミナイト",
@@ -979,6 +1198,15 @@
     "shortDesc": "If held by a Steelix, this item allows it to Mega Evolve in battle.",
     "megaStone": "Steelix-Mega",
     "megaEvolves": "Steelix"
+  },
+  {
+    "id": "swampertite",
+    "name": "Swampertite",
+    "nameJa": "ラグラージナイト",
+    "desc": "If held by a Swampert, this item allows it to Mega Evolve in battle.",
+    "shortDesc": "If held by a Swampert, this item allows it to Mega Evolve in battle.",
+    "megaStone": "Swampert-Mega",
+    "megaEvolves": "Swampert"
   },
   {
     "id": "tangaberry",
@@ -1044,6 +1272,20 @@
     "megaEvolves": null
   },
   {
+    "id": "widelens",
+    "name": "Wide Lens",
+    "nameJa": "こうかくレンズ",
+    "desc": "The accuracy of attacks by the holder is 1.1x.",
+    "shortDesc": "The accuracy of attacks by the holder is 1.1x."
+  },
+  {
+    "id": "wiseglasses",
+    "name": "Wise Glasses",
+    "nameJa": "ものしりメガネ",
+    "desc": "Holder's special moves have 1.1x power.",
+    "shortDesc": "Holder's special moves have 1.1x power."
+  },
+  {
     "id": "yacheberry",
     "name": "Yache Berry",
     "nameJa": "ヤチェのみ",
@@ -1051,5 +1293,12 @@
     "shortDesc": "Halves damage taken from a supereffective Ice-type attack. Single use.",
     "megaStone": null,
     "megaEvolves": null
+  },
+  {
+    "id": "zoomlens",
+    "name": "Zoom Lens",
+    "nameJa": "フォーカスレンズ",
+    "desc": "The accuracy of attacks by the holder is 1.2x if it moves after its target.",
+    "shortDesc": "The accuracy of attacks by the holder is 1.2x if it moves after its target."
   }
 ]
