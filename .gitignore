@@ -4,3 +4,5 @@ dist/
 *.tsbuildinfo
 .turbo/
 coverage/
+
+.claude/*.local*

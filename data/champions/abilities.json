@@ -266,6 +266,27 @@
     "shortDesc": "This Pokemon heals 1/4 of its max HP when hit by Ground moves; Ground immunity."
   },
   {
+    "id": "eelevate",
+    "name": "Eelevate",
+    "nameJa": "うなぎのぼり",
+    "desc": "This Pokemon is immune to Ground-type moves, Spikes, Toxic Spikes, and Sticky Web. When this Pokemon knocks out an opponent, its highest stat is raised by 1 stage.",
+    "shortDesc": "Ground immunity. On KO, highest stat is raised by 1."
+  },
+  {
+    "id": "effectspore",
+    "name": "Effect Spore",
+    "nameJa": "ほうし",
+    "desc": "30% chance a Pokemon making contact with this Pokemon will be poisoned, paralyzed, or fall asleep.",
+    "shortDesc": "30% chance of poison/paralysis/sleep on Pokemon making contact with this Pokemon."
+  },
+  {
+    "id": "electricsurge",
+    "name": "Electric Surge",
+    "nameJa": "エレキメイカー",
+    "desc": "On switch-in, this Pokemon summons Electric Terrain.",
+    "shortDesc": "On switch-in, starts Electric Terrain."
+  },
+  {
     "id": "electromorphosis",
     "name": "Electromorphosis",
     "nameJa": "でんきにかえる",
@@ -287,6 +308,13 @@
     "shortDesc": "This Pokemon receives 3/4 damage from supereffective attacks."
   },
   {
+    "id": "firemane",
+    "name": "Fire Mane",
+    "nameJa": "ほのおのたてがみ",
+    "desc": "This Pokemon's Fire-type moves have their power multiplied by 1.5.",
+    "shortDesc": "This Pokemon's Fire-type moves have 1.5x power."
+  },
+  {
     "id": "flamebody",
     "name": "Flame Body",
     "nameJa": "ほのおのからだ",
@@ -306,6 +334,13 @@
     "nameJa": "フラワーベール",
     "desc": "Grass-type Pokemon on this Pokemon's side cannot have their stat stages lowered by other Pokemon or have a non-volatile status condition inflicted on them by other Pokemon.",
     "shortDesc": "This side's Grass types can't have stats lowered or status inflicted by other Pokemon."
+  },
+  {
+    "id": "fluffy",
+    "name": "Fluffy",
+    "nameJa": "もふもふ",
+    "desc": "This Pokemon receives 1/2 damage from contact moves, but double damage from Fire moves.",
+    "shortDesc": "1/2 damage from contact moves, but 2x damage from Fire moves."
   },
   {
     "id": "forecast",
@@ -362,6 +397,13 @@
     "nameJa": "くいしんぼう",
     "desc": "When this Pokemon is holding a Berry that usually activates with 1/4 or less of its maximum HP, it is eaten at 1/2 or less of its maximum HP instead.",
     "shortDesc": "This Pokemon eats Berries at 1/2 max HP or less instead of their usual 1/4 max HP."
+  },
+  {
+    "id": "goodasgold",
+    "name": "Good as Gold",
+    "nameJa": "おうごんのからだ",
+    "desc": "This Pokemon is immune to Status moves.",
+    "shortDesc": "This Pokemon is immune to Status moves."
   },
   {
     "id": "gooey",
@@ -1265,6 +1307,13 @@
     "nameJa": "がんじょう",
     "desc": "If this Pokemon is at full HP, it survives one hit with at least 1 HP. OHKO moves fail when used against this Pokemon.",
     "shortDesc": "If this Pokemon is at full HP, it survives one hit with at least 1 HP. Immune to OHKO."
+  },
+  {
+    "id": "suctioncups",
+    "name": "Suction Cups",
+    "nameJa": "きゅうばん",
+    "desc": "This Pokemon cannot be forced to switch out by another Pokemon's attack or item.",
+    "shortDesc": "This Pokemon cannot be forced to switch out."
   },
   {
     "id": "superluck",

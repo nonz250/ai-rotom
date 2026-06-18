@@ -9837,5 +9837,611 @@
     ],
     "desc": "Has a 20% chance to make the target flinch.",
     "shortDesc": "20% chance to make the target flinch."
+  },
+  {
+    "id": "absorb",
+    "name": "Absorb",
+    "nameJa": "すいとる",
+    "type": "Grass",
+    "category": "Special",
+    "basePower": 20,
+    "accuracy": 100,
+    "pp": 20,
+    "priority": 0,
+    "target": "normal",
+    "flags": [
+      "heal",
+      "metronome",
+      "mirror",
+      "protect"
+    ],
+    "desc": "The user recovers 1/2 the HP lost by the target, rounded half up. If Big Root is held by the user, the HP recovered is 1.3x normal, rounded half down.",
+    "shortDesc": "User recovers 50% of the damage dealt."
+  },
+  {
+    "id": "barbbarrage",
+    "name": "Barb Barrage",
+    "nameJa": "どくばりセンボン",
+    "type": "Poison",
+    "category": "Physical",
+    "basePower": 60,
+    "accuracy": 100,
+    "pp": 12,
+    "priority": 0,
+    "target": "normal",
+    "flags": [
+      "metronome",
+      "mirror",
+      "protect"
+    ],
+    "desc": "Has a 50% chance to poison the target. Power doubles if the target is already poisoned.",
+    "shortDesc": "50% chance to psn. 2x power if target is poisoned."
+  },
+  {
+    "id": "bubblebeam",
+    "name": "Bubble Beam",
+    "nameJa": "バブルこうせん",
+    "type": "Water",
+    "category": "Special",
+    "basePower": 65,
+    "accuracy": 100,
+    "pp": 20,
+    "priority": 0,
+    "target": "normal",
+    "flags": [
+      "metronome",
+      "mirror",
+      "protect"
+    ],
+    "desc": "Has a 10% chance to lower the target's Speed by 1 stage.",
+    "shortDesc": "10% chance to lower the target's Speed by 1."
+  },
+  {
+    "id": "cometpunch",
+    "name": "Comet Punch",
+    "nameJa": "れんぞくパンチ",
+    "type": "Normal",
+    "category": "Physical",
+    "basePower": 18,
+    "accuracy": 85,
+    "pp": 16,
+    "priority": 0,
+    "target": "normal",
+    "flags": [
+      "contact",
+      "metronome",
+      "mirror",
+      "protect",
+      "punch"
+    ],
+    "desc": "Hits 2-5 times. Has a 35% chance to hit 2 or 3 times and a 15% chance to hit 4 or 5 times. If one of the hits breaks the target's substitute, it will take damage for the remaining hits. If the user has the Skill Link Ability, this move will always hit 5 times.",
+    "shortDesc": "Hits 2-5 times in one turn."
+  },
+  {
+    "id": "doublekick",
+    "name": "Double Kick",
+    "nameJa": "にどげり",
+    "type": "Fighting",
+    "category": "Physical",
+    "basePower": 30,
+    "accuracy": 100,
+    "pp": 20,
+    "priority": 0,
+    "target": "normal",
+    "flags": [
+      "contact",
+      "metronome",
+      "mirror",
+      "protect"
+    ],
+    "desc": "Hits twice. If the first hit breaks the target's substitute, it will take damage for the second hit.",
+    "shortDesc": "Hits 2 times in one turn."
+  },
+  {
+    "id": "dragonbreath",
+    "name": "Dragon Breath",
+    "nameJa": "りゅうのいぶき",
+    "type": "Dragon",
+    "category": "Special",
+    "basePower": 60,
+    "accuracy": 100,
+    "pp": 20,
+    "priority": 0,
+    "target": "normal",
+    "flags": [
+      "metronome",
+      "mirror",
+      "protect"
+    ],
+    "desc": "Has a 30% chance to paralyze the target.",
+    "shortDesc": "30% chance to paralyze the target."
+  },
+  {
+    "id": "dualchop",
+    "name": "Dual Chop",
+    "nameJa": "ダブルチョップ",
+    "type": "Dragon",
+    "category": "Physical",
+    "basePower": 40,
+    "accuracy": 90,
+    "pp": 16,
+    "priority": 0,
+    "target": "normal",
+    "flags": [
+      "contact",
+      "metronome",
+      "mirror",
+      "protect"
+    ],
+    "desc": "Hits twice. If the first hit breaks the target's substitute, it will take damage for the second hit.",
+    "shortDesc": "Hits 2 times in one turn."
+  },
+  {
+    "id": "falseswipe",
+    "name": "False Swipe",
+    "nameJa": "みねうち",
+    "type": "Normal",
+    "category": "Physical",
+    "basePower": 40,
+    "accuracy": 100,
+    "pp": 20,
+    "priority": 0,
+    "target": "normal",
+    "flags": [
+      "contact",
+      "metronome",
+      "mirror",
+      "protect"
+    ],
+    "desc": "Leaves the target with at least 1 HP.",
+    "shortDesc": "Always leaves the target with at least 1 HP."
+  },
+  {
+    "id": "grasspledge",
+    "name": "Grass Pledge",
+    "nameJa": "くさのちかい",
+    "type": "Grass",
+    "category": "Special",
+    "basePower": 80,
+    "accuracy": 100,
+    "pp": 12,
+    "priority": 0,
+    "target": "normal",
+    "flags": [
+      "metronome",
+      "mirror",
+      "nonsky",
+      "protect"
+    ],
+    "desc": "If one of the user's allies chose to use Fire Pledge or Water Pledge this turn and has not moved yet, it takes its turn immediately after the user and the user's move does nothing. If combined with Fire Pledge, the ally uses Fire Pledge with 150 Base Power and a sea of fire is created on the target's side for 4 turns, which causes damage to non-Fire types equal to 1/8 of their maximum HP, rounded down, at the end of each turn during effect, including the last turn. If combined with Water Pledge, the ally uses Grass Pledge with 150 Base Power and a swamp is created on the target's side for 4 turns, which quarters the Speed of each Pokemon on that side. If the user is the ally, this move combines with the other combiner's move and its base power is 150.",
+    "shortDesc": "Use with Fire or Water Pledge for added effect."
+  },
+  {
+    "id": "growl",
+    "name": "Growl",
+    "nameJa": "なきごえ",
+    "type": "Normal",
+    "category": "Status",
+    "basePower": 0,
+    "accuracy": 100,
+    "pp": 20,
+    "priority": 0,
+    "target": "allAdjacentFoes",
+    "flags": [
+      "metronome",
+      "mirror",
+      "protect",
+      "reflectable",
+      "sound"
+    ],
+    "desc": "Lowers the target's Attack by 1 stage.",
+    "shortDesc": "Lowers the foe(s) Attack by 1."
+  },
+  {
+    "id": "magnetbomb",
+    "name": "Magnet Bomb",
+    "nameJa": "マグネットボム",
+    "type": "Steel",
+    "category": "Physical",
+    "basePower": 60,
+    "accuracy": true,
+    "pp": 20,
+    "priority": 0,
+    "target": "normal",
+    "flags": [
+      "bullet",
+      "metronome",
+      "mirror",
+      "protect"
+    ],
+    "desc": "This move does not check accuracy.",
+    "shortDesc": "This move does not check accuracy."
+  },
+  {
+    "id": "makeitrain",
+    "name": "Make It Rain",
+    "nameJa": "ゴールドラッシュ",
+    "type": "Steel",
+    "category": "Special",
+    "basePower": 120,
+    "accuracy": 100,
+    "pp": 8,
+    "priority": 0,
+    "target": "allAdjacentFoes",
+    "flags": [
+      "mirror",
+      "protect"
+    ],
+    "desc": "Lowers the user's Special Attack by 1 stage.",
+    "shortDesc": "Lowers the user's Sp. Atk by 1. Hits foe(s)."
+  },
+  {
+    "id": "metronome",
+    "name": "Metronome",
+    "nameJa": "ゆびをふる",
+    "type": "Normal",
+    "category": "Status",
+    "basePower": 0,
+    "accuracy": true,
+    "pp": 12,
+    "priority": 0,
+    "target": "self",
+    "flags": [],
+    "desc": "A random move is selected for use, other than After You, Assist, Astral Barrage, Baneful Bunker, Beak Blast, Behemoth Bash, Behemoth Blade, Belch, Bestow, Blazing Torque, Burn Up, Chatter, Combat Torque, Copycat, Counter, Covet, Crafty Shield, Decorate, Destiny Bond, Detect, Diamond Storm, Dragon Ascent, Dynamax Cannon, Electrify, Endure, Eternabeam, False Surrender, Feint, Fiery Wrath, Flower Trick, Focus Punch, Follow Me, Freeze Shock, Freezing Glare, Glacial Lance, Helping Hand, Hold Hands, Hyperspace Fury, Hyperspace Hole, Ice Burn, Instruct, Jungle Healing, King's Shield, Life Dew, Light of Ruin, Lumina Crash, Mat Block, Me First, Metronome, Mimic, Mirror Coat, Mirror Move, Nature Power, Nature's Madness, Noxious Torque, Origin Pulse, Overdrive, Photon Geyser, Plasma Fists, Precipice Blades, Protect, Quash, Quick Guard, Rage Powder, Relic Song, Secret Sword, Shell Trap, Sketch, Sleep Talk, Snatch, Snore, Snowscape, Spectral Thief, Spiky Shield, Spirit Break, Spotlight, Steam Eruption, Strange Steam, Struggle, Surging Strikes, Switcheroo, Techno Blast, Thousand Arrows, Thousand Waves, Thunder Cage, Thunderous Kick, Transform, Trick, V-Create, Wicked Blow, Wide Guard.",
+    "shortDesc": "Picks a random move."
+  },
+  {
+    "id": "noretreat",
+    "name": "No Retreat",
+    "nameJa": "はいすいのじん",
+    "type": "Fighting",
+    "category": "Status",
+    "basePower": 0,
+    "accuracy": true,
+    "pp": 8,
+    "priority": 0,
+    "target": "self",
+    "flags": [
+      "metronome",
+      "snatch"
+    ],
+    "desc": "Raises the user's Attack, Defense, Special Attack, Special Defense, and Speed by 1 stage, but it becomes trapped and cannot switch out. The user can still switch out if it uses Baton Pass, Flip Turn, Parting Shot, Shed Tail, Teleport, U-turn, or Volt Switch. If the user leaves the field using Baton Pass, the replacement will remain trapped. The effect can be removed by Rapid Spin. Fails if the user has already been trapped by this effect.",
+    "shortDesc": "Raises all stats by 1 (not acc/eva). Traps user."
+  },
+  {
+    "id": "ominouswind",
+    "name": "Ominous Wind",
+    "nameJa": "あやしいかぜ",
+    "type": "Ghost",
+    "category": "Special",
+    "basePower": 60,
+    "accuracy": 100,
+    "pp": 8,
+    "priority": 0,
+    "target": "normal",
+    "flags": [
+      "metronome",
+      "mirror",
+      "protect"
+    ],
+    "desc": "Has a 10% chance to raise the user's Attack, Defense, Special Attack, Special Defense, and Speed by 1 stage.",
+    "shortDesc": "10% chance to raise all stats by 1 (not acc/eva)."
+  },
+  {
+    "id": "ragefist",
+    "name": "Rage Fist",
+    "nameJa": "ふんどのこぶし",
+    "type": "Ghost",
+    "category": "Physical",
+    "basePower": 50,
+    "accuracy": 100,
+    "pp": 12,
+    "priority": 0,
+    "target": "normal",
+    "flags": [
+      "contact",
+      "metronome",
+      "mirror",
+      "protect",
+      "punch"
+    ],
+    "desc": "Power is equal to 50+(X*50), where X is the total number of times the user has been hit by a damaging attack during the battle, even if the user did not lose HP from the attack. X cannot be greater than 6. Hitting a substitute does not count as being hit.",
+    "shortDesc": "Hit up to 6 times for +50 power each."
+  },
+  {
+    "id": "razorwind",
+    "name": "Razor Wind",
+    "nameJa": "かまいたち",
+    "type": "Normal",
+    "category": "Special",
+    "basePower": 80,
+    "accuracy": 100,
+    "pp": 12,
+    "priority": 0,
+    "target": "allAdjacentFoes",
+    "flags": [
+      "charge",
+      "failinstruct",
+      "metronome",
+      "mirror",
+      "nosleeptalk",
+      "protect"
+    ],
+    "desc": "Has a higher chance for a critical hit. This attack charges on the first turn and executes on the second. If the user is holding a Power Herb, the move completes in one turn.",
+    "shortDesc": "Charges, then hits foe(s) turn 2. High crit ratio."
+  },
+  {
+    "id": "rockthrow",
+    "name": "Rock Throw",
+    "nameJa": "いわおとし",
+    "type": "Rock",
+    "category": "Physical",
+    "basePower": 50,
+    "accuracy": 90,
+    "pp": 20,
+    "priority": 0,
+    "target": "normal",
+    "flags": [
+      "metronome",
+      "mirror",
+      "protect"
+    ],
+    "desc": "No additional effect.",
+    "shortDesc": "No additional effect."
+  },
+  {
+    "id": "sludge",
+    "name": "Sludge",
+    "nameJa": "ヘドロこうげき",
+    "type": "Poison",
+    "category": "Special",
+    "basePower": 65,
+    "accuracy": 100,
+    "pp": 20,
+    "priority": 0,
+    "target": "normal",
+    "flags": [
+      "metronome",
+      "mirror",
+      "protect"
+    ],
+    "desc": "Has a 30% chance to poison the target.",
+    "shortDesc": "30% chance to poison the target."
+  },
+  {
+    "id": "smokescreen",
+    "name": "Smokescreen",
+    "nameJa": "えんまく",
+    "type": "Normal",
+    "category": "Status",
+    "basePower": 0,
+    "accuracy": 100,
+    "pp": 20,
+    "priority": 0,
+    "target": "normal",
+    "flags": [
+      "metronome",
+      "mirror",
+      "protect",
+      "reflectable"
+    ],
+    "desc": "Lowers the target's accuracy by 1 stage.",
+    "shortDesc": "Lowers the target's accuracy by 1."
+  },
+  {
+    "id": "spiritbreak",
+    "name": "Spirit Break",
+    "nameJa": "ソウルクラッシュ",
+    "type": "Fairy",
+    "category": "Physical",
+    "basePower": 75,
+    "accuracy": 100,
+    "pp": 16,
+    "priority": 0,
+    "target": "normal",
+    "flags": [
+      "contact",
+      "mirror",
+      "protect"
+    ],
+    "desc": "Has a 100% chance to lower the target's Special Attack by 1 stage.",
+    "shortDesc": "100% chance to lower the target's Sp. Atk by 1."
+  },
+  {
+    "id": "stomp",
+    "name": "Stomp",
+    "nameJa": "ふみつけ",
+    "type": "Normal",
+    "category": "Physical",
+    "basePower": 65,
+    "accuracy": 100,
+    "pp": 20,
+    "priority": 0,
+    "target": "normal",
+    "flags": [
+      "contact",
+      "metronome",
+      "mirror",
+      "protect"
+    ],
+    "desc": "Has a 30% chance to make the target flinch. Power doubles if the target has used Minimize while active.",
+    "shortDesc": "30% chance to flinch. 2x power on Minimized foe."
+  },
+  {
+    "id": "supersonic",
+    "name": "Supersonic",
+    "nameJa": "ちょうおんぱ",
+    "type": "Normal",
+    "category": "Status",
+    "basePower": 0,
+    "accuracy": 55,
+    "pp": 20,
+    "priority": 0,
+    "target": "normal",
+    "flags": [
+      "metronome",
+      "mirror",
+      "protect",
+      "reflectable",
+      "sound"
+    ],
+    "desc": "Causes the target to become confused.",
+    "shortDesc": "Confuses the target."
+  },
+  {
+    "id": "swift",
+    "name": "Swift",
+    "nameJa": "スピードスター",
+    "type": "Normal",
+    "category": "Special",
+    "basePower": 60,
+    "accuracy": true,
+    "pp": 20,
+    "priority": 0,
+    "target": "allAdjacentFoes",
+    "flags": [
+      "metronome",
+      "mirror",
+      "protect"
+    ],
+    "desc": "This move does not check accuracy.",
+    "shortDesc": "This move does not check accuracy. Hits foe(s)."
+  },
+  {
+    "id": "tackle",
+    "name": "Tackle",
+    "nameJa": "たいあたり",
+    "type": "Normal",
+    "category": "Physical",
+    "basePower": 40,
+    "accuracy": 100,
+    "pp": 20,
+    "priority": 0,
+    "target": "normal",
+    "flags": [
+      "contact",
+      "metronome",
+      "mirror",
+      "protect"
+    ],
+    "desc": "No additional effect.",
+    "shortDesc": "No additional effect."
+  },
+  {
+    "id": "tailwhip",
+    "name": "Tail Whip",
+    "nameJa": "しっぽをふる",
+    "type": "Normal",
+    "category": "Status",
+    "basePower": 0,
+    "accuracy": 100,
+    "pp": 20,
+    "priority": 0,
+    "target": "allAdjacentFoes",
+    "flags": [
+      "metronome",
+      "mirror",
+      "protect",
+      "reflectable"
+    ],
+    "desc": "Lowers the target's Defense by 1 stage.",
+    "shortDesc": "Lowers the foe(s) Defense by 1."
+  },
+  {
+    "id": "takedown",
+    "name": "Take Down",
+    "nameJa": "とっしん",
+    "type": "Normal",
+    "category": "Physical",
+    "basePower": 90,
+    "accuracy": 85,
+    "pp": 20,
+    "priority": 0,
+    "target": "normal",
+    "flags": [
+      "contact",
+      "metronome",
+      "mirror",
+      "protect"
+    ],
+    "desc": "If the target lost HP, the user takes recoil damage equal to 25% the HP lost by the target, rounded half up, but not less than 1 HP.",
+    "shortDesc": "Has 25% recoil."
+  },
+  {
+    "id": "topsyturvy",
+    "name": "Topsy-Turvy",
+    "nameJa": "ひっくりかえす",
+    "type": "Dark",
+    "category": "Status",
+    "basePower": 0,
+    "accuracy": true,
+    "pp": 20,
+    "priority": 0,
+    "target": "normal",
+    "flags": [
+      "metronome",
+      "mirror",
+      "protect",
+      "reflectable"
+    ],
+    "desc": "The target's positive stat stages become negative and vice versa.",
+    "shortDesc": "Inverts the target's stat stages."
+  },
+  {
+    "id": "twister",
+    "name": "Twister",
+    "nameJa": "たつまき",
+    "type": "Dragon",
+    "category": "Special",
+    "basePower": 40,
+    "accuracy": 100,
+    "pp": 20,
+    "priority": 0,
+    "target": "allAdjacentFoes",
+    "flags": [
+      "metronome",
+      "mirror",
+      "protect",
+      "wind"
+    ],
+    "desc": "Has a 20% chance to make the target flinch. Power doubles if the target is using Fly, Bounce, or Sky Drop, or is under the effect of Sky Drop.",
+    "shortDesc": "20% chance to flinch. Hits foe(s). 2x on Fly/Bounce."
+  },
+  {
+    "id": "watergun",
+    "name": "Water Gun",
+    "nameJa": "みずでっぽう",
+    "type": "Water",
+    "category": "Special",
+    "basePower": 40,
+    "accuracy": 100,
+    "pp": 20,
+    "priority": 0,
+    "target": "normal",
+    "flags": [
+      "metronome",
+      "mirror",
+      "protect"
+    ],
+    "desc": "No additional effect.",
+    "shortDesc": "No additional effect."
+  },
+  {
+    "id": "workup",
+    "name": "Work Up",
+    "nameJa": "ふるいたてる",
+    "type": "Normal",
+    "category": "Status",
+    "basePower": 0,
+    "accuracy": true,
+    "pp": 20,
+    "priority": 0,
+    "target": "self",
+    "flags": [
+      "metronome",
+      "snatch"
+    ],
+    "desc": "Raises the user's Attack and Special Attack by 1 stage.",
+    "shortDesc": "Raises the user's Attack and Sp. Atk by 1."
   }
 ]

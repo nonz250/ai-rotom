@@ -4889,7 +4889,9 @@
     "weightkg": 30,
     "baseSpecies": null,
     "otherFormes": [
-      "Raichu-Alola"
+      "Raichu-Alola",
+      "Raichu-Mega-X",
+      "Raichu-Mega-Y"
     ]
   },
   {
@@ -6941,6 +6943,931 @@
     ],
     "weightkg": 73,
     "baseSpecies": "Zoroark",
+    "otherFormes": null
+  },
+  {
+    "id": "vileplume",
+    "name": "Vileplume",
+    "nameJa": "ラフレシア",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
+    "baseStats": {
+      "hp": 75,
+      "atk": 80,
+      "def": 85,
+      "spa": 110,
+      "spd": 90,
+      "spe": 50
+    },
+    "abilities": [
+      "Chlorophyll",
+      "Effect Spore"
+    ],
+    "weightkg": 18.6,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "qwilfish",
+    "name": "Qwilfish",
+    "nameJa": "ハリーセン",
+    "types": [
+      "Water",
+      "Poison"
+    ],
+    "baseStats": {
+      "hp": 65,
+      "atk": 95,
+      "def": 85,
+      "spa": 55,
+      "spd": 55,
+      "spe": 85
+    },
+    "abilities": [
+      "Poison Point",
+      "Swift Swim",
+      "Intimidate"
+    ],
+    "weightkg": 3.9,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "overqwil",
+    "name": "Overqwil",
+    "nameJa": "ハリーマン",
+    "types": [
+      "Dark",
+      "Poison"
+    ],
+    "baseStats": {
+      "hp": 85,
+      "atk": 115,
+      "def": 95,
+      "spa": 65,
+      "spd": 65,
+      "spe": 85
+    },
+    "abilities": [
+      "Poison Point",
+      "Swift Swim",
+      "Intimidate"
+    ],
+    "weightkg": 60.5,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "sceptile",
+    "name": "Sceptile",
+    "nameJa": "ジュカイン",
+    "types": [
+      "Grass"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 85,
+      "def": 65,
+      "spa": 105,
+      "spd": 85,
+      "spe": 120
+    },
+    "abilities": [
+      "Overgrow",
+      "Unburden"
+    ],
+    "weightkg": 52.2,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Sceptile-Mega"
+    ]
+  },
+  {
+    "id": "blaziken",
+    "name": "Blaziken",
+    "nameJa": "バシャーモ",
+    "types": [
+      "Fire",
+      "Fighting"
+    ],
+    "baseStats": {
+      "hp": 80,
+      "atk": 120,
+      "def": 70,
+      "spa": 110,
+      "spd": 70,
+      "spe": 80
+    },
+    "abilities": [
+      "Blaze",
+      "Speed Boost"
+    ],
+    "weightkg": 52,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Blaziken-Mega"
+    ]
+  },
+  {
+    "id": "swampert",
+    "name": "Swampert",
+    "nameJa": "ラグラージ",
+    "types": [
+      "Water",
+      "Ground"
+    ],
+    "baseStats": {
+      "hp": 100,
+      "atk": 110,
+      "def": 90,
+      "spa": 85,
+      "spd": 90,
+      "spe": 60
+    },
+    "abilities": [
+      "Torrent",
+      "Damp"
+    ],
+    "weightkg": 81.9,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Swampert-Mega"
+    ]
+  },
+  {
+    "id": "mawile",
+    "name": "Mawile",
+    "nameJa": "クチート",
+    "types": [
+      "Steel",
+      "Fairy"
+    ],
+    "baseStats": {
+      "hp": 50,
+      "atk": 85,
+      "def": 85,
+      "spa": 55,
+      "spd": 55,
+      "spe": 50
+    },
+    "abilities": [
+      "Hyper Cutter",
+      "Intimidate",
+      "Sheer Force"
+    ],
+    "weightkg": 11.5,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Mawile-Mega"
+    ]
+  },
+  {
+    "id": "metagross",
+    "name": "Metagross",
+    "nameJa": "メタグロス",
+    "types": [
+      "Steel",
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 80,
+      "atk": 135,
+      "def": 130,
+      "spa": 95,
+      "spd": 90,
+      "spe": 70
+    },
+    "abilities": [
+      "Clear Body",
+      "Light Metal"
+    ],
+    "weightkg": 550,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Metagross-Mega"
+    ]
+  },
+  {
+    "id": "staraptor",
+    "name": "Staraptor",
+    "nameJa": "ムクホーク",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
+    "baseStats": {
+      "hp": 85,
+      "atk": 120,
+      "def": 70,
+      "spa": 50,
+      "spd": 60,
+      "spe": 100
+    },
+    "abilities": [
+      "Intimidate",
+      "Reckless"
+    ],
+    "weightkg": 24.9,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Staraptor-Mega"
+    ]
+  },
+  {
+    "id": "musharna",
+    "name": "Musharna",
+    "nameJa": "ムシャーナ",
+    "types": [
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 116,
+      "atk": 55,
+      "def": 85,
+      "spa": 107,
+      "spd": 95,
+      "spe": 29
+    },
+    "abilities": [
+      "Forewarn",
+      "Synchronize",
+      "Telepathy"
+    ],
+    "weightkg": 60.5,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "scolipede",
+    "name": "Scolipede",
+    "nameJa": "ペンドラー",
+    "types": [
+      "Bug",
+      "Poison"
+    ],
+    "baseStats": {
+      "hp": 60,
+      "atk": 100,
+      "def": 89,
+      "spa": 55,
+      "spd": 69,
+      "spe": 112
+    },
+    "abilities": [
+      "Poison Point",
+      "Swarm",
+      "Speed Boost"
+    ],
+    "weightkg": 200.5,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Scolipede-Mega"
+    ]
+  },
+  {
+    "id": "scrafty",
+    "name": "Scrafty",
+    "nameJa": "ズルズキン",
+    "types": [
+      "Dark",
+      "Fighting"
+    ],
+    "baseStats": {
+      "hp": 65,
+      "atk": 90,
+      "def": 115,
+      "spa": 45,
+      "spd": 115,
+      "spe": 58
+    },
+    "abilities": [
+      "Shed Skin",
+      "Moxie",
+      "Intimidate"
+    ],
+    "weightkg": 30,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Scrafty-Mega"
+    ]
+  },
+  {
+    "id": "eelektross",
+    "name": "Eelektross",
+    "nameJa": "シビルドン",
+    "types": [
+      "Electric"
+    ],
+    "baseStats": {
+      "hp": 85,
+      "atk": 115,
+      "def": 80,
+      "spa": 105,
+      "spd": 80,
+      "spe": 50
+    },
+    "abilities": [
+      "Levitate"
+    ],
+    "weightkg": 80.5,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Eelektross-Mega"
+    ]
+  },
+  {
+    "id": "pyroar",
+    "name": "Pyroar",
+    "nameJa": "カエンジシ",
+    "types": [
+      "Fire",
+      "Normal"
+    ],
+    "baseStats": {
+      "hp": 86,
+      "atk": 68,
+      "def": 72,
+      "spa": 109,
+      "spd": 66,
+      "spe": 106
+    },
+    "abilities": [
+      "Rivalry",
+      "Unnerve",
+      "Moxie"
+    ],
+    "weightkg": 81.5,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Pyroar-Mega"
+    ]
+  },
+  {
+    "id": "malamar",
+    "name": "Malamar",
+    "nameJa": "カラマネロ",
+    "types": [
+      "Dark",
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 86,
+      "atk": 92,
+      "def": 88,
+      "spa": 68,
+      "spd": 75,
+      "spe": 73
+    },
+    "abilities": [
+      "Contrary",
+      "Suction Cups",
+      "Infiltrator"
+    ],
+    "weightkg": 47,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Malamar-Mega"
+    ]
+  },
+  {
+    "id": "barbaracle",
+    "name": "Barbaracle",
+    "nameJa": "ガメノデス",
+    "types": [
+      "Rock",
+      "Water"
+    ],
+    "baseStats": {
+      "hp": 72,
+      "atk": 105,
+      "def": 115,
+      "spa": 54,
+      "spd": 86,
+      "spe": 68
+    },
+    "abilities": [
+      "Tough Claws",
+      "Sniper",
+      "Pickpocket"
+    ],
+    "weightkg": 96,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Barbaracle-Mega"
+    ]
+  },
+  {
+    "id": "dragalge",
+    "name": "Dragalge",
+    "nameJa": "ドラミドロ",
+    "types": [
+      "Poison",
+      "Dragon"
+    ],
+    "baseStats": {
+      "hp": 65,
+      "atk": 75,
+      "def": 90,
+      "spa": 97,
+      "spd": 123,
+      "spe": 44
+    },
+    "abilities": [
+      "Poison Point",
+      "Poison Touch",
+      "Adaptability"
+    ],
+    "weightkg": 81.5,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Dragalge-Mega"
+    ]
+  },
+  {
+    "id": "grimmsnarl",
+    "name": "Grimmsnarl",
+    "nameJa": "オーロンゲ",
+    "types": [
+      "Dark",
+      "Fairy"
+    ],
+    "baseStats": {
+      "hp": 95,
+      "atk": 120,
+      "def": 65,
+      "spa": 95,
+      "spd": 75,
+      "spe": 60
+    },
+    "abilities": [
+      "Prankster",
+      "Frisk",
+      "Pickpocket"
+    ],
+    "weightkg": 61,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "falinks",
+    "name": "Falinks",
+    "nameJa": "タイレーツ",
+    "types": [
+      "Fighting"
+    ],
+    "baseStats": {
+      "hp": 65,
+      "atk": 100,
+      "def": 100,
+      "spa": 70,
+      "spd": 60,
+      "spe": 75
+    },
+    "abilities": [
+      "Battle Armor",
+      "Defiant"
+    ],
+    "weightkg": 62,
+    "baseSpecies": null,
+    "otherFormes": [
+      "Falinks-Mega"
+    ]
+  },
+  {
+    "id": "houndstone",
+    "name": "Houndstone",
+    "nameJa": "ハカドッグ",
+    "types": [
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 72,
+      "atk": 101,
+      "def": 100,
+      "spa": 50,
+      "spd": 97,
+      "spe": 68
+    },
+    "abilities": [
+      "Sand Rush",
+      "Fluffy"
+    ],
+    "weightkg": 15,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "annihilape",
+    "name": "Annihilape",
+    "nameJa": "コノヨザル",
+    "types": [
+      "Fighting",
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 110,
+      "atk": 115,
+      "def": 80,
+      "spa": 50,
+      "spd": 90,
+      "spe": 90
+    },
+    "abilities": [
+      "Vital Spirit",
+      "Inner Focus",
+      "Defiant"
+    ],
+    "weightkg": 56,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "gholdengo",
+    "name": "Gholdengo",
+    "nameJa": "サーフゴー",
+    "types": [
+      "Steel",
+      "Ghost"
+    ],
+    "baseStats": {
+      "hp": 87,
+      "atk": 60,
+      "def": 95,
+      "spa": 133,
+      "spd": 91,
+      "spe": 84
+    },
+    "abilities": [
+      "Good as Gold"
+    ],
+    "weightkg": 30,
+    "baseSpecies": null,
+    "otherFormes": null
+  },
+  {
+    "id": "raichumegax",
+    "name": "Raichu-Mega-X",
+    "nameJa": "メガライチュウX",
+    "types": [
+      "Electric"
+    ],
+    "baseStats": {
+      "hp": 60,
+      "atk": 135,
+      "def": 95,
+      "spa": 90,
+      "spd": 95,
+      "spe": 110
+    },
+    "abilities": [
+      "Electric Surge"
+    ],
+    "weightkg": 38,
+    "baseSpecies": "Raichu",
+    "otherFormes": null
+  },
+  {
+    "id": "raichumegay",
+    "name": "Raichu-Mega-Y",
+    "nameJa": "メガライチュウY",
+    "types": [
+      "Electric"
+    ],
+    "baseStats": {
+      "hp": 60,
+      "atk": 100,
+      "def": 55,
+      "spa": 160,
+      "spd": 80,
+      "spe": 130
+    },
+    "abilities": [
+      "No Guard"
+    ],
+    "weightkg": 26,
+    "baseSpecies": "Raichu",
+    "otherFormes": null
+  },
+  {
+    "id": "sceptilemega",
+    "name": "Sceptile-Mega",
+    "nameJa": "メガジュカイン",
+    "types": [
+      "Grass",
+      "Dragon"
+    ],
+    "baseStats": {
+      "hp": 70,
+      "atk": 110,
+      "def": 75,
+      "spa": 145,
+      "spd": 85,
+      "spe": 145
+    },
+    "abilities": [
+      "Lightning Rod"
+    ],
+    "weightkg": 55.2,
+    "baseSpecies": "Sceptile",
+    "otherFormes": null
+  },
+  {
+    "id": "blazikenmega",
+    "name": "Blaziken-Mega",
+    "nameJa": "メガバシャーモ",
+    "types": [
+      "Fire",
+      "Fighting"
+    ],
+    "baseStats": {
+      "hp": 80,
+      "atk": 160,
+      "def": 80,
+      "spa": 130,
+      "spd": 80,
+      "spe": 100
+    },
+    "abilities": [
+      "Speed Boost"
+    ],
+    "weightkg": 52,
+    "baseSpecies": "Blaziken",
+    "otherFormes": null
+  },
+  {
+    "id": "swampertmega",
+    "name": "Swampert-Mega",
+    "nameJa": "メガラグラージ",
+    "types": [
+      "Water",
+      "Ground"
+    ],
+    "baseStats": {
+      "hp": 100,
+      "atk": 150,
+      "def": 110,
+      "spa": 95,
+      "spd": 110,
+      "spe": 70
+    },
+    "abilities": [
+      "Swift Swim"
+    ],
+    "weightkg": 102,
+    "baseSpecies": "Swampert",
+    "otherFormes": null
+  },
+  {
+    "id": "mawilemega",
+    "name": "Mawile-Mega",
+    "nameJa": "メガクチート",
+    "types": [
+      "Steel",
+      "Fairy"
+    ],
+    "baseStats": {
+      "hp": 50,
+      "atk": 105,
+      "def": 125,
+      "spa": 55,
+      "spd": 95,
+      "spe": 50
+    },
+    "abilities": [
+      "Huge Power"
+    ],
+    "weightkg": 23.5,
+    "baseSpecies": "Mawile",
+    "otherFormes": null
+  },
+  {
+    "id": "metagrossmega",
+    "name": "Metagross-Mega",
+    "nameJa": "メガメタグロス",
+    "types": [
+      "Steel",
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 80,
+      "atk": 145,
+      "def": 150,
+      "spa": 105,
+      "spd": 110,
+      "spe": 110
+    },
+    "abilities": [
+      "Tough Claws"
+    ],
+    "weightkg": 942.9,
+    "baseSpecies": "Metagross",
+    "otherFormes": null
+  },
+  {
+    "id": "staraptormega",
+    "name": "Staraptor-Mega",
+    "nameJa": "メガムクホーク",
+    "types": [
+      "Fighting",
+      "Flying"
+    ],
+    "baseStats": {
+      "hp": 85,
+      "atk": 140,
+      "def": 100,
+      "spa": 60,
+      "spd": 90,
+      "spe": 110
+    },
+    "abilities": [
+      "Contrary"
+    ],
+    "weightkg": 50,
+    "baseSpecies": "Staraptor",
+    "otherFormes": null
+  },
+  {
+    "id": "scolipedemega",
+    "name": "Scolipede-Mega",
+    "nameJa": "メガペンドラー",
+    "types": [
+      "Bug",
+      "Poison"
+    ],
+    "baseStats": {
+      "hp": 60,
+      "atk": 140,
+      "def": 149,
+      "spa": 75,
+      "spd": 99,
+      "spe": 62
+    },
+    "abilities": [
+      "Shell Armor"
+    ],
+    "weightkg": 230.5,
+    "baseSpecies": "Scolipede",
+    "otherFormes": null
+  },
+  {
+    "id": "scraftymega",
+    "name": "Scrafty-Mega",
+    "nameJa": "メガズルズキン",
+    "types": [
+      "Dark",
+      "Fighting"
+    ],
+    "baseStats": {
+      "hp": 65,
+      "atk": 130,
+      "def": 135,
+      "spa": 55,
+      "spd": 135,
+      "spe": 68
+    },
+    "abilities": [
+      "Intimidate"
+    ],
+    "weightkg": 31,
+    "baseSpecies": "Scrafty",
+    "otherFormes": null
+  },
+  {
+    "id": "eelektrossmega",
+    "name": "Eelektross-Mega",
+    "nameJa": "メガシビルドン",
+    "types": [
+      "Electric"
+    ],
+    "baseStats": {
+      "hp": 85,
+      "atk": 145,
+      "def": 80,
+      "spa": 135,
+      "spd": 90,
+      "spe": 80
+    },
+    "abilities": [
+      "Eelevate"
+    ],
+    "weightkg": 180,
+    "baseSpecies": "Eelektross",
+    "otherFormes": null
+  },
+  {
+    "id": "pyroarmega",
+    "name": "Pyroar-Mega",
+    "nameJa": "メガカエンジシ",
+    "types": [
+      "Fire",
+      "Normal"
+    ],
+    "baseStats": {
+      "hp": 86,
+      "atk": 88,
+      "def": 92,
+      "spa": 129,
+      "spd": 86,
+      "spe": 126
+    },
+    "abilities": [
+      "Fire Mane"
+    ],
+    "weightkg": 93.3,
+    "baseSpecies": "Pyroar",
+    "otherFormes": null
+  },
+  {
+    "id": "malamarmega",
+    "name": "Malamar-Mega",
+    "nameJa": "メガカラマネロ",
+    "types": [
+      "Dark",
+      "Psychic"
+    ],
+    "baseStats": {
+      "hp": 86,
+      "atk": 102,
+      "def": 88,
+      "spa": 98,
+      "spd": 120,
+      "spe": 88
+    },
+    "abilities": [
+      "Contrary"
+    ],
+    "weightkg": 69.8,
+    "baseSpecies": "Malamar",
+    "otherFormes": null
+  },
+  {
+    "id": "barbaraclemega",
+    "name": "Barbaracle-Mega",
+    "nameJa": "メガガメノデス",
+    "types": [
+      "Rock",
+      "Fighting"
+    ],
+    "baseStats": {
+      "hp": 72,
+      "atk": 140,
+      "def": 130,
+      "spa": 64,
+      "spd": 106,
+      "spe": 88
+    },
+    "abilities": [
+      "Tough Claws"
+    ],
+    "weightkg": 100,
+    "baseSpecies": "Barbaracle",
+    "otherFormes": null
+  },
+  {
+    "id": "dragalgemega",
+    "name": "Dragalge-Mega",
+    "nameJa": "メガドラミドロ",
+    "types": [
+      "Poison",
+      "Dragon"
+    ],
+    "baseStats": {
+      "hp": 65,
+      "atk": 85,
+      "def": 105,
+      "spa": 132,
+      "spd": 163,
+      "spe": 44
+    },
+    "abilities": [
+      "Regenerator"
+    ],
+    "weightkg": 100.3,
+    "baseSpecies": "Dragalge",
+    "otherFormes": null
+  },
+  {
+    "id": "falinksmega",
+    "name": "Falinks-Mega",
+    "nameJa": "メガタイレーツ",
+    "types": [
+      "Fighting"
+    ],
+    "baseStats": {
+      "hp": 65,
+      "atk": 135,
+      "def": 135,
+      "spa": 70,
+      "spd": 65,
+      "spe": 100
+    },
+    "abilities": [
+      "Defiant"
+    ],
+    "weightkg": 99,
+    "baseSpecies": "Falinks",
     "otherFormes": null
   }
 ]
