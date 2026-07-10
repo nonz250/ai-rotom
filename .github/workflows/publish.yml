@@ -38,11 +38,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Trusted Publisher (OIDC) は npm CLI 11.5.1+ が必要。
-      # setup-node でインストールされる npm が古い場合に備え、最新化する。
-      - name: Ensure latest npm (required for Trusted Publisher OIDC)
-        run: npm install -g npm@latest
-
       - name: Verify version matches release tag
         if: github.event_name == 'release'
         run: |
