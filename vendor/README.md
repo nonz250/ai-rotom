@@ -28,8 +28,7 @@ upstream の `calc/package.json` は 2026-03-11 に `v0.11.0` がタグ打ちさ
 - 当 tarball も `package.json.gitHead` は欠落するが、生成元 commit SHA を
   上表に明示記録している
 - `package-lock.json` の `node_modules/@smogon/calc` エントリの `integrity`
-  値と上表の Integrity の一致は、差し替え時のレビューチェックリストで人手確認する。
-  CI では検証していない
+  値と上表の Integrity の一致は、差し替え時のレビューチェックリストで人手確認する
 - `npm ci` が検証するのは lock と tarball の一致であって、上表とは突き合わせない。
   さらに npm キャッシュに lock の integrity と一致する blob が残っていると、
   `npm ci` は tarball を開かずキャッシュ側の内容を展開して成功する。

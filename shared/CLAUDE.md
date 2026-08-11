@@ -1,4 +1,4 @@
-# packages/shared/
+# shared/
 
 ポケチャン対戦ロジックの再利用可能なコアライブラリ。
 

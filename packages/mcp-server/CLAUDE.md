@@ -97,7 +97,8 @@ MCP レスポンス
 
 1. `smogon/damage-calc` の該当 commit から tarball を生成（`vendor/README.md` 参照）
 2. `vendor/smogon-calc-<version>.tgz` を差し替え
-3. 依存を強制再解決して `package-lock.json` の integrity を更新
+3. 依存を強制再解決して `package-lock.json` の integrity を更新。ファイル名が
+   変わる場合は root `package.json` の path も更新する
    （ファイル名を据え置く場合、通常の `npm install` では反映されない。
    手順は `vendor/README.md` のチェックリストを参照）
 4. `vendor/README.md` と `packages/mcp-server/THIRD_PARTY_LICENSES.md` を更新

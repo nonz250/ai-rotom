@@ -57,7 +57,6 @@ ai-rotom/
 │       ├── analysis/            # タイプ相性・実数値・素早さ比較
 │       └── calc/                # ダメージ計算エンジン (DI 対応)
 ├── vendor/                      # npm 未 publish のサードパーティ tarball
-│   └── smogon-calc-0.11.0.tgz
 └── packages/
     └── mcp-server/              # 唯一の workspace パッケージ
         └── src/
