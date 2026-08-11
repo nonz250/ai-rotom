@@ -1,0 +1,24 @@
+{
+  "note": "実効素早さで威力が決まる技 (ジャイロボール) に、両者へ素早さのランク補正をかけたケース。@smogon/calc の Gen 0 ランク補正は威力段をまたぐとダメージが不連続に飛ぶため、他の 2 fixture (じしん / なみのり) では検知できない計算経路をここで押さえる。dist bundle からの応答を scratch 起動で初回採取した値。変更時は PR 説明で根拠を示すこと。",
+  "input": {
+    "attacker": { "name": "メタグロス", "boosts": { "spe": -1 } },
+    "defender": { "name": "ガブリアス", "boosts": { "spe": 1 } },
+    "moveName": "ジャイロボール"
+  },
+  "expected": {
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"attacker\":\"Metagross\",\"defender\":\"Garchomp\",\"move\":\"Gyro Ball\",\"damage\":[58,60,60,61,61,63,63,64,64,66,66,67,67,69,69,70],\"min\":58,\"max\":70,\"minPercent\":31.7,\"maxPercent\":38.3,\"koChance\":\"94.9% chance to 3HKO\",\"description\":\"0 Atk Metagross Gyro Ball (77 BP) vs. 0 HP / 0 Def Garchomp: 58-70 (31.6 - 38.2%) -- 94.9% chance to 3HKO\",\"moveType\":\"Steel\",\"typeMultiplier\":1,\"isStab\":true,\"effectivePowerMultiplier\":1.5}"
+        },
+        {
+          "type": "text",
+          "text": "ポケモン名・技名・素早さの話題では ai-rotom のツール利用を推奨します（Pokemon Champions は従来作と種族値・技威力が異なります）。"
+        }
+      ]
+    },
+    "jsonrpc": "2.0",
+    "id": 100
+  }
+}
