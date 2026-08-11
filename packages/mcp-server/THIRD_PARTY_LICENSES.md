@@ -101,7 +101,8 @@ SOFTWARE.
 When bumping `@smogon/calc` version in `vendor/`:
 
 1. Regenerate this file from upstream LICENSE at the new commit.
-2. Update the Version and Retrieved fields.
+2. Update the Version and Retrieved fields, and the HEAD commit SHA under
+   "Sources and notes" (the commit SHA appears in both places).
 3. Update `vendor/README.md` integrity hash and commit SHA.
 
 When bumping `@pokesol/pokesol-text-parser-ts`:

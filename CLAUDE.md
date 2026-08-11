@@ -56,22 +56,23 @@ ai-rotom/
 │       ├── types/               # PokemonEntry, PokemonEntryProvider 等
 │       ├── analysis/            # タイプ相性・実数値・素早さ比較
 │       └── calc/                # ダメージ計算エンジン (DI 対応)
+├── vendor/                      # npm 未 publish のサードパーティ tarball
+│   └── smogon-calc-0.11.0.tgz
 └── packages/
     └── mcp-server/              # 唯一の workspace パッケージ
-        ├── src/
-        │   ├── index.ts         # エントリ (#!/usr/bin/env node)
-        │   ├── server.ts        # MCP サーバー + ツール登録
-        │   ├── instructions.ts  # MCP instructions テキスト
-        │   ├── data-store.ts    # JSON → Map + PokemonEntryProvider 実装
-        │   ├── name-resolvers.ts
-        │   ├── party-store.ts   # ~/.ai-rotom/parties.json の読み書き (atomic)
-        │   └── tools/
-        │       ├── info/        # 情報取得系
-        │       ├── search/      # 逆引き検索系
-        │       ├── calc/        # 計算系
-        │       ├── analysis/    # 分析系
-        │       └── party/       # パーティ永続化 (save/load/list/delete)
-        └── vendor/smogon-calc-0.11.0.tgz
+        └── src/
+            ├── index.ts         # エントリ (#!/usr/bin/env node)
+            ├── server.ts        # MCP サーバー + ツール登録
+            ├── instructions.ts  # MCP instructions テキスト
+            ├── data-store.ts    # JSON → Map + PokemonEntryProvider 実装
+            ├── name-resolvers.ts
+            ├── party-store.ts   # ~/.ai-rotom/parties.json の読み書き (atomic)
+            └── tools/
+                ├── info/        # 情報取得系
+                ├── search/      # 逆引き検索系
+                ├── calc/        # 計算系
+                ├── analysis/    # 分析系
+                └── party/       # パーティ永続化 (save/load/list/delete)
 ```
 
 - `packages/` は npm workspace 対象のパッケージのみを配置する
@@ -81,7 +82,7 @@ ai-rotom/
 
 | 区分 | 役割 |
 |---|---|
-| `packages/shared/` | ポケチャン対戦ロジックの再利用可能なコアライブラリ。型・定数・Zod スキーマ・分析ロジック・ダメ計エンジン。**具象データには依存しない（DI で受ける）** |
+| `shared/` | ポケチャン対戦ロジックの再利用可能なコアライブラリ。型・定数・Zod スキーマ・分析ロジック・ダメ計エンジン。**具象データには依存しない（DI で受ける）** |
 | `packages/mcp-server/` | MCP プロトコル対応と具象データ供給。JSON データを読み、shared の計算エンジンに注入するアプリケーション層 |
 | `data/champions/` | ポケチャン固有のマスターデータ。将来の api-server / web-ui からも参照される資産 |
 
