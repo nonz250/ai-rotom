@@ -9,11 +9,11 @@ notices are reproduced below, in compliance with each license's terms.
 ## @smogon/calc
 
 - Package: `@smogon/calc`
-- Version: 0.11.0 (upstream commit `f049c2468e03d79886e73ae33f4d11dd47d03c49`, 2026-06-18)
+- Version: 0.11.0 (upstream commit `e7e74f3036c9793813e197e28d54cc857ae7e8dd`, 2026-08-10 UTC)
 - License: MIT
 - Upstream repository: https://github.com/smogon/damage-calc
 - Source at: https://github.com/smogon/damage-calc/blob/master/LICENSE
-- Retrieved: 2026-06-18 (JST)
+- Retrieved: 2026-08-11 (JST)
 
 ### License text
 
@@ -89,7 +89,7 @@ SOFTWARE.
   `https://raw.githubusercontent.com/smogon/damage-calc/master/LICENSE`
 - Upstream default branch: `master` (at retrieval time `main` は存在しない)
 - Upstream default branch HEAD commit SHA (取得時点):
-  `f049c2468e03d79886e73ae33f4d11dd47d03c49`
+  `e7e74f3036c9793813e197e28d54cc857ae7e8dd`
 - LICENSE ファイルを最後に更新した commit SHA:
   `9f15af18785929f917078462385fd4f91bcb6510` (2025-02-27)
 - Upstream の `package.json` でも `"license": "MIT"` と宣言されている。

@@ -10,9 +10,9 @@ monorepo root の `devDependencies` から `file:vendor/...` で参照する。
 | Package | `@smogon/calc` |
 | Version | `0.11.0` |
 | Upstream | https://github.com/smogon/damage-calc |
-| Upstream commit SHA | `f049c2468e03d79886e73ae33f4d11dd47d03c49` (2026-06-18, master HEAD 時点) |
+| Upstream commit SHA | `e7e74f3036c9793813e197e28d54cc857ae7e8dd` (2026-08-10 UTC, master HEAD 時点) |
 | License | MIT (詳細は `packages/mcp-server/THIRD_PARTY_LICENSES.md`) |
-| Integrity (sha512) | `sha512-cJLNHb6c6yeVeJEqdewacFdurPlp8npSUzLlr9xD91myMgARmizL987eY+LsS34mqo3P7mHp8oKmZlCL9sjI6g==` |
+| Integrity (sha512) | `sha512-W23VZ88MaXP+1o62gTqJUaNFw7n4ka0YmdVk32fuqSoDb+X+5SwWrOkHWc9Bn5QiO8LNtd/P9/3aD5MUVP8zXg==` |
 
 ### バージョン番号について
 
