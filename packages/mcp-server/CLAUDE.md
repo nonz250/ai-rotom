@@ -97,12 +97,16 @@ MCP レスポンス
 
 1. `smogon/damage-calc` の該当 commit から tarball を生成（`vendor/README.md` 参照）
 2. `vendor/smogon-calc-<version>.tgz` を差し替え
-3. root `package.json` の `devDependencies` の path を更新
-4. `npm install` で `package-lock.json` の integrity を再生成
-5. `vendor/README.md` と `packages/mcp-server/THIRD_PARTY_LICENSES.md` を更新
-6. 全検証（`npm test` / `npm run build` / `bash scripts/verify-dist-bundle.sh` /
+3. 依存を強制再解決して `package-lock.json` の integrity を更新。ファイル名が
+   変わる場合は root `package.json` の path も更新する
+   （ファイル名を据え置く場合、通常の `npm install` では反映されない。
+   手順は `vendor/README.md` のチェックリストを参照）
+4. `vendor/README.md` と `packages/mcp-server/THIRD_PARTY_LICENSES.md` を更新
+5. 全検証（`npm test` / `npm run build` / `bash scripts/verify-dist-bundle.sh` /
    `npm run test:dist` / `bash scripts/pack-and-install-smoke.sh`）を通す
-7. `version` bump して publish フローへ
+6. 利用者に届けるタイミングで `version` bump して publish フローへ
+   （calc は `dist/index.mjs` にインライン化されるため、publish しない限り
+   更新は利用者に届かない）
 
 ## 開発コマンド
 

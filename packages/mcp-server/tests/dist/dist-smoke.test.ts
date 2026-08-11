@@ -337,6 +337,11 @@ describe("calculate_damage_single golden parity", () => {
       fixture: "calculate_damage_single__special.golden.json",
       requestIdOffset: 1,
     },
+    {
+      label: "speed-dependent move with boosts (ジャイロボール)",
+      fixture: "calculate_damage_single__speed_dependent.golden.json",
+      requestIdOffset: 2,
+    },
   ] as const;
 
   it.each(CASES)("matches golden for $label", async ({ fixture, requestIdOffset }) => {
