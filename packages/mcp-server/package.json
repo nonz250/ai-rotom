@@ -37,7 +37,7 @@
     "dev": "tsdown --watch"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "1.32.1",
+    "@modelcontextprotocol/sdk": "1.32.2",
     "@pokesol/pokesol-text-parser-ts": "1.2.0",
     "@smogon/calc": "0.12.0",
     "zod": "4.6.7"
