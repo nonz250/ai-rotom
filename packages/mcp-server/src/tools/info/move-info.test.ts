@@ -66,9 +66,7 @@ describe("get_move_info logic", () => {
       expect(entry!.category).toBe("Physical");
       expect(entry!.basePower).toBeGreaterThan(0);
     });
-  });
 
-  describe("チャンピオンズで仕様が変わった技", () => {
     it("フリーズドライはこおりの追加効果を持たず、みずタイプに効果バツグンになる", () => {
       const englishName = moveNameResolver.toEnglish("フリーズドライ");
       expect(englishName).toBe("Freeze-Dry");
