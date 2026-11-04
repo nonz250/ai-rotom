@@ -68,6 +68,20 @@ describe("get_move_info logic", () => {
     });
   });
 
+  describe("チャンピオンズで仕様が変わった技", () => {
+    it("フリーズドライはこおりの追加効果を持たず、みずタイプに効果バツグンになる", () => {
+      const englishName = moveNameResolver.toEnglish("フリーズドライ");
+      expect(englishName).toBe("Freeze-Dry");
+
+      const entry = movesById.get(toDataId(englishName!));
+      expect(entry).toBeDefined();
+      expect(entry!.desc).not.toMatch(/chance to freeze/i);
+      expect(entry!.shortDesc).not.toMatch(/chance to freeze/i);
+      expect(entry!.desc).toContain("super effective");
+      expect(entry!.shortDesc).toContain("Super effective on Water");
+    });
+  });
+
   describe("追加した専用技 13 件", () => {
     // 件数が多いため table-driven に統一する
     it.each([
