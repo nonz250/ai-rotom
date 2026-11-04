@@ -5,6 +5,7 @@ import { moveNameResolver } from "../../name-resolvers";
 const FLAMETHROWER_BASE_POWER = 90;
 const FLAMETHROWER_ACCURACY = 100;
 const FLAMETHROWER_PP = 16;
+const MAKE_IT_RAIN_ACCURACY = 95;
 
 describe("get_move_info logic", () => {
   describe("データ取得", () => {
@@ -65,6 +66,19 @@ describe("get_move_info logic", () => {
       const entry = movesById.get(toDataId("Accelerock"));
       expect(entry!.category).toBe("Physical");
       expect(entry!.basePower).toBeGreaterThan(0);
+    });
+  });
+
+  describe("チャンピオンズで仕様が変わった技", () => {
+    it("ゴールドラッシュは命中 95 で自分のとくこうを 2 段階下げる", () => {
+      const englishName = moveNameResolver.toEnglish("ゴールドラッシュ");
+      expect(englishName).toBe("Make It Rain");
+
+      const entry = movesById.get(toDataId(englishName!));
+      expect(entry).toBeDefined();
+      expect(entry!.accuracy).toBe(MAKE_IT_RAIN_ACCURACY);
+      expect(entry!.desc).toContain("Special Attack by 2 stages");
+      expect(entry!.shortDesc).toContain("Sp. Atk by 2");
     });
   });
 
