@@ -126,4 +126,21 @@ describe("get_move_info logic", () => {
       },
     );
   });
+
+  describe("チャンピオンズで技の分類が変わった技", () => {
+    it.each([
+      { nameJa: "シャドークロー", flag: "slicing" },
+      { nameJa: "ドラゴンクロー", flag: "slicing" },
+      { nameJa: "ブレイククロー", flag: "slicing" },
+      { nameJa: "フェイタルクロー", flag: "slicing" },
+      { nameJa: "ドラゴンエール", flag: "sound" },
+    ])("$nameJa は $flag フラグを持つ", ({ nameJa, flag }) => {
+      const englishName = moveNameResolver.toEnglish(nameJa);
+      expect(englishName).toBeDefined();
+
+      const entry = movesById.get(toDataId(englishName!));
+      expect(entry).toBeDefined();
+      expect(entry!.flags).toContain(flag);
+    });
+  });
 });
