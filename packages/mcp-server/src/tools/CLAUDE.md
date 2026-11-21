@@ -9,7 +9,7 @@ MCP ツールの実装。責務別にサブディレクトリで分けている�
 | `info/` | 単一エンティティの情報取得（`get_*`） | `get_pokemon_info`, `get_move_info` |
 | `search/` | 条件指定による検索・逆引き（`search_*`） | `search_pokemon_by_move`, `search_pokemon_by_ability` |
 | `calc/` | 数値計算（`calculate_*`, 計算系分析） | `calculate_damage_single`, `list_speed_tiers`, `analyze_damage_range` |
-| `analysis/` | 複数要素を組み合わせた分析 | `analyze_matchup`, `analyze_selection`, `find_counters` |
+| `analysis/` | 複数要素を組み合わせた分析 | `analyze_matchup`, `analyze_selection` |
 | `party/` | ユーザーパーティの永続化 CRUD / インポート | `save_party`, `load_party`, `list_parties`, `delete_party`, `import_party_from_text` |
 | `schemas/` | Zod 入力スキーマ | **将来廃止予定**（現状は shared/schemas/ に移行済み） |
 
