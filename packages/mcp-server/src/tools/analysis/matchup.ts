@@ -4,7 +4,7 @@ import {
   compareSpeed,
   conditionsSchema,
   extractPriorityMoves,
-  pokemonSchema,
+  pokemonWithMovesSchema,
 } from "@ai-rotom/shared";
 import type {
   DamageCalcResult,
@@ -27,8 +27,8 @@ const TOOL_DESCRIPTION =
   "ポケモン2体の対面を分析する。双方向のダメージ計算と素早さ比較を行い、どちらが有利かを判断するためのデータを提供する。ポケモン対戦の対面判断に使用する。pokemon1Faster は静的な素早さ実数値のみの比較のため、素早さ負けでも先制技で逆転できる判断は pokemon{1,2}PriorityMoves を併用すること。正確な計算のため双方の ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。";
 
 const matchupInputSchema = {
-  pokemon1: pokemonSchema.describe("ポケモン1"),
-  pokemon2: pokemonSchema.describe("ポケモン2"),
+  pokemon1: pokemonWithMovesSchema.describe("ポケモン1"),
+  pokemon2: pokemonWithMovesSchema.describe("ポケモン2"),
   conditions: conditionsSchema.optional().describe("バトル条件"),
 };
 

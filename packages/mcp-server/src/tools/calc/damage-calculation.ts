@@ -1,6 +1,10 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { conditionsSchema, pokemonSchema } from "@ai-rotom/shared";
+import {
+  conditionsSchema,
+  pokemonSchema,
+  pokemonWithMovesSchema,
+} from "@ai-rotom/shared";
 import type { DamageCalcResult } from "@ai-rotom/shared";
 import { damageCalculator } from "../../calc/damage-calculator.js";
 import {
@@ -25,7 +29,7 @@ const ALL_MOVES_TOOL_DESCRIPTION =
   "ポケモン対戦で攻撃側ポケモンの全攻撃技のダメージを一括計算する。どの技が最も有効かを比較するときに使用する。ポケモンチャンピオンズ対応。正確な計算のため攻撃側・防御側の ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。";
 
 const allMovesInputSchema = {
-  attacker: pokemonSchema.describe("攻撃側ポケモン"),
+  attacker: pokemonWithMovesSchema.describe("攻撃側ポケモン"),
   defender: pokemonSchema.describe("防御側ポケモン"),
   conditions: conditionsSchema.optional().describe("バトル条件"),
 };
@@ -35,7 +39,7 @@ const PARTY_MATCHUP_TOOL_DESCRIPTION =
   "パーティ対パーティの全組み合わせダメージ計算を行う。6vs6の全対面での火力関係を一覧する。ポケモン対戦の選出判断やパーティ構築の検討に使用する。正確な計算のため各ポケモンの ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。";
 
 const partyMatchupInputSchema = {
-  myParty: z.array(pokemonSchema).describe("自分のパーティ"),
+  myParty: z.array(pokemonWithMovesSchema).describe("自分のパーティ"),
   opponentParty: z.array(pokemonSchema).describe("相手のパーティ"),
   conditions: conditionsSchema.optional().describe("バトル条件"),
 };

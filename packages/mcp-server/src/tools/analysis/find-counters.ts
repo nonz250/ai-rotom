@@ -6,7 +6,7 @@ import {
   calculateTypeEffectiveness,
   compareSpeed,
   extractPriorityMoves,
-  pokemonSchema,
+  pokemonWithMovesSchema,
   type BaseStats,
   type BoostsInput,
   type ConditionsInput,
@@ -48,10 +48,10 @@ const TOOL_DESCRIPTION =
 
 const battleFormatValues = ["singles", "doubles"] as const;
 
-const candidatePoolItemSchema = z.union([z.string(), pokemonSchema]);
+const candidatePoolItemSchema = z.union([z.string(), pokemonWithMovesSchema]);
 
 const inputSchema = {
-  target: pokemonSchema.describe("対策したい相手ポケモン"),
+  target: pokemonWithMovesSchema.describe("対策したい相手ポケモン"),
   candidatePool: z
     .array(candidatePoolItemSchema)
     .optional()

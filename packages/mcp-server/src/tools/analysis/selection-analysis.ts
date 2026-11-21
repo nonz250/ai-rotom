@@ -8,6 +8,7 @@ import {
   compareSpeed,
   extractPriorityMoves,
   pokemonSchema,
+  pokemonWithMovesSchema,
   type BaseStats,
   type ConditionsInput,
   type DamageCalcResult,
@@ -33,7 +34,7 @@ const TOOL_DESCRIPTION =
 const battleFormatValues = ["singles", "doubles"] as const;
 
 const inputSchema = {
-  myParty: z.array(pokemonSchema).describe("自分のパーティ"),
+  myParty: z.array(pokemonWithMovesSchema).describe("自分のパーティ"),
   opponentParty: z.array(pokemonSchema).describe("相手のパーティ"),
   battleFormat: z
     .enum(battleFormatValues)
@@ -103,7 +104,7 @@ export interface SelectionAnalysisOutput {
   battleFormat: "singles" | "doubles";
 }
 
-type PokemonInput = z.infer<typeof pokemonSchema>;
+type PokemonInput = z.infer<typeof pokemonWithMovesSchema>;
 
 /**
  * 2つのポケモンタイプ配列から、攻撃側→防御側の最大抜群倍率を算出する。
