@@ -268,21 +268,17 @@ export class DamageCalculatorAdapter {
 
     const field = buildField(input.conditions);
     const defenderMaxHP = defender.maxHP();
-    const learnableMoveIds = this.learnsetProvider.getMoveIds(attackerName);
+    const candidateMoveNames = this.resolveCandidateMoveNames(
+      gen,
+      attackerName,
+      input.attacker.moves,
+    );
 
     const results: DamageCalcResult[] = [];
 
-    for (const moveData of gen.moves) {
-      if (!moveData.basePower || moveData.basePower <= 0) {
-        continue;
-      }
-      // learnset 未整備のフォルム (メガシンカ等) は技プールが不明なので、絞らずに全技を候補に残す。
-      if (learnableMoveIds.size > 0 && !learnableMoveIds.has(moveData.id)) {
-        continue;
-      }
-
+    for (const moveName of candidateMoveNames) {
       try {
-        const move = new Move(gen, moveData.name, {
+        const move = new Move(gen, moveName, {
           isCrit: input.conditions?.isCriticalHit,
         });
 
@@ -309,7 +305,7 @@ export class DamageCalculatorAdapter {
         results.push({
           attacker: attackerName,
           defender: defenderName,
-          move: moveData.name,
+          move: moveName,
           damage: damageArray,
           min,
           max,
@@ -382,6 +378,32 @@ export class DamageCalculatorAdapter {
 
   get natureResolver(): NameResolver {
     return this.resolvers.nature;
+  }
+
+  private resolveCandidateMoveNames(
+    gen: ReturnType<typeof Generations.get>,
+    attackerName: string,
+    moves: readonly string[] | undefined,
+  ): string[] {
+    if (moves !== undefined && moves.length > 0) {
+      return moves.map((name) =>
+        resolveNameWithFallback(this.resolvers.move, name, "技"),
+      );
+    }
+
+    const learnableMoveIds = this.learnsetProvider.getMoveIds(attackerName);
+    const names: string[] = [];
+    for (const moveData of gen.moves) {
+      if (!moveData.basePower || moveData.basePower <= 0) {
+        continue;
+      }
+      // learnset 未整備のフォルム (メガシンカ等) は技プールが不明なので、絞らずに全技を候補に残す。
+      if (learnableMoveIds.size > 0 && !learnableMoveIds.has(moveData.id)) {
+        continue;
+      }
+      names.push(moveData.name);
+    }
+    return names;
   }
 
   private resolveNature(nature: string | undefined): string {

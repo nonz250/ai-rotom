@@ -20,6 +20,7 @@ export interface PokemonInput {
   item?: string;
   boosts?: Partial<StatsInput>;
   status?: string;
+  moves?: string[];
 }
 
 export interface ConditionsInput {

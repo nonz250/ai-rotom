@@ -425,6 +425,53 @@ describe("DamageCalculatorAdapter.calculateAllMoves", () => {
     expect(moves).toContain("Earthquake");
   });
 
+  it("moves を指定すると指定したダメージ技だけを計算する", () => {
+    const results = damageCalculator.calculateAllMoves({
+      attacker: {
+        name: "ガブリアス",
+        moves: ["じしん", "げきりん", "ストーンエッジ", "つるぎのまい"],
+      },
+      defender: { name: "サーフゴー" },
+    });
+
+    expect(results.map((r) => r.move).sort()).toEqual(
+      ["Earthquake", "Outrage", "Stone Edge"].sort(),
+    );
+  });
+
+  it("moves に指定した技は習得技でなくても計算する", () => {
+    const results = damageCalculator.calculateAllMoves({
+      attacker: { name: "ガブリアス", moves: ["もろはのずつき"] },
+      defender: { name: "サーフゴー" },
+    });
+
+    expect(results.map((r) => r.move)).toEqual(["Head Smash"]);
+  });
+
+  it("moves に存在しない技名を指定するとエラーになる", () => {
+    expect(() =>
+      damageCalculator.calculateAllMoves({
+        attacker: { name: "ガブリアス", moves: ["じしん", "ほげほげ"] },
+        defender: { name: "サーフゴー" },
+      }),
+    ).toThrow("技「ほげほげ」が見つかりません。");
+  });
+
+  it("moves が空配列なら習得技すべてを計算する", () => {
+    const withEmpty = damageCalculator.calculateAllMoves({
+      attacker: { name: "ガブリアス", moves: [] },
+      defender: { name: "サーフゴー" },
+    });
+    const withoutMoves = damageCalculator.calculateAllMoves({
+      attacker: { name: "ガブリアス" },
+      defender: { name: "サーフゴー" },
+    });
+
+    expect(withEmpty.map((r) => r.move)).toEqual(
+      withoutMoves.map((r) => r.move),
+    );
+  });
+
   it("should throw error for non-existent Pokemon name", () => {
     expect(() =>
       damageCalculator.calculateAllMoves({

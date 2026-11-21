@@ -5,6 +5,7 @@ import {
   type BoostsInput,
   type EvsInput,
 } from "./stats.js";
+import { MAX_MOVES_PER_MEMBER } from "./party.js";
 
 /**
  * ポケモン入力の型。各ツールの入力で共通利用する。
@@ -17,6 +18,7 @@ export type PokemonInput = {
   item?: string;
   boosts?: BoostsInput;
   status?: string;
+  moves?: string[];
 };
 
 /**
@@ -44,6 +46,15 @@ export const pokemonSchema: z.ZodType<PokemonInput> = z.object({
     .optional()
     .describe("ランク補正 (-6〜+6 の整数)。省略時は全 0。いかく・ちからをつける等の変動を表現する。"),
   status: z.string().optional().describe("状態異常"),
+  moves: z
+    .array(z.string())
+    .max(MAX_MOVES_PER_MEMBER, {
+      message: `技は ${MAX_MOVES_PER_MEMBER} 個までです。`,
+    })
+    .optional()
+    .describe(
+      "技構成（日本語 or 英語、最大 4）。攻撃側として全技計算するときは指定した技だけを計算する。省略時は習得技すべてで計算する。",
+    ),
 });
 
 export const conditionsSchema: z.ZodType<ConditionsInput> = z.object({
