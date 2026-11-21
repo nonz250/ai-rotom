@@ -4,6 +4,7 @@ import {
   conditionsSchema,
   pokemonSchema,
   pokemonWithMovesSchema,
+  summarizeMoveDamages,
 } from "@ai-rotom/shared";
 import type { DamageCalcResult } from "@ai-rotom/shared";
 import { damageCalculator } from "../../calc/damage-calculator.js";
@@ -26,7 +27,7 @@ const SINGLE_TOOL_DESCRIPTION =
 
 const ALL_MOVES_TOOL_NAME = "calculate_damage_all_moves";
 const ALL_MOVES_TOOL_DESCRIPTION =
-  "ポケモン対戦で攻撃側ポケモンの全攻撃技のダメージを一括計算する。どの技が最も有効かを比較するときに使用する。ポケモンチャンピオンズ対応。正確な計算のため攻撃側・防御側の ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。";
+  "ポケモン対戦で攻撃側ポケモンの全攻撃技のダメージを一括計算する。どの技が最も有効かを比較するときに使用する。技ごとの結果はタイプ・相性・ダメージ割合・確定数の要約で、乱数の内訳は含まない。計算条件の説明文は最大打点の技にだけ付く。1 技の詳しい結果は calculate_damage_single で確認する。ポケモンチャンピオンズ対応。正確な計算のため攻撃側・防御側の ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。";
 
 const allMovesInputSchema = {
   attacker: pokemonWithMovesSchema.describe("攻撃側ポケモン"),
@@ -149,7 +150,9 @@ export function registerDamageCalculationTools(server: McpServer): void {
         const output = {
           attacker: results.length > 0 ? results[0].attacker : attackerNameEn,
           defender: results.length > 0 ? results[0].defender : defenderNameEn,
-          results,
+          results: summarizeMoveDamages(results, (en) =>
+            moveNameResolver.toJapanese(en),
+          ),
         };
 
         return withHint({ type: "text" as const, text: JSON.stringify(output) });

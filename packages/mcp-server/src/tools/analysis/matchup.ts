@@ -5,9 +5,10 @@ import {
   conditionsSchema,
   extractPriorityMoves,
   pokemonWithMovesSchema,
+  summarizeMoveDamages,
 } from "@ai-rotom/shared";
 import type {
-  DamageCalcResult,
+  MoveDamageSummary,
   MoveInfoForPriority,
   PriorityMoveInfo,
 } from "@ai-rotom/shared";
@@ -21,7 +22,7 @@ import { withHint } from "../../tool-response-hint.js";
 
 const TOOL_NAME = "analyze_matchup";
 const TOOL_DESCRIPTION =
-  "ポケモン2体の対面を分析する。双方向のダメージ計算と素早さ比較を行い、どちらが有利かを判断するためのデータを提供する。ポケモン対戦の対面判断に使用する。pokemon1Faster は静的な素早さ実数値のみの比較のため、素早さ負けでも先制技で逆転できる判断は pokemon{1,2}PriorityMoves を併用すること。正確な計算のため双方の ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。";
+  "ポケモン2体の対面を分析する。双方向のダメージ計算と素早さ比較を行い、どちらが有利かを判断するためのデータを提供する。ポケモン対戦の対面判断に使用する。技ごとの結果はタイプ・相性・ダメージ割合・確定数の要約で、乱数の内訳は含まない。計算条件の説明文は最大打点の技にだけ付く。1 技の詳しい結果は calculate_damage_single で確認する。pokemon1Faster は静的な素早さ実数値のみの比較のため、素早さ負けでも先制技で逆転できる判断は pokemon{1,2}PriorityMoves を併用すること。正確な計算のため双方の ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。";
 
 const matchupInputSchema = {
   pokemon1: pokemonWithMovesSchema.describe("ポケモン1"),
@@ -46,8 +47,8 @@ interface MatchupOutput {
   pokemon1: MatchupPokemonInfo;
   pokemon2: MatchupPokemonInfo;
   pokemon1Faster: boolean;
-  pokemon1Attacks: DamageCalcResult[];
-  pokemon2Attacks: DamageCalcResult[];
+  pokemon1Attacks: MoveDamageSummary[];
+  pokemon2Attacks: MoveDamageSummary[];
   /**
    * pokemon1 が覚える先制技の一覧（priority 降順）。
    * 技単位の静的 priority のみ。特性補正（いたずらごころ等）は含まない。
@@ -153,8 +154,8 @@ export function registerMatchupTool(server: McpServer): void {
             speed: p2.stats.spe,
           },
           pokemon1Faster: compareSpeed(p1.stats.spe, p2.stats.spe) === "faster",
-          pokemon1Attacks,
-          pokemon2Attacks,
+          pokemon1Attacks: summarizeMoveDamages(pokemon1Attacks, moveToJapanese),
+          pokemon2Attacks: summarizeMoveDamages(pokemon2Attacks, moveToJapanese),
           pokemon1PriorityMoves: priorityMovesFor(name1, args.pokemon1.moves),
           pokemon2PriorityMoves: priorityMovesFor(name2, args.pokemon2.moves),
           typeSummary,
