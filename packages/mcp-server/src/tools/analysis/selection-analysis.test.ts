@@ -463,3 +463,44 @@ describe("analyze_selection 技構成の指定", () => {
     expect(res.content[0].text).toContain("技「げきりんn」が見つかりません");
   });
 });
+
+describe("analyze_selection の moves 引数", () => {
+  it("moves に存在しない技名があるとエラーを返す", async () => {
+    const res = await captureHandler()({
+      myParty: [{ name: "ガブリアス" }],
+      opponentParty: [{ name: "サーフゴー" }],
+      battleFormat: "singles",
+      moves: { ガブリアス: ["じしんん"] },
+    });
+
+    expect(res.isError).toBe(true);
+    expect(res.content[0].text).toContain("技「じしんん」が見つかりません");
+  });
+
+  it("moves のキーに存在しないポケモン名があるとエラーを返す", async () => {
+    const res = await captureHandler()({
+      myParty: [{ name: "ガブリアス" }],
+      opponentParty: [{ name: "サーフゴー" }],
+      battleFormat: "singles",
+      moves: { ガブリアスス: ["じしん"] },
+    });
+
+    expect(res.isError).toBe(true);
+    expect(res.content[0].text).toContain("ガブリアスス");
+  });
+
+  it("先制技の一覧は moves の指定に揃う", async () => {
+    const res = await captureHandler()({
+      myParty: [{ name: "ハッサム" }],
+      opponentParty: [{ name: "サーフゴー" }],
+      battleFormat: "singles",
+      moves: { ハッサム: ["アイアンヘッド", "とんぼがえり"] },
+    });
+    const output = JSON.parse(res.content[0].text);
+    const priorityMoves = output.myParty[0].priorityMoves.map(
+      (m: { move: string }) => m.move,
+    );
+
+    expect(priorityMoves).toEqual([]);
+  });
+});

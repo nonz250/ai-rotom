@@ -167,9 +167,13 @@ function resolveMovesMap(
     const englishName =
       pokemonNameResolver.toEnglish(pokemonName) ??
       (pokemonNameResolver.hasEnglishName(pokemonName) ? pokemonName : null);
-    if (englishName === null) continue;
+    if (englishName === null) {
+      throw new Error(
+        `moves に指定したポケモン「${pokemonName}」が見つかりません。`,
+      );
+    }
     const id = toDataId(englishName);
-    result.set(id, moveList);
+    result.set(id, damageCalculator.resolveMoveNames(moveList));
   }
   return result;
 }
@@ -246,7 +250,10 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
             : [...(pokemon.types as readonly string[])];
 
         const priorityMoves = extractPriorityMoves({
-          learnsetMoveIds: candidateMoveIds(resolvedName, input.moves),
+          learnsetMoveIds: candidateMoveIds(
+            resolvedName,
+            movesMap.get(entryId) ?? input.moves,
+          ),
           resolveMove: (id) => movesById.get(id),
           toJapanese: (enName) => moveNameResolver.toJapanese(enName),
         });
