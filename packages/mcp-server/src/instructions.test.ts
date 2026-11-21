@@ -118,6 +118,7 @@ describe("SERVER_INSTRUCTIONS", () => {
       SERVER_INSTRUCTIONS.indexOf("\n### ", sectionStart + 1),
     );
 
+    expect(section).toContain("get_pokemon_summary");
     expect(section).toContain("search_pokemon_by_type_effectiveness");
     expect(section).toContain("analyze_matchup");
   });
