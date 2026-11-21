@@ -67,8 +67,6 @@ AI クライアントは目的駆動で刻む振り方を提案すること。�
 - 本サーバーのツールは「判断の根拠となる正確なデータを返す」ことに責務を限定しています。
   「この選出が最適」「この構築が正解」といった最終判断は返しません。
 - 選出・構築・対策の結論は、ツールが返したデータ (タイプ相性・ダメ計・素早さ比較・対面マトリクス等) を元に AI が総合的に導いてください。
-- 一部ツール (find_counters 等) はスコア付きの候補リストを返しますが、これは候補抽出のための目安であり、
-  最終的な採用判断はダメ計・素早さ・対面状況を踏まえて AI が行うものです。
 
 ## ツール利用方針（必須）
 
@@ -96,6 +94,11 @@ AI クライアントは目的駆動で刻む振り方を提案すること。�
 - 素早さライン一覧・スカーフ込み比較 → list_speed_tiers
 - 対面での先後判定 (素早さ比較込み) → analyze_matchup
 
+### 対策候補 (「○○の対策は？」「○○に勝てるポケモンは？」等)
+- 候補の絞り込み → search_pokemon_by_type_effectiveness (相手の弱点タイプの攻撃技を覚える / 相手の主力技タイプを半減以下で受ける 等)
+- 候補ごとの評価 → analyze_matchup (双方向のダメ計・素早さ・先制技)。相手の技構成がわかっていれば moves を指定する
+- どの候補を検討し、どう勝つか (受けて倒す / 上から倒す 等) の判断は AI が行う
+
 ### その他の事実確認 (「○○の特性効果は？」「○○の効果は？」「ねっぷう撃たれたら？」等)
 - 特性効果 → get_ability_info
 - 持ち物効果 → get_item_info
@@ -105,7 +108,7 @@ AI クライアントは目的駆動で刻む振り方を提案すること。�
 
 ## 計算・分析系ツールでの ability / item 指定
 
-- 計算・対面分析系ツール (calculate_damage_single / calculate_damage_all_moves / calculate_damage_party_matchup / analyze_damage_range / analyze_matchup / analyze_selection / find_counters) を呼ぶ前に、攻撃側・防御側の ability / item を確認してから指定すること。
+- 計算・対面分析系ツール (calculate_damage_single / calculate_damage_all_moves / calculate_damage_party_matchup / analyze_damage_range / analyze_matchup / analyze_selection) を呼ぶ前に、攻撃側・防御側の ability / item を確認してから指定すること。
 - 省略時の挙動: ability は通常特性 (pokemon.json の abilities[0]) が自動設定され、item は持ち物なし扱いとなる。そのためメガシンカ・こだわり系・半減きのみ・ちからのハチマキ 等が反映されず、実戦想定の build と乖離した結果になる。
 - 正確な計算のためには ability / item を明示的に指定することを強く推奨する。
 - 一方で、育成データ (evs・nature) が不明な場合は省略してよい (デフォルト値で計算)。
