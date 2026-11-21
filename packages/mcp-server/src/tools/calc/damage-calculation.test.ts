@@ -52,7 +52,7 @@ describe("calculate_damage_party_matchup の出力", () => {
 });
 
 describe("calculate_damage_all_moves の出力", () => {
-  it("技ごとの結果は要約形式で、乱数配列と説明文を含まない", async () => {
+  it("技ごとの結果は要約形式で、乱数配列を含まず、説明文は最大打点の技にだけ付く", async () => {
     const res = await captureHandler("calculate_damage_all_moves")({
       attacker: { name: "ガブリアス", moves: ["じしん", "げきりん"] },
       defender: { name: "サーフゴー" },
@@ -63,8 +63,12 @@ describe("calculate_damage_all_moves の出力", () => {
     );
 
     expect(earthquake.moveJa).toBe("じしん");
-    expect(earthquake).not.toHaveProperty("damage");
-    expect(earthquake).not.toHaveProperty("description");
-    expect(earthquake).toHaveProperty("koChance");
+    for (const entry of output.results) {
+      expect(entry).not.toHaveProperty("damage");
+      expect(entry).not.toHaveProperty("min");
+      expect(entry).not.toHaveProperty("max");
+    }
+    expect(output.results[0]).toHaveProperty("description");
+    expect(output.results[1]).not.toHaveProperty("description");
   });
 });

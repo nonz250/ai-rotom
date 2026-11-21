@@ -4,7 +4,7 @@ import {
   conditionsSchema,
   pokemonSchema,
   pokemonWithMovesSchema,
-  summarizeMoveDamage,
+  summarizeMoveDamages,
 } from "@ai-rotom/shared";
 import type { DamageCalcResult } from "@ai-rotom/shared";
 import { damageCalculator } from "../../calc/damage-calculator.js";
@@ -150,8 +150,8 @@ export function registerDamageCalculationTools(server: McpServer): void {
         const output = {
           attacker: results.length > 0 ? results[0].attacker : attackerNameEn,
           defender: results.length > 0 ? results[0].defender : defenderNameEn,
-          results: results.map((r) =>
-            summarizeMoveDamage(r, (en) => moveNameResolver.toJapanese(en)),
+          results: summarizeMoveDamages(results, (en) =>
+            moveNameResolver.toJapanese(en),
           ),
         };
 
