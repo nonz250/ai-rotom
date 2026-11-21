@@ -13,13 +13,10 @@ import type {
 } from "@ai-rotom/shared";
 import { Generations } from "@smogon/calc";
 import type { TypeName } from "@smogon/calc/dist/data/interface";
-import {
-  championsLearnsets,
-  movesById,
-  toDataId,
-} from "../../data-store.js";
+import { movesById } from "../../data-store.js";
 import { pokemonNameResolver, moveNameResolver } from "../../name-resolvers.js";
 import { damageCalculator } from "../../calc/damage-calculator.js";
+import { candidateMoveIds } from "../../calc/candidate-moves.js";
 import { withHint } from "../../tool-response-hint.js";
 
 const TOOL_NAME = "analyze_matchup";
@@ -72,10 +69,12 @@ function moveToJapanese(en: string): string | undefined {
   return moveNameResolver.toJapanese(en);
 }
 
-function priorityMovesFor(resolvedName: string): PriorityMoveInfo[] {
-  const learnsetMoveIds = championsLearnsets[toDataId(resolvedName)] ?? [];
+function priorityMovesFor(
+  resolvedName: string,
+  moves: readonly string[] | undefined,
+): PriorityMoveInfo[] {
   return extractPriorityMoves({
-    learnsetMoveIds,
+    learnsetMoveIds: candidateMoveIds(resolvedName, moves),
     resolveMove: resolveMoveForPriority,
     toJapanese: moveToJapanese,
   });
@@ -156,8 +155,8 @@ export function registerMatchupTool(server: McpServer): void {
           pokemon1Faster: compareSpeed(p1.stats.spe, p2.stats.spe) === "faster",
           pokemon1Attacks,
           pokemon2Attacks,
-          pokemon1PriorityMoves: priorityMovesFor(name1),
-          pokemon2PriorityMoves: priorityMovesFor(name2),
+          pokemon1PriorityMoves: priorityMovesFor(name1, args.pokemon1.moves),
+          pokemon2PriorityMoves: priorityMovesFor(name2, args.pokemon2.moves),
           typeSummary,
         };
 

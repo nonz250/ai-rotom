@@ -16,13 +16,13 @@ import {
   type SpeedComparison,
 } from "@ai-rotom/shared";
 import {
-  championsLearnsets,
   movesById,
   pokemonById,
   toDataId,
 } from "../../data-store.js";
 import { moveNameResolver, pokemonNameResolver } from "../../name-resolvers.js";
 import { damageCalculator } from "../../calc/damage-calculator.js";
+import { candidateMoveIds } from "../../calc/candidate-moves.js";
 import { withHint } from "../../tool-response-hint.js";
 
 const CHAMPIONS_GEN_NUM = 0;
@@ -43,7 +43,7 @@ const inputSchema = {
     .record(z.string(), z.array(z.string()))
     .optional()
     .describe(
-      "ポケモン名（日本語 or 英語）ごとに候補技を指定する。省略時は全攻撃技で計算。",
+      "ポケモン名（日本語 or 英語）ごとに候補技を指定する。指定がなければ myParty 各メンバーの moves、それもなければ習得技すべてで計算する。",
     ),
 };
 
@@ -176,7 +176,7 @@ function resolveMovesMap(
 
 /**
  * attacker vs defender の候補技でダメージを計算する。
- * movesMap に指定があればそれを、無ければ attacker の習得技すべてで計算する。
+ * movesMap に指定があればそれを、無ければ attacker.moves、それも無ければ習得技すべてで計算する。
  * 明示指定経路は learnset フィルタを掛けない（ユーザーの明示選択を尊重する既存仕様を維持）。
  * conditions (battleFormat 等) を damageCalculator に伝える。
  */
@@ -246,7 +246,7 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
             : [...(pokemon.types as readonly string[])];
 
         const priorityMoves = extractPriorityMoves({
-          learnsetMoveIds: championsLearnsets[entryId] ?? [],
+          learnsetMoveIds: candidateMoveIds(resolvedName, input.moves),
           resolveMove: (id) => movesById.get(id),
           toJapanese: (enName) => moveNameResolver.toJapanese(enName),
         });
