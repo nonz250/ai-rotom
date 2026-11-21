@@ -39,3 +39,15 @@ export interface PokemonEntryProvider {
    */
   getByName(name: string): PokemonEntry | undefined;
 }
+
+/**
+ * ポケモンの習得技を英語名で引くためのプロバイダ。
+ * ダメージ計算モジュールが learnset データに直接依存しないよう、DI で受け取るための抽象。
+ */
+export interface LearnsetProvider {
+  /**
+   * 英語名 (例: "Garchomp") から習得技の ID 集合を取得する。
+   * learnset データが未整備のフォルムは空集合を返す。
+   */
+  getMoveIds(pokemonName: string): ReadonlySet<string>;
+}

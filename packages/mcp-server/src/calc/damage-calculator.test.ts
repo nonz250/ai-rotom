@@ -413,6 +413,18 @@ describe("DamageCalculatorAdapter.calculateAllMoves", () => {
     }
   });
 
+  it("攻撃側が覚えない技は結果に含めない", () => {
+    const results = damageCalculator.calculateAllMoves({
+      attacker: { name: "ガブリアス" },
+      defender: { name: "サーフゴー" },
+    });
+    const moves = results.map((r) => r.move);
+
+    expect(moves).not.toContain("Head Smash");
+    expect(moves).not.toContain("Headlong Rush");
+    expect(moves).toContain("Earthquake");
+  });
+
   it("should throw error for non-existent Pokemon name", () => {
     expect(() =>
       damageCalculator.calculateAllMoves({

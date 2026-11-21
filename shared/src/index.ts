@@ -15,6 +15,7 @@ export type {
   BaseStats,
   PokemonEntry,
   PokemonEntryProvider,
+  LearnsetProvider,
 } from "./types/pokemon.js";
 export type { Party, PartyMember, PartiesFile } from "./types/party.js";
 

@@ -2,6 +2,7 @@ import type {
   BaseStats,
   PokemonEntry,
   PokemonEntryProvider,
+  LearnsetProvider,
 } from "@ai-rotom/shared";
 import abilitiesData from "@data/abilities.json";
 import itemsData from "@data/items.json";
@@ -179,6 +180,15 @@ export function toDataId(name: string): string {
 export const pokemonEntryProvider: PokemonEntryProvider = {
   getByName: (name: string): PokemonEntry | undefined =>
     pokemonById.get(toDataId(name)),
+};
+
+/**
+ * shared/calc モジュールに渡すための LearnsetProvider 実装。
+ * 英語名を ID に変換して learnset を引く。
+ */
+export const learnsetProvider: LearnsetProvider = {
+  getMoveIds: (pokemonName: string): ReadonlySet<string> =>
+    getLearnsetMoveIdSet(toDataId(pokemonName)),
 };
 
 /**

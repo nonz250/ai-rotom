@@ -1,7 +1,10 @@
 import { calculate, Generations, Pokemon, Move } from "@smogon/calc";
 import type { TypeName } from "@smogon/calc/dist/data/interface";
 import { NameResolver } from "../utils/name-resolver.js";
-import type { PokemonEntryProvider } from "../types/pokemon.js";
+import type {
+  LearnsetProvider,
+  PokemonEntryProvider,
+} from "../types/pokemon.js";
 import { calculateTypeEffectiveness } from "../analysis/type-matchup.js";
 import {
   NON_STAB_MULTIPLIER,
@@ -80,10 +83,16 @@ export interface NameResolvers {
 export class DamageCalculatorAdapter {
   private readonly resolvers: NameResolvers;
   private readonly entryProvider: PokemonEntryProvider;
+  private readonly learnsetProvider: LearnsetProvider;
 
-  constructor(resolvers: NameResolvers, entryProvider: PokemonEntryProvider) {
+  constructor(
+    resolvers: NameResolvers,
+    entryProvider: PokemonEntryProvider,
+    learnsetProvider: LearnsetProvider,
+  ) {
     this.resolvers = resolvers;
     this.entryProvider = entryProvider;
+    this.learnsetProvider = learnsetProvider;
   }
 
   calculate(input: DamageCalcInput): DamageCalcResult {
@@ -259,11 +268,16 @@ export class DamageCalculatorAdapter {
 
     const field = buildField(input.conditions);
     const defenderMaxHP = defender.maxHP();
+    const learnableMoveIds = this.learnsetProvider.getMoveIds(attackerName);
 
     const results: DamageCalcResult[] = [];
 
     for (const moveData of gen.moves) {
       if (!moveData.basePower || moveData.basePower <= 0) {
+        continue;
+      }
+      // learnset 未整備のフォルム (メガシンカ等) は技プールが不明なので、絞らずに全技を候補に残す。
+      if (learnableMoveIds.size > 0 && !learnableMoveIds.has(moveData.id)) {
         continue;
       }
 
@@ -387,4 +401,5 @@ export type {
   PokemonInput,
   StatsInput,
   PokemonEntryProvider,
+  LearnsetProvider,
 } from "./types.js";

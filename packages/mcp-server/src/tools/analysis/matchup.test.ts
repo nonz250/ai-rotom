@@ -80,27 +80,16 @@ describe("analyze_matchup logic", () => {
 
   describe("learnset フィルタ適用", () => {
     it("attacker が覚えない技はダメ計結果から除外される", () => {
-      // ピカチュウ (Electric 単) は hydrocannon / blastburn / frenzyplant を
-      // 覚えない。@smogon/calc は全技 DB を走査するため、フィルタしないと
-      // これらがダメ計結果に混入する。
       const attacks = damageCalculator.calculateAllMoves({
         attacker: { name: "ピカチュウ" },
         defender: { name: "ギャラドス" },
       });
 
-      const learnsetIds = getLearnsetMoveIdSet(toDataId("Pikachu"));
-      const filtered = filterResultsByLearnset(attacks, learnsetIds, toDataId);
-
-      const filteredMoveIds = new Set(filtered.map((r) => toDataId(r.move)));
-      expect(filteredMoveIds.has("hydrocannon")).toBe(false);
-      expect(filteredMoveIds.has("blastburn")).toBe(false);
-      expect(filteredMoveIds.has("frenzyplant")).toBe(false);
-
-      // 覚える技（かみなり / 10まんボルト等）は残る
-      expect(filteredMoveIds.has("thunderbolt")).toBe(true);
-
-      // 少なくとも 1 件以上削減されている
-      expect(filtered.length).toBeLessThan(attacks.length);
+      const moveIds = new Set(attacks.map((r) => toDataId(r.move)));
+      expect(moveIds.has("hydrocannon")).toBe(false);
+      expect(moveIds.has("blastburn")).toBe(false);
+      expect(moveIds.has("frenzyplant")).toBe(false);
+      expect(moveIds.has("thunderbolt")).toBe(true);
     });
 
     it("フィルタ後も攻撃技が 1 件以上残る", () => {
@@ -147,13 +136,9 @@ describe("analyze_matchup logic", () => {
         defender: { name: "カビゴン" },
       });
 
-      const learnsetIds = getLearnsetMoveIdSet(toDataId("Cinderace"));
-      const filtered = filterResultsByLearnset(attacks, learnsetIds, toDataId);
-
-      const filteredMoveIds = new Set(filtered.map((r) => toDataId(r.move)));
-      expect(filteredMoveIds.has("tripleaxel")).toBe(false);
-      expect(filteredMoveIds.has("pyroball")).toBe(true);
-      expect(filtered.length).toBeLessThan(attacks.length);
+      const moveIds = new Set(attacks.map((r) => toDataId(r.move)));
+      expect(moveIds.has("tripleaxel")).toBe(false);
+      expect(moveIds.has("pyroball")).toBe(true);
     });
   });
 
@@ -218,14 +203,14 @@ describe("analyze_matchup logic", () => {
       const STAB_TIMES_HALF = 0.75;
       expect(flamethrower!.effectivePowerMultiplier).toBe(STAB_TIMES_HALF);
 
-      // 10まんボルト: でんき技（非STAB） × みず/ひこう = 4 倍（抜群×抜群）
-      const thunderbolt = results.find((r) => r.move === "Thunderbolt");
-      expect(thunderbolt).toBeDefined();
-      expect(thunderbolt!.moveType).toBe("Electric");
-      expect(thunderbolt!.isStab).toBe(false);
+      // かみなりパンチ: でんき技（非STAB） × みず/ひこう = 4 倍（抜群×抜群）
+      const thunderPunch = results.find((r) => r.move === "Thunder Punch");
+      expect(thunderPunch).toBeDefined();
+      expect(thunderPunch!.moveType).toBe("Electric");
+      expect(thunderPunch!.isStab).toBe(false);
       const QUAD_EFFECTIVE = 4;
-      expect(thunderbolt!.typeMultiplier).toBe(QUAD_EFFECTIVE);
-      expect(thunderbolt!.effectivePowerMultiplier).toBe(QUAD_EFFECTIVE);
+      expect(thunderPunch!.typeMultiplier).toBe(QUAD_EFFECTIVE);
+      expect(thunderPunch!.effectivePowerMultiplier).toBe(QUAD_EFFECTIVE);
     });
 
     it("typeSummary は両ポケモンのタイプに基づく最大相性倍率を返す", () => {

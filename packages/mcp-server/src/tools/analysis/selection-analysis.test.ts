@@ -271,17 +271,11 @@ describe("analyze_selection logic", () => {
         new Set(), // learnset 未登録相当
         new Map(),
       );
-      // フォールバックで空 Set の場合、@smogon/calc の calculateAllMoves 結果をそのまま返す
-      // learnset 登録済みの charizard で実際に絞った結果より件数が多いことを確認
-      const filteredResults = calculateDamageForMatchup(
-        damageCalculator,
-        { name: "リザードン" },
-        { name: "ギャラドス" },
-        attackerId,
-        getLearnsetMoveIdSet(attackerId),
-        new Map(),
-      );
-      expect(results.length).toBeGreaterThan(filteredResults.length);
+      const allMoves = damageCalculator.calculateAllMoves({
+        attacker: { name: "リザードン" },
+        defender: { name: "ギャラドス" },
+      });
+      expect(results.map((r) => r.move)).toEqual(allMoves.map((r) => r.move));
     });
   });
 
