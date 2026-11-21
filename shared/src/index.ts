@@ -24,6 +24,8 @@ export type { Party, PartyMember, PartiesFile } from "./types/party.js";
 // schemas/pokemon-input.ts の同名型と衝突するため export しない。
 // 呼び出し側は @ai-rotom/shared のスキーマ由来 PokemonInput / ConditionsInput を使うこと。
 export { DamageCalculatorAdapter } from "./calc/damage-calculator.js";
+export { summarizeMoveDamage } from "./calc/formatters/move-damage-summary.js";
+export type { MoveDamageSummary } from "./calc/formatters/move-damage-summary.js";
 export type { NameResolvers } from "./calc/damage-calculator.js";
 export type {
   StatsInput,
