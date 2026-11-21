@@ -230,6 +230,8 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
       }
 
       function buildMemberContext(input: PokemonInput): PartyMemberContext {
+        // 対面ごとのダメ計は失敗を null として握りつぶすため、技名の誤りはここでエラーとして返す。
+        damageCalculator.resolveMoveNames(input.moves ?? []);
         const { pokemon, resolvedName } =
           damageCalculator.createPokemonObject(input);
         const entryId = toDataId(resolvedName);

@@ -364,6 +364,17 @@ export class DamageCalculatorAdapter {
     return { pokemon, resolvedName };
   }
 
+  /**
+   * 技名 (日本語 or 英語) を英語名に解決し、重複を取り除く。
+   * 解決できない技名があれば類似候補を添えて例外を投げる。
+   */
+  resolveMoveNames(moves: readonly string[]): string[] {
+    const resolved = moves.map((name) =>
+      resolveNameWithFallback(this.resolvers.move, name, "技"),
+    );
+    return [...new Set(resolved)];
+  }
+
   getGen(): ReturnType<typeof Generations.get> {
     return Generations.get(CHAMPIONS_GEN_NUM);
   }
@@ -386,9 +397,7 @@ export class DamageCalculatorAdapter {
     moves: readonly string[] | undefined,
   ): string[] {
     if (moves !== undefined && moves.length > 0) {
-      return moves.map((name) =>
-        resolveNameWithFallback(this.resolvers.move, name, "技"),
-      );
+      return this.resolveMoveNames(moves);
     }
 
     const learnableMoveIds = this.learnsetProvider.getMoveIds(attackerName);

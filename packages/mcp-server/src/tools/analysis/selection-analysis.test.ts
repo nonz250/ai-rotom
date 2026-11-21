@@ -10,10 +10,37 @@ import {
 } from "../../data-store";
 import { moveNameResolver } from "../../name-resolvers";
 import { damageCalculator } from "../../calc/damage-calculator";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import {
   bestDamageEstimate,
   calculateDamageForMatchup,
+  registerSelectionAnalysisTool,
 } from "./selection-analysis";
+
+type ToolHandler = (args: unknown) => Promise<{
+  content: { type: string; text: string }[];
+  isError?: boolean;
+}>;
+
+function captureHandler(): ToolHandler {
+  let captured: ToolHandler | undefined;
+  const mockServer = {
+    tool: (
+      _name: string,
+      _description: string,
+      _schema: unknown,
+      handler: ToolHandler,
+    ) => {
+      captured = handler;
+      return {} as never;
+    },
+  } as unknown as McpServer;
+  registerSelectionAnalysisTool(mockServer);
+  if (captured === undefined) {
+    throw new Error("analyze_selection handler was not registered.");
+  }
+  return captured;
+}
 
 const CHAMPIONS_GEN_NUM = 0;
 
@@ -422,5 +449,17 @@ describe("analyze_selection logic", () => {
       expect(noConditionsResult.max).toBe(singlesResult.max);
       expect(noConditionsResult.min).toBe(singlesResult.min);
     });
+  });
+});
+
+describe("analyze_selection 技構成の指定", () => {
+  it("myParty の moves に存在しない技名があるとエラーを返す", async () => {
+    const res = await captureHandler()({
+      myParty: [{ name: "ガブリアス", moves: ["じしん", "げきりんn"] }],
+      opponentParty: [{ name: "サーフゴー" }],
+    });
+
+    expect(res.isError).toBe(true);
+    expect(res.content[0].text).toContain("技「げきりんn」が見つかりません");
   });
 });

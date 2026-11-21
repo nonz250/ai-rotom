@@ -798,3 +798,17 @@ describe("DamageCalculatorAdapter ふうせん (Air Balloon) のじめん技無�
     expect(earthquake("ふうせん")).toThrow();
   });
 });
+
+describe("DamageCalculatorAdapter.resolveMoveNames", () => {
+  it("日本語名と英語名を英語名に揃え、重複を取り除く", () => {
+    expect(
+      damageCalculator.resolveMoveNames(["じしん", "Earthquake", "げきりん"]),
+    ).toEqual(["Earthquake", "Outrage"]);
+  });
+
+  it("存在しない技名があるとエラーになる", () => {
+    expect(() => damageCalculator.resolveMoveNames(["ほげほげ"])).toThrow(
+      "技「ほげほげ」が見つかりません。",
+    );
+  });
+});

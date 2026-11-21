@@ -350,6 +350,13 @@ export function registerFindCountersTool(server: McpServer): void {
       };
 
       const targetEntry = resolvePokemonEntry(args.target.name);
+      // 候補ごとのダメ計は失敗を空結果として握りつぶすため、技名の誤りはループに入る前にエラーとして返す。
+      damageCalculator.resolveMoveNames(args.target.moves ?? []);
+      for (const item of args.candidatePool ?? []) {
+        if (typeof item !== "string") {
+          damageCalculator.resolveMoveNames(item.moves ?? []);
+        }
+      }
       const { pokemon: targetObj, resolvedName: targetName }
         = damageCalculator.createPokemonObject(args.target);
       const targetNameJa
