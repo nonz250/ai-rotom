@@ -4,7 +4,6 @@ import {
   compareSpeed,
   conditionsSchema,
   extractPriorityMoves,
-  filterResultsByLearnset,
   pokemonSchema,
 } from "@ai-rotom/shared";
 import type {
@@ -16,7 +15,6 @@ import { Generations } from "@smogon/calc";
 import type { TypeName } from "@smogon/calc/dist/data/interface";
 import {
   championsLearnsets,
-  getLearnsetMoveIdSet,
   movesById,
   toDataId,
 } from "../../data-store.js";
@@ -126,33 +124,17 @@ export function registerMatchupTool(server: McpServer): void {
         const nameJa2 =
           pokemonNameResolver.toJapanese(name2) ?? name2;
 
-        // 双方向のダメージ計算
-        // @smogon/calc は全技 DB を走査するため、実際に覚えない技で過大評価
-        // しないよう learnset で絞り込む。learnset 未登録のポケモンは
-        // filterResultsByLearnset 側のフォールバックで全件返す。
-        const pokemon1AttacksRaw = damageCalculator.calculateAllMoves({
+        const pokemon1Attacks = damageCalculator.calculateAllMoves({
           attacker: args.pokemon1,
           defender: args.pokemon2,
           conditions: args.conditions,
         });
-        const pokemon1LearnsetIds = getLearnsetMoveIdSet(toDataId(name1));
-        const pokemon1Attacks = filterResultsByLearnset(
-          pokemon1AttacksRaw,
-          pokemon1LearnsetIds,
-          toDataId,
-        );
 
-        const pokemon2AttacksRaw = damageCalculator.calculateAllMoves({
+        const pokemon2Attacks = damageCalculator.calculateAllMoves({
           attacker: args.pokemon2,
           defender: args.pokemon1,
           conditions: args.conditions,
         });
-        const pokemon2LearnsetIds = getLearnsetMoveIdSet(toDataId(name2));
-        const pokemon2Attacks = filterResultsByLearnset(
-          pokemon2AttacksRaw,
-          pokemon2LearnsetIds,
-          toDataId,
-        );
 
         const gen = damageCalculator.getGen();
         const typeSummary: MatchupTypeSummary = {

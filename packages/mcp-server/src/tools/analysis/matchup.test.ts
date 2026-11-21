@@ -4,7 +4,6 @@ import type { TypeName } from "@smogon/calc/dist/data/interface";
 import {
   calculateTypeEffectiveness,
   extractPriorityMoves,
-  filterResultsByLearnset,
 } from "@ai-rotom/shared";
 import {
   championsLearnsets,
@@ -98,16 +97,10 @@ describe("analyze_matchup logic", () => {
         defender: { name: "ギャラドス" },
       });
 
-      const learnsetIds = getLearnsetMoveIdSet(toDataId("Pikachu"));
-      const filtered = filterResultsByLearnset(attacks, learnsetIds, toDataId);
-
-      expect(filtered.length).toBeGreaterThan(0);
+      expect(attacks.length).toBeGreaterThan(0);
     });
 
     it("learnset 未登録のポケモン（メガ進化後等）は全件返される（フォールバック）", () => {
-      // メガ進化後（例: メガフーディン）は learnset が独立していないため
-      // championsLearnsets[id] === undefined となる。
-      // この場合 filterResultsByLearnset は元の配列をそのまま返す。
       const megaId = toDataId("Alakazam-Mega");
       expect(championsLearnsets[megaId]).toBeUndefined();
 
@@ -116,11 +109,8 @@ describe("analyze_matchup logic", () => {
         defender: { name: "ギャラドス" },
       });
 
-      const learnsetIds = getLearnsetMoveIdSet(megaId);
-      expect(learnsetIds.size).toBe(0);
-
-      const filtered = filterResultsByLearnset(attacks, learnsetIds, toDataId);
-      expect(filtered.length).toBe(attacks.length);
+      // もろはのずつきはフーディンが覚えない技。全技が候補に残っていれば含まれる。
+      expect(attacks.map((r) => r.move)).toContain("Head Smash");
     });
 
     it("getLearnsetMoveIdSet は learnset JSON の技 ID を正規化して返す", () => {

@@ -32,4 +32,3 @@ export type {
   DamageCalcResult,
   StatusName,
 } from "./calc/types.js";
-export { filterResultsByLearnset } from "./calc/filters/learnset-filter.js";

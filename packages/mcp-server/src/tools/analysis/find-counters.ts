@@ -6,7 +6,6 @@ import {
   calculateTypeEffectiveness,
   compareSpeed,
   extractPriorityMoves,
-  filterResultsByLearnset,
   pokemonSchema,
   type BaseStats,
   type BoostsInput,
@@ -23,7 +22,6 @@ import {
   championsLearnsets,
   championsPokemon,
   championsTypes,
-  getLearnsetMoveIdSet,
   movesById,
   pokemonById,
   toDataId,
@@ -393,32 +391,20 @@ export function registerFindCountersTool(server: McpServer): void {
         let outgoing: DamageCalcResult[] = [];
         let incoming: DamageCalcResult[] = [];
         try {
-          const allOutgoing = damageCalculator.calculateAllMoves({
+          outgoing = damageCalculator.calculateAllMoves({
             attacker: candidateInput,
             defender: args.target,
             conditions: damageConditions,
           });
-          const candidateLearnsetIds = getLearnsetMoveIdSet(candidateEntry.id);
-          outgoing = filterResultsByLearnset(
-            allOutgoing,
-            candidateLearnsetIds,
-            toDataId,
-          );
         } catch {
           outgoing = [];
         }
         try {
-          const allIncoming = damageCalculator.calculateAllMoves({
+          incoming = damageCalculator.calculateAllMoves({
             attacker: args.target,
             defender: candidateInput,
             conditions: damageConditions,
           });
-          const targetLearnsetIds = getLearnsetMoveIdSet(targetEntry.id);
-          incoming = filterResultsByLearnset(
-            allIncoming,
-            targetLearnsetIds,
-            toDataId,
-          );
         } catch {
           incoming = [];
         }

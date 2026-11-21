@@ -7,7 +7,6 @@ import {
   calculateTypeEffectiveness,
   compareSpeed,
   extractPriorityMoves,
-  filterResultsByLearnset,
   pokemonSchema,
   type BaseStats,
   type ConditionsInput,
@@ -17,7 +16,6 @@ import {
 } from "@ai-rotom/shared";
 import {
   championsLearnsets,
-  getLearnsetMoveIdSet,
   movesById,
   pokemonById,
   toDataId,
@@ -177,8 +175,7 @@ function resolveMovesMap(
 
 /**
  * attacker vs defender の候補技でダメージを計算する。
- * movesMap に指定があればそれを、無ければ全技で計算する。
- * movesMap 未指定経路では attacker の learnset でフィルタし、覚えない技での過大評価を避ける。
+ * movesMap に指定があればそれを、無ければ attacker の習得技すべてで計算する。
  * 明示指定経路は learnset フィルタを掛けない（ユーザーの明示選択を尊重する既存仕様を維持）。
  * conditions (battleFormat 等) を damageCalculator に伝える。
  */
@@ -187,7 +184,6 @@ export function calculateDamageForMatchup(
   attacker: PokemonInput,
   defender: PokemonInput,
   attackerId: string,
-  attackerLearnsetIds: ReadonlySet<string>,
   movesMap: Map<string, string[]>,
   conditions?: ConditionsInput,
 ): DamageCalcResult[] {
@@ -211,8 +207,7 @@ export function calculateDamageForMatchup(
     results.sort((a, b) => b.max - a.max);
     return results;
   }
-  const allResults = damageCalculator.calculateAllMoves({ attacker, defender, conditions });
-  return filterResultsByLearnset(allResults, attackerLearnsetIds, toDataId);
+  return damageCalculator.calculateAllMoves({ attacker, defender, conditions });
 }
 
 export function registerSelectionAnalysisTool(server: McpServer): void {
@@ -278,12 +273,6 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
       const myMembers = args.myParty.map(buildMemberContext);
       const oppMembers = args.opponentParty.map(buildMemberContext);
 
-      // 各自軍ポケモンの learnset ID セットは対面ごとに変わらないため、外側ループで 1 回だけ引く
-      const myLearnsetIds = new Map<string, ReadonlySet<string>>();
-      for (const mine of myMembers) {
-        myLearnsetIds.set(mine.entryId, getLearnsetMoveIdSet(mine.entryId));
-      }
-
       // マトリクス作成
       const matrix: MatchupEntry[] = [];
 
@@ -312,7 +301,6 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
               mine.input,
               opp.input,
               mine.entryId,
-              myLearnsetIds.get(mine.entryId) ?? new Set(),
               movesMap,
               damageConditions,
             );

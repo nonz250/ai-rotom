@@ -229,7 +229,6 @@ describe("analyze_selection logic", () => {
         { name: "リザードン" },
         { name: "ギャラドス" },
         attackerId,
-        learnsetIds,
         new Map(),
       );
 
@@ -253,7 +252,6 @@ describe("analyze_selection logic", () => {
         { name: "リザードン" },
         { name: "ギャラドス" },
         attackerId,
-        learnsetIds,
         movesMap,
       );
 
@@ -261,22 +259,6 @@ describe("analyze_selection logic", () => {
       expect(results[0].move).toBe("Blizzard");
     });
 
-    it("learnset 未登録ポケモンは全技を通す (フォールバック挙動)", () => {
-      const attackerId = toDataId("Charizard");
-      const results = calculateDamageForMatchup(
-        damageCalculator,
-        { name: "リザードン" },
-        { name: "ギャラドス" },
-        attackerId,
-        new Set(), // learnset 未登録相当
-        new Map(),
-      );
-      const allMoves = damageCalculator.calculateAllMoves({
-        attacker: { name: "リザードン" },
-        defender: { name: "ギャラドス" },
-      });
-      expect(results.map((r) => r.move)).toEqual(allMoves.map((r) => r.move));
-    });
   });
 
   describe("learnset データ前提確認", () => {

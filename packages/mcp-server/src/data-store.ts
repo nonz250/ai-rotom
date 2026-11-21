@@ -193,7 +193,7 @@ export const learnsetProvider: LearnsetProvider = {
 
 /**
  * 指定ポケモンの learnset に含まれる技 ID セットを取得する。
- * 未登録のポケモンは空 Set を返す（shared の filterResultsByLearnset では
+ * 未登録のポケモンは空 Set を返す（DamageCalculatorAdapter.calculateAllMoves では
  * 空 Set を「learnset データが無い」フォールバックとして扱う）。
  * learnset JSON の ID は既に Showdown toID 形式だが、呼び出し側の
  * 正規化関数（{@link toDataId}）との対称性を保つため念のため通している。
