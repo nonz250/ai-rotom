@@ -22,7 +22,7 @@ import { withHint } from "../../tool-response-hint.js";
 
 const TOOL_NAME = "analyze_matchup";
 const TOOL_DESCRIPTION =
-  "ポケモン2体の対面を分析する。双方向のダメージ計算と素早さ比較を行い、どちらが有利かを判断するためのデータを提供する。ポケモン対戦の対面判断に使用する。pokemon1Faster は静的な素早さ実数値のみの比較のため、素早さ負けでも先制技で逆転できる判断は pokemon{1,2}PriorityMoves を併用すること。正確な計算のため双方の ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。";
+  "ポケモン2体の対面を分析する。双方向のダメージ計算と素早さ比較を行い、どちらが有利かを判断するためのデータを提供する。ポケモン対戦の対面判断に使用する。技ごとの結果はタイプ・相性・ダメージ割合・確定数の要約で、乱数の内訳は含まない。計算条件の説明文は最大打点の技にだけ付く。1 技の詳しい結果は calculate_damage_single で確認する。pokemon1Faster は静的な素早さ実数値のみの比較のため、素早さ負けでも先制技で逆転できる判断は pokemon{1,2}PriorityMoves を併用すること。正確な計算のため双方の ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。";
 
 const matchupInputSchema = {
   pokemon1: pokemonWithMovesSchema.describe("ポケモン1"),
