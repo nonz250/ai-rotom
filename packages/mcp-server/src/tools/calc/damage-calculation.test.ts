@@ -50,3 +50,21 @@ describe("calculate_damage_party_matchup の出力", () => {
     });
   });
 });
+
+describe("calculate_damage_all_moves の出力", () => {
+  it("技ごとの結果は要約形式で、乱数配列と説明文を含まない", async () => {
+    const res = await captureHandler("calculate_damage_all_moves")({
+      attacker: { name: "ガブリアス", moves: ["じしん", "げきりん"] },
+      defender: { name: "サーフゴー" },
+    });
+    const output = JSON.parse(res.content[0].text);
+    const earthquake = output.results.find(
+      (r: { move: string }) => r.move === "Earthquake",
+    );
+
+    expect(earthquake.moveJa).toBe("じしん");
+    expect(earthquake).not.toHaveProperty("damage");
+    expect(earthquake).not.toHaveProperty("description");
+    expect(earthquake).toHaveProperty("koChance");
+  });
+});
