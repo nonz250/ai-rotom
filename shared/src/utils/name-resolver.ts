@@ -3,19 +3,29 @@ export interface NameEntry {
   en: string;
 }
 
+/**
+ * データ上の日本語名は全角英数字 (１０まんボルト) と半角英数字 (メガリザードンX) が混在しており、
+ * 入力側も半角で書かれることが多いため、照合は NFKC で正規化した表記で行う。
+ */
+function normalizeJapaneseName(name: string): string {
+  return name.normalize("NFKC");
+}
+
 export class NameResolver {
   private readonly jaToEn: Map<string, string>;
   private readonly enToJa: Map<string, string>;
   private readonly jaNames: string[];
 
   constructor(entries: NameEntry[]) {
-    this.jaToEn = new Map(entries.map((e) => [e.ja, e.en]));
+    this.jaToEn = new Map(
+      entries.map((e) => [normalizeJapaneseName(e.ja), e.en]),
+    );
     this.enToJa = new Map(entries.map((e) => [e.en, e.ja]));
     this.jaNames = entries.map((e) => e.ja);
   }
 
   toEnglish(jaName: string): string | undefined {
-    return this.jaToEn.get(jaName);
+    return this.jaToEn.get(normalizeJapaneseName(jaName));
   }
 
   toJapanese(enName: string): string | undefined {
@@ -23,7 +33,7 @@ export class NameResolver {
   }
 
   hasJapaneseName(jaName: string): boolean {
-    return this.jaToEn.has(jaName);
+    return this.jaToEn.has(normalizeJapaneseName(jaName));
   }
 
   hasEnglishName(enName: string): boolean {
@@ -32,9 +42,13 @@ export class NameResolver {
 
   suggestSimilar(jaName: string, maxResults: number = 3): string[] {
     const candidates: { name: string; distance: number }[] = [];
+    const normalizedInput = normalizeJapaneseName(jaName);
 
     for (const name of this.jaNames) {
-      const distance = levenshteinDistance(jaName, name);
+      const distance = levenshteinDistance(
+        normalizedInput,
+        normalizeJapaneseName(name),
+      );
       candidates.push({ name, distance });
     }
 
