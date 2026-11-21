@@ -44,13 +44,17 @@ const partyMatchupInputSchema = {
   conditions: conditionsSchema.optional().describe("バトル条件"),
 };
 
+/** ダメージを与えられる技がない対面の最大ダメージ割合。 */
+const NO_DAMAGE_PERCENT = 0;
+
 interface PartyMatchupBestMove {
   defender: string;
   defenderNameJa: string;
-  bestMove: string;
-  bestMoveJa: string;
+  /** ダメージを与えられる技がない対面では null */
+  bestMove: string | null;
+  bestMoveJa: string | null;
   maxDamagePercent: number;
-  koChance: string;
+  koChance: string | null;
 }
 
 interface PartyMatchupAttacker {
@@ -70,9 +74,19 @@ function extractBestMove(
   defenderNameEn: string,
   moveResolver: typeof moveNameResolver,
 ): PartyMatchupBestMove {
-  const best = results[0];
   const defenderNameJa =
     pokemonNameResolver.toJapanese(defenderNameEn) ?? defenderNameEn;
+  if (results.length === 0) {
+    return {
+      defender: defenderNameEn,
+      defenderNameJa,
+      bestMove: null,
+      bestMoveJa: null,
+      maxDamagePercent: NO_DAMAGE_PERCENT,
+      koChance: null,
+    };
+  }
+  const best = results[0];
   const bestMoveJa =
     moveResolver.toJapanese(best.move) ?? best.move;
 
@@ -192,12 +206,11 @@ export function registerDamageCalculationTools(server: McpServer): void {
               conditions: args.conditions,
             });
 
-            if (results.length > 0) {
-              const defenderNameEn = results[0].defender;
-              attackerEntry.results.push(
-                extractBestMove(results, defenderNameEn, moveNameResolver),
-              );
-            }
+            const { resolvedName: defenderNameEn } =
+              damageCalculator.createPokemonObject(defender);
+            attackerEntry.results.push(
+              extractBestMove(results, defenderNameEn, moveNameResolver),
+            );
           }
 
           output.matchups.push(attackerEntry);
