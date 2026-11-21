@@ -65,6 +65,7 @@ export function registerFooTool(server: McpServer): void {
   ```ts
   import { damageCalculator } from "../../calc/damage-calculator.js";
   ```
+- **複数技のダメ計結果**: `summarizeMoveDamage` で要約して返す。乱数配列と説明文は技数ぶん積み上がって AI のコンテキストを圧迫するため、返すのは単発のダメ計だけにする
 - **エラー応答**: `{ content: [...], isError: true }` + `JSON.stringify({ error })`
 - **成功応答**: `JSON.stringify(data)` をテキストで返す
 
