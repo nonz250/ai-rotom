@@ -5,6 +5,7 @@ import {
   championsLearnsets,
   championsMoves,
   championsPokemon,
+  learnsetProvider,
 } from "./data-store";
 
 /**
@@ -153,5 +154,30 @@ describe("マスターデータの不変条件", () => {
       // 覚えない技を最良技として返してしまうため、恒久不変条件として固定する。
       expect(missingLearnsetBaseIds).toEqual([]);
     });
+  });
+});
+
+describe("learnsetProvider", () => {
+  it("learnset を持つポケモンはその習得技を返す", () => {
+    expect(learnsetProvider.getMoveIds("Alakazam").has("psychic")).toBe(true);
+  });
+
+  it("learnset 未整備のフォルムは元のポケモンの習得技を返す", () => {
+    expect(championsLearnsets["alakazammega"]).toBeUndefined();
+    expect([...learnsetProvider.getMoveIds("Alakazam-Mega")]).toEqual([
+      ...learnsetProvider.getMoveIds("Alakazam"),
+    ]);
+  });
+
+  it("learnset 未整備のフォルムはすべて元のポケモンの習得技で補える", () => {
+    const formsWithoutMoves = championsPokemon
+      .filter((p) => learnsetProvider.getMoveIds(p.name).size === 0)
+      .map((p) => p.id);
+
+    expect(formsWithoutMoves).toEqual([]);
+  });
+
+  it("未登録のポケモン名は空集合を返す", () => {
+    expect(learnsetProvider.getMoveIds("Sonic").size).toBe(0);
   });
 });

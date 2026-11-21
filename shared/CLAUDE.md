@@ -63,7 +63,8 @@
 
 `calculateAllMoves` は攻撃側の `moves` 指定があればその技だけ、なければ
 `LearnsetProvider` の習得技だけを計算する。呼び出し側で結果を習得技に絞り直さない。
-learnset 未整備のフォルム（メガシンカ等）は空集合が返り、全技が候補になる。
+learnset 未整備のフォルム（メガシンカ等）は mcp-server の `learnsetProvider` が
+元のポケモンの習得技で補う。それでも空集合なら全技が候補になる。
 
 ### 日本語名は NameResolver 経由で照合する
 

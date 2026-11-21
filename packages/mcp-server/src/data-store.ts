@@ -187,8 +187,15 @@ export const pokemonEntryProvider: PokemonEntryProvider = {
  * 英語名を ID に変換して learnset を引く。
  */
 export const learnsetProvider: LearnsetProvider = {
-  getMoveIds: (pokemonName: string): ReadonlySet<string> =>
-    getLearnsetMoveIdSet(toDataId(pokemonName)),
+  getMoveIds: (pokemonName: string): ReadonlySet<string> => {
+    const id = toDataId(pokemonName);
+    const own = getLearnsetMoveIdSet(id);
+    if (own.size > 0) return own;
+    // メガシンカ後などのフォルムは learnset データが未整備なので、元のポケモンの技プールで代用する。
+    const baseSpecies = pokemonById.get(id)?.baseSpecies;
+    if (baseSpecies === null || baseSpecies === undefined) return own;
+    return getLearnsetMoveIdSet(toDataId(baseSpecies));
+  },
 };
 
 /**

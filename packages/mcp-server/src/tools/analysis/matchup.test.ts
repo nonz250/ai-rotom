@@ -100,7 +100,7 @@ describe("analyze_matchup logic", () => {
       expect(attacks.length).toBeGreaterThan(0);
     });
 
-    it("learnset 未登録のポケモン（メガ進化後等）は全件返される（フォールバック）", () => {
+    it("learnset 未登録のポケモン（メガ進化後等）は元のポケモンの習得技で計算する", () => {
       const megaId = toDataId("Alakazam-Mega");
       expect(championsLearnsets[megaId]).toBeUndefined();
 
@@ -108,9 +108,10 @@ describe("analyze_matchup logic", () => {
         attacker: { name: "メガフーディン" },
         defender: { name: "ギャラドス" },
       });
+      const moves = attacks.map((r) => r.move);
 
-      // もろはのずつきはフーディンが覚えない技。全技が候補に残っていれば含まれる。
-      expect(attacks.map((r) => r.move)).toContain("Head Smash");
+      expect(moves).not.toContain("Head Smash");
+      expect(moves).toContain("Psychic");
     });
 
     it("getLearnsetMoveIdSet は learnset JSON の技 ID を正規化して返す", () => {

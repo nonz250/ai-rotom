@@ -610,10 +610,10 @@ describe("DamageCalculatorAdapter 計算後の技タイプからメトリクス�
       defender: { name: "ゲンガー" },
     });
 
-    const doubleEdge = results.find((r) => r.move === "Double-Edge");
+    const bodySlam = results.find((r) => r.move === "Body Slam");
 
-    expect(doubleEdge).toBeDefined();
-    expect(doubleEdge!.moveType).toBe("Flying");
+    expect(bodySlam).toBeDefined();
+    expect(bodySlam!.moveType).toBe("Flying");
   });
 
   it("field 起因の技タイプ変換（ウェザーボール）も moveType に反映される", () => {
