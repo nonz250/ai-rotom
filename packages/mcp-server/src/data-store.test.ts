@@ -169,6 +169,13 @@ describe("learnsetProvider", () => {
     ]);
   });
 
+  it("性別で技が違うポケモンのメガシンカは、同じ性別のフォルムの習得技を返す", () => {
+    expect([...learnsetProvider.getMoveIds("Meowstic-F-Mega")]).toEqual([
+      ...learnsetProvider.getMoveIds("Meowstic-F"),
+    ]);
+    expect(learnsetProvider.getMoveIds("Meowstic-F-Mega").has("extrasensory")).toBe(true);
+  });
+
   it("learnset 未整備のフォルムはすべて元のポケモンの習得技で補える", () => {
     const formsWithoutMoves = championsPokemon
       .filter((p) => learnsetProvider.getMoveIds(p.name).size === 0)

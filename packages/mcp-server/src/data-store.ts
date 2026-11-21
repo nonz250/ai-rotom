@@ -182,6 +182,9 @@ export const pokemonEntryProvider: PokemonEntryProvider = {
     pokemonById.get(toDataId(name)),
 };
 
+/** メガシンカ後のフォルム名の末尾 (例: "-Mega", "-Mega-X")。 */
+const MEGA_FORME_SUFFIX = /-Mega(-[XYZ])?$/;
+
 /**
  * shared/calc モジュールに渡すための LearnsetProvider 実装。
  * 英語名を ID に変換して learnset を引く。
@@ -192,6 +195,12 @@ export const learnsetProvider: LearnsetProvider = {
     const own = getLearnsetMoveIdSet(id);
     if (own.size > 0) return own;
     // メガシンカ後などのフォルムは learnset データが未整備なので、元のポケモンの技プールで代用する。
+    // baseSpecies は性別違いのフォルムを区別しない (Meowstic-F-Mega → Meowstic) ため、
+    // メガシンカ前のフォルム名で先に引く。
+    const preMega = getLearnsetMoveIdSet(
+      toDataId(pokemonName.replace(MEGA_FORME_SUFFIX, "")),
+    );
+    if (preMega.size > 0) return preMega;
     const baseSpecies = pokemonById.get(id)?.baseSpecies;
     if (baseSpecies === null || baseSpecies === undefined) return own;
     return getLearnsetMoveIdSet(toDataId(baseSpecies));
