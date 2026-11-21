@@ -5,9 +5,10 @@ import {
   conditionsSchema,
   extractPriorityMoves,
   pokemonWithMovesSchema,
+  summarizeMoveDamage,
 } from "@ai-rotom/shared";
 import type {
-  DamageCalcResult,
+  MoveDamageSummary,
   MoveInfoForPriority,
   PriorityMoveInfo,
 } from "@ai-rotom/shared";
@@ -46,8 +47,8 @@ interface MatchupOutput {
   pokemon1: MatchupPokemonInfo;
   pokemon2: MatchupPokemonInfo;
   pokemon1Faster: boolean;
-  pokemon1Attacks: DamageCalcResult[];
-  pokemon2Attacks: DamageCalcResult[];
+  pokemon1Attacks: MoveDamageSummary[];
+  pokemon2Attacks: MoveDamageSummary[];
   /**
    * pokemon1 が覚える先制技の一覧（priority 降順）。
    * 技単位の静的 priority のみ。特性補正（いたずらごころ等）は含まない。
@@ -153,8 +154,12 @@ export function registerMatchupTool(server: McpServer): void {
             speed: p2.stats.spe,
           },
           pokemon1Faster: compareSpeed(p1.stats.spe, p2.stats.spe) === "faster",
-          pokemon1Attacks,
-          pokemon2Attacks,
+          pokemon1Attacks: pokemon1Attacks.map((r) =>
+            summarizeMoveDamage(r, moveToJapanese),
+          ),
+          pokemon2Attacks: pokemon2Attacks.map((r) =>
+            summarizeMoveDamage(r, moveToJapanese),
+          ),
           pokemon1PriorityMoves: priorityMovesFor(name1, args.pokemon1.moves),
           pokemon2PriorityMoves: priorityMovesFor(name2, args.pokemon2.moves),
           typeSummary,
