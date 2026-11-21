@@ -457,6 +457,15 @@ describe("DamageCalculatorAdapter.calculateAllMoves", () => {
     ).toThrow("技「ほげほげ」が見つかりません。");
   });
 
+  it("moves に計算エンジンが対応していない技があると、黙って除外せずエラーになる", () => {
+    expect(() =>
+      damageCalculator.calculateAllMoves({
+        attacker: { name: "ガブリアス", moves: ["じしん", "たいあたり"] },
+        defender: { name: "サーフゴー" },
+      }),
+    ).toThrow("技「たいあたり」は計算エンジンが未対応のため計算できません。");
+  });
+
   it("moves が空配列なら習得技すべてを計算する", () => {
     const withEmpty = damageCalculator.calculateAllMoves({
       attacker: { name: "ガブリアス", moves: [] },
@@ -810,5 +819,11 @@ describe("DamageCalculatorAdapter.resolveMoveNames", () => {
     expect(() => damageCalculator.resolveMoveNames(["ほげほげ"])).toThrow(
       "技「ほげほげ」が見つかりません。",
     );
+  });
+
+  it("計算エンジンが対応していない技があるとエラーになる", () => {
+    expect(() =>
+      damageCalculator.resolveMoveNames(["じしん", "たいあたり"]),
+    ).toThrow("技「たいあたり」は計算エンジンが未対応のため計算できません。");
   });
 });

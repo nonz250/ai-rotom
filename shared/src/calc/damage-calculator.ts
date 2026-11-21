@@ -1,4 +1,4 @@
-import { calculate, Generations, Pokemon, Move } from "@smogon/calc";
+import { calculate, Generations, Pokemon, Move, toID } from "@smogon/calc";
 import type { TypeName } from "@smogon/calc/dist/data/interface";
 import { NameResolver } from "../utils/name-resolver.js";
 import type {
@@ -367,11 +367,20 @@ export class DamageCalculatorAdapter {
   /**
    * 技名 (日本語 or 英語) を英語名に解決し、重複を取り除く。
    * 解決できない技名があれば類似候補を添えて例外を投げる。
+   * マスターデータにはあっても計算エンジンが持たない技は、計算すると結果から
+   * 黙って消えてしまうため、ここで例外にする。
    */
   resolveMoveNames(moves: readonly string[]): string[] {
-    const resolved = moves.map((name) =>
-      resolveNameWithFallback(this.resolvers.move, name, "技"),
-    );
+    const gen = this.getGen();
+    const resolved = moves.map((name) => {
+      const englishName = resolveNameWithFallback(this.resolvers.move, name, "技");
+      if (gen.moves.get(toID(englishName)) === undefined) {
+        throw new Error(
+          `技「${name}」は計算エンジンが未対応のため計算できません。技構成から外して呼び出してください。`,
+        );
+      }
+      return englishName;
+    });
     return [...new Set(resolved)];
   }
 
