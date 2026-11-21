@@ -5,7 +5,7 @@ import {
   conditionsSchema,
   extractPriorityMoves,
   pokemonWithMovesSchema,
-  summarizeMoveDamage,
+  summarizeMoveDamages,
 } from "@ai-rotom/shared";
 import type {
   MoveDamageSummary,
@@ -154,12 +154,8 @@ export function registerMatchupTool(server: McpServer): void {
             speed: p2.stats.spe,
           },
           pokemon1Faster: compareSpeed(p1.stats.spe, p2.stats.spe) === "faster",
-          pokemon1Attacks: pokemon1Attacks.map((r) =>
-            summarizeMoveDamage(r, moveToJapanese),
-          ),
-          pokemon2Attacks: pokemon2Attacks.map((r) =>
-            summarizeMoveDamage(r, moveToJapanese),
-          ),
+          pokemon1Attacks: summarizeMoveDamages(pokemon1Attacks, moveToJapanese),
+          pokemon2Attacks: summarizeMoveDamages(pokemon2Attacks, moveToJapanese),
           pokemon1PriorityMoves: priorityMovesFor(name1, args.pokemon1.moves),
           pokemon2PriorityMoves: priorityMovesFor(name2, args.pokemon2.moves),
           typeSummary,

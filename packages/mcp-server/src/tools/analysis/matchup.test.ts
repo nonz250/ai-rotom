@@ -234,7 +234,7 @@ describe("analyze_matchup logic", () => {
 });
 
 describe("analyze_matchup の出力", () => {
-  it("双方の技ごとの結果は要約形式で、乱数配列と説明文を含まない", async () => {
+  it("双方の技ごとの結果は要約形式で、乱数配列を含まず、説明文は最大打点の技にだけ付く", async () => {
     let handler:
       | ((args: unknown) => Promise<{ content: { text: string }[] }>)
       | undefined;
@@ -247,17 +247,20 @@ describe("analyze_matchup の出力", () => {
     registerMatchupTool(mockServer);
 
     const res = await handler!({
-      pokemon1: { name: "ガブリアス", moves: ["じしん"] },
-      pokemon2: { name: "サーフゴー", moves: ["シャドーボール"] },
+      pokemon1: { name: "ガブリアス", moves: ["じしん", "げきりん"] },
+      pokemon2: { name: "サーフゴー", moves: ["シャドーボール", "ゴールドラッシュ"] },
     });
     const output = JSON.parse(res.content[0].text);
 
-    for (const attack of [...output.pokemon1Attacks, ...output.pokemon2Attacks]) {
-      expect(attack).not.toHaveProperty("damage");
-      expect(attack).not.toHaveProperty("description");
-      expect(attack).toHaveProperty("moveJa");
+    for (const attacks of [output.pokemon1Attacks, output.pokemon2Attacks]) {
+      for (const attack of attacks) {
+        expect(attack).not.toHaveProperty("damage");
+        expect(attack).not.toHaveProperty("min");
+        expect(attack).not.toHaveProperty("max");
+      }
+      expect(attacks[0]).toHaveProperty("description");
+      expect(attacks[1]).not.toHaveProperty("description");
     }
     expect(output.pokemon1Attacks[0].moveJa).toBe("じしん");
-    expect(output.pokemon2Attacks[0].moveJa).toBe("シャドーボール");
   });
 });
