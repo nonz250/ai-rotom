@@ -1,6 +1,10 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { conditionsSchema, pokemonSchema } from "@ai-rotom/shared";
+import {
+  conditionsSchema,
+  pokemonSchema,
+  pokemonWithMovesSchema,
+} from "@ai-rotom/shared";
 import type { DamageCalcResult } from "@ai-rotom/shared";
 import { damageCalculator } from "../../calc/damage-calculator.js";
 import {
@@ -25,7 +29,7 @@ const ALL_MOVES_TOOL_DESCRIPTION =
   "ポケモン対戦で攻撃側ポケモンの全攻撃技のダメージを一括計算する。どの技が最も有効かを比較するときに使用する。ポケモンチャンピオンズ対応。正確な計算のため攻撃側・防御側の ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。";
 
 const allMovesInputSchema = {
-  attacker: pokemonSchema.describe("攻撃側ポケモン"),
+  attacker: pokemonWithMovesSchema.describe("攻撃側ポケモン"),
   defender: pokemonSchema.describe("防御側ポケモン"),
   conditions: conditionsSchema.optional().describe("バトル条件"),
 };
@@ -35,18 +39,22 @@ const PARTY_MATCHUP_TOOL_DESCRIPTION =
   "パーティ対パーティの全組み合わせダメージ計算を行う。6vs6の全対面での火力関係を一覧する。ポケモン対戦の選出判断やパーティ構築の検討に使用する。正確な計算のため各ポケモンの ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。";
 
 const partyMatchupInputSchema = {
-  myParty: z.array(pokemonSchema).describe("自分のパーティ"),
+  myParty: z.array(pokemonWithMovesSchema).describe("自分のパーティ"),
   opponentParty: z.array(pokemonSchema).describe("相手のパーティ"),
   conditions: conditionsSchema.optional().describe("バトル条件"),
 };
 
+/** ダメージを与えられる技がない対面の最大ダメージ割合。 */
+const NO_DAMAGE_PERCENT = 0;
+
 interface PartyMatchupBestMove {
   defender: string;
   defenderNameJa: string;
-  bestMove: string;
-  bestMoveJa: string;
+  /** ダメージを与えられる技がない対面では null */
+  bestMove: string | null;
+  bestMoveJa: string | null;
   maxDamagePercent: number;
-  koChance: string;
+  koChance: string | null;
 }
 
 interface PartyMatchupAttacker {
@@ -66,9 +74,19 @@ function extractBestMove(
   defenderNameEn: string,
   moveResolver: typeof moveNameResolver,
 ): PartyMatchupBestMove {
-  const best = results[0];
   const defenderNameJa =
     pokemonNameResolver.toJapanese(defenderNameEn) ?? defenderNameEn;
+  if (results.length === 0) {
+    return {
+      defender: defenderNameEn,
+      defenderNameJa,
+      bestMove: null,
+      bestMoveJa: null,
+      maxDamagePercent: NO_DAMAGE_PERCENT,
+      koChance: null,
+    };
+  }
+  const best = results[0];
   const bestMoveJa =
     moveResolver.toJapanese(best.move) ?? best.move;
 
@@ -188,12 +206,11 @@ export function registerDamageCalculationTools(server: McpServer): void {
               conditions: args.conditions,
             });
 
-            if (results.length > 0) {
-              const defenderNameEn = results[0].defender;
-              attackerEntry.results.push(
-                extractBestMove(results, defenderNameEn, moveNameResolver),
-              );
-            }
+            const { resolvedName: defenderNameEn } =
+              damageCalculator.createPokemonObject(defender);
+            attackerEntry.results.push(
+              extractBestMove(results, defenderNameEn, moveNameResolver),
+            );
           }
 
           output.matchups.push(attackerEntry);

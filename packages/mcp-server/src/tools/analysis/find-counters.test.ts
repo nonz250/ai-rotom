@@ -607,3 +607,25 @@ describe("find_counters の outgoing / incoming に STAB / タイプ相性フィ
     expect(darkSample?.typeMultiplier).toBe(NEUTRAL);
   });
 });
+
+describe("find_counters 技構成の指定", () => {
+  it("target.moves に存在しない技名があるとエラーを返す", async () => {
+    const res = await captureHandler()({
+      target: { name: "カバルドン", moves: ["じしん", "あくぴ"] },
+      candidatePool: ["ギャラドス"],
+    });
+
+    expect(res.isError).toBe(true);
+    expect(res.content[0].text).toContain("技「あくぴ」が見つかりません");
+  });
+
+  it("candidatePool の moves に存在しない技名があるとエラーを返す", async () => {
+    const res = await captureHandler()({
+      target: { name: "カバルドン" },
+      candidatePool: [{ name: "ギャラドス", moves: ["たきのぼりー"] }],
+    });
+
+    expect(res.isError).toBe(true);
+    expect(res.content[0].text).toContain("技「たきのぼりー」が見つかりません");
+  });
+});

@@ -7,8 +7,8 @@ import {
   calculateTypeEffectiveness,
   compareSpeed,
   extractPriorityMoves,
-  filterResultsByLearnset,
   pokemonSchema,
+  pokemonWithMovesSchema,
   type BaseStats,
   type ConditionsInput,
   type DamageCalcResult,
@@ -16,14 +16,13 @@ import {
   type SpeedComparison,
 } from "@ai-rotom/shared";
 import {
-  championsLearnsets,
-  getLearnsetMoveIdSet,
   movesById,
   pokemonById,
   toDataId,
 } from "../../data-store.js";
 import { moveNameResolver, pokemonNameResolver } from "../../name-resolvers.js";
 import { damageCalculator } from "../../calc/damage-calculator.js";
+import { candidateMoveIds } from "../../calc/candidate-moves.js";
 import { withHint } from "../../tool-response-hint.js";
 
 const CHAMPIONS_GEN_NUM = 0;
@@ -35,7 +34,7 @@ const TOOL_DESCRIPTION =
 const battleFormatValues = ["singles", "doubles"] as const;
 
 const inputSchema = {
-  myParty: z.array(pokemonSchema).describe("自分のパーティ"),
+  myParty: z.array(pokemonWithMovesSchema).describe("自分のパーティ"),
   opponentParty: z.array(pokemonSchema).describe("相手のパーティ"),
   battleFormat: z
     .enum(battleFormatValues)
@@ -44,7 +43,7 @@ const inputSchema = {
     .record(z.string(), z.array(z.string()))
     .optional()
     .describe(
-      "ポケモン名（日本語 or 英語）ごとに候補技を指定する。省略時は全攻撃技で計算。",
+      "ポケモン名（日本語 or 英語）ごとに候補技を指定する。指定がなければ myParty 各メンバーの moves、それもなければ習得技すべてで計算する。",
     ),
 };
 
@@ -105,7 +104,7 @@ export interface SelectionAnalysisOutput {
   battleFormat: "singles" | "doubles";
 }
 
-type PokemonInput = z.infer<typeof pokemonSchema>;
+type PokemonInput = z.infer<typeof pokemonWithMovesSchema>;
 
 /**
  * 2つのポケモンタイプ配列から、攻撃側→防御側の最大抜群倍率を算出する。
@@ -168,17 +167,20 @@ function resolveMovesMap(
     const englishName =
       pokemonNameResolver.toEnglish(pokemonName) ??
       (pokemonNameResolver.hasEnglishName(pokemonName) ? pokemonName : null);
-    if (englishName === null) continue;
+    if (englishName === null) {
+      throw new Error(
+        `moves に指定したポケモン「${pokemonName}」が見つかりません。`,
+      );
+    }
     const id = toDataId(englishName);
-    result.set(id, moveList);
+    result.set(id, damageCalculator.resolveMoveNames(moveList));
   }
   return result;
 }
 
 /**
  * attacker vs defender の候補技でダメージを計算する。
- * movesMap に指定があればそれを、無ければ全技で計算する。
- * movesMap 未指定経路では attacker の learnset でフィルタし、覚えない技での過大評価を避ける。
+ * movesMap に指定があればそれを、無ければ attacker.moves、それも無ければ習得技すべてで計算する。
  * 明示指定経路は learnset フィルタを掛けない（ユーザーの明示選択を尊重する既存仕様を維持）。
  * conditions (battleFormat 等) を damageCalculator に伝える。
  */
@@ -187,7 +189,6 @@ export function calculateDamageForMatchup(
   attacker: PokemonInput,
   defender: PokemonInput,
   attackerId: string,
-  attackerLearnsetIds: ReadonlySet<string>,
   movesMap: Map<string, string[]>,
   conditions?: ConditionsInput,
 ): DamageCalcResult[] {
@@ -211,8 +212,7 @@ export function calculateDamageForMatchup(
     results.sort((a, b) => b.max - a.max);
     return results;
   }
-  const allResults = damageCalculator.calculateAllMoves({ attacker, defender, conditions });
-  return filterResultsByLearnset(allResults, attackerLearnsetIds, toDataId);
+  return damageCalculator.calculateAllMoves({ attacker, defender, conditions });
 }
 
 export function registerSelectionAnalysisTool(server: McpServer): void {
@@ -235,6 +235,8 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
       }
 
       function buildMemberContext(input: PokemonInput): PartyMemberContext {
+        // 対面ごとのダメ計は失敗を null として握りつぶすため、技名の誤りはここでエラーとして返す。
+        damageCalculator.resolveMoveNames(input.moves ?? []);
         const { pokemon, resolvedName } =
           damageCalculator.createPokemonObject(input);
         const entryId = toDataId(resolvedName);
@@ -248,7 +250,10 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
             : [...(pokemon.types as readonly string[])];
 
         const priorityMoves = extractPriorityMoves({
-          learnsetMoveIds: championsLearnsets[entryId] ?? [],
+          learnsetMoveIds: candidateMoveIds(
+            resolvedName,
+            movesMap.get(entryId) ?? input.moves,
+          ),
           resolveMove: (id) => movesById.get(id),
           toJapanese: (enName) => moveNameResolver.toJapanese(enName),
         });
@@ -278,12 +283,6 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
       const myMembers = args.myParty.map(buildMemberContext);
       const oppMembers = args.opponentParty.map(buildMemberContext);
 
-      // 各自軍ポケモンの learnset ID セットは対面ごとに変わらないため、外側ループで 1 回だけ引く
-      const myLearnsetIds = new Map<string, ReadonlySet<string>>();
-      for (const mine of myMembers) {
-        myLearnsetIds.set(mine.entryId, getLearnsetMoveIdSet(mine.entryId));
-      }
-
       // マトリクス作成
       const matrix: MatchupEntry[] = [];
 
@@ -312,7 +311,6 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
               mine.input,
               opp.input,
               mine.entryId,
-              myLearnsetIds.get(mine.entryId) ?? new Set(),
               movesMap,
               damageConditions,
             );

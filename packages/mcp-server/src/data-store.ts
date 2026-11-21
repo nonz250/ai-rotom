@@ -2,6 +2,7 @@ import type {
   BaseStats,
   PokemonEntry,
   PokemonEntryProvider,
+  LearnsetProvider,
 } from "@ai-rotom/shared";
 import abilitiesData from "@data/abilities.json";
 import itemsData from "@data/items.json";
@@ -181,9 +182,34 @@ export const pokemonEntryProvider: PokemonEntryProvider = {
     pokemonById.get(toDataId(name)),
 };
 
+/** メガシンカ後のフォルム名の末尾 (例: "-Mega", "-Mega-X")。 */
+const MEGA_FORME_SUFFIX = /-Mega(-[XYZ])?$/;
+
+/**
+ * shared/calc モジュールに渡すための LearnsetProvider 実装。
+ * 英語名を ID に変換して learnset を引く。
+ */
+export const learnsetProvider: LearnsetProvider = {
+  getMoveIds: (pokemonName: string): ReadonlySet<string> => {
+    const id = toDataId(pokemonName);
+    const own = getLearnsetMoveIdSet(id);
+    if (own.size > 0) return own;
+    // メガシンカ後などのフォルムは learnset データが未整備なので、元のポケモンの技プールで代用する。
+    // baseSpecies は性別違いのフォルムを区別しない (Meowstic-F-Mega → Meowstic) ため、
+    // メガシンカ前のフォルム名で先に引く。
+    const preMega = getLearnsetMoveIdSet(
+      toDataId(pokemonName.replace(MEGA_FORME_SUFFIX, "")),
+    );
+    if (preMega.size > 0) return preMega;
+    const baseSpecies = pokemonById.get(id)?.baseSpecies;
+    if (baseSpecies === null || baseSpecies === undefined) return own;
+    return getLearnsetMoveIdSet(toDataId(baseSpecies));
+  },
+};
+
 /**
  * 指定ポケモンの learnset に含まれる技 ID セットを取得する。
- * 未登録のポケモンは空 Set を返す（shared の filterResultsByLearnset では
+ * 未登録のポケモンは空 Set を返す（DamageCalculatorAdapter.calculateAllMoves では
  * 空 Set を「learnset データが無い」フォールバックとして扱う）。
  * learnset JSON の ID は既に Showdown toID 形式だが、呼び出し側の
  * 正規化関数（{@link toDataId}）との対称性を保つため念のため通している。

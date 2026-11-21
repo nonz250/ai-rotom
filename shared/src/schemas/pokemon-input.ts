@@ -5,6 +5,7 @@ import {
   type BoostsInput,
   type EvsInput,
 } from "./stats.js";
+import { MAX_MOVES_PER_MEMBER, MAX_NAME_LENGTH } from "./party.js";
 
 /**
  * ポケモン入力の型。各ツールの入力で共通利用する。
@@ -17,6 +18,7 @@ export type PokemonInput = {
   item?: string;
   boosts?: BoostsInput;
   status?: string;
+  moves?: string[];
 };
 
 /**
@@ -32,7 +34,7 @@ export type ConditionsInput = {
   isCriticalHit?: boolean;
 };
 
-export const pokemonSchema: z.ZodType<PokemonInput> = z.object({
+const pokemonFields = {
   name: z.string().describe("ポケモン名（日本語 or 英語）"),
   nature: z.string().optional().describe("性格名（省略時: まじめ）"),
   evs: evsSchema
@@ -44,6 +46,28 @@ export const pokemonSchema: z.ZodType<PokemonInput> = z.object({
     .optional()
     .describe("ランク補正 (-6〜+6 の整数)。省略時は全 0。いかく・ちからをつける等の変動を表現する。"),
   status: z.string().optional().describe("状態異常"),
+};
+
+/**
+ * 技構成を使わないツール向けのポケモン入力スキーマ。
+ * moves を受け付けると AI が指定を反映されたものと誤解するため、項目自体を持たない。
+ */
+export const pokemonSchema: z.ZodType<PokemonInput> = z.object(pokemonFields);
+
+/**
+ * 攻撃側として全技ダメ計を行うツール向けのポケモン入力スキーマ。
+ */
+export const pokemonWithMovesSchema: z.ZodType<PokemonInput> = z.object({
+  ...pokemonFields,
+  moves: z
+    .array(z.string().min(1).max(MAX_NAME_LENGTH))
+    .max(MAX_MOVES_PER_MEMBER, {
+      message: `技は ${MAX_MOVES_PER_MEMBER} 個までです。`,
+    })
+    .optional()
+    .describe(
+      "技構成（日本語 or 英語、最大 4）。攻撃側として全技計算するときは指定した技だけを計算する。省略時は習得技すべてで計算する。",
+    ),
 });
 
 export const conditionsSchema: z.ZodType<ConditionsInput> = z.object({

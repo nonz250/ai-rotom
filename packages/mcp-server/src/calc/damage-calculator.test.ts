@@ -413,6 +413,74 @@ describe("DamageCalculatorAdapter.calculateAllMoves", () => {
     }
   });
 
+  it("攻撃側が覚えない技は結果に含めない", () => {
+    const results = damageCalculator.calculateAllMoves({
+      attacker: { name: "ガブリアス" },
+      defender: { name: "サーフゴー" },
+    });
+    const moves = results.map((r) => r.move);
+
+    expect(moves).not.toContain("Head Smash");
+    expect(moves).not.toContain("Headlong Rush");
+    expect(moves).toContain("Earthquake");
+  });
+
+  it("moves を指定すると指定したダメージ技だけを計算する", () => {
+    const results = damageCalculator.calculateAllMoves({
+      attacker: {
+        name: "ガブリアス",
+        moves: ["じしん", "げきりん", "ストーンエッジ", "つるぎのまい"],
+      },
+      defender: { name: "サーフゴー" },
+    });
+
+    expect(results.map((r) => r.move).sort()).toEqual(
+      ["Earthquake", "Outrage", "Stone Edge"].sort(),
+    );
+  });
+
+  it("moves に指定した技は習得技でなくても計算する", () => {
+    const results = damageCalculator.calculateAllMoves({
+      attacker: { name: "ガブリアス", moves: ["もろはのずつき"] },
+      defender: { name: "サーフゴー" },
+    });
+
+    expect(results.map((r) => r.move)).toEqual(["Head Smash"]);
+  });
+
+  it("moves に存在しない技名を指定するとエラーになる", () => {
+    expect(() =>
+      damageCalculator.calculateAllMoves({
+        attacker: { name: "ガブリアス", moves: ["じしん", "ほげほげ"] },
+        defender: { name: "サーフゴー" },
+      }),
+    ).toThrow("技「ほげほげ」が見つかりません。");
+  });
+
+  it("moves に計算エンジンが対応していない技があると、黙って除外せずエラーになる", () => {
+    expect(() =>
+      damageCalculator.calculateAllMoves({
+        attacker: { name: "ガブリアス", moves: ["じしん", "たいあたり"] },
+        defender: { name: "サーフゴー" },
+      }),
+    ).toThrow("技「たいあたり」は計算エンジンが未対応のため計算できません。");
+  });
+
+  it("moves が空配列なら習得技すべてを計算する", () => {
+    const withEmpty = damageCalculator.calculateAllMoves({
+      attacker: { name: "ガブリアス", moves: [] },
+      defender: { name: "サーフゴー" },
+    });
+    const withoutMoves = damageCalculator.calculateAllMoves({
+      attacker: { name: "ガブリアス" },
+      defender: { name: "サーフゴー" },
+    });
+
+    expect(withEmpty.map((r) => r.move)).toEqual(
+      withoutMoves.map((r) => r.move),
+    );
+  });
+
   it("should throw error for non-existent Pokemon name", () => {
     expect(() =>
       damageCalculator.calculateAllMoves({
@@ -551,10 +619,10 @@ describe("DamageCalculatorAdapter 計算後の技タイプからメトリクス�
       defender: { name: "ゲンガー" },
     });
 
-    const doubleEdge = results.find((r) => r.move === "Double-Edge");
+    const bodySlam = results.find((r) => r.move === "Body Slam");
 
-    expect(doubleEdge).toBeDefined();
-    expect(doubleEdge!.moveType).toBe("Flying");
+    expect(bodySlam).toBeDefined();
+    expect(bodySlam!.moveType).toBe("Flying");
   });
 
   it("field 起因の技タイプ変換（ウェザーボール）も moveType に反映される", () => {
@@ -737,5 +805,25 @@ describe("DamageCalculatorAdapter ふうせん (Air Balloon) のじめん技無�
 
     expect(earthquake()).not.toThrow();
     expect(earthquake("ふうせん")).toThrow();
+  });
+});
+
+describe("DamageCalculatorAdapter.resolveMoveNames", () => {
+  it("日本語名と英語名を英語名に揃え、重複を取り除く", () => {
+    expect(
+      damageCalculator.resolveMoveNames(["じしん", "Earthquake", "げきりん"]),
+    ).toEqual(["Earthquake", "Outrage"]);
+  });
+
+  it("存在しない技名があるとエラーになる", () => {
+    expect(() => damageCalculator.resolveMoveNames(["ほげほげ"])).toThrow(
+      "技「ほげほげ」が見つかりません。",
+    );
+  });
+
+  it("計算エンジンが対応していない技があるとエラーになる", () => {
+    expect(() =>
+      damageCalculator.resolveMoveNames(["じしん", "たいあたり"]),
+    ).toThrow("技「たいあたり」は計算エンジンが未対応のため計算できません。");
   });
 });

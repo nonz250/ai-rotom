@@ -15,6 +15,7 @@ export type {
   BaseStats,
   PokemonEntry,
   PokemonEntryProvider,
+  LearnsetProvider,
 } from "./types/pokemon.js";
 export type { Party, PartyMember, PartiesFile } from "./types/party.js";
 
@@ -31,4 +32,3 @@ export type {
   DamageCalcResult,
   StatusName,
 } from "./calc/types.js";
-export { filterResultsByLearnset } from "./calc/filters/learnset-filter.js";

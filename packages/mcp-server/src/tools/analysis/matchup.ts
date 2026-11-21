@@ -4,8 +4,7 @@ import {
   compareSpeed,
   conditionsSchema,
   extractPriorityMoves,
-  filterResultsByLearnset,
-  pokemonSchema,
+  pokemonWithMovesSchema,
 } from "@ai-rotom/shared";
 import type {
   DamageCalcResult,
@@ -14,14 +13,10 @@ import type {
 } from "@ai-rotom/shared";
 import { Generations } from "@smogon/calc";
 import type { TypeName } from "@smogon/calc/dist/data/interface";
-import {
-  championsLearnsets,
-  getLearnsetMoveIdSet,
-  movesById,
-  toDataId,
-} from "../../data-store.js";
+import { movesById } from "../../data-store.js";
 import { pokemonNameResolver, moveNameResolver } from "../../name-resolvers.js";
 import { damageCalculator } from "../../calc/damage-calculator.js";
+import { candidateMoveIds } from "../../calc/candidate-moves.js";
 import { withHint } from "../../tool-response-hint.js";
 
 const TOOL_NAME = "analyze_matchup";
@@ -29,8 +24,8 @@ const TOOL_DESCRIPTION =
   "ポケモン2体の対面を分析する。双方向のダメージ計算と素早さ比較を行い、どちらが有利かを判断するためのデータを提供する。ポケモン対戦の対面判断に使用する。pokemon1Faster は静的な素早さ実数値のみの比較のため、素早さ負けでも先制技で逆転できる判断は pokemon{1,2}PriorityMoves を併用すること。正確な計算のため双方の ability / item の指定を推奨（省略時は通常特性・持ち物なし扱い）。";
 
 const matchupInputSchema = {
-  pokemon1: pokemonSchema.describe("ポケモン1"),
-  pokemon2: pokemonSchema.describe("ポケモン2"),
+  pokemon1: pokemonWithMovesSchema.describe("ポケモン1"),
+  pokemon2: pokemonWithMovesSchema.describe("ポケモン2"),
   conditions: conditionsSchema.optional().describe("バトル条件"),
 };
 
@@ -74,10 +69,12 @@ function moveToJapanese(en: string): string | undefined {
   return moveNameResolver.toJapanese(en);
 }
 
-function priorityMovesFor(resolvedName: string): PriorityMoveInfo[] {
-  const learnsetMoveIds = championsLearnsets[toDataId(resolvedName)] ?? [];
+function priorityMovesFor(
+  resolvedName: string,
+  moves: readonly string[] | undefined,
+): PriorityMoveInfo[] {
   return extractPriorityMoves({
-    learnsetMoveIds,
+    learnsetMoveIds: candidateMoveIds(resolvedName, moves),
     resolveMove: resolveMoveForPriority,
     toJapanese: moveToJapanese,
   });
@@ -126,33 +123,17 @@ export function registerMatchupTool(server: McpServer): void {
         const nameJa2 =
           pokemonNameResolver.toJapanese(name2) ?? name2;
 
-        // 双方向のダメージ計算
-        // @smogon/calc は全技 DB を走査するため、実際に覚えない技で過大評価
-        // しないよう learnset で絞り込む。learnset 未登録のポケモンは
-        // filterResultsByLearnset 側のフォールバックで全件返す。
-        const pokemon1AttacksRaw = damageCalculator.calculateAllMoves({
+        const pokemon1Attacks = damageCalculator.calculateAllMoves({
           attacker: args.pokemon1,
           defender: args.pokemon2,
           conditions: args.conditions,
         });
-        const pokemon1LearnsetIds = getLearnsetMoveIdSet(toDataId(name1));
-        const pokemon1Attacks = filterResultsByLearnset(
-          pokemon1AttacksRaw,
-          pokemon1LearnsetIds,
-          toDataId,
-        );
 
-        const pokemon2AttacksRaw = damageCalculator.calculateAllMoves({
+        const pokemon2Attacks = damageCalculator.calculateAllMoves({
           attacker: args.pokemon2,
           defender: args.pokemon1,
           conditions: args.conditions,
         });
-        const pokemon2LearnsetIds = getLearnsetMoveIdSet(toDataId(name2));
-        const pokemon2Attacks = filterResultsByLearnset(
-          pokemon2AttacksRaw,
-          pokemon2LearnsetIds,
-          toDataId,
-        );
 
         const gen = damageCalculator.getGen();
         const typeSummary: MatchupTypeSummary = {
@@ -174,8 +155,8 @@ export function registerMatchupTool(server: McpServer): void {
           pokemon1Faster: compareSpeed(p1.stats.spe, p2.stats.spe) === "faster",
           pokemon1Attacks,
           pokemon2Attacks,
-          pokemon1PriorityMoves: priorityMovesFor(name1),
-          pokemon2PriorityMoves: priorityMovesFor(name2),
+          pokemon1PriorityMoves: priorityMovesFor(name1, args.pokemon1.moves),
+          pokemon2PriorityMoves: priorityMovesFor(name2, args.pokemon2.moves),
           typeSummary,
         };
 

@@ -6,8 +6,7 @@ import {
   calculateTypeEffectiveness,
   compareSpeed,
   extractPriorityMoves,
-  filterResultsByLearnset,
-  pokemonSchema,
+  pokemonWithMovesSchema,
   type BaseStats,
   type BoostsInput,
   type ConditionsInput,
@@ -23,7 +22,6 @@ import {
   championsLearnsets,
   championsPokemon,
   championsTypes,
-  getLearnsetMoveIdSet,
   movesById,
   pokemonById,
   toDataId,
@@ -50,10 +48,10 @@ const TOOL_DESCRIPTION =
 
 const battleFormatValues = ["singles", "doubles"] as const;
 
-const candidatePoolItemSchema = z.union([z.string(), pokemonSchema]);
+const candidatePoolItemSchema = z.union([z.string(), pokemonWithMovesSchema]);
 
 const inputSchema = {
-  target: pokemonSchema.describe("対策したい相手ポケモン"),
+  target: pokemonWithMovesSchema.describe("対策したい相手ポケモン"),
   candidatePool: z
     .array(candidatePoolItemSchema)
     .optional()
@@ -352,6 +350,13 @@ export function registerFindCountersTool(server: McpServer): void {
       };
 
       const targetEntry = resolvePokemonEntry(args.target.name);
+      // 候補ごとのダメ計は失敗を空結果として握りつぶすため、技名の誤りはループに入る前にエラーとして返す。
+      damageCalculator.resolveMoveNames(args.target.moves ?? []);
+      for (const item of args.candidatePool ?? []) {
+        if (typeof item !== "string") {
+          damageCalculator.resolveMoveNames(item.moves ?? []);
+        }
+      }
       const { pokemon: targetObj, resolvedName: targetName }
         = damageCalculator.createPokemonObject(args.target);
       const targetNameJa
@@ -393,32 +398,20 @@ export function registerFindCountersTool(server: McpServer): void {
         let outgoing: DamageCalcResult[] = [];
         let incoming: DamageCalcResult[] = [];
         try {
-          const allOutgoing = damageCalculator.calculateAllMoves({
+          outgoing = damageCalculator.calculateAllMoves({
             attacker: candidateInput,
             defender: args.target,
             conditions: damageConditions,
           });
-          const candidateLearnsetIds = getLearnsetMoveIdSet(candidateEntry.id);
-          outgoing = filterResultsByLearnset(
-            allOutgoing,
-            candidateLearnsetIds,
-            toDataId,
-          );
         } catch {
           outgoing = [];
         }
         try {
-          const allIncoming = damageCalculator.calculateAllMoves({
+          incoming = damageCalculator.calculateAllMoves({
             attacker: args.target,
             defender: candidateInput,
             conditions: damageConditions,
           });
-          const targetLearnsetIds = getLearnsetMoveIdSet(targetEntry.id);
-          incoming = filterResultsByLearnset(
-            allIncoming,
-            targetLearnsetIds,
-            toDataId,
-          );
         } catch {
           incoming = [];
         }
