@@ -16,15 +16,12 @@
 - mcp-server 固有の型・データ・モジュール（`data-store.ts` / JSON 等）を
   import しない
 - 具象データが必要な場合は **dependency injection で受ける**
-  （例: `PokemonEntryProvider`）
+  （例: `PokemonEntryProvider`, `LearnsetProvider`）
 
 ### ランタイム依存
 
 - `@smogon/calc`（Gen 0 Champions 計算エンジン）と `zod` のみ許容
 - それ以外の外部ライブラリは追加しない
-- **publish 時の扱い**: `@smogon/calc` は mcp-server の `dependencies` として
-  宣言され、dist には import として残り、利用者環境で install される。
-  shared 側の import 文は変更しない
 
 ### 型依存
 
@@ -58,5 +55,19 @@
 - `analysis/stat-calculator.ts`: `calculateStatValue(stat, baseStat, sp, plus, minus)`
 - `analysis/speed-comparator.ts`: `compareSpeed(a, b)`
 - `calc/damage-calculator.ts`: `DamageCalculatorAdapter`
+- `utils/name-resolver.ts`: `NameResolver`
 
 新しい tool で同じ計算が必要なら、**まずここを使う**。新規に書き起こさない。
+
+### 全技ダメ計の候補技は Adapter が決める
+
+`calculateAllMoves` は攻撃側の `moves` 指定があればその技だけ、なければ
+`LearnsetProvider` の習得技だけを計算する。呼び出し側で結果を習得技に絞り直さない。
+learnset 未整備のフォルム（メガシンカ等）は mcp-server の `learnsetProvider` が
+元のポケモンの習得技で補う。それでも空集合なら全技が候補になる。
+
+### 日本語名は NameResolver 経由で照合する
+
+データ上の日本語名は全角英数字（`１０まんボルト`）と半角英数字（`メガリザードンX`）が
+混在している。`NameResolver` は NFKC 正規化して照合するので、`nameJa === input` の
+ような直接比較で名前を引かない。

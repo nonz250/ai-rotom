@@ -65,3 +65,34 @@ describe("NameResolver", () => {
     });
   });
 });
+
+describe("NameResolver 全角・半角の表記ゆれ", () => {
+  const resolver = new NameResolver([
+    { ja: "１０まんボルト", en: "Thunderbolt" },
+    { ja: "リザードナイトＸ", en: "Charizardite X" },
+    { ja: "メガリザードンX", en: "Charizard-Mega-X" },
+    { ja: "ガブリアス", en: "Garchomp" },
+  ]);
+
+  it("データが全角英数字でも半角英数字の入力で引ける", () => {
+    expect(resolver.toEnglish("10まんボルト")).toBe("Thunderbolt");
+    expect(resolver.toEnglish("リザードナイトX")).toBe("Charizardite X");
+    expect(resolver.hasJapaneseName("10まんボルト")).toBe(true);
+  });
+
+  it("データが半角英数字でも全角英数字の入力で引ける", () => {
+    expect(resolver.toEnglish("メガリザードンＸ")).toBe("Charizard-Mega-X");
+  });
+
+  it("半角カタカナの入力でも引ける", () => {
+    expect(resolver.toEnglish("ｶﾞﾌﾞﾘｱｽ")).toBe("Garchomp");
+  });
+
+  it("英語名から引いた日本語名はデータの表記のまま返す", () => {
+    expect(resolver.toJapanese("Thunderbolt")).toBe("１０まんボルト");
+  });
+
+  it("類似候補は入力の表記ゆれを吸収して探す", () => {
+    expect(resolver.suggestSimilar("10まんボル")).toContain("１０まんボルト");
+  });
+});

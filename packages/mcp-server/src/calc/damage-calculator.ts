@@ -1,5 +1,5 @@
 import { DamageCalculatorAdapter } from "@ai-rotom/shared";
-import { pokemonEntryProvider } from "../data-store.js";
+import { learnsetProvider, pokemonEntryProvider } from "../data-store.js";
 import {
   pokemonNameResolver,
   moveNameResolver,
@@ -17,4 +17,5 @@ export const damageCalculator = new DamageCalculatorAdapter(
     nature: natureNameResolver,
   },
   pokemonEntryProvider,
+  learnsetProvider,
 );

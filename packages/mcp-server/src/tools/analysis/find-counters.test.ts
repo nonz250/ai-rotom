@@ -607,3 +607,67 @@ describe("find_counters の outgoing / incoming に STAB / タイプ相性フィ
     expect(darkSample?.typeMultiplier).toBe(NEUTRAL);
   });
 });
+
+describe("find_counters 技構成の指定", () => {
+  it("target.moves に存在しない技名があるとエラーを返す", async () => {
+    const res = await captureHandler()({
+      target: { name: "カバルドン", moves: ["じしん", "あくぴ"] },
+      candidatePool: ["ギャラドス"],
+    });
+
+    expect(res.isError).toBe(true);
+    expect(res.content[0].text).toContain("技「あくぴ」が見つかりません");
+  });
+
+  it("candidatePool の moves に存在しない技名があるとエラーを返す", async () => {
+    const res = await captureHandler()({
+      target: { name: "カバルドン" },
+      candidatePool: [{ name: "ギャラドス", moves: ["たきのぼりー"] }],
+    });
+
+    expect(res.isError).toBe(true);
+    expect(res.content[0].text).toContain("技「たきのぼりー」が見つかりません");
+  });
+});
+
+describe("find_counters の技構成と先制技", () => {
+  it.each([
+    { moves: ["アイアンヘッド"], expected: [] },
+    { moves: ["バレットパンチ"], expected: ["Bullet Punch"] },
+  ])("対象と候補の指定技 $moves を反映する", async ({ moves, expected }) => {
+    const output = await callFindCounters({
+      target: { name: "ハッサム", moves },
+      candidatePool: [{ name: "ハッサム", moves }],
+      battleFormat: "singles",
+    });
+    expect(output.counters).toHaveLength(1);
+    expect.soft(output.target.priorityMoves.map((m) => m.move)).toEqual(expected);
+    expect.soft(output.counters[0].priorityMoves.map((m) => m.move)).toEqual(expected);
+    expect(output.counters[0].incoming.map((m) => m.move)).toEqual(
+      output.counters[0].outgoing.map((m) => m.move),
+    );
+  });
+});
+
+
+it("find_counters は対象と候補の技構成を独立して扱う", async () => {
+  const output = await callFindCounters({
+    target: { name: "ハッサム", moves: ["アイアンヘッド"] },
+    candidatePool: [{ name: "ハッサム", moves: ["バレットパンチ"] }],
+    battleFormat: "singles",
+  });
+  expect(output.target.priorityMoves).toEqual([]);
+  expect(output.counters[0].priorityMoves.map((m) => m.move)).toEqual(["Bullet Punch"]);
+  expect(output.counters[0].incoming.map((m) => m.move)).toEqual(["Iron Head"]);
+  expect(output.counters[0].outgoing.map((m) => m.move)).toEqual(["Bullet Punch"]);
+});
+
+it("find_counters は空の技構成でもメガシンカ元の先制技を補完する", async () => {
+  const output = await callFindCounters({
+    target: { name: "メガハッサム", moves: [] },
+    candidatePool: [{ name: "メガハッサム", moves: [] }],
+    battleFormat: "singles",
+  });
+  expect(output.target.priorityMoves.map((m) => m.move)).toContain("Bullet Punch");
+  expect(output.counters[0].priorityMoves).toEqual(output.target.priorityMoves);
+});

@@ -6,8 +6,7 @@ import {
   calculateTypeEffectiveness,
   compareSpeed,
   extractPriorityMoves,
-  filterResultsByLearnset,
-  pokemonSchema,
+  pokemonWithMovesSchema,
   type BaseStats,
   type BoostsInput,
   type ConditionsInput,
@@ -23,13 +22,13 @@ import {
   championsLearnsets,
   championsPokemon,
   championsTypes,
-  getLearnsetMoveIdSet,
   movesById,
   pokemonById,
   toDataId,
   type MoveCategory,
 } from "../../data-store.js";
 import { moveNameResolver, pokemonNameResolver } from "../../name-resolvers.js";
+import { candidateMoveIds } from "../../calc/candidate-moves.js";
 import { damageCalculator } from "../../calc/damage-calculator.js";
 import { withHint } from "../../tool-response-hint.js";
 
@@ -50,10 +49,10 @@ const TOOL_DESCRIPTION =
 
 const battleFormatValues = ["singles", "doubles"] as const;
 
-const candidatePoolItemSchema = z.union([z.string(), pokemonSchema]);
+const candidatePoolItemSchema = z.union([z.string(), pokemonWithMovesSchema]);
 
 const inputSchema = {
-  target: pokemonSchema.describe("対策したい相手ポケモン"),
+  target: pokemonWithMovesSchema.describe("対策したい相手ポケモン"),
   candidatePool: z
     .array(candidatePoolItemSchema)
     .optional()
@@ -143,12 +142,14 @@ function moveToJapanese(en: string): string | undefined {
 }
 
 /**
- * 指定ポケモン ID の learnset から先制技のみを抽出する。
- * learnset データが無い場合は空配列を返す。
+ * 指定技構成、またはフォルム補完済みの習得技から先制技を抽出する。
  */
-function buildPriorityMoves(pokemonId: string): PriorityMoveInfo[] {
+function buildPriorityMoves(
+  resolvedName: string,
+  moves: readonly string[] | undefined,
+): PriorityMoveInfo[] {
   return extractPriorityMoves({
-    learnsetMoveIds: championsLearnsets[pokemonId] ?? [],
+    learnsetMoveIds: candidateMoveIds(resolvedName, moves),
     resolveMove: resolveMoveForPriority,
     toJapanese: moveToJapanese,
   });
@@ -352,6 +353,13 @@ export function registerFindCountersTool(server: McpServer): void {
       };
 
       const targetEntry = resolvePokemonEntry(args.target.name);
+      // 候補ごとのダメ計は失敗を空結果として握りつぶすため、技名の誤りはループに入る前にエラーとして返す。
+      damageCalculator.resolveMoveNames(args.target.moves ?? []);
+      for (const item of args.candidatePool ?? []) {
+        if (typeof item !== "string") {
+          damageCalculator.resolveMoveNames(item.moves ?? []);
+        }
+      }
       const { pokemon: targetObj, resolvedName: targetName }
         = damageCalculator.createPokemonObject(args.target);
       const targetNameJa
@@ -393,32 +401,20 @@ export function registerFindCountersTool(server: McpServer): void {
         let outgoing: DamageCalcResult[] = [];
         let incoming: DamageCalcResult[] = [];
         try {
-          const allOutgoing = damageCalculator.calculateAllMoves({
+          outgoing = damageCalculator.calculateAllMoves({
             attacker: candidateInput,
             defender: args.target,
             conditions: damageConditions,
           });
-          const candidateLearnsetIds = getLearnsetMoveIdSet(candidateEntry.id);
-          outgoing = filterResultsByLearnset(
-            allOutgoing,
-            candidateLearnsetIds,
-            toDataId,
-          );
         } catch {
           outgoing = [];
         }
         try {
-          const allIncoming = damageCalculator.calculateAllMoves({
+          incoming = damageCalculator.calculateAllMoves({
             attacker: args.target,
             defender: candidateInput,
             conditions: damageConditions,
           });
-          const targetLearnsetIds = getLearnsetMoveIdSet(targetEntry.id);
-          incoming = filterResultsByLearnset(
-            allIncoming,
-            targetLearnsetIds,
-            toDataId,
-          );
         } catch {
           incoming = [];
         }
@@ -448,7 +444,7 @@ export function registerFindCountersTool(server: McpServer): void {
           speedCompare,
           outgoing,
           incoming,
-          priorityMoves: buildPriorityMoves(candidateEntry.id),
+          priorityMoves: buildPriorityMoves(candidateEntry.name, candidateInput.moves),
           sortKey: buildSignature(candidate),
         });
       }
@@ -465,7 +461,7 @@ export function registerFindCountersTool(server: McpServer): void {
           nameJa: targetNameJa,
           stats: targetStats,
           typeWeaknesses,
-          priorityMoves: buildPriorityMoves(targetEntry.id),
+          priorityMoves: buildPriorityMoves(targetEntry.name, args.target.moves),
         },
         counters: counterEntries.map(({ sortKey: _sortKey, ...rest }) => rest),
       };

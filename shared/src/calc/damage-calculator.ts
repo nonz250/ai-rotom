@@ -1,7 +1,10 @@
-import { calculate, Generations, Pokemon, Move } from "@smogon/calc";
+import { calculate, Generations, Pokemon, Move, toID } from "@smogon/calc";
 import type { TypeName } from "@smogon/calc/dist/data/interface";
 import { NameResolver } from "../utils/name-resolver.js";
-import type { PokemonEntryProvider } from "../types/pokemon.js";
+import type {
+  LearnsetProvider,
+  PokemonEntryProvider,
+} from "../types/pokemon.js";
 import { calculateTypeEffectiveness } from "../analysis/type-matchup.js";
 import {
   NON_STAB_MULTIPLIER,
@@ -80,10 +83,16 @@ export interface NameResolvers {
 export class DamageCalculatorAdapter {
   private readonly resolvers: NameResolvers;
   private readonly entryProvider: PokemonEntryProvider;
+  private readonly learnsetProvider: LearnsetProvider;
 
-  constructor(resolvers: NameResolvers, entryProvider: PokemonEntryProvider) {
+  constructor(
+    resolvers: NameResolvers,
+    entryProvider: PokemonEntryProvider,
+    learnsetProvider: LearnsetProvider,
+  ) {
     this.resolvers = resolvers;
     this.entryProvider = entryProvider;
+    this.learnsetProvider = learnsetProvider;
   }
 
   calculate(input: DamageCalcInput): DamageCalcResult {
@@ -259,16 +268,17 @@ export class DamageCalculatorAdapter {
 
     const field = buildField(input.conditions);
     const defenderMaxHP = defender.maxHP();
+    const candidateMoveNames = this.resolveCandidateMoveNames(
+      gen,
+      attackerName,
+      input.attacker.moves,
+    );
 
     const results: DamageCalcResult[] = [];
 
-    for (const moveData of gen.moves) {
-      if (!moveData.basePower || moveData.basePower <= 0) {
-        continue;
-      }
-
+    for (const moveName of candidateMoveNames) {
       try {
-        const move = new Move(gen, moveData.name, {
+        const move = new Move(gen, moveName, {
           isCrit: input.conditions?.isCriticalHit,
         });
 
@@ -295,7 +305,7 @@ export class DamageCalculatorAdapter {
         results.push({
           attacker: attackerName,
           defender: defenderName,
-          move: moveData.name,
+          move: moveName,
           damage: damageArray,
           min,
           max,
@@ -354,6 +364,26 @@ export class DamageCalculatorAdapter {
     return { pokemon, resolvedName };
   }
 
+  /**
+   * 技名 (日本語 or 英語) を英語名に解決し、重複を取り除く。
+   * 解決できない技名があれば類似候補を添えて例外を投げる。
+   * マスターデータにはあっても計算エンジンが持たない技は、計算すると結果から
+   * 黙って消えてしまうため、ここで例外にする。
+   */
+  resolveMoveNames(moves: readonly string[]): string[] {
+    const gen = this.getGen();
+    const resolved = moves.map((name) => {
+      const englishName = resolveNameWithFallback(this.resolvers.move, name, "技");
+      if (gen.moves.get(toID(englishName)) === undefined) {
+        throw new Error(
+          `技「${name}」は計算エンジンが未対応のため計算できません。技構成から外して呼び出してください。`,
+        );
+      }
+      return englishName;
+    });
+    return [...new Set(resolved)];
+  }
+
   getGen(): ReturnType<typeof Generations.get> {
     return Generations.get(CHAMPIONS_GEN_NUM);
   }
@@ -368,6 +398,30 @@ export class DamageCalculatorAdapter {
 
   get natureResolver(): NameResolver {
     return this.resolvers.nature;
+  }
+
+  private resolveCandidateMoveNames(
+    gen: ReturnType<typeof Generations.get>,
+    attackerName: string,
+    moves: readonly string[] | undefined,
+  ): string[] {
+    if (moves !== undefined && moves.length > 0) {
+      return this.resolveMoveNames(moves);
+    }
+
+    const learnableMoveIds = this.learnsetProvider.getMoveIds(attackerName);
+    const names: string[] = [];
+    for (const moveData of gen.moves) {
+      if (!moveData.basePower || moveData.basePower <= 0) {
+        continue;
+      }
+      // learnset 未整備のフォルム (メガシンカ等) は技プールが不明なので、絞らずに全技を候補に残す。
+      if (learnableMoveIds.size > 0 && !learnableMoveIds.has(moveData.id)) {
+        continue;
+      }
+      names.push(moveData.name);
+    }
+    return names;
   }
 
   private resolveNature(nature: string | undefined): string {
@@ -387,4 +441,5 @@ export type {
   PokemonInput,
   StatsInput,
   PokemonEntryProvider,
+  LearnsetProvider,
 } from "./types.js";
