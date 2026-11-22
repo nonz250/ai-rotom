@@ -504,3 +504,22 @@ describe("analyze_selection の moves 引数", () => {
     expect(priorityMoves).toEqual([]);
   });
 });
+
+describe("analyze_selection の技構成の適用範囲", () => {
+  it.each([
+    { label: "自軍指定を相手に適用しない", individual: ["バレットパンチ"], override: ["アイアンヘッド"] },
+    { label: "空のトップレベル指定は個別指定にフォールバックする", individual: ["アイアンヘッド"], override: [] },
+  ])("$label", async ({ individual, override }) => {
+    const response = await captureHandler()({
+      myParty: [{ name: "ハッサム", moves: individual }],
+      opponentParty: [{ name: "ハッサム" }],
+      battleFormat: "singles",
+      moves: { ハッサム: override },
+    });
+    expect(response.isError).not.toBe(true);
+    const output = JSON.parse(response.content[0].text);
+    expect(output.myParty[0].priorityMoves).toEqual([]);
+    expect(output.matchupMatrix[0].damageEstimate.move.name).toBe("Iron Head");
+    expect(output.opponentParty[0].priorityMoves.map((m: { move: string }) => m.move)).toContain("Bullet Punch");
+  });
+});

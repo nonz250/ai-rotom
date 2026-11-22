@@ -178,6 +178,14 @@ function resolveMovesMap(
   return result;
 }
 
+function explicitMovesFor(
+  pokemonId: string,
+  movesMap: Map<string, string[]>,
+): string[] | undefined {
+  const moves = movesMap.get(pokemonId);
+  return moves !== undefined && moves.length > 0 ? moves : undefined;
+}
+
 /**
  * attacker vs defender の候補技でダメージを計算する。
  * movesMap に指定があればそれを、無ければ attacker.moves、それも無ければ習得技すべてで計算する。
@@ -192,8 +200,8 @@ export function calculateDamageForMatchup(
   movesMap: Map<string, string[]>,
   conditions?: ConditionsInput,
 ): DamageCalcResult[] {
-  const explicitMoves = movesMap.get(attackerId);
-  if (explicitMoves !== undefined && explicitMoves.length > 0) {
+  const explicitMoves = explicitMovesFor(attackerId, movesMap);
+  if (explicitMoves !== undefined) {
     const results: DamageCalcResult[] = [];
     for (const moveName of explicitMoves) {
       try {
@@ -234,7 +242,10 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
         entryId: string;
       }
 
-      function buildMemberContext(input: PokemonInput): PartyMemberContext {
+      function buildMemberContext(
+        input: PokemonInput,
+        partyMoves: Map<string, string[]>,
+      ): PartyMemberContext {
         // 対面ごとのダメ計は失敗を null として握りつぶすため、技名の誤りはここでエラーとして返す。
         damageCalculator.resolveMoveNames(input.moves ?? []);
         const { pokemon, resolvedName } =
@@ -252,7 +263,7 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
         const priorityMoves = extractPriorityMoves({
           learnsetMoveIds: candidateMoveIds(
             resolvedName,
-            movesMap.get(entryId) ?? input.moves,
+            explicitMovesFor(entryId, partyMoves) ?? input.moves,
           ),
           resolveMove: (id) => movesById.get(id),
           toJapanese: (enName) => moveNameResolver.toJapanese(enName),
@@ -280,8 +291,8 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
         };
       }
 
-      const myMembers = args.myParty.map(buildMemberContext);
-      const oppMembers = args.opponentParty.map(buildMemberContext);
+      const myMembers = args.myParty.map((input) => buildMemberContext(input, movesMap));
+      const oppMembers = args.opponentParty.map((input) => buildMemberContext(input, new Map()));
 
       // マトリクス作成
       const matrix: MatchupEntry[] = [];
