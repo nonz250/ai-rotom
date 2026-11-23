@@ -13,6 +13,8 @@ import {
 } from "../../data-store";
 import { moveNameResolver } from "../../name-resolvers";
 import { damageCalculator } from "../../calc/damage-calculator";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { registerMatchupTool } from "./matchup";
 
 const CHAMPIONS_GEN_NUM = 0;
 
@@ -228,5 +230,37 @@ describe("analyze_matchup logic", () => {
       expect(p1Max).toBe(EXPECTED_P1_MAX);
       expect(p2Max).toBe(EXPECTED_P2_MAX);
     });
+  });
+});
+
+describe("analyze_matchup の出力", () => {
+  it("双方の技ごとの結果は要約形式で、乱数配列を含まず、説明文は最大打点の技にだけ付く", async () => {
+    let handler:
+      | ((args: unknown) => Promise<{ content: { text: string }[] }>)
+      | undefined;
+    const mockServer = {
+      tool: (_n: string, _d: string, _s: unknown, h: typeof handler) => {
+        handler = h;
+        return {} as never;
+      },
+    } as unknown as McpServer;
+    registerMatchupTool(mockServer);
+
+    const res = await handler!({
+      pokemon1: { name: "ガブリアス", moves: ["じしん", "げきりん"] },
+      pokemon2: { name: "サーフゴー", moves: ["シャドーボール", "ゴールドラッシュ"] },
+    });
+    const output = JSON.parse(res.content[0].text);
+
+    for (const attacks of [output.pokemon1Attacks, output.pokemon2Attacks]) {
+      for (const attack of attacks) {
+        expect(attack).not.toHaveProperty("damage");
+        expect(attack).not.toHaveProperty("min");
+        expect(attack).not.toHaveProperty("max");
+      }
+      expect(attacks[0]).toHaveProperty("description");
+      expect(attacks[1]).not.toHaveProperty("description");
+    }
+    expect(output.pokemon1Attacks[0].moveJa).toBe("じしん");
   });
 });

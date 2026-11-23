@@ -110,10 +110,21 @@ describe("SERVER_INSTRUCTIONS", () => {
     expect(SERVER_INSTRUCTIONS).toContain("最終判断は返しません");
   });
 
-  it("describes scored candidate lists as only a rough guide", () => {
-    // find_counters 等のスコア付きリストはあくまで候補抽出の目安であり、
-    // 最終採用は AI が総合判断する旨を instructions に固定化する。
-    expect(SERVER_INSTRUCTIONS).toContain("候補抽出のための目安");
+  it("対策候補は検索ツールで絞り、候補ごとに対面分析する流れを案内する", () => {
+    const sectionStart = SERVER_INSTRUCTIONS.indexOf("### 対策候補");
+    expect(sectionStart).toBeGreaterThanOrEqual(0);
+    const section = SERVER_INSTRUCTIONS.slice(
+      sectionStart,
+      SERVER_INSTRUCTIONS.indexOf("\n### ", sectionStart + 1),
+    );
+
+    expect(section).toContain("get_pokemon_summary");
+    expect(section).toContain("search_pokemon_by_type_effectiveness");
+    expect(section).toContain("analyze_matchup");
+  });
+
+  it("削除済みの find_counters を案内しない", () => {
+    expect(SERVER_INSTRUCTIONS).not.toContain("find_counters");
   });
 
   it("places the responsibility split section before the usage recommendations", () => {
