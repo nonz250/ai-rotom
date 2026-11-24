@@ -21,7 +21,7 @@ if [[ ! -f "${BUNDLE_FILE}" ]]; then
   exit 1
 fi
 
-if matches="$(grep -nE '(from|import\(|require\() *"node:' "${BUNDLE_FILE}")"; then
+if matches="$(grep -nE '(\bfrom|\bimport|\bimport\(|\brequire\()[[:space:]]*["'"'"']node:' "${BUNDLE_FILE}")"; then
   echo "::error::worker bundle imports Node.js built-in modules:" >&2
   echo "${matches}" >&2
   exit 1
