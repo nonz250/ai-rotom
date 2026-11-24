@@ -1,0 +1,3 @@
+name = "ai-rotom"
+main = "src/worker.ts"
+compatibility_date = "2026-11-01"

@@ -37,6 +37,14 @@ jobs:
       - name: Pack and install smoke test
         run: bash scripts/pack-and-install-smoke.sh
 
+      - name: Bundle Cloudflare Worker
+        run: npm run worker:bundle --workspace=@nonz250/ai-rotom
+        env:
+          WRANGLER_SEND_METRICS: "false"
+
+      - name: Verify worker bundle has no Node.js built-in imports
+        run: bash scripts/verify-worker-bundle.sh
+
       - name: Upload dist
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:

@@ -69,6 +69,45 @@ claude mcp add ai-rotom -- npx -y @nonz250/ai-rotom
 codex mcp add ai-rotom -- npx -y @nonz250/ai-rotom
 ```
 
+### リモート MCP サーバーとして公開する (Cloudflare Workers)
+
+Muse のカスタムコネクタのように手元で MCP サーバーを起動できないクライアントからは、Cloudflare Workers に置いたリモート MCP サーバーとしてつなげます。リポジトリを clone して、自分の Cloudflare アカウントにデプロイします。
+
+```bash
+npm ci
+cd packages/mcp-server
+npx wrangler login
+openssl rand -hex 32            # 認証トークンを作る
+npx wrangler secret put AUTH_TOKEN   # 作ったトークンを貼り付ける
+npm run worker:deploy
+```
+
+デプロイ後は `https://ai-rotom.<サブドメイン>.workers.dev/mcp` を MCP サーバーの URL として登録し、`Authorization: Bearer <トークン>` ヘッダーを付けて呼びます。ヘッダーを設定できないクライアントでは `https://ai-rotom.<サブドメイン>.workers.dev/mcp/<トークン>` も使えます。この形はトークンが URL に含まれ、アクセスログなどに残るので、ヘッダーを使えるならそちらを選んでください。
+
+リモート版には次の制約があります。
+
+- `save_party` などのパーティ保存系のツールは使えません。パーティは分析ツールに毎回引数で渡します
+- ブラウザから直接つなぐクライアントには対応していません。CORS のプリフライトに応答しないためです
+- Workers の無料プランは 1 リクエストあたりの CPU 時間が 10 ms までです。技構成を指定しない全技ダメ計や 6v6 ダメ計は、これを超えてエラーになることがあります
+
+#### ローカルで動作確認する
+
+デプロイ前に、手元の Workers ランタイムでリモート版を起動して MCP クライアントからつなげます。
+
+```bash
+cp packages/mcp-server/.dev.vars.example packages/mcp-server/.dev.vars
+npm run worker:dev    # http://localhost:8787/mcp で待ち受ける
+```
+
+別のターミナルで Claude Code に登録します。トークンは `.dev.vars` の `AUTH_TOKEN` です。
+
+```bash
+claude mcp add --transport http ai-rotom-local http://localhost:8787/mcp \
+  --header "Authorization: Bearer local-dev-token"
+```
+
+確認が終わったら `claude mcp remove ai-rotom-local` で外します。
+
 ## 利用可能な MCP ツール
 
 プロンプトに入力する言語は日本語・英語どちらでも可能です。
