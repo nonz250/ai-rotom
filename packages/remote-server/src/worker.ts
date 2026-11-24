@@ -6,16 +6,17 @@ export interface Env {
   /** MCP エンドポイントの認証に使う共有トークン。wrangler secret で設定する。 */
   AUTH_TOKEN?: string;
   /**
-   * 全技系ツールで自分側の技構成を必須にするか。"false" のときだけ任意にする。
+   * 全技系ツールで自分側の技構成を必須にするか。false のときだけ任意にする。
    * Workers の無料プランでは、習得技すべての計算が 1 リクエストの CPU 上限を超えるため、未設定なら必須にする。
+   * wrangler.toml の [vars] に引用符なしで書くと真偽値で渡ってくるので、文字列と真偽値の両方を受ける。
    */
-  REQUIRE_MOVES?: string;
+  REQUIRE_MOVES?: string | boolean;
 }
 
 const REQUIRE_MOVES_DISABLED = "false";
 
 function requiresMoves(env: Env): boolean {
-  return env.REQUIRE_MOVES?.trim().toLowerCase() !== REQUIRE_MOVES_DISABLED;
+  return String(env.REQUIRE_MOVES ?? "").trim().toLowerCase() !== REQUIRE_MOVES_DISABLED;
 }
 
 const MCP_PATH = "/mcp";

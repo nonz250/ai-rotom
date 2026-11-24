@@ -255,7 +255,7 @@ describe("handleRequest の技構成の要求", () => {
 });
 
 describe("handleRequest の REQUIRE_MOVES", () => {
-  async function callAllMoves(env: Record<string, string>) {
+  async function callAllMoves(env: Record<string, string | boolean>) {
     const res = await handleRequest(
       mcpRequest(
         "/mcp",
@@ -270,7 +270,7 @@ describe("handleRequest の REQUIRE_MOVES", () => {
     return (await res.json()).result as { isError?: boolean };
   }
 
-  async function instructionsFor(env: Record<string, string>): Promise<string> {
+  async function instructionsFor(env: Record<string, string | boolean>): Promise<string> {
     const res = await handleRequest(mcpRequest("/mcp", INITIALIZE, BEARER), { ...ENV, ...env });
     return (await res.json()).result.instructions;
   }
@@ -281,14 +281,14 @@ describe("handleRequest の REQUIRE_MOVES", () => {
   });
 
   it("false なら技構成なしでも計算し、指定を求める案内も出さない", async () => {
-    for (const value of ["false", " FALSE "]) {
+    for (const value of ["false", " FALSE ", false]) {
       expect((await callAllMoves({ REQUIRE_MOVES: value })).isError).toBeUndefined();
       expect(await instructionsFor({ REQUIRE_MOVES: value })).toBe(buildRemoteServerInstructions(false));
     }
   });
 
   it("false 以外の値なら技構成を必須にする", async () => {
-    for (const value of ["true", "", "no"]) {
+    for (const value of ["true", "", "no", true]) {
       expect((await callAllMoves({ REQUIRE_MOVES: value })).isError).toBe(true);
     }
   });
