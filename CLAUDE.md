@@ -151,7 +151,7 @@ TS6059 エラーにならないようにしている。
 
 ### リモート版の自動デプロイ
 
-`.github/workflows/deploy-worker.yml` が、リリースの公開時と main からの手動実行時に、このリポジトリのリモート版を Cloudflare Workers にデプロイする。
+`.github/workflows/deploy-worker.yml` が、正式リリースの公開時と main からの手動実行時に、このリポジトリのリモート版を Cloudflare Workers にデプロイする。プレリリースではデプロイしない。リリース時は、タグが package.json の版と一致し、main のコミットを指していることを確かめてからデプロイする。
 
 - Cloudflare の API トークンとアカウント ID は、GitHub の Environment `cloudflare-workers` の Secrets（`CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID`）にだけ置く。npm 公開用の `production` とは分ける
 - API トークンは Cloudflare の「Edit Cloudflare Workers」テンプレートで作り、対象をこのアカウントだけに絞る
