@@ -3,7 +3,7 @@ import {
   MAX_STAT_POINT_PER_STAT,
   MAX_STAT_POINT_TOTAL,
 } from "@ai-rotom/shared";
-import { SERVER_INSTRUCTIONS } from "./instructions";
+import { CORE_INSTRUCTIONS, SERVER_INSTRUCTIONS } from "./instructions";
 
 describe("SERVER_INSTRUCTIONS", () => {
   it("includes the per-stat stat point upper bound", () => {
@@ -316,5 +316,17 @@ describe("SERVER_INSTRUCTIONS", () => {
     expect(SERVER_INSTRUCTIONS).toContain(
       `各 0〜${MAX_STAT_POINT_PER_STAT} / 合計 0〜${MAX_STAT_POINT_TOTAL}`,
     );
+  });
+});
+
+describe("CORE_INSTRUCTIONS", () => {
+  it("パーティ保存系のツールを案内しない", () => {
+    for (const name of ["save_party", "load_party", "list_parties", "delete_party", "import_party_from_text"]) {
+      expect(CORE_INSTRUCTIONS).not.toContain(name);
+    }
+  });
+
+  it("SERVER_INSTRUCTIONS の先頭部分と一致する", () => {
+    expect(SERVER_INSTRUCTIONS.startsWith(CORE_INSTRUCTIONS)).toBe(true);
   });
 });
