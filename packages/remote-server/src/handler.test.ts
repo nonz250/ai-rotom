@@ -1,7 +1,13 @@
 import { describe, it, expect } from "vitest";
 import { MAX_MOVES_PER_MEMBER } from "@ai-rotom/shared";
 import { buildRemoteServerInstructions } from "./instructions";
-import { handleRequest } from "./worker";
+import { loadConfig, type ConfigSource } from "./config";
+import { createRequestHandler } from "./handler";
+
+/** 環境変数から設定を読んでハンドラーに渡す、各サービスのエントリと同じ流れで呼ぶ。 */
+function handleRequest(request: Request, env: ConfigSource): Promise<Response> {
+  return createRequestHandler(loadConfig(env))(request);
+}
 
 const TOKEN = "test-token";
 const ENV = { AUTH_TOKEN: TOKEN };

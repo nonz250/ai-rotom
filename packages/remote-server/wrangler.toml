@@ -1,5 +1,5 @@
 name = "ai-rotom"
-main = "src/worker.ts"
+main = "src/platforms/cloudflare.ts"
 compatibility_date = "2026-11-01"
 
 [vars]

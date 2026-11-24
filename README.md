@@ -109,6 +109,12 @@ claude mcp add --transport http ai-rotom-local http://localhost:8787/mcp \
 
 確認が終わったら `claude mcp remove ai-rotom-local` で外します。
 
+#### Cloudflare 以外のサービスで動かす
+
+リモート版の本体は、`packages/remote-server/src/handler.ts` の `createRequestHandler` にまとめていて、実行環境に依存しません。Cloudflare Workers 用のエントリは、その上に置いた薄いアダプターです。
+
+ほかのサービスで動かすときは `packages/remote-server/src/platforms/` にエントリを足し、サービスの環境変数を `loadConfig` に渡して得た設定で `createRequestHandler` を呼びます。Web 標準の `Request` を受けて `Response` を返す形のサービスなら、この方法で動かせます。動作を確かめているのは、今のところ Cloudflare Workers だけです。
+
 ## 利用可能な MCP ツール
 
 プロンプトに入力する言語は日本語・英語どちらでも可能です。
