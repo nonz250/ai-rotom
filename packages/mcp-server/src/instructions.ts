@@ -179,3 +179,29 @@ export const PARTY_STORAGE_INSTRUCTIONS = `
 `.trim();
 
 export const SERVER_INSTRUCTIONS = `${CORE_INSTRUCTIONS}\n\n${PARTY_STORAGE_INSTRUCTIONS}`;
+
+/** リモート版 (Workers) でだけ渡す、実行環境の制約に合わせた使い方。 */
+export const REMOTE_INSTRUCTIONS = `
+## リモート版での使い方
+
+このサーバーはリモートで動いており、ローカル版と次の点が異なります。
+
+### パーティの保存はできない
+
+- パーティを保存・読み込みするツールはありません。
+- ユーザーが示したパーティは会話の中で保持し、分析ツールを呼ぶたびに引数で渡すこと。
+- ユーザーがパーティのテキスト (ポケソル / Showdown 形式) を貼り付けた場合は、内容を読み取ってポケモン名・特性・持ち物・性格・SP・技に分け、分析ツールの引数にすること。
+
+### 技構成を指定して計算する (必須)
+
+- 1 回の呼び出しで使える処理時間に上限があり、習得技すべてを計算すると上限を超えて失敗することがあります。
+- 次のツールでは、攻撃側の moves に実戦の技構成 (最大 4 技) を必ず指定すること。
+  - calculate_damage_all_moves の attacker
+  - calculate_damage_party_matchup の myParty の各メンバー
+  - analyze_matchup の pokemon1 / pokemon2
+  - analyze_selection の myParty の各メンバー
+- 技構成が分からない場合は、ユーザーに確認するか、get_learnset で覚える技を確認して主要な攻撃技を選んで指定すること。選んだ技構成はユーザーに伝えること。
+- サーバーエラーで失敗した場合は、技構成を指定していないメンバーに moves を指定して呼び直すこと。
+`.trim();
+
+export const REMOTE_SERVER_INSTRUCTIONS = `${CORE_INSTRUCTIONS}\n\n${REMOTE_INSTRUCTIONS}`;
