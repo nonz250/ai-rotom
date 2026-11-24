@@ -1,0 +1,85 @@
+name: Deploy remote server to Cloudflare Workers
+
+on:
+  release:
+    # published はプレリリースでも発火し、本番の Worker を置き換えてしまうので、正式リリースだけにする
+    types: [released]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-worker
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to Cloudflare Workers
+    runs-on: ubuntu-latest
+    # フォークではデプロイ先の Secrets がなく失敗するだけなので、本リポジトリに限る。
+    # workflow_dispatch は main ブランチからのみ許可する（誤ブランチでのデプロイを防ぐ）
+    if: >
+      github.repository == 'nonz250/ai-rotom' &&
+      (github.event_name == 'release' ||
+        (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'))
+    # Cloudflare の API トークンはこの Environment の Secrets にだけ置く。
+    # npm 公開用の production とは分け、片方の権限がもう片方のジョブに渡らないようにする。
+    environment:
+      name: cloudflare-workers
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          # タグのコミットが main に含まれるかを確かめるため、履歴をすべて取る
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26
+          cache: npm
+
+      - name: Verify release tag
+        if: github.event_name == 'release'
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          PKG=$(node -p "require('./packages/mcp-server/package.json').version")
+          if [ "$TAG" != "$PKG" ]; then
+            echo "::error::Release tag ($TAG) does not match package.json version ($PKG)"
+            exit 1
+          fi
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::Release tag ($GITHUB_REF_NAME) does not point to a commit on main"
+            exit 1
+          fi
+          echo "Release tag check passed: $PKG on main"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: |
+          npx tsc --noEmit -p packages/mcp-server/tsconfig.json
+          npx tsc --noEmit -p packages/remote-server/tsconfig.json
+
+      - name: Run tests
+        run: npm test
+
+      - name: Bundle Cloudflare Worker
+        run: npm run bundle --workspace=@ai-rotom/remote-server
+        env:
+          WRANGLER_SEND_METRICS: "false"
+
+      - name: Verify worker bundle has no Node.js built-in imports
+        run: bash scripts/verify-worker-bundle.sh
+
+      # wrangler deploy はソースからもう一度バンドルする。上の検査と同じ wrangler・同じ設定・同じソースから
+      # 作るので中身は変わらない前提で、検査済みの出力を直接上げる形にはしていない。
+      - name: Deploy
+        run: npm run deploy --workspace=@ai-rotom/remote-server
+        env:
+          WRANGLER_SEND_METRICS: "false"
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
