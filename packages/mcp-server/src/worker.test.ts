@@ -205,6 +205,18 @@ describe("handleRequest の技構成の要求", () => {
     expect(result.isError).toBeUndefined();
   });
 
+  it("選出分析は moves のない myParty のメンバーを挙げてエラーにする", async () => {
+    const result = await callTool("analyze_selection", {
+      myParty: [{ name: "ガブリアス", moves: GARCHOMP_MOVES }, { name: "リザードン" }],
+      opponentParty: [{ name: "サーフゴー" }],
+      battleFormat: "singles",
+    });
+
+    expect(result.isError).toBe(true);
+    expect(result.content[0].text).toContain("myParty[1] (リザードン) の moves");
+    expect(result.content[0].text).not.toContain("myParty[0]");
+  });
+
   it("選出分析は moves 引数で指定した技構成も指定ありとして扱う", async () => {
     const result = await callTool("analyze_selection", {
       myParty: [{ name: "ガブリアス" }],
