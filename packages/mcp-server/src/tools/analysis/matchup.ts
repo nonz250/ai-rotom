@@ -121,9 +121,9 @@ export function registerMatchupTool(
     matchupInputSchema,
     async (args) => {
       try {
+        // pokemon2 は相手側として使われることが多く、技構成がわからないまま AI に作らせないよう求めない。
         assertMovesSpecified(movesRequirement, [
           { field: "pokemon1", name: args.pokemon1.name, moves: args.pokemon1.moves },
-          { field: "pokemon2", name: args.pokemon2.name, moves: args.pokemon2.moves },
         ]);
         // 素早さを取得するために Pokemon オブジェクトを生成
         const { pokemon: p1, resolvedName: name1 } =

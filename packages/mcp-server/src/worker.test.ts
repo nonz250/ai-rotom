@@ -186,14 +186,23 @@ describe("handleRequest の技構成の要求", () => {
     expect(result.content[0].text).not.toContain("myParty[0]");
   });
 
-  it("対面分析は両方のポケモンに moves を求める", async () => {
+  it("対面分析は pokemon1 の moves がないとエラーにする", async () => {
+    const result = await callTool("analyze_matchup", {
+      pokemon1: { name: "ガブリアス" },
+      pokemon2: { name: "サーフゴー", moves: ["ゴールドラッシュ"] },
+    });
+
+    expect(result.isError).toBe(true);
+    expect(result.content[0].text).toContain("pokemon1 (ガブリアス) の moves");
+  });
+
+  it("対面分析は相手側の pokemon2 の moves を求めない", async () => {
     const result = await callTool("analyze_matchup", {
       pokemon1: { name: "ガブリアス", moves: GARCHOMP_MOVES },
       pokemon2: { name: "サーフゴー" },
     });
 
-    expect(result.isError).toBe(true);
-    expect(result.content[0].text).toContain("pokemon2 (サーフゴー) の moves");
+    expect(result.isError).toBeUndefined();
   });
 
   it("選出分析は moves 引数で指定した技構成も指定ありとして扱う", async () => {
