@@ -69,7 +69,9 @@ export function registerFooTool(server: McpServer): void {
 - **エラー応答**: `{ content: [...], isError: true }` + `JSON.stringify({ error })`
 - **成功応答**: `JSON.stringify(data)` をテキストで返す
 
-### 3. `server.ts` に登録
+### 3. `core-server.ts` に登録
+
+パーティ保存系のツールだけは `server.ts` に登録する（`packages/mcp-server/CLAUDE.md` 参照）。
 
 ```ts
 import { registerFooTool } from "./tools/<subdir>/foo.js";

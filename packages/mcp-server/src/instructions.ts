@@ -3,7 +3,11 @@ import {
   MAX_STAT_POINT_TOTAL,
 } from "@ai-rotom/shared";
 
-export const SERVER_INSTRUCTIONS = `
+/**
+ * パーティの保存先を持たない環境でも共通で使う instructions。
+ * パーティ保存系ツールを登録しないサーバーはこれだけを渡す。
+ */
+export const CORE_INSTRUCTIONS = `
 ai-rotom はポケモンチャンピオンズ (Pokemon Champions) の対戦アドバイザー MCP サーバーです。
 
 ## セッションスコープ（重要）
@@ -113,7 +117,10 @@ AI クライアントは目的駆動で刻む振り方を提案すること。�
 - 省略時の挙動: ability は通常特性 (pokemon.json の abilities[0]) が自動設定され、item は持ち物なし扱いとなる。そのためメガシンカ・こだわり系・半減きのみ・ちからのハチマキ 等が反映されず、実戦想定の build と乖離した結果になる。
 - 正確な計算のためには ability / item を明示的に指定することを強く推奨する。
 - 一方で、育成データ (evs・nature) が不明な場合は省略してよい (デフォルト値で計算)。
+`.trim();
 
+/** パーティ保存系ツール (save_party 等) の使い方。保存系ツールを登録するサーバーでだけ渡す。 */
+export const PARTY_STORAGE_INSTRUCTIONS = `
 ## パーティデータの扱い
 
 - セッション開始時 (初回ユーザー発話への応答前) に必ず list_parties を呼び、保存済みパーティの名前一覧を把握すること。
@@ -170,3 +177,5 @@ AI クライアントは目的駆動で刻む振り方を提案すること。�
 - 対話で得た情報を JSON 化して save_party を直接呼ばない (ハルシネーションリスク軽減のため必ずポケソルテキスト経由)。
 - ユーザー確認なしに save / import を実行しない。
 `.trim();
+
+export const SERVER_INSTRUCTIONS = `${CORE_INSTRUCTIONS}\n\n${PARTY_STORAGE_INSTRUCTIONS}`;

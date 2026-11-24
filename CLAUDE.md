@@ -60,7 +60,8 @@ ai-rotom/
     └── mcp-server/              # 唯一の workspace パッケージ
         └── src/
             ├── index.ts         # エントリ (#!/usr/bin/env node)
-            ├── server.ts        # MCP サーバー + ツール登録
+            ├── core-server.ts   # MCP サーバー + パーティ保存系以外のツール登録
+            ├── server.ts        # stdio 版 (core + パーティ保存系ツール)
             ├── instructions.ts  # MCP instructions テキスト
             ├── data-store.ts    # JSON → Map + PokemonEntryProvider 実装
             ├── name-resolvers.ts
