@@ -63,7 +63,7 @@ function bearerToken(request: Request): string | null {
 }
 
 async function handleMcp(request: Request): Promise<Response> {
-  const server = createCoreServer(REMOTE_SERVER_INSTRUCTIONS);
+  const server = createCoreServer(REMOTE_SERVER_INSTRUCTIONS, { requireMoves: true });
   // セッションを持たないので、リクエストごとにサーバーとトランスポートを作って捨てる。
   // SSE で返すとストリームが閉じるまでサーバーを生かす必要があるため、JSON で返させる。
   const transport = new WebStandardStreamableHTTPServerTransport({
