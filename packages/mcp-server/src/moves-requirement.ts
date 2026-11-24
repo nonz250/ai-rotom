@@ -1,3 +1,5 @@
+import { MAX_MOVES_PER_MEMBER } from "@ai-rotom/shared";
+
 /** 全技系ツールで、攻撃側の技構成を必須にするかどうか。 */
 export interface MovesRequirement {
   requireMoves: boolean;
@@ -29,6 +31,6 @@ export function assertMovesSpecified(
   }
   const list = missing.map((target) => `${target.field} (${target.name})`).join("、");
   throw new Error(
-    `このサーバーは 1 回の処理時間に上限があるため、技構成の指定が必要です。${list} の moves に技構成 (最大 4 技) を指定して呼び直してください。技構成が分からない場合は get_learnset で覚える技を確認して選んでください。`,
+    `このサーバーは 1 回の処理時間に上限があるため、技構成の指定が必要です。${list} の moves に技構成を指定して呼び直してください。技は ${MAX_MOVES_PER_MEMBER} つまで指定できます。技構成が分からない場合は get_learnset で覚える技を確認して選んでください。`,
   );
 }

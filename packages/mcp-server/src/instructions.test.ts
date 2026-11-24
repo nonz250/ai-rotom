@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {
+  MAX_MOVES_PER_MEMBER,
   MAX_STAT_POINT_PER_STAT,
   MAX_STAT_POINT_TOTAL,
 } from "@ai-rotom/shared";
@@ -355,5 +356,6 @@ describe("REMOTE_SERVER_INSTRUCTIONS", () => {
       expect(section).toContain(tool);
     }
     expect(section).toContain("moves");
+    expect(section).toContain(`${MAX_MOVES_PER_MEMBER} つまで`);
   });
 });
