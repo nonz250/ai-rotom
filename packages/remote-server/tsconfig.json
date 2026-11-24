@@ -11,8 +11,10 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "types": [
-      "node"
+    "types": [],
+    "lib": [
+      "ES2024",
+      "WebWorker"
     ]
   },
   "include": [
