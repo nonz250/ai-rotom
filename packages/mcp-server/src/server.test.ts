@@ -21,10 +21,17 @@ async function connect(server: McpServer): Promise<Client> {
   return client;
 }
 
-async function listToolNames(server: McpServer): Promise<string[]> {
+async function withClient<T>(server: McpServer, fn: (client: Client) => Promise<T>): Promise<T> {
   const client = await connect(server);
-  const { tools } = await client.listTools();
-  await client.close();
+  try {
+    return await fn(client);
+  } finally {
+    await client.close();
+  }
+}
+
+async function listToolNames(server: McpServer): Promise<string[]> {
+  const { tools } = await withClient(server, (client) => client.listTools());
   return tools.map((tool) => tool.name);
 }
 
@@ -38,10 +45,21 @@ describe("createCoreServer", () => {
     }
   });
 
+  it("パーティ保存系のツールを instructions で案内しない", async () => {
+    const coreNames = new Set(await listToolNames(createCoreServer(CORE_INSTRUCTIONS)));
+    const storageOnly = (await listToolNames(createServer())).filter((name) => !coreNames.has(name));
+
+    expect(storageOnly).toEqual(expect.arrayContaining(PARTY_STORAGE_TOOLS));
+    for (const name of storageOnly) {
+      expect(CORE_INSTRUCTIONS).not.toContain(name);
+    }
+  });
+
   it("渡した instructions をクライアントに返す", async () => {
-    const client = await connect(createCoreServer(CORE_INSTRUCTIONS));
-    expect(client.getInstructions()).toBe(CORE_INSTRUCTIONS);
-    await client.close();
+    const instructions = await withClient(createCoreServer(CORE_INSTRUCTIONS), async (client) =>
+      client.getInstructions(),
+    );
+    expect(instructions).toBe(CORE_INSTRUCTIONS);
   });
 });
 
@@ -54,8 +72,7 @@ describe("createServer", () => {
   });
 
   it("パーティ保存の使い方を含む instructions を返す", async () => {
-    const client = await connect(createServer());
-    expect(client.getInstructions()).toBe(SERVER_INSTRUCTIONS);
-    await client.close();
+    const instructions = await withClient(createServer(), async (client) => client.getInstructions());
+    expect(instructions).toBe(SERVER_INSTRUCTIONS);
   });
 });

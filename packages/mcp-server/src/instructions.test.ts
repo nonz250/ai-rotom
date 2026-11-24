@@ -320,12 +320,6 @@ describe("SERVER_INSTRUCTIONS", () => {
 });
 
 describe("CORE_INSTRUCTIONS", () => {
-  it("パーティ保存系のツールを案内しない", () => {
-    for (const name of ["save_party", "load_party", "list_parties", "delete_party", "import_party_from_text"]) {
-      expect(CORE_INSTRUCTIONS).not.toContain(name);
-    }
-  });
-
   it("SERVER_INSTRUCTIONS の先頭部分と一致する", () => {
     expect(SERVER_INSTRUCTIONS.startsWith(CORE_INSTRUCTIONS)).toBe(true);
   });
