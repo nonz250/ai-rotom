@@ -62,6 +62,7 @@ ai-rotom/
             ├── index.ts         # エントリ (#!/usr/bin/env node)
             ├── core-server.ts   # MCP サーバー + パーティ保存系以外のツール登録
             ├── server.ts        # stdio 版 (core + パーティ保存系ツール)
+            ├── worker.ts        # Cloudflare Workers 版 (core のみ)
             ├── instructions.ts  # MCP instructions テキスト
             ├── data-store.ts    # JSON → Map + PokemonEntryProvider 実装
             ├── name-resolvers.ts
@@ -135,6 +136,11 @@ TS6059 エラーにならないようにしている。
   - `@modelcontextprotocol/sdk`, `zod`, `@smogon/calc`,
     `@pokesol/pokesol-text-parser-ts`（npm registry 公開パッケージ）
 - npm publish 時の同梱は `dist` / `LICENSE`（`files` フィールド参照）
+
+### リモート版 (Cloudflare Workers)
+
+- `packages/mcp-server/src/worker.ts` をエントリに、利用者が自分の Cloudflare アカウントへ `wrangler deploy` する。npm publish 物には含まれない
+- 認証は wrangler secret の `AUTH_TOKEN` との照合のみ。未設定なら全リクエストを拒否する
 
 ### publish 後のチェックリスト
 

@@ -12,6 +12,7 @@ MCP プロトコル対応と具象データ供給を担うアプリケーショ�
 
 - `src/index.ts`: `#!/usr/bin/env node` shebang + `startServer()` 呼び出し
 - `src/server.ts`: stdio トランスポートで起動する
+- `src/worker.ts`: Cloudflare Workers の fetch ハンドラ。`wrangler.toml` の `main`
 - bin は `dist/index.mjs`（tsdown でビルド、JSON と shared 一式を bundle）
 
 ## コア層の役割
@@ -26,6 +27,12 @@ MCP プロトコル対応と具象データ供給を担うアプリケーショ�
 
 パーティ保存系（`tools/party/`）はファイルに書き込むので、`core-server.ts` から
 import しない。ファイルを持たない実行環境でも core だけで動かせるようにするため。
+
+## Workers 版の制約
+
+- リクエストごとにサーバーとトランスポートを作り直すステートレス構成。セッションを持たないので GET (SSE) と DELETE は 405 を返す
+- `nodejs_compat` を有効にしていないので、core から辿れるコードで Node の組み込みモジュールを import すると Workers で動かない。wrangler はこれを外部参照のままバンドルしてしまうため、CI の `scripts/verify-worker-bundle.sh` で検出する。`nodejs_compat` を有効にして回避しない（保存系が core に混ざったことに気付けなくなる）
+- 無料プランの CPU 上限は 1 リクエスト 10 ms。データの Map 構築はモジュール読み込み時に 1 回だけ行い、リクエストごとに作らない
 
 ## データフロー
 
