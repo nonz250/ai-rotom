@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { MAX_MOVES_PER_MEMBER } from "@ai-rotom/shared";
-import { REMOTE_SERVER_INSTRUCTIONS } from "./instructions";
+import { buildRemoteServerInstructions } from "./instructions";
 import { handleRequest } from "./worker";
 
 const TOKEN = "test-token";
@@ -118,7 +118,7 @@ describe("handleRequest の MCP 応答", () => {
     const body = await res.json();
 
     expect(res.status).toBe(200);
-    expect(body.result.instructions).toBe(REMOTE_SERVER_INSTRUCTIONS);
+    expect(body.result.instructions).toBe(buildRemoteServerInstructions(true));
   });
 
   it("パーティ保存系を除いたツール一覧を返す", async () => {
@@ -251,5 +251,45 @@ describe("handleRequest の技構成の要求", () => {
     });
 
     expect(result.isError).toBeUndefined();
+  });
+});
+
+describe("handleRequest の REQUIRE_MOVES", () => {
+  async function callAllMoves(env: Record<string, string | boolean>) {
+    const res = await handleRequest(
+      mcpRequest(
+        "/mcp",
+        rpc("tools/call", {
+          name: "calculate_damage_all_moves",
+          arguments: { attacker: { name: "ガブリアス" }, defender: { name: "サーフゴー" } },
+        }),
+        BEARER,
+      ),
+      { ...ENV, ...env },
+    );
+    return (await res.json()).result as { isError?: boolean };
+  }
+
+  async function instructionsFor(env: Record<string, string | boolean>): Promise<string> {
+    const res = await handleRequest(mcpRequest("/mcp", INITIALIZE, BEARER), { ...ENV, ...env });
+    return (await res.json()).result.instructions;
+  }
+
+  it("未設定なら技構成を必須にする", async () => {
+    expect((await callAllMoves({})).isError).toBe(true);
+    expect(await instructionsFor({})).toBe(buildRemoteServerInstructions(true));
+  });
+
+  it("false なら技構成なしでも計算し、指定を求める案内も出さない", async () => {
+    for (const value of ["false", " FALSE ", false]) {
+      expect((await callAllMoves({ REQUIRE_MOVES: value })).isError).toBeUndefined();
+      expect(await instructionsFor({ REQUIRE_MOVES: value })).toBe(buildRemoteServerInstructions(false));
+    }
+  });
+
+  it("false 以外の値なら技構成を必須にする", async () => {
+    for (const value of ["true", "", "no", true]) {
+      expect((await callAllMoves({ REQUIRE_MOVES: value })).isError).toBe(true);
+    }
   });
 });

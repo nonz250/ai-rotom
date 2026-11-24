@@ -1,10 +1,22 @@
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
 import { createCoreServer } from "@ai-rotom/mcp-core";
-import { REMOTE_SERVER_INSTRUCTIONS } from "./instructions.js";
+import { buildRemoteServerInstructions } from "./instructions.js";
 
 export interface Env {
   /** MCP エンドポイントの認証に使う共有トークン。wrangler secret で設定する。 */
   AUTH_TOKEN?: string;
+  /**
+   * 全技系ツールで自分側の技構成を必須にするか。false のときだけ任意にする。
+   * Workers の無料プランでは、習得技すべての計算が 1 リクエストの CPU 上限を超えるため、未設定なら必須にする。
+   * wrangler.toml の [vars] に引用符なしで書くと真偽値で渡ってくるので、文字列と真偽値の両方を受ける。
+   */
+  REQUIRE_MOVES?: string | boolean;
+}
+
+const REQUIRE_MOVES_DISABLED = "false";
+
+function requiresMoves(env: Env): boolean {
+  return String(env.REQUIRE_MOVES ?? "").trim().toLowerCase() !== REQUIRE_MOVES_DISABLED;
 }
 
 const MCP_PATH = "/mcp";
@@ -62,8 +74,8 @@ function bearerToken(request: Request): string | null {
   return match === null ? null : match[1];
 }
 
-async function handleMcp(request: Request): Promise<Response> {
-  const server = createCoreServer(REMOTE_SERVER_INSTRUCTIONS, { requireMoves: true });
+async function handleMcp(request: Request, requireMoves: boolean): Promise<Response> {
+  const server = createCoreServer(buildRemoteServerInstructions(requireMoves), { requireMoves });
   // セッションを持たないので、リクエストごとにサーバーとトランスポートを作って捨てる。
   // SSE で返すとストリームが閉じるまでサーバーを生かす必要があるため、JSON で返させる。
   const transport = new WebStandardStreamableHTTPServerTransport({
@@ -100,7 +112,7 @@ export async function handleRequest(request: Request, env: Env): Promise<Respons
     return textResponse(HTTP_STATUS_METHOD_NOT_ALLOWED, "Method Not Allowed", { allow: "POST" });
   }
 
-  return handleMcp(request);
+  return handleMcp(request, requiresMoves(env));
 }
 
 export default {
