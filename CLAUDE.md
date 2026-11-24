@@ -149,6 +149,15 @@ TS6059 エラーにならないようにしている。
 - remote-server が mcp-server から使ってよいのは `@ai-rotom/mcp-core`（`packages/mcp-server/src/core.ts`）に出したものだけ。wrangler などの Workers 用の依存を mcp-server に入れない
 - remote-server は第三者パッケージの版を自分で宣言しない。mcp-server の `dependencies` から hoist されたものをバンドルする。別々に固定すると版がずれ、MCP SDK が 2 つ入って Worker 内で混ざる
 
+### リモート版の自動デプロイ
+
+`.github/workflows/deploy-worker.yml` が、リリースの公開時と main からの手動実行時に、このリポジトリのリモート版を Cloudflare Workers にデプロイする。
+
+- Cloudflare の API トークンとアカウント ID は、GitHub の Environment `cloudflare-workers` の Secrets（`CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID`）にだけ置く。npm 公開用の `production` とは分ける
+- API トークンは Cloudflare の「Edit Cloudflare Workers」テンプレートで作り、対象をこのアカウントだけに絞る
+- リモート版の `AUTH_TOKEN` は Cloudflare 側の secret のまま置き、CI には渡さない
+- フォークからの PR に Secrets を渡さないため、`pull_request_target` でデプロイを走らせない
+
 ### publish 後のチェックリスト
 
 1. `npm view @nonz250/ai-rotom@<version> version` で registry 反映を確認
