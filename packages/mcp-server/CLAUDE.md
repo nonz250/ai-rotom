@@ -22,11 +22,11 @@ MCP プロトコル対応と具象データ供給を担うアプリケーショ�
 | `data-store.ts` | `@data/*.json` の import + 型 + id→entry Map + `pokemonEntryProvider` 実装 |
 | `name-resolvers.ts` | `NameResolver` インスタンス (pokemon/move/ability/item/nature) |
 | `instructions.ts` | MCP `instructions` テキスト（ポケチャン固有仕様の説明） |
-| `core-server.ts` | MCP サーバー生成 + ツール登録 |
+| `core-server.ts` | MCP サーバー生成 + パーティ保存系以外のツール登録 |
+| `server.ts` | stdio 版。core にパーティ保存系のツールと instructions を足す |
 
 パーティ保存系（`tools/party/`）はファイルに書き込むので、`core-server.ts` から
-import しない。ファイルを持たない実行環境でも core だけで動かせるようにするためで、
-保存系のツールと instructions（`PARTY_STORAGE_INSTRUCTIONS`）は `server.ts` で足す。
+import しない。ファイルを持たない実行環境でも core だけで動かせるようにするため。
 
 ## データフロー
 
