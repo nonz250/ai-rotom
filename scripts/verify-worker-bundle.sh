@@ -13,15 +13,22 @@
 set -euo pipefail
 
 readonly REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-readonly BUNDLE_FILE="${REPO_ROOT}/packages/remote-server/.wrangler/bundle/worker.js"
+readonly BUNDLE_DIR="${REPO_ROOT}/packages/remote-server/.wrangler/bundle"
 
-if [[ ! -f "${BUNDLE_FILE}" ]]; then
-  echo "::error::worker bundle not found: ${BUNDLE_FILE}" >&2
+# バンドルのファイル名は wrangler.toml の main に合わせて変わり、分割されたチャンクが
+# サブディレクトリに出ることもあるので、出力先の JavaScript をすべて調べる。
+# macOS 標準の bash 3.2 には mapfile がないので、while read で集める。
+bundle_files=()
+while IFS= read -r file; do
+  bundle_files+=("${file}")
+done < <(find "${BUNDLE_DIR}" -type f \( -name '*.js' -o -name '*.mjs' -o -name '*.cjs' \) 2>/dev/null)
+if [[ ${#bundle_files[@]} -eq 0 ]]; then
+  echo "::error::worker bundle not found in: ${BUNDLE_DIR}" >&2
   echo "::error::run 'npm run bundle --workspace=@ai-rotom/remote-server' before invoking this script" >&2
   exit 1
 fi
 
-if matches="$(grep -nE '(\bfrom|\bimport|\bimport\(|\brequire\()[[:space:]]*["'"'"']node:' "${BUNDLE_FILE}")"; then
+if matches="$(grep -nE '(\bfrom|\bimport|\bimport\(|\brequire\()[[:space:]]*["'"'"']node:' "${bundle_files[@]}")"; then
   echo "::error::worker bundle imports Node.js built-in modules:" >&2
   echo "${matches}" >&2
   exit 1
