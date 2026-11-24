@@ -1,5 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { assertMovesSpecified, MOVES_OPTIONAL } from "./moves-requirement";
+import { MAX_MOVES_PER_MEMBER } from "@ai-rotom/shared";
+import {
+  assertMovesSpecified,
+  assertMovesWithinLimit,
+  MOVES_OPTIONAL,
+} from "./moves-requirement";
 
 const REQUIRED = { requireMoves: true };
 
@@ -33,5 +38,38 @@ describe("assertMovesSpecified", () => {
     expect(() =>
       assertMovesSpecified(REQUIRED, [{ field: "attacker", name: "ガブリアス", moves: [] }]),
     ).toThrow(/attacker \(ガブリアス\)/);
+  });
+});
+
+describe("assertMovesWithinLimit", () => {
+  const AT_LIMIT = Array.from({ length: MAX_MOVES_PER_MEMBER }, () => "じしん");
+  const OVER_LIMIT = [...AT_LIMIT, "じしん"];
+
+  it("技構成が任意なら、上限を超える技数でもエラーにしない", () => {
+    expect(() =>
+      assertMovesWithinLimit(MOVES_OPTIONAL, { ガブリアス: OVER_LIMIT }),
+    ).not.toThrow();
+  });
+
+  it("技構成が必須でも、moves 引数がなければエラーにしない", () => {
+    expect(() => assertMovesWithinLimit(REQUIRED, undefined)).not.toThrow();
+  });
+
+  it("技構成が必須でも、上限ちょうどの技数ならエラーにしない", () => {
+    expect(() =>
+      assertMovesWithinLimit(REQUIRED, { ガブリアス: AT_LIMIT }),
+    ).not.toThrow();
+  });
+
+  it("技構成が必須なら、上限を超えるポケモンをすべて挙げてエラーにする", () => {
+    expect(() =>
+      assertMovesWithinLimit(REQUIRED, {
+        ガブリアス: OVER_LIMIT,
+        サーフゴー: AT_LIMIT,
+        リザードン: OVER_LIMIT,
+      }),
+    ).toThrow(
+      new RegExp(`moves 引数の ガブリアス、リザードン の技を ${MAX_MOVES_PER_MEMBER} つ以内`),
+    );
   });
 });

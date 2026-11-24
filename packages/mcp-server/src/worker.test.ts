@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { MAX_MOVES_PER_MEMBER } from "@ai-rotom/shared";
 import { REMOTE_SERVER_INSTRUCTIONS } from "./instructions";
 import { handleRequest } from "./worker";
 
@@ -226,6 +227,20 @@ describe("handleRequest の技構成の要求", () => {
     });
 
     expect(result.isError).toBeUndefined();
+  });
+
+  it("選出分析は moves 引数の技数が上限を超えるとエラーにする", async () => {
+    const result = await callTool("analyze_selection", {
+      myParty: [{ name: "ガブリアス" }],
+      opponentParty: [{ name: "サーフゴー" }],
+      battleFormat: "singles",
+      moves: { ガブリアス: [...GARCHOMP_MOVES, "アイアンヘッド"] },
+    });
+
+    expect(result.isError).toBe(true);
+    expect(result.content[0].text).toContain(
+      `moves 引数の ガブリアス の技を ${MAX_MOVES_PER_MEMBER} つ以内`,
+    );
   });
 
   it("選出分析は相手パーティの moves を求めない", async () => {

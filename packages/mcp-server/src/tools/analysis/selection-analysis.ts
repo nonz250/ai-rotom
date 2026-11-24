@@ -26,6 +26,7 @@ import { candidateMoveIds } from "../../calc/candidate-moves.js";
 import { withHint } from "../../tool-response-hint.js";
 import {
   assertMovesSpecified,
+  assertMovesWithinLimit,
   MOVES_OPTIONAL,
   type MovesRequirement,
 } from "../../moves-requirement.js";
@@ -235,6 +236,7 @@ export function registerSelectionAnalysisTool(
   server.tool(TOOL_NAME, TOOL_DESCRIPTION, inputSchema, async (args) => {
     try {
       const gen = Generations.get(CHAMPIONS_GEN_NUM);
+      assertMovesWithinLimit(movesRequirement, args.moves);
       const movesMap = resolveMovesMap(args.moves);
 
       // battleFormat (トップレベル) を conditions に詰め直してダメ計に伝える。
