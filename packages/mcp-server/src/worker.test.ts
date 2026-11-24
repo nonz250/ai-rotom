@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { CORE_INSTRUCTIONS } from "./instructions";
+import { MAX_MOVES_PER_MEMBER } from "@ai-rotom/shared";
+import { REMOTE_SERVER_INSTRUCTIONS } from "./instructions";
 import { handleRequest } from "./worker";
 
 const TOKEN = "test-token";
@@ -112,12 +113,12 @@ describe("handleRequest のルーティング", () => {
 });
 
 describe("handleRequest の MCP 応答", () => {
-  it("initialize に共通部分の instructions を返す", async () => {
+  it("initialize にリモート版の instructions を返す", async () => {
     const res = await handleRequest(mcpRequest("/mcp", INITIALIZE, BEARER), ENV);
     const body = await res.json();
 
     expect(res.status).toBe(200);
-    expect(body.result.instructions).toBe(CORE_INSTRUCTIONS);
+    expect(body.result.instructions).toBe(REMOTE_SERVER_INSTRUCTIONS);
   });
 
   it("パーティ保存系を除いたツール一覧を返す", async () => {
@@ -142,5 +143,113 @@ describe("handleRequest の MCP 応答", () => {
     expect(res.status).toBe(200);
     expect(body.result.isError).toBeUndefined();
     expect(JSON.parse(body.result.content[0].text).name).toBe("Garchomp");
+  });
+});
+
+describe("handleRequest の技構成の要求", () => {
+  async function callTool(name: string, args: Record<string, unknown>) {
+    const res = await handleRequest(
+      mcpRequest("/mcp", rpc("tools/call", { name, arguments: args }), BEARER),
+      ENV,
+    );
+    return (await res.json()).result as { isError?: boolean; content: { text: string }[] };
+  }
+
+  const GARCHOMP_MOVES = ["じしん", "げきりん", "ストーンエッジ", "ほのおのキバ"];
+
+  it("全技ダメ計は attacker の moves がないとエラーで指定を求める", async () => {
+    const result = await callTool("calculate_damage_all_moves", {
+      attacker: { name: "ガブリアス" },
+      defender: { name: "サーフゴー" },
+    });
+
+    expect(result.isError).toBe(true);
+    expect(result.content[0].text).toContain("attacker (ガブリアス) の moves");
+  });
+
+  it("全技ダメ計は attacker の moves があれば計算する", async () => {
+    const result = await callTool("calculate_damage_all_moves", {
+      attacker: { name: "ガブリアス", moves: GARCHOMP_MOVES },
+      defender: { name: "サーフゴー" },
+    });
+
+    expect(result.isError).toBeUndefined();
+  });
+
+  it("6v6 ダメ計は moves のない myParty のメンバーを挙げてエラーにする", async () => {
+    const result = await callTool("calculate_damage_party_matchup", {
+      myParty: [{ name: "ガブリアス", moves: GARCHOMP_MOVES }, { name: "リザードン" }],
+      opponentParty: [{ name: "サーフゴー" }],
+    });
+
+    expect(result.isError).toBe(true);
+    expect(result.content[0].text).toContain("myParty[1] (リザードン) の moves");
+    expect(result.content[0].text).not.toContain("myParty[0]");
+  });
+
+  it("対面分析は pokemon1 の moves がないとエラーにする", async () => {
+    const result = await callTool("analyze_matchup", {
+      pokemon1: { name: "ガブリアス" },
+      pokemon2: { name: "サーフゴー", moves: ["ゴールドラッシュ"] },
+    });
+
+    expect(result.isError).toBe(true);
+    expect(result.content[0].text).toContain("pokemon1 (ガブリアス) の moves");
+  });
+
+  it("対面分析は相手側の pokemon2 の moves を求めない", async () => {
+    const result = await callTool("analyze_matchup", {
+      pokemon1: { name: "ガブリアス", moves: GARCHOMP_MOVES },
+      pokemon2: { name: "サーフゴー" },
+    });
+
+    expect(result.isError).toBeUndefined();
+  });
+
+  it("選出分析は moves のない myParty のメンバーを挙げてエラーにする", async () => {
+    const result = await callTool("analyze_selection", {
+      myParty: [{ name: "ガブリアス", moves: GARCHOMP_MOVES }, { name: "リザードン" }],
+      opponentParty: [{ name: "サーフゴー" }],
+      battleFormat: "singles",
+    });
+
+    expect(result.isError).toBe(true);
+    expect(result.content[0].text).toContain("myParty[1] (リザードン) の moves");
+    expect(result.content[0].text).not.toContain("myParty[0]");
+  });
+
+  it("選出分析は moves 引数で指定した技構成も指定ありとして扱う", async () => {
+    const result = await callTool("analyze_selection", {
+      myParty: [{ name: "ガブリアス" }],
+      opponentParty: [{ name: "サーフゴー" }],
+      battleFormat: "singles",
+      moves: { ガブリアス: GARCHOMP_MOVES },
+    });
+
+    expect(result.isError).toBeUndefined();
+  });
+
+  it("選出分析は moves 引数の技数が上限を超えるとエラーにする", async () => {
+    const result = await callTool("analyze_selection", {
+      myParty: [{ name: "ガブリアス" }],
+      opponentParty: [{ name: "サーフゴー" }],
+      battleFormat: "singles",
+      moves: { ガブリアス: [...GARCHOMP_MOVES, "アイアンヘッド"] },
+    });
+
+    expect(result.isError).toBe(true);
+    expect(result.content[0].text).toContain(
+      `moves 引数の ガブリアス の技を ${MAX_MOVES_PER_MEMBER} つ以内`,
+    );
+  });
+
+  it("選出分析は相手パーティの moves を求めない", async () => {
+    const result = await callTool("analyze_selection", {
+      myParty: [{ name: "ガブリアス", moves: GARCHOMP_MOVES }],
+      opponentParty: [{ name: "サーフゴー" }],
+      battleFormat: "singles",
+    });
+
+    expect(result.isError).toBeUndefined();
   });
 });

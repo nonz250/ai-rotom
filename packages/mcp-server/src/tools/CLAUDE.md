@@ -65,6 +65,8 @@ export function registerFooTool(server: McpServer): void {
   ```ts
   import { damageCalculator } from "../../calc/damage-calculator.js";
   ```
+- 攻撃側の技構成を省略すると習得技すべてを計算するツールは、`MovesRequirement` を受け取り `assertMovesSpecified` を呼ぶ。Workers 版では moves が必須になる
+- ポケモン名ごとに技を受け取る `moves` 引数でダメ計をするツールは、`assertMovesWithinLimit` も呼ぶ。この引数はスキーマで技数を絞っていないので、Workers 版では `MAX_MOVES_PER_MEMBER` を超える指定をエラーにする
 - 複数技のダメ計結果は `summarizeMoveDamages` で要約して返す。乱数配列を全技ぶん返すと AI のコンテキストを圧迫するため、乱数の内訳は単発のダメ計でだけ返す
 - **エラー応答**: `{ content: [...], isError: true }` + `JSON.stringify({ error })`
 - **成功応答**: `JSON.stringify(data)` をテキストで返す

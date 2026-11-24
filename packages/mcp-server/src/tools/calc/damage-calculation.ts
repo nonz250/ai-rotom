@@ -13,6 +13,11 @@ import {
   moveNameResolver,
 } from "../../name-resolvers.js";
 import { toErrorResponse, withHint } from "../../tool-response-hint.js";
+import {
+  assertMovesSpecified,
+  MOVES_OPTIONAL,
+  type MovesRequirement,
+} from "../../moves-requirement.js";
 
 const damageCalcInputSchema = {
   attacker: pokemonSchema.describe("攻撃側ポケモン"),
@@ -101,7 +106,10 @@ function extractBestMove(
   };
 }
 
-export function registerDamageCalculationTools(server: McpServer): void {
+export function registerDamageCalculationTools(
+  server: McpServer,
+  movesRequirement: MovesRequirement = MOVES_OPTIONAL,
+): void {
   // ツール1: calculate_damage_single
   server.tool(
     SINGLE_TOOL_NAME,
@@ -130,6 +138,9 @@ export function registerDamageCalculationTools(server: McpServer): void {
     allMovesInputSchema,
     async (args) => {
       try {
+        assertMovesSpecified(movesRequirement, [
+          { field: "attacker", name: args.attacker.name, moves: args.attacker.moves },
+        ]);
         const results = damageCalculator.calculateAllMoves({
           attacker: args.attacker,
           defender: args.defender,
@@ -169,6 +180,14 @@ export function registerDamageCalculationTools(server: McpServer): void {
     partyMatchupInputSchema,
     async (args) => {
       try {
+        assertMovesSpecified(
+          movesRequirement,
+          args.myParty.map((member, index) => ({
+            field: `myParty[${index}]`,
+            name: member.name,
+            moves: member.moves,
+          })),
+        );
         const output: PartyMatchupOutput = {
           myParty: [],
           opponentParty: [],

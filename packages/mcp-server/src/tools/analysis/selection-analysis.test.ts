@@ -505,6 +505,24 @@ describe("analyze_selection の moves 引数", () => {
   });
 });
 
+describe("analyze_selection の moves 引数の技数", () => {
+  it("技構成が任意なら、技数の上限を超える候補技でも計算する", async () => {
+    const res = await captureHandler()({
+      myParty: [{ name: "ガブリアス" }],
+      opponentParty: [{ name: "サーフゴー" }],
+      battleFormat: "singles",
+      moves: {
+        ガブリアス: ["じしん", "げきりん", "ストーンエッジ", "ほのおのキバ", "アイアンヘッド"],
+      },
+    });
+
+    expect(res.isError).not.toBe(true);
+    expect(JSON.parse(res.content[0].text).matchupMatrix[0].damageEstimate.move.nameJa).toBe(
+      "じしん",
+    );
+  });
+});
+
 describe("analyze_selection の技構成の適用範囲", () => {
   it.each([
     { label: "自軍指定を相手に適用しない", individual: ["バレットパンチ"], override: ["アイアンヘッド"] },
