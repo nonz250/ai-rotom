@@ -54,6 +54,30 @@ describe("handleRequest の認証", () => {
     expect(res.status).toBe(401);
   });
 
+  it("Bearer の大文字小文字を区別しない", async () => {
+    for (const scheme of ["bearer", "BEARER"]) {
+      const res = await handleRequest(
+        mcpRequest("/mcp", rpc("tools/list"), { authorization: `${scheme} ${TOKEN}` }),
+        ENV,
+      );
+      expect(res.status).toBe(200);
+    }
+  });
+
+  it("パスのトークンは URL デコードしてから照合する", async () => {
+    const token = "a b+c";
+    const res = await handleRequest(
+      mcpRequest(`/mcp/${encodeURIComponent(token)}`, rpc("tools/list")),
+      { AUTH_TOKEN: token },
+    );
+    expect(res.status).toBe(200);
+  });
+
+  it("デコードできないパスは 404 を返す", async () => {
+    const res = await handleRequest(mcpRequest("/mcp/%E0%A4%A", rpc("tools/list")), ENV);
+    expect(res.status).toBe(404);
+  });
+
   it("トークンの前方一致では通さない", async () => {
     const res = await handleRequest(
       mcpRequest(`/mcp/${TOKEN.slice(0, -1)}`, rpc("tools/list")),

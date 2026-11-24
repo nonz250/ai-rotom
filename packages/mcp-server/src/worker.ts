@@ -8,7 +8,7 @@ export interface Env {
 }
 
 const MCP_PATH = "/mcp";
-const BEARER_PREFIX = "Bearer ";
+const BEARER_PATTERN = /^bearer\s+(.+)$/i;
 
 const HTTP_STATUS_UNAUTHORIZED = 401;
 const HTTP_STATUS_NOT_FOUND = 404;
@@ -44,17 +44,22 @@ function parseMcpPath(pathname: string): string | null | undefined {
   const prefix = `${MCP_PATH}/`;
   if (pathname.startsWith(prefix) && pathname.length > prefix.length) {
     const token = pathname.slice(prefix.length);
-    return token.includes("/") ? undefined : token;
+    if (token.includes("/")) {
+      return undefined;
+    }
+    try {
+      return decodeURIComponent(token);
+    } catch {
+      return undefined;
+    }
   }
   return undefined;
 }
 
 function bearerToken(request: Request): string | null {
   const header = request.headers.get("authorization");
-  if (header === null || !header.startsWith(BEARER_PREFIX)) {
-    return null;
-  }
-  return header.slice(BEARER_PREFIX.length).trim();
+  const match = header === null ? null : BEARER_PATTERN.exec(header.trim());
+  return match === null ? null : match[1];
 }
 
 async function handleMcp(request: Request): Promise<Response> {
