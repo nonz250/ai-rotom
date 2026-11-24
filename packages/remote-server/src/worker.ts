@@ -1,5 +1,5 @@
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
-import { createCoreServer } from "./core-server.js";
+import { createCoreServer } from "@ai-rotom/mcp-core";
 import { REMOTE_SERVER_INSTRUCTIONS } from "./instructions.js";
 
 export interface Env {

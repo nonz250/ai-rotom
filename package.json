@@ -2,14 +2,15 @@
   "name": "ai-rotom",
   "private": true,
   "workspaces": [
-    "packages/mcp-server"
+    "packages/mcp-server",
+    "packages/remote-server"
   ],
   "scripts": {
-    "build": "npm run build --workspaces",
+    "build": "npm run build --workspaces --if-present",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:dist": "vitest run --config vitest.dist.config.ts",
-    "worker:dev": "npm run worker:dev --workspace=@nonz250/ai-rotom"
+    "worker:dev": "npm run dev --workspace=@ai-rotom/remote-server"
   },
   "engines": {
     "node": ">=24"
