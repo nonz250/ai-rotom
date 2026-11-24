@@ -8,9 +8,6 @@
     "bundle": "wrangler deploy --dry-run --outdir .wrangler/bundle",
     "deploy": "wrangler deploy"
   },
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "1.32.2"
-  },
   "devDependencies": {
     "wrangler": "4.159.0"
   }
