@@ -2,7 +2,8 @@
   "compilerOptions": {
     "paths": {
       "@data/*": ["./data/champions/*"],
-      "@ai-rotom/shared": ["./shared/src/index.ts"]
+      "@ai-rotom/shared": ["./shared/src/index.ts"],
+      "@ai-rotom/mcp-core": ["./packages/mcp-server/src/core.ts"]
     }
   }
 }

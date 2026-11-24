@@ -7,17 +7,17 @@
 # party storage module (which writes files) leaking into the core server would
 # only break at deploy or run time without this check.
 #
-# Run `npm run worker:bundle --workspace=@nonz250/ai-rotom` first.
+# Run `npm run bundle --workspace=@ai-rotom/remote-server` first.
 # This script fails (exit 1) if the invariant is violated.
 
 set -euo pipefail
 
 readonly REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-readonly BUNDLE_FILE="${REPO_ROOT}/packages/mcp-server/.wrangler/bundle/worker.js"
+readonly BUNDLE_FILE="${REPO_ROOT}/packages/remote-server/.wrangler/bundle/worker.js"
 
 if [[ ! -f "${BUNDLE_FILE}" ]]; then
   echo "::error::worker bundle not found: ${BUNDLE_FILE}" >&2
-  echo "::error::run 'npm run worker:bundle --workspace=@nonz250/ai-rotom' before invoking this script" >&2
+  echo "::error::run 'npm run bundle --workspace=@ai-rotom/remote-server' before invoking this script" >&2
   exit 1
 fi
 
