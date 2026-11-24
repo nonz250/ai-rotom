@@ -8,7 +8,8 @@
     "build": "npm run build --workspaces",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:dist": "vitest run --config vitest.dist.config.ts"
+    "test:dist": "vitest run --config vitest.dist.config.ts",
+    "worker:dev": "npm run worker:dev --workspace=@nonz250/ai-rotom"
   },
   "engines": {
     "node": ">=24"
