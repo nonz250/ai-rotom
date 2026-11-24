@@ -1,23 +1,10 @@
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
 import { createCoreServer } from "@ai-rotom/mcp-core";
+import type { RemoteServerConfig } from "./config.js";
 import { buildRemoteServerInstructions } from "./instructions.js";
 
-export interface Env {
-  /** MCP エンドポイントの認証に使う共有トークン。wrangler secret で設定する。 */
-  AUTH_TOKEN?: string;
-  /**
-   * 全技系ツールで自分側の技構成を必須にするか。false のときだけ任意にする。
-   * Workers の無料プランでは、習得技すべての計算が 1 リクエストの CPU 上限を超えるため、未設定なら必須にする。
-   * wrangler.toml の [vars] に引用符なしで書くと真偽値で渡ってくるので、文字列と真偽値の両方を受ける。
-   */
-  REQUIRE_MOVES?: string | boolean;
-}
-
-const REQUIRE_MOVES_DISABLED = "false";
-
-function requiresMoves(env: Env): boolean {
-  return String(env.REQUIRE_MOVES ?? "").trim().toLowerCase() !== REQUIRE_MOVES_DISABLED;
-}
+/** Web 標準の Request を受けて Response を返す関数。多くの Workers 系サービスがこの形でリクエストを渡す。 */
+export type RequestHandler = (request: Request) => Promise<Response>;
 
 const MCP_PATH = "/mcp";
 const BEARER_PATTERN = /^bearer\s+(.+)$/i;
@@ -90,15 +77,15 @@ async function handleMcp(request: Request, requireMoves: boolean): Promise<Respo
   }
 }
 
-export async function handleRequest(request: Request, env: Env): Promise<Response> {
+async function handleRequest(request: Request, config: RemoteServerConfig): Promise<Response> {
   const pathToken = parseMcpPath(new URL(request.url).pathname);
   if (pathToken === undefined) {
     return textResponse(HTTP_STATUS_NOT_FOUND, "Not Found");
   }
 
   // トークン未設定のまま公開されても、誰でも呼べる状態にはしない。
-  const expected = env.AUTH_TOKEN;
-  if (expected === undefined || expected === "") {
+  const expected = config.authToken;
+  if (expected === undefined) {
     return textResponse(HTTP_STATUS_SERVICE_UNAVAILABLE, "AUTH_TOKEN is not configured");
   }
   const provided = pathToken ?? bearerToken(request);
@@ -112,9 +99,13 @@ export async function handleRequest(request: Request, env: Env): Promise<Respons
     return textResponse(HTTP_STATUS_METHOD_NOT_ALLOWED, "Method Not Allowed", { allow: "POST" });
   }
 
-  return handleMcp(request, requiresMoves(env));
+  return handleMcp(request, config.requireMoves);
 }
 
-export default {
-  fetch: handleRequest,
-};
+/**
+ * リモート版の MCP サーバーのリクエストハンドラーを作る。
+ * 実行環境に依存する処理は含まないので、各サービスのエントリから設定を渡して使う。
+ */
+export function createRequestHandler(config: RemoteServerConfig): RequestHandler {
+  return (request) => handleRequest(request, config);
+}

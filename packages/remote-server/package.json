@@ -2,7 +2,7 @@
   "name": "@ai-rotom/remote-server",
   "private": true,
   "type": "module",
-  "description": "ai-rotom を Cloudflare Workers でリモート MCP サーバーとして動かすためのエントリ",
+  "description": "ai-rotom をリモート MCP サーバーとして動かすハンドラーと、サービスごとのエントリ。既定は Cloudflare Workers",
   "scripts": {
     "dev": "wrangler dev",
     "bundle": "node -e \"require('node:fs').rmSync('.wrangler/bundle',{recursive:true,force:true})\" && wrangler deploy --dry-run --outdir .wrangler/bundle",
