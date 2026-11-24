@@ -34,7 +34,10 @@
   },
   "scripts": {
     "build": "tsdown",
-    "dev": "tsdown --watch"
+    "dev": "tsdown --watch",
+    "worker:dev": "wrangler dev",
+    "worker:bundle": "wrangler deploy --dry-run --outdir .wrangler/bundle",
+    "worker:deploy": "wrangler deploy"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.32.2",
@@ -43,6 +46,7 @@
     "zod": "4.6.7"
   },
   "devDependencies": {
-    "tsdown": "0.23.7"
+    "tsdown": "0.23.7",
+    "wrangler": "4.159.0"
   }
 }

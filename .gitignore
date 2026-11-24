@@ -6,3 +6,8 @@ dist/
 coverage/
 
 .claude/*.local*
+
+# Cloudflare Workers
+.wrangler/
+.dev.vars*
+!.dev.vars.example
