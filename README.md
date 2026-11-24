@@ -75,11 +75,11 @@ Muse のカスタムコネクタのように手元で MCP サーバーを起動�
 
 ```bash
 npm ci
-cd packages/mcp-server
+cd packages/remote-server
 npx wrangler login
 openssl rand -hex 32            # 認証トークンを作る
 npx wrangler secret put AUTH_TOKEN   # 作ったトークンを貼り付ける
-npm run worker:deploy
+npm run deploy
 ```
 
 デプロイ後は `https://ai-rotom.<サブドメイン>.workers.dev/mcp` を MCP サーバーの URL として登録し、`Authorization: Bearer <トークン>` ヘッダーを付けて呼びます。ヘッダーを設定できないクライアントでは `https://ai-rotom.<サブドメイン>.workers.dev/mcp/<トークン>` も使えます。この形はトークンが URL に含まれ、アクセスログなどに残るので、ヘッダーを使えるならそちらを選んでください。
@@ -95,7 +95,7 @@ npm run worker:deploy
 デプロイ前に、手元の Workers ランタイムでリモート版を起動して MCP クライアントからつなげます。
 
 ```bash
-cp packages/mcp-server/.dev.vars.example packages/mcp-server/.dev.vars
+cp packages/remote-server/.dev.vars.example packages/remote-server/.dev.vars
 npm run worker:dev    # http://localhost:8787/mcp で待ち受ける
 ```
 

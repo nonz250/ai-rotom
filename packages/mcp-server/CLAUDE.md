@@ -4,7 +4,7 @@ MCP プロトコル対応と具象データ供給を担うアプリケーショ�
 
 ## 位置付け
 
-- リポジトリ唯一の npm workspace パッケージ
+- npm で配布する stdio 版のパッケージ。Workers 版は `packages/remote-server` にある
 - `npx @nonz250/ai-rotom` で起動する MCP サーバーの実装
 - shared のロジックに JSON データを注入して動かす
 
@@ -12,7 +12,7 @@ MCP プロトコル対応と具象データ供給を担うアプリケーショ�
 
 - `src/index.ts`: `#!/usr/bin/env node` shebang + `startServer()` 呼び出し
 - `src/server.ts`: stdio トランスポートで起動する
-- `src/worker.ts`: Cloudflare Workers の fetch ハンドラ。`wrangler.toml` の `main`
+- `src/core.ts`: 他のワークスペースに出す入口。`@ai-rotom/mcp-core` の alias で参照される
 - bin は `dist/index.mjs`（tsdown でビルド、JSON と shared 一式を bundle）
 
 ## コア層の役割
@@ -27,13 +27,6 @@ MCP プロトコル対応と具象データ供給を担うアプリケーショ�
 
 パーティ保存系（`tools/party/`）はファイルに書き込むので、`core-server.ts` から
 import しない。ファイルを持たない実行環境でも core だけで動かせるようにするため。
-
-## Workers 版の制約
-
-- リクエストごとにサーバーとトランスポートを作り直すステートレス構成。セッションを持たないので GET (SSE) と DELETE は 405 を返す
-- `nodejs_compat` を有効にしていないので、core から辿れるコードで Node の組み込みモジュールを import すると Workers で動かない。wrangler はこれを外部参照のままバンドルしてしまうため、CI の `scripts/verify-worker-bundle.sh` で検出する。`nodejs_compat` を有効にして回避しない。保存系が core に混ざったことに気付けなくなる
-- 無料プランの CPU 上限は 1 リクエスト 10 ms。データの Map 構築はモジュール読み込み時に 1 回だけ行い、リクエストごとに作らない
-- 習得技すべての計算は 10 ms を超えるので、Workers 版は `requireMoves` で全技系ツールの自分側に moves を必須にしている。相手側は必須にしない。技構成がわからない相手の型を AI に作らせることになるため。instructions で案内するだけでは AI クライアントが従わなかったため、ツール側でエラーにする
 
 ## データフロー
 

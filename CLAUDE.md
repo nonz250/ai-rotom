@@ -19,7 +19,7 @@
 - ダメージ計算エンジン: `@smogon/calc` の Gen 0 (Champions)
   - npm registry から取得（`packages/mcp-server` の `dependencies` に exact pin）
 - 入力検証: Zod
-- パッケージ管理: npm workspaces（workspace は `packages/mcp-server` のみ）
+- パッケージ管理: npm workspaces（`packages/mcp-server` と `packages/remote-server`）
 - ビルド: tsdown（ESM bundle、JSON インライン化）
 - テスト: Vitest
 - Node.js: >= 24
@@ -57,12 +57,11 @@ ai-rotom/
 │       ├── analysis/            # タイプ相性・実数値・素早さ比較
 │       └── calc/                # ダメージ計算エンジン (DI 対応)
 └── packages/
-    └── mcp-server/              # 唯一の workspace パッケージ
+    ├── mcp-server/              # npm で配布する stdio 版
         └── src/
             ├── index.ts         # エントリ (#!/usr/bin/env node)
             ├── core-server.ts   # MCP サーバー + パーティ保存系以外のツール登録
             ├── server.ts        # stdio 版 (core + パーティ保存系ツール)
-            ├── worker.ts        # Cloudflare Workers 版 (core のみ)
             ├── instructions.ts  # MCP instructions テキスト
             ├── data-store.ts    # JSON → Map + PokemonEntryProvider 実装
             ├── name-resolvers.ts
@@ -73,6 +72,8 @@ ai-rotom/
                 ├── calc/        # 計算系
                 ├── analysis/    # 分析系
                 └── party/       # パーティ永続化 (save/load/list/delete)
+    └── remote-server/           # Cloudflare Workers 版 (npm には公開しない)
+        └── src/worker.ts        # mcp-server の core を @ai-rotom/mcp-core 経由で使う
 ```
 
 - `packages/` は npm workspace 対象のパッケージのみを配置する
@@ -84,6 +85,7 @@ ai-rotom/
 |---|---|
 | `shared/` | ポケチャン対戦ロジックの再利用可能なコアライブラリ。型・定数・Zod スキーマ・分析ロジック・ダメ計エンジン。**具象データには依存しない（DI で受ける）** |
 | `packages/mcp-server/` | MCP プロトコル対応と具象データ供給。JSON データを読み、shared の計算エンジンに注入するアプリケーション層 |
+| `packages/remote-server/` | mcp-server の core を Cloudflare Workers で動かすエントリと設定。npm には公開しない |
 | `data/champions/` | ポケチャン固有のマスターデータ。将来の api-server / web-ui からも参照される資産 |
 
 `shared` は npm パッケージではなく **単純なソースディレクトリ**。mcp-server から alias 経由で参照される。将来 api-server を同リポジトリに追加する場合も同じ alias で参照可能。
@@ -139,8 +141,8 @@ TS6059 エラーにならないようにしている。
 
 ### リモート版 (Cloudflare Workers)
 
-- `packages/mcp-server/src/worker.ts` をエントリに、利用者が自分の Cloudflare アカウントへ `wrangler deploy` する。npm publish 物には含まれない
-- 認証は wrangler secret の `AUTH_TOKEN` との照合のみ。未設定なら全リクエストを拒否する
+- `packages/remote-server` を、利用者が自分の Cloudflare アカウントへ `wrangler deploy` する。npm publish 物には含まれない
+- remote-server が mcp-server から使ってよいのは `@ai-rotom/mcp-core`（`packages/mcp-server/src/core.ts`）に出したものだけ。wrangler などの Workers 用の依存を mcp-server に入れない
 
 ### publish 後のチェックリスト
 
