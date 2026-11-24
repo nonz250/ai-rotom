@@ -58,20 +58,21 @@ ai-rotom/
 │       └── calc/                # ダメージ計算エンジン (DI 対応)
 └── packages/
     ├── mcp-server/              # npm で配布する stdio 版
-        └── src/
-            ├── index.ts         # エントリ (#!/usr/bin/env node)
-            ├── core-server.ts   # MCP サーバー + パーティ保存系以外のツール登録
-            ├── server.ts        # stdio 版 (core + パーティ保存系ツール)
-            ├── instructions.ts  # MCP instructions テキスト
-            ├── data-store.ts    # JSON → Map + PokemonEntryProvider 実装
-            ├── name-resolvers.ts
-            ├── party-store.ts   # ~/.ai-rotom/parties.json の読み書き (atomic)
-            └── tools/
-                ├── info/        # 情報取得系
-                ├── search/      # 逆引き検索系
-                ├── calc/        # 計算系
-                ├── analysis/    # 分析系
-                └── party/       # パーティ永続化 (save/load/list/delete)
+    │   └── src/
+    │       ├── index.ts         # エントリ (#!/usr/bin/env node)
+    │       ├── core.ts          # 他のワークスペースに出す入口 (@ai-rotom/mcp-core)
+    │       ├── core-server.ts   # MCP サーバー + パーティ保存系以外のツール登録
+    │       ├── server.ts        # stdio 版 (core + パーティ保存系ツール)
+    │       ├── instructions.ts  # MCP instructions テキスト
+    │       ├── data-store.ts    # JSON → Map + PokemonEntryProvider 実装
+    │       ├── name-resolvers.ts
+    │       ├── party-store.ts   # ~/.ai-rotom/parties.json の読み書き (atomic)
+    │       └── tools/
+    │           ├── info/        # 情報取得系
+    │           ├── search/      # 逆引き検索系
+    │           ├── calc/        # 計算系
+    │           ├── analysis/    # 分析系
+    │           └── party/       # パーティ永続化 (save/load/list/delete)
     └── remote-server/           # Cloudflare Workers 版 (npm には公開しない)
         └── src/worker.ts        # mcp-server の core を @ai-rotom/mcp-core 経由で使う
 ```
@@ -143,6 +144,7 @@ TS6059 エラーにならないようにしている。
 
 - `packages/remote-server` を、利用者が自分の Cloudflare アカウントへ `wrangler deploy` する。npm publish 物には含まれない
 - remote-server が mcp-server から使ってよいのは `@ai-rotom/mcp-core`（`packages/mcp-server/src/core.ts`）に出したものだけ。wrangler などの Workers 用の依存を mcp-server に入れない
+- remote-server は第三者パッケージの版を自分で宣言しない。mcp-server の `dependencies` から hoist されたものをバンドルする。別々に固定すると版がずれ、MCP SDK が 2 つ入って Worker 内で混ざる
 
 ### publish 後のチェックリスト
 

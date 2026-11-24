@@ -4,6 +4,7 @@ mcp-server の core（パーティ保存系を除くツール）を Cloudflare W
 
 - mcp-server から使うのは `@ai-rotom/mcp-core` に出したものだけにする
 - 認証は wrangler secret の `AUTH_TOKEN` との照合。未設定なら全リクエストを拒否する
+- `tsconfig.json` は Node の型を読まず、`WebWorker` の lib だけで型検査する。`Buffer` や `process` など Workers にないグローバルを型検査で弾くためで、`types: ["node"]` を足さない
 
 ## 制約
 
