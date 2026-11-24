@@ -11,8 +11,7 @@ MCP プロトコル対応と具象データ供給を担うアプリケーショ�
 ## エントリポイント
 
 - `src/index.ts`: `#!/usr/bin/env node` shebang + `startServer()` 呼び出し
-- `src/core-server.ts`: `McpServer` 生成 + パーティ保存系以外のツール登録
-- `src/server.ts`: stdio 版。core にパーティ保存系ツールを足して起動する
+- `src/server.ts`: stdio トランスポートで起動する
 - bin は `dist/index.mjs`（tsdown でビルド、JSON と shared 一式を bundle）
 
 ## コア層の役割
