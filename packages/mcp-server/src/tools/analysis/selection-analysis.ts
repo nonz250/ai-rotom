@@ -24,6 +24,11 @@ import { moveNameResolver, pokemonNameResolver } from "../../name-resolvers.js";
 import { damageCalculator } from "../../calc/damage-calculator.js";
 import { candidateMoveIds } from "../../calc/candidate-moves.js";
 import { withHint } from "../../tool-response-hint.js";
+import {
+  assertMovesSpecified,
+  MOVES_OPTIONAL,
+  type MovesRequirement,
+} from "../../moves-requirement.js";
 
 const CHAMPIONS_GEN_NUM = 0;
 
@@ -223,7 +228,10 @@ export function calculateDamageForMatchup(
   return damageCalculator.calculateAllMoves({ attacker, defender, conditions });
 }
 
-export function registerSelectionAnalysisTool(server: McpServer): void {
+export function registerSelectionAnalysisTool(
+  server: McpServer,
+  movesRequirement: MovesRequirement = MOVES_OPTIONAL,
+): void {
   server.tool(TOOL_NAME, TOOL_DESCRIPTION, inputSchema, async (args) => {
     try {
       const gen = Generations.get(CHAMPIONS_GEN_NUM);
@@ -292,6 +300,14 @@ export function registerSelectionAnalysisTool(server: McpServer): void {
       }
 
       const myMembers = args.myParty.map((input) => buildMemberContext(input, movesMap));
+      assertMovesSpecified(
+        movesRequirement,
+        myMembers.map((member, index) => ({
+          field: `myParty[${index}]`,
+          name: member.input.name,
+          moves: explicitMovesFor(member.entryId, movesMap) ?? member.input.moves,
+        })),
+      );
       const oppMembers = args.opponentParty.map((input) => buildMemberContext(input, new Map()));
 
       // マトリクス作成

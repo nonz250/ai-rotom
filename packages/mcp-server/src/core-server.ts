@@ -1,4 +1,5 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { MOVES_OPTIONAL, type MovesRequirement } from "./moves-requirement.js";
 import { registerAbilityInfoTool } from "./tools/info/ability-info.js";
 import { registerComparePartiesTool } from "./tools/analysis/compare-parties.js";
 import { registerConditionInfoTool } from "./tools/info/condition-info.js";
@@ -28,7 +29,10 @@ const SERVER_VERSION = "0.0.1";
  * パーティ保存系を除くツールを登録した MCP サーバーを作る。
  * 保存系はファイルに書き込むので、ファイルを持たない実行環境でも読み込めるよう、ここから import しない。
  */
-export function createCoreServer(instructions: string): McpServer {
+export function createCoreServer(
+  instructions: string,
+  movesRequirement: MovesRequirement = MOVES_OPTIONAL,
+): McpServer {
   const server = new McpServer(
     {
       name: SERVER_NAME,
@@ -42,11 +46,11 @@ export function createCoreServer(instructions: string): McpServer {
   registerAbilityInfoTool(server);
   registerComparePartiesTool(server);
   registerConditionInfoTool(server);
-  registerDamageCalculationTools(server);
+  registerDamageCalculationTools(server, movesRequirement);
   registerDamageRangeTool(server);
   registerItemInfoTool(server);
   registerLearnsetTool(server);
-  registerMatchupTool(server);
+  registerMatchupTool(server, movesRequirement);
   registerMoveInfoTool(server);
   registerNatureInfoTool(server);
   registerPartyAnalysisTool(server);
@@ -56,7 +60,7 @@ export function createCoreServer(instructions: string): McpServer {
   registerSearchByAbilityTool(server);
   registerSearchByMoveTool(server);
   registerSearchByTypeEffectivenessTool(server);
-  registerSelectionAnalysisTool(server);
+  registerSelectionAnalysisTool(server, movesRequirement);
   registerSpeedTiersTool(server);
   registerStatsCalculationTool(server);
   registerTypeInfoTool(server);

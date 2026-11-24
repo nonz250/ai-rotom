@@ -19,6 +19,11 @@ import { pokemonNameResolver, moveNameResolver } from "../../name-resolvers.js";
 import { damageCalculator } from "../../calc/damage-calculator.js";
 import { candidateMoveIds } from "../../calc/candidate-moves.js";
 import { withHint } from "../../tool-response-hint.js";
+import {
+  assertMovesSpecified,
+  MOVES_OPTIONAL,
+  type MovesRequirement,
+} from "../../moves-requirement.js";
 
 const TOOL_NAME = "analyze_matchup";
 const TOOL_DESCRIPTION =
@@ -106,13 +111,20 @@ function maxTypeMultiplier(
   return max;
 }
 
-export function registerMatchupTool(server: McpServer): void {
+export function registerMatchupTool(
+  server: McpServer,
+  movesRequirement: MovesRequirement = MOVES_OPTIONAL,
+): void {
   server.tool(
     TOOL_NAME,
     TOOL_DESCRIPTION,
     matchupInputSchema,
     async (args) => {
       try {
+        assertMovesSpecified(movesRequirement, [
+          { field: "pokemon1", name: args.pokemon1.name, moves: args.pokemon1.moves },
+          { field: "pokemon2", name: args.pokemon2.name, moves: args.pokemon2.moves },
+        ]);
         // 素早さを取得するために Pokemon オブジェクトを生成
         const { pokemon: p1, resolvedName: name1 } =
           damageCalculator.createPokemonObject(args.pokemon1);
