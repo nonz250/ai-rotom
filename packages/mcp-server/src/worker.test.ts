@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { CORE_INSTRUCTIONS } from "./instructions";
+import { REMOTE_SERVER_INSTRUCTIONS } from "./instructions";
 import { handleRequest } from "./worker";
 
 const TOKEN = "test-token";
@@ -112,12 +112,12 @@ describe("handleRequest のルーティング", () => {
 });
 
 describe("handleRequest の MCP 応答", () => {
-  it("initialize に共通部分の instructions を返す", async () => {
+  it("initialize にリモート版の instructions を返す", async () => {
     const res = await handleRequest(mcpRequest("/mcp", INITIALIZE, BEARER), ENV);
     const body = await res.json();
 
     expect(res.status).toBe(200);
-    expect(body.result.instructions).toBe(CORE_INSTRUCTIONS);
+    expect(body.result.instructions).toBe(REMOTE_SERVER_INSTRUCTIONS);
   });
 
   it("パーティ保存系を除いたツール一覧を返す", async () => {

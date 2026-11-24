@@ -1,6 +1,6 @@
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
 import { createCoreServer } from "./core-server.js";
-import { CORE_INSTRUCTIONS } from "./instructions.js";
+import { REMOTE_SERVER_INSTRUCTIONS } from "./instructions.js";
 
 export interface Env {
   /** MCP エンドポイントの認証に使う共有トークン。wrangler secret で設定する。 */
@@ -63,7 +63,7 @@ function bearerToken(request: Request): string | null {
 }
 
 async function handleMcp(request: Request): Promise<Response> {
-  const server = createCoreServer(CORE_INSTRUCTIONS);
+  const server = createCoreServer(REMOTE_SERVER_INSTRUCTIONS);
   // セッションを持たないので、リクエストごとにサーバーとトランスポートを作って捨てる。
   // SSE で返すとストリームが閉じるまでサーバーを生かす必要があるため、JSON で返させる。
   const transport = new WebStandardStreamableHTTPServerTransport({
