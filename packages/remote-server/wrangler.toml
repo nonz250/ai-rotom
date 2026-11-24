@@ -1,3 +1,7 @@
 name = "ai-rotom"
 main = "src/worker.ts"
 compatibility_date = "2026-11-01"
+
+[vars]
+# 全技系ツールで自分側の技構成を必須にするか。有料プランなど CPU 時間に余裕がある環境では "false" にできる。
+REQUIRE_MOVES = "true"
