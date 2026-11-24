@@ -33,6 +33,7 @@ import しない。ファイルを持たない実行環境でも core だけで�
 - リクエストごとにサーバーとトランスポートを作り直すステートレス構成。セッションを持たないので GET (SSE) と DELETE は 405 を返す
 - `nodejs_compat` を有効にしていないので、core から辿れるコードで Node の組み込みモジュールを import すると Workers で動かない。wrangler はこれを外部参照のままバンドルしてしまうため、CI の `scripts/verify-worker-bundle.sh` で検出する。`nodejs_compat` を有効にして回避しない。保存系が core に混ざったことに気付けなくなる
 - 無料プランの CPU 上限は 1 リクエスト 10 ms。データの Map 構築はモジュール読み込み時に 1 回だけ行い、リクエストごとに作らない
+- 習得技すべての計算は 10 ms を超えるので、Workers 版は `requireMoves` で全技系ツールの攻撃側に moves を必須にしている。instructions で案内するだけでは AI クライアントが従わなかったため、ツール側でエラーにする
 
 ## データフロー
 
