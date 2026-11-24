@@ -73,8 +73,11 @@ ai-rotom/
     │           ├── calc/        # 計算系
     │           ├── analysis/    # 分析系
     │           └── party/       # パーティ永続化 (save/load/list/delete)
-    └── remote-server/           # Cloudflare Workers 版 (npm には公開しない)
-        └── src/worker.ts        # mcp-server の core を @ai-rotom/mcp-core 経由で使う
+    └── remote-server/           # リモート版 (npm には公開しない)
+        └── src/
+            ├── handler.ts       # 実行環境に依存しないリクエストハンドラー
+            ├── config.ts        # 環境変数 → 設定
+            └── platforms/       # サービスごとのエントリ (既定は cloudflare.ts)
 ```
 
 - `packages/` は npm workspace 対象のパッケージのみを配置する
@@ -86,7 +89,7 @@ ai-rotom/
 |---|---|
 | `shared/` | ポケチャン対戦ロジックの再利用可能なコアライブラリ。型・定数・Zod スキーマ・分析ロジック・ダメ計エンジン。**具象データには依存しない（DI で受ける）** |
 | `packages/mcp-server/` | MCP プロトコル対応と具象データ供給。JSON データを読み、shared の計算エンジンに注入するアプリケーション層 |
-| `packages/remote-server/` | mcp-server の core を Cloudflare Workers で動かすエントリと設定。npm には公開しない |
+| `packages/remote-server/` | mcp-server の core をリモート MCP サーバーとして動かすハンドラーと、サービスごとのエントリ。既定は Cloudflare Workers。npm には公開しない |
 | `data/champions/` | ポケチャン固有のマスターデータ。将来の api-server / web-ui からも参照される資産 |
 
 `shared` は npm パッケージではなく **単純なソースディレクトリ**。mcp-server から alias 経由で参照される。将来 api-server を同リポジトリに追加する場合も同じ alias で参照可能。
@@ -140,9 +143,9 @@ TS6059 エラーにならないようにしている。
     `@pokesol/pokesol-text-parser-ts`（npm registry 公開パッケージ）
 - npm publish 時の同梱は `dist` / `LICENSE`（`files` フィールド参照）
 
-### リモート版 (Cloudflare Workers)
+### リモート版
 
-- `packages/remote-server` を、利用者が自分の Cloudflare アカウントへ `wrangler deploy` する。npm publish 物には含まれない
+- `packages/remote-server` を、利用者が自分のアカウントへデプロイする。既定は Cloudflare Workers への `wrangler deploy`。npm publish 物には含まれない
 - remote-server が mcp-server から使ってよいのは `@ai-rotom/mcp-core`（`packages/mcp-server/src/core.ts`）に出したものだけ。wrangler などの Workers 用の依存を mcp-server に入れない
 - remote-server は第三者パッケージの版を自分で宣言しない。mcp-server の `dependencies` から hoist されたものをバンドルする。別々に固定すると版がずれ、MCP SDK が 2 つ入って Worker 内で混ざる
 
