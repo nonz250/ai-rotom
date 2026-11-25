@@ -1,0 +1,15 @@
+{
+  "name": "@ai-rotom/site",
+  "private": true,
+  "type": "module",
+  "description": "公式のリモート MCP サーバーと同じ URL で配る、ai-rotom の紹介サイト",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "devDependencies": {
+    "astro": "7.4.10",
+    "cookie": "2.0.2"
+  }
+}

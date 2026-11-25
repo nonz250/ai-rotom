@@ -37,6 +37,8 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          ASTRO_TELEMETRY_DISABLED: "1"
 
       - name: Verify dist bundle boundaries
         run: bash scripts/verify-dist-bundle.sh

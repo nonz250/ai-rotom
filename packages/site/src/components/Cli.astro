@@ -1,0 +1,46 @@
+---
+const SERVER_URL = "https://ai-rotom.nonz250.workers.dev/mcp";
+const SELF_HOST_URL = "https://github.com/nonz250/ai-rotom/blob/main/packages/remote-server/README.md";
+---
+
+<section class="block" id="cli">
+  <div class="wrap">
+    <h2>CLI 版での接続方法</h2>
+    <p class="intro">
+      Claude Code や Codex などのコマンドラインの AI エージェントでは、手元のパソコンで動かせます。パーティの保存を含め、すべての機能を制限なしで使えます。Node.js 24 以上が必要です。
+    </p>
+    <div class="cli-grid">
+      <div>
+        <h3>手元で動かす</h3>
+        <p>すべての機能を使えます。</p>
+        <pre class="code"><span class="c"># Claude Code</span>
+claude mcp add ai-rotom -- npx -y @nonz250/ai-rotom
+
+<span class="c"># Codex</span>
+codex mcp add ai-rotom -- npx -y @nonz250/ai-rotom</pre>
+      </div>
+      <div>
+        <h3>公開サーバーにつなぐ</h3>
+        <p>チャットのアプリと同じサーバーです。使えない機能と 1 日の上限は注意事項と同じです。リクエスト数は接続元のアドレスごとに 60 秒あたり 60 件までで、ブラウザの中で動く MCP クライアントからはつなげません。</p>
+        <pre class="code"><span class="c"># Claude Code</span>
+claude mcp add --transport http ai-rotom \
+  {SERVER_URL}
+
+<span class="c"># Codex</span>
+codex mcp add ai-rotom \
+  --url {SERVER_URL}</pre>
+      </div>
+    </div>
+    <p class="small">自分の Cloudflare アカウントにサーバーを立てる方法は <a href={SELF_HOST_URL}>packages/remote-server/README.md</a> にあります。</p>
+  </div>
+</section>
+
+<style>
+  .cli-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .cli-grid > div { min-width: 0; }
+  h3 { font-size: 1rem; margin-bottom: 8px; }
+  .cli-grid p { color: var(--muted); font-size: 0.93rem; margin: 0 0 12px; }
+  @media (max-width: 820px) {
+    .cli-grid { grid-template-columns: 1fr; }
+  }
+</style>

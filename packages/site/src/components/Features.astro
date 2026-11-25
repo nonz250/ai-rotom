@@ -1,0 +1,48 @@
+---
+const features = [
+  { category: "情報", title: "種族値・技・特性・持ち物", body: "タイプ相性、性格の補正、天候やフィールドの効果も調べられます。" },
+  { category: "検索", title: "条件でポケモンを探す", body: "この技を覚えるポケモン、この特性を持つポケモン、このタイプを半減するポケモン。" },
+  { category: "計算", title: "ダメージ計算と実数値", body: "1 対 1 の単発、全技、6 対 6 の 3 つの粒度で計算します。確定数や、耐えるのに要る振り方も逆算します。" },
+  { category: "素早さ", title: "素早さのライン", body: "抜きたい相手に必要な能力ポイントを、1 ポイント単位で調べます。" },
+  { category: "分析", title: "パーティの弱点と攻撃範囲", body: "2 つのパーティの違いや、足りないタイプ耐性を数で返します。" },
+  { category: "選出", title: "対面と選出の材料", body: "お互いのダメージ、素早さ、先制技をまとめて取り出します。選ぶのは AI とあなたです。" },
+];
+---
+
+<section class="block" id="features">
+  <div class="wrap">
+    <h2>できること</h2>
+    <p class="intro">AI が答える前に、ポケモンチャンピオンズのデータで事実を確かめます。従来作の記憶で答えて数字がずれる、ということを減らせます。</p>
+    <div class="features">
+      {
+        features.map((feature) => (
+          <div class="feature">
+            <div class="cat">{feature.category}</div>
+            <div>
+              <h3>{feature.title}</h3>
+              <p>{feature.body}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .features { display: grid; grid-template-columns: repeat(2, 1fr); border-top: 1px solid var(--line); }
+  .feature { padding: 18px 4px; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 6.5em 1fr; gap: 12px; min-width: 0; }
+  .feature:nth-child(odd) { padding-right: 24px; }
+  .feature:nth-child(even) { padding-left: 24px; border-left: 1px solid var(--line); }
+  .cat { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent); letter-spacing: 0.04em; padding-top: 3px; font-weight: 600; }
+  h3 { font-size: 1rem; font-weight: 700; }
+  p { margin: 4px 0 0; color: var(--muted); font-size: 0.93rem; }
+  @media (max-width: 820px) {
+    .features { grid-template-columns: 1fr; }
+    .feature:nth-child(even) { padding-left: 4px; border-left: 0; }
+    .feature:nth-child(odd) { padding-right: 4px; }
+  }
+  @media (max-width: 480px) {
+    .feature { grid-template-columns: 1fr; gap: 2px; }
+  }
+</style>

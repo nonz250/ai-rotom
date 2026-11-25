@@ -1,0 +1,48 @@
+---
+import ChatSamples from "./ChatSamples.astro";
+---
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">ポケモンチャンピオンズの対戦アドバイザー</div>
+      <h1>AI と一緒に<br /><em>ポケモンバトル</em>を<br />楽しもう</h1>
+      <p class="lede">
+        ChatGPT や Claude などのチャットのアプリに追加すると、ポケモンのことを聞いたときに、AI が ai-rotom のデータを調べてから答えるようになります。インストールはいりません。
+      </p>
+      <a class="cta" href="#start">はじめかたを見る</a>
+      <ul class="rules" aria-label="対応しているルール">
+        <li>Lv.50 固定</li>
+        <li>能力ポイント 合計 66</li>
+        <li>個体値 一律 31</li>
+        <li>メガシンカ 1 試合 1 回</li>
+      </ul>
+    </div>
+    <ChatSamples />
+  </div>
+</section>
+
+<style>
+  .hero {
+    color: var(--navy-ink);
+    background:
+      linear-gradient(90deg, rgba(12, 27, 44, 0.96) 0%, rgba(12, 27, 44, 0.9) 38%, rgba(12, 27, 44, 0) 62%),
+      url("/lightning-band.svg") center / 100% 100% no-repeat,
+      radial-gradient(50% 80% at 85% 20%, rgba(92, 200, 240, 0.25), transparent 70%),
+      var(--navy);
+  }
+  .hero .wrap { display: grid; grid-template-columns: 1fr 1.05fr; gap: 40px; padding-block: 56px 48px; align-items: start; }
+  .hero .wrap > * { min-width: 0; }
+  .eyebrow { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.08em; color: var(--navy-muted); }
+  h1 { font-family: var(--font-display); font-weight: 400; font-size: var(--step-3); margin-top: 10px; letter-spacing: 0.01em; }
+  h1 em { font-style: normal; background: linear-gradient(transparent 62%, rgba(92, 200, 240, 0.7) 62%, rgba(92, 200, 240, 0.7) 92%, transparent 92%); }
+  h1, .lede, .eyebrow { text-shadow: 0 1px 12px rgba(12, 27, 44, 0.9); }
+  .lede { color: var(--navy-muted); max-width: 34em; margin: 18px 0 26px; }
+  .cta { display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: var(--on-accent); text-decoration: none; font-weight: 700; border-radius: 4px; padding: 10px 18px; }
+  .rules { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 0; padding: 0; list-style: none; }
+  .rules li { font-family: var(--font-mono); font-size: 0.78rem; border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; color: var(--muted); background: var(--surface); }
+  @media (max-width: 820px) {
+    .hero { background: linear-gradient(rgba(12, 27, 44, 0.82), rgba(12, 27, 44, 0.82)), url("/lightning-band.svg") center / 100% 100% no-repeat, var(--navy); }
+    .hero .wrap { grid-template-columns: 1fr; padding-block: 36px; }
+  }
+</style>

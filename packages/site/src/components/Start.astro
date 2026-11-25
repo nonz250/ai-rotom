@@ -1,0 +1,116 @@
+---
+const SERVER_URL = "https://ai-rotom.nonz250.workers.dev/mcp";
+const CONNECT_PROMPT_URL =
+  "https://raw.githubusercontent.com/nonz250/ai-rotom/main/packages/remote-server/docs/connect-prompt.md";
+const MUSE_URL = "https://muse.ai/";
+const MUSE_INVITE_CODE = "FOGJB5";
+const prompt = `次の手順書を読んで、このアプリに ai-rotom を追加する方法を案内してください。\n${CONNECT_PROMPT_URL}`;
+---
+
+<section class="block" id="start">
+  <div class="wrap">
+    <h2>はじめかた</h2>
+    <p class="intro">
+      使っているチャットのアプリに、ai-rotom を「コネクタ」として追加します。追加の手順は AI が案内するので、次の文章を貼り付けるだけで始められます。
+    </p>
+
+    <ol class="steps">
+      <li>
+        <h3>文章をコピーする</h3>
+        <p>下の「コピー」を押します。</p>
+      </li>
+      <li>
+        <h3>チャットに貼って送る</h3>
+        <p>ChatGPT、Claude、Gemini、Muse など、使いたいアプリのチャットに貼り付けて送ります。</p>
+      </li>
+      <li>
+        <h3>案内のとおりに追加する</h3>
+        <p>追加できたら、新しいチャットで「ai-rotom でガブリアスの種族値を調べて」と聞いてみてください。</p>
+      </li>
+    </ol>
+
+    <div class="muse">
+      <strong>おすすめのアプリは Muse です。</strong>
+      <a href={MUSE_URL}>{MUSE_URL}</a>
+      <small>Muse の招待コード <code>{MUSE_INVITE_CODE}</code> を使えば 10 億トークンがもらえます！</small>
+      <button class="copy ghost" type="button" data-copy={MUSE_INVITE_CODE}>コードをコピー</button>
+    </div>
+
+    <div class="prompt">
+      <div class="prompt-head">
+        <span>チャットに貼る文章</span>
+        <button class="copy" type="button" data-copy={prompt}>コピー</button>
+      </div>
+      <pre>{prompt}</pre>
+    </div>
+
+    <div class="manual">
+      <h3>自分で追加するとき</h3>
+      <div class="kv">
+        <div class="k">名前</div>
+        <div class="v"><code>ai-rotom</code></div>
+        <div class="a"><button class="copy ghost" type="button" data-copy="ai-rotom">コピー</button></div>
+        <div class="k">URL</div>
+        <div class="v"><code>{SERVER_URL}</code></div>
+        <div class="a"><button class="copy ghost" type="button" data-copy={SERVER_URL}>コピー</button></div>
+        <div class="k">認証</div>
+        <div class="v">なし</div>
+        <div class="a"></div>
+        <div class="k">通信方式</div>
+        <div class="v">Streamable HTTP か HTTP。SSE は選びません</div>
+        <div class="a"></div>
+      </div>
+      <p class="small">
+        アプリの設定の「コネクタ」や「カスタムコネクタ」の画面から追加します。アプリやプランによっては追加できないことがあります。
+      </p>
+    </div>
+  </div>
+</section>
+
+<script>
+  const COPIED_LABEL_MS = 1800;
+  document.querySelectorAll<HTMLButtonElement>("button[data-copy]").forEach((button) => {
+    const label = button.textContent ?? "";
+    button.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(button.dataset.copy ?? "");
+        button.textContent = "コピーしました";
+      } catch {
+        button.textContent = "コピーできませんでした";
+      }
+      setTimeout(() => (button.textContent = label), COPIED_LABEL_MS);
+    });
+  });
+</script>
+
+<style>
+  .steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; counter-reset: step; }
+  .steps li { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; counter-increment: step; display: grid; gap: 8px; align-content: start; min-width: 0; }
+  .steps li::before { content: counter(step); font-family: var(--font-display); font-size: 1.4rem; color: var(--accent); line-height: 1; }
+  .steps h3 { font-size: 1.02rem; font-weight: 700; }
+  .steps p { margin: 0; color: var(--muted); font-size: 0.94rem; }
+  .muse { margin-top: 16px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; padding: 12px 16px; border: 1px dashed color-mix(in oklab, var(--accent) 55%, var(--line)); border-radius: var(--radius); background: color-mix(in oklab, var(--accent) 6%, var(--surface)); }
+  .muse small { color: var(--muted); font-size: 0.8rem; }
+  .muse code { font-weight: 600; color: var(--ink); }
+  .prompt { margin-top: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .prompt-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .prompt-head span { font-size: var(--step--1); color: var(--muted); }
+  .prompt pre { margin: 0; padding: 16px; overflow-x: auto; font-family: var(--font-mono); font-size: 0.86rem; line-height: 1.7; white-space: pre-wrap; word-break: break-all; }
+  .manual { margin-top: 28px; }
+  .manual h3 { font-size: 1.02rem; margin-bottom: 10px; }
+  .kv { display: grid; grid-template-columns: max-content 1fr auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+  .kv > div { padding: 10px 14px; border-top: 1px solid var(--line); display: flex; align-items: center; min-width: 0; }
+  .kv > div:nth-child(-n + 3) { border-top: 0; }
+  .kv .k { color: var(--muted); font-size: var(--step--1); white-space: nowrap; }
+  .kv .v { overflow-wrap: anywhere; }
+  .kv .a { justify-content: flex-end; }
+  @media (max-width: 820px) {
+    .steps { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 480px) {
+    .kv { grid-template-columns: 1fr auto; }
+    .kv .k { grid-column: 1 / -1; padding-bottom: 0; border-top: 1px solid var(--line); }
+    .kv .v, .kv .a { border-top: 0; }
+    .kv > div:first-child { border-top: 0; }
+  }
+</style>
