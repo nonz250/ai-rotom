@@ -7,6 +7,11 @@
 # party storage module (which writes files) leaking into the core server would
 # only break at deploy or run time without this check.
 #
+# This is a regression check for the "no nodejs_compat" invariant, not a
+# security boundary. It only looks for `node:` imports and does not detect
+# arbitrary fetch, data exfiltration or other malicious code. Keep it anyway,
+# since wrangler bundles such imports without failing.
+#
 # Run `npm run bundle --workspace=@ai-rotom/remote-server` first.
 # This script fails (exit 1) if the invariant is violated.
 
