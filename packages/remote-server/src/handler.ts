@@ -204,6 +204,18 @@ async function handleRequest(
     return textResponse(HTTP_STATUS_FORBIDDEN, "HTTPS is required");
   }
 
+  // Host ヘッダーではなく URL のホスト名で比べる。手前で TLS を外すプロキシの後ろでは Host が
+  // 内側の名前になりうるので、https の確認と同じく、クライアントから見た URL を渡してもらう前提にそろえる。
+  if (config.allowedHosts !== undefined && !config.allowedHosts.includes(url.hostname)) {
+    return textResponse(HTTP_STATUS_FORBIDDEN, "Host is not allowed");
+  }
+
+  // ブラウザには対応しないので、Origin の値を許可リストで絞らず、付いていれば `null` でも拒否する。
+  // サーバー側で動く MCP クライアントは Origin を付けない。
+  if (request.headers.has("origin")) {
+    return textResponse(HTTP_STATUS_FORBIDDEN, "Requests from browsers are not supported");
+  }
+
   const pathToken = parseMcpPath(url.pathname);
   if (pathToken === undefined) {
     return textResponse(HTTP_STATUS_NOT_FOUND, "Not Found");
