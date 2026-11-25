@@ -87,6 +87,16 @@ function bearerToken(request: Request): string | null {
   return match === null ? null : match[1];
 }
 
+/**
+ * 認証に使ったトークンを含まないリクエストを作る。SDK はリクエストの URL とヘッダーを
+ * ツールの処理に渡すので、トークンがそこから先に広がらないようにする。
+ */
+function withoutCredentials(request: Request): Request {
+  const headers = new Headers(request.headers);
+  headers.delete("authorization");
+  return new Request(new URL(MCP_PATH, request.url), { method: request.method, headers });
+}
+
 /** 本文を上限まで読んで JSON としてパースする。受け付けられない本文ならエラーの応答を返す。 */
 async function readJsonRpcMessage(request: Request): Promise<{ message: unknown } | Response> {
   let message: unknown;
@@ -131,7 +141,7 @@ async function handleMcp(request: Request, requireMoves: boolean): Promise<Respo
   });
   await server.connect(transport);
   try {
-    return await transport.handleRequest(request, { parsedBody: read.message });
+    return await transport.handleRequest(withoutCredentials(request), { parsedBody: read.message });
   } finally {
     await server.close();
   }

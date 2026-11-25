@@ -1,4 +1,5 @@
-import { describe, it, expect } from "vitest";
+import { afterEach, describe, it, expect, vi } from "vitest";
+import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
 import { MAX_MOVES_PER_MEMBER } from "@ai-rotom/shared";
 import { buildRemoteServerInstructions } from "./instructions";
 import { loadConfig, type ConfigSource } from "./config";
@@ -127,6 +128,45 @@ describe("handleRequest の認証", () => {
       );
       expect(res.status).toBe(503);
     }
+  });
+});
+
+describe("handleRequest が MCP SDK に渡すリクエスト", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  async function requestSeenBySdk(request: Request): Promise<Request> {
+    const spy = vi.spyOn(WebStandardStreamableHTTPServerTransport.prototype, "handleRequest");
+    const res = await handleRequest(request, ENV);
+    expect(res.status).toBe(200);
+    expect(spy).toHaveBeenCalledTimes(1);
+    return spy.mock.calls[0][0];
+  }
+
+  it("Bearer で認証したときは authorization ヘッダーを渡さない", async () => {
+    const seen = await requestSeenBySdk(mcpRequest("/mcp", rpc("tools/list"), BEARER));
+
+    expect(seen.headers.has("authorization")).toBe(false);
+    expect(new URL(seen.url).pathname).toBe("/mcp");
+  });
+
+  it("パスで認証したときは、トークンとクエリを除いた /mcp の URL で渡す", async () => {
+    const seen = await requestSeenBySdk(mcpRequest(`/mcp/${TOKEN}?x=1`, rpc("tools/list")));
+
+    expect(seen.url).toBe(`${ORIGIN}/mcp`);
+    expect(seen.url).not.toContain(TOKEN);
+  });
+
+  it("MCP の処理に要るヘッダーはそのまま渡す", async () => {
+    const seen = await requestSeenBySdk(
+      mcpRequest("/mcp", rpc("tools/list"), { ...BEARER, "mcp-protocol-version": "2025-06-18" }),
+    );
+
+    expect(seen.method).toBe("POST");
+    expect(seen.headers.get("accept")).toBe(MCP_HEADERS.accept);
+    expect(seen.headers.get("content-type")).toBe(MCP_HEADERS["content-type"]);
+    expect(seen.headers.get("mcp-protocol-version")).toBe("2025-06-18");
   });
 });
 
