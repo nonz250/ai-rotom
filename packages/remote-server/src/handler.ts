@@ -11,6 +11,13 @@ import { buildRemoteServerInstructions } from "./instructions.js";
 /** Web 標準の Request を受けて Response を返す関数。多くの Workers 系サービスがこの形でリクエストを渡す。 */
 export type RequestHandler = (request: Request) => Promise<Response>;
 
+/** 認証を通ったリクエストの数を制限する仕組み。実体は各サービスの機能で用意する。 */
+export interface RateLimiter {
+  /** key のリクエストを 1 件数え、上限に収まっていれば true を返す。 */
+  allow(key: string): Promise<boolean>;
+  readonly retryAfterSeconds: number;
+}
+
 const MCP_PATH = "/mcp";
 
 const INSECURE_PROTOCOL = "http:";
@@ -44,6 +51,7 @@ const HTTP_STATUS_FORBIDDEN = 403;
 const HTTP_STATUS_NOT_FOUND = 404;
 const HTTP_STATUS_METHOD_NOT_ALLOWED = 405;
 const HTTP_STATUS_PAYLOAD_TOO_LARGE = 413;
+const HTTP_STATUS_TOO_MANY_REQUESTS = 429;
 const HTTP_STATUS_SERVICE_UNAVAILABLE = 503;
 
 function textResponse(status: number, body: string, headers?: HeadersInit): Response {
@@ -61,15 +69,30 @@ async function digest(value: string): Promise<Uint8Array> {
   return new Uint8Array(await crypto.subtle.digest(TOKEN_DIGEST_ALGORITHM, data));
 }
 
-async function tokensMatch(provided: string, expected: string): Promise<boolean> {
-  // 長さの違うトークンで早く返すと、比べる時間から長さが漏れる。ハッシュにそろえてから比べる。
-  // Workers の crypto.subtle.timingSafeEqual は Web 標準にないので、他のサービスでも動く形で比べる。
-  const [left, right] = await Promise.all([digest(provided), digest(expected)]);
+/**
+ * 長さの違うトークンで早く返すと、比べる時間から長さが漏れる。ハッシュにそろえてから比べる。
+ * Workers の crypto.subtle.timingSafeEqual は Web 標準にないので、他のサービスでも動く形で比べる。
+ */
+function digestsMatch(left: Uint8Array, right: Uint8Array): boolean {
   let diff = 0;
   for (let i = 0; i < left.length; i++) {
     diff |= left[i] ^ right[i];
   }
   return diff === 0;
+}
+
+/**
+ * レート制限のキーに使うダイジェストの先頭のバイト数。キーは制限の仕組みの側に保存されるので、
+ * トークンそのものは渡さない。共有トークンを区別できれば足りるので、先頭だけにする。
+ */
+const RATE_LIMIT_KEY_BYTES = 8;
+const HEX_RADIX = 16;
+const HEX_DIGITS_PER_BYTE = 2;
+
+function rateLimitKey(tokenDigest: Uint8Array): string {
+  return Array.from(tokenDigest.subarray(0, RATE_LIMIT_KEY_BYTES), (byte) =>
+    byte.toString(HEX_RADIX).padStart(HEX_DIGITS_PER_BYTE, "0"),
+  ).join("");
 }
 
 /**
@@ -170,7 +193,11 @@ function withResponseHeaders(response: Response): Response {
   return result;
 }
 
-async function handleRequest(request: Request, config: RemoteServerConfig): Promise<Response> {
+async function handleRequest(
+  request: Request,
+  config: RemoteServerConfig,
+  rateLimiter: RateLimiter | undefined,
+): Promise<Response> {
   const url = new URL(request.url);
   // 平文で届いたトークンは途中で読まれうる。手元での確認だけは TLS なしでも通す。
   if (url.protocol === INSECURE_PROTOCOL && !LOOPBACK_HOSTNAMES.includes(url.hostname)) {
@@ -191,8 +218,19 @@ async function handleRequest(request: Request, config: RemoteServerConfig): Prom
     );
   }
   const provided = pathToken ?? bearerToken(request);
-  if (provided === null || !(await tokensMatch(provided, expected))) {
+  if (provided === null) {
     return textResponse(HTTP_STATUS_UNAUTHORIZED, "Unauthorized");
+  }
+  const [providedDigest, expectedDigest] = await Promise.all([digest(provided), digest(expected)]);
+  if (!digestsMatch(providedDigest, expectedDigest)) {
+    return textResponse(HTTP_STATUS_UNAUTHORIZED, "Unauthorized");
+  }
+
+  // 認証前に数えると、でたらめなトークンを送るたびに別のキーができ、制限として働かない。
+  if (rateLimiter !== undefined && !(await rateLimiter.allow(rateLimitKey(providedDigest)))) {
+    return textResponse(HTTP_STATUS_TOO_MANY_REQUESTS, "Too Many Requests", {
+      "retry-after": String(rateLimiter.retryAfterSeconds),
+    });
   }
 
   // セッションを持たないので、サーバーからの通知を流す GET の SSE と、
@@ -207,7 +245,11 @@ async function handleRequest(request: Request, config: RemoteServerConfig): Prom
 /**
  * リモート版の MCP サーバーのリクエストハンドラーを作る。
  * 実行環境に依存する処理は含まないので、各サービスのエントリから設定を渡して使う。
+ * rateLimiter を渡さなければ、リクエストの数を制限しない。
  */
-export function createRequestHandler(config: RemoteServerConfig): RequestHandler {
-  return async (request) => withResponseHeaders(await handleRequest(request, config));
+export function createRequestHandler(
+  config: RemoteServerConfig,
+  rateLimiter?: RateLimiter,
+): RequestHandler {
+  return async (request) => withResponseHeaders(await handleRequest(request, config, rateLimiter));
 }
