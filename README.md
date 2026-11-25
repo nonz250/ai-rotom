@@ -1,4 +1,12 @@
-# ai-rotom
+<p align="center">
+  <a href="https://ai-rotom.nonz250.workers.dev/"><img src="packages/site/public/og.webp" alt="ai-rotom。AI と一緒にポケモンバトルを楽しもう" width="720"></a>
+</p>
+
+<p align="center">
+  <a href="https://ai-rotom.nonz250.workers.dev/"><b>ai-rotom.nonz250.workers.dev</b></a> で、チャットのアプリへの追加の仕方を案内しています
+</p>
+
+# <img src="packages/site/public/icons/icon-64.webp" alt="" width="32" height="32"> ai-rotom
 
 ポケモンチャンピオンズの対戦アドバイザーです。
 
@@ -8,8 +16,6 @@ ChatGPT や Claude などのチャットのアプリに追加すると、AI が 
 - パーティの弱点や攻撃範囲、2 つのパーティの違いを分析できます
 - 対面や選出の判断に使うデータをまとめて取り出せます。最終的な判断は AI が行います
 - 入力は日本語でも英語でも受け付けます
-
-使い方は [ai-rotom.nonz250.workers.dev](https://ai-rotom.nonz250.workers.dev/) にもまとめています。
 
 ## 著作権・商標
 
@@ -190,3 +196,10 @@ codex mcp add ai-rotom --url https://ai-rotom.nonz250.workers.dev/mcp
 
 - バグ修正・機能追加の PR 大歓迎です！
 - データの追加・修正も歓迎します！
+
+---
+
+<p align="center">
+  <a href="https://ai-rotom.nonz250.workers.dev/"><img src="packages/site/public/icons/icon-64.webp" alt="" width="24" height="24"></a><br>
+  <a href="https://ai-rotom.nonz250.workers.dev/">ai-rotom.nonz250.workers.dev</a>
+</p>
