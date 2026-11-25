@@ -1,5 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
+import { nameInputSchema } from "@ai-rotom/shared";
 import {
   pokemonNameResolver,
   abilityNameResolver,
@@ -181,7 +182,7 @@ export function registerPokemonInfoTools(server: McpServer): void {
     GET_POKEMON_INFO_TOOL_NAME,
     GET_POKEMON_INFO_DESCRIPTION,
     {
-      name: z.string().describe("ポケモン名（日本語 or 英語）"),
+      name: nameInputSchema.describe("ポケモン名（日本語 or 英語）"),
     },
     async (args) => {
       try {
@@ -228,8 +229,7 @@ export function registerPokemonInfoTools(server: McpServer): void {
     SEARCH_POKEMON_TOOL_NAME,
     SEARCH_POKEMON_DESCRIPTION,
     {
-      type: z
-        .string()
+      type: nameInputSchema
         .optional()
         .describe("タイプで絞り込み（例: 'ほのお'、'Fire'）"),
       minStat: z

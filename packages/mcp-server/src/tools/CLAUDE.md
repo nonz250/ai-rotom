@@ -24,13 +24,13 @@ MCP ツールの実装。責務別にサブディレクトリで分けている�
 ### 1. ファイル作成（`tools/<subdir>/foo.ts`）
 
 ```ts
-import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { nameInputSchema } from "@ai-rotom/shared";
 import { pokemonNameResolver } from "../../name-resolvers.js";
 import { pokemonById, toDataId } from "../../data-store.js";
 import { toErrorResponse, withHint } from "../../tool-response-hint.js";
 
-const inputSchema = { name: z.string() };
+const inputSchema = { name: nameInputSchema };
 
 export function registerFooTool(server: McpServer): void {
   server.registerTool(
@@ -59,6 +59,9 @@ export function registerFooTool(server: McpServer): void {
 ### 2. 共通パターン
 
 - **入力検証**: Zod スキーマで（`@ai-rotom/shared` の既存スキーマ `pokemonSchema` 等を活用）
+  - 文字列・配列・record には必ず上限を付ける。リモート版は 1 リクエストの CPU 時間に上限があり、入力の大きさがそのまま処理時間とメモリに響くため
+  - 名前の文字列は `nameInputSchema`、パーティは `.min(MIN_PARTY_MEMBERS).max(MAX_PARTY_MEMBERS)` を使う。`z.string()` のまま受けない。名前が見つからないと全候補との編集距離を計算するため
+  - 引数全体の要素数は `core-server.ts` の `MAX_TOOL_INPUT_ELEMENTS` で SDK が先に打ち切る。これより大きな正当入力を持つツールを足すなら、値の根拠と合わせて見直す
 - **名前解決**: `name-resolvers.ts` の `NameResolver` 経由
   - 類似名サジェスト: `resolver.suggestSimilar(name, 3)` を使い、エラーメッセージに含める
 - **ダメ計**: `calc/damage-calculator.ts` が export する共有インスタンス `damageCalculator` を import する（`new DamageCalculatorAdapter(...)` を各ツールで個別に生成しない）:
@@ -66,7 +69,7 @@ export function registerFooTool(server: McpServer): void {
   import { damageCalculator } from "../../calc/damage-calculator.js";
   ```
 - 攻撃側の技構成を省略すると習得技すべてを計算するツールは、`MovesRequirement` を受け取り `assertMovesSpecified` を呼ぶ。Workers 版では moves が必須になる
-- ポケモン名ごとに技を受け取る `moves` 引数でダメ計をするツールは、`assertMovesWithinLimit` も呼ぶ。この引数はスキーマで技数を絞っていないので、Workers 版では `MAX_MOVES_PER_MEMBER` を超える指定をエラーにする
+- ポケモン名ごとに技を受け取る `moves` 引数は shared の `movesByPokemonSchema` で受ける。匹数・技数・名前の文字数の上限はこのスキーマが持つ
 - 複数技のダメ計結果は `summarizeMoveDamages` で要約して返す。乱数配列を全技ぶん返すと AI のコンテキストを圧迫するため、乱数の内訳は単発のダメ計でだけ返す
 - **エラー応答**: `{ content: [...], isError: true }` + `JSON.stringify({ error })`
 - **成功応答**: `JSON.stringify(data)` をテキストで返す

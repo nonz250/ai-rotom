@@ -1,5 +1,5 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
+import { nameInputSchema } from "@ai-rotom/shared";
 import { naturesById, toDataId } from "../../data-store.js";
 import { natureNameResolver } from "../../name-resolvers.js";
 import { withHint } from "../../tool-response-hint.js";
@@ -9,7 +9,7 @@ const TOOL_DESCRIPTION =
   "ポケモンの性格の詳細情報（上昇ステ・下降ステ）を取得する。育成方針の検討や性格選びに使用する。plus/minus が null の性格は無補正。ポケモンチャンピオンズ対応。";
 
 const inputSchema = {
-  name: z.string().describe("性格名（日本語 or 英語、例: 'ひかえめ'、'Modest'）"),
+  name: nameInputSchema.describe("性格名（日本語 or 英語、例: 'ひかえめ'、'Modest'）"),
 };
 
 /**

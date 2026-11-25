@@ -6,6 +6,9 @@ import {
   collectPartyResistanceTypes,
   collectPartyWeaknessTypes,
   computeNumericStats,
+  MAX_PARTY_MEMBERS,
+  MAX_PARTY_NAME_LENGTH,
+  MIN_PARTY_MEMBERS,
   pokemonSchema,
   type NumericStats,
   type PokemonInput,
@@ -25,9 +28,6 @@ import { analyzePartyCoverage, EFFECTIVE_THRESHOLD } from "./party-coverage.js";
 
 const CHAMPIONS_GEN_NUM = 0;
 
-/** 対戦に組めるパーティメンバーの上限 (ポケモンチャンピオンズ仕様) */
-const MAX_PARTY_SIZE = 6;
-
 /** 性格未指定時の既定 (無補正性格) */
 const DEFAULT_NATURE_EN = "Serious";
 
@@ -39,8 +39,8 @@ const TOOL_DESCRIPTION =
 
 const labelsSchema = z
   .object({
-    partyA: z.string().optional(),
-    partyB: z.string().optional(),
+    partyA: z.string().max(MAX_PARTY_NAME_LENGTH).optional(),
+    partyB: z.string().max(MAX_PARTY_NAME_LENGTH).optional(),
   })
   .optional()
   .describe("表示用ラベル (例: { partyA: '現行', partyB: '改修案' })");
@@ -48,13 +48,13 @@ const labelsSchema = z
 const inputSchema = {
   partyA: z
     .array(pokemonSchema)
-    .min(1)
-    .max(MAX_PARTY_SIZE)
+    .min(MIN_PARTY_MEMBERS)
+    .max(MAX_PARTY_MEMBERS)
     .describe("比較対象のパーティ A"),
   partyB: z
     .array(pokemonSchema)
-    .min(1)
-    .max(MAX_PARTY_SIZE)
+    .min(MIN_PARTY_MEMBERS)
+    .max(MAX_PARTY_MEMBERS)
     .describe("比較対象のパーティ B"),
   labels: labelsSchema,
 };

@@ -3,6 +3,9 @@ import { z } from "zod";
 import { Generations } from "@smogon/calc";
 import type { TypeName } from "@smogon/calc/dist/data/interface";
 import {
+  MAX_PARTY_MEMBERS,
+  MIN_PARTY_MEMBERS,
+  movesByPokemonSchema,
   DamageCalculatorAdapter,
   calculateTypeEffectiveness,
   compareSpeed,
@@ -26,7 +29,6 @@ import { candidateMoveIds } from "../../calc/candidate-moves.js";
 import { withHint } from "../../tool-response-hint.js";
 import {
   assertMovesSpecified,
-  assertMovesWithinLimit,
   MOVES_OPTIONAL,
   type MovesRequirement,
 } from "../../moves-requirement.js";
@@ -40,13 +42,20 @@ const TOOL_DESCRIPTION =
 const battleFormatValues = ["singles", "doubles"] as const;
 
 const inputSchema = {
-  myParty: z.array(pokemonWithMovesSchema).describe("自分のパーティ"),
-  opponentParty: z.array(pokemonSchema).describe("相手のパーティ"),
+  myParty: z
+    .array(pokemonWithMovesSchema)
+    .min(MIN_PARTY_MEMBERS)
+    .max(MAX_PARTY_MEMBERS)
+    .describe("自分のパーティ"),
+  opponentParty: z
+    .array(pokemonSchema)
+    .min(MIN_PARTY_MEMBERS)
+    .max(MAX_PARTY_MEMBERS)
+    .describe("相手のパーティ"),
   battleFormat: z
     .enum(battleFormatValues)
     .describe("対戦形式（シングル: singles / ダブル: doubles）"),
-  moves: z
-    .record(z.string(), z.array(z.string()))
+  moves: movesByPokemonSchema
     .optional()
     .describe(
       "ポケモン名（日本語 or 英語）ごとに候補技を指定する。指定がなければ myParty 各メンバーの moves、それもなければ習得技すべてで計算する。",
@@ -236,7 +245,6 @@ export function registerSelectionAnalysisTool(
   server.tool(TOOL_NAME, TOOL_DESCRIPTION, inputSchema, async (args) => {
     try {
       const gen = Generations.get(CHAMPIONS_GEN_NUM);
-      assertMovesWithinLimit(movesRequirement, args.moves);
       const movesMap = resolveMovesMap(args.moves);
 
       // battleFormat (トップレベル) を conditions に詰め直してダメ計に伝える。

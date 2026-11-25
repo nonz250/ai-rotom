@@ -1,8 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
 import { Generations } from "@smogon/calc";
 import type { TypeName } from "@smogon/calc/dist/data/interface";
-import { calculateTypeEffectiveness } from "@ai-rotom/shared";
+import { nameInputSchema, calculateTypeEffectiveness } from "@ai-rotom/shared";
 import {
   championsLearnsets,
   championsPokemon,
@@ -34,20 +33,16 @@ const TOOL_DESCRIPTION =
   + "複数条件の AND 指定が可能。対策ポケモン探しやパーティ構築に使用する。ポケモンチャンピオンズ対応。";
 
 const inputSchema = {
-  resistsType: z
-    .string()
+  resistsType: nameInputSchema
     .optional()
     .describe("指定タイプの攻撃を 0.5 倍以下で受けるポケモン（半減・無効含む）"),
-  immuneToType: z
-    .string()
+  immuneToType: nameInputSchema
     .optional()
     .describe("指定タイプの攻撃を無効化するポケモン（0 倍）"),
-  weakToType: z
-    .string()
+  weakToType: nameInputSchema
     .optional()
     .describe("指定タイプの攻撃で 2 倍以上のダメージを受けるポケモン（4 倍含む）"),
-  hasAttackingType: z
-    .string()
+  hasAttackingType: nameInputSchema
     .optional()
     .describe("指定タイプの攻撃技を 1 つ以上覚えるポケモン"),
 };

@@ -26,6 +26,11 @@ const SERVER_NAME = "ai-rotom";
 const SERVER_VERSION = "0.0.1";
 
 /**
+ * 1 回のツール呼び出しで受け付ける引数の要素数 (配列の要素とオブジェクトのメンバーの合計) の上限。
+ */
+export const MAX_TOOL_INPUT_ELEMENTS = 1000;
+
+/**
  * パーティ保存系を除くツールを登録した MCP サーバーを作る。
  * 保存系はファイルに書き込むので、ファイルを持たない実行環境でも読み込めるよう、ここから import しない。
  */
@@ -40,6 +45,7 @@ export function createCoreServer(
     },
     {
       instructions,
+      maxToolInputElements: MAX_TOOL_INPUT_ELEMENTS,
     },
   );
 

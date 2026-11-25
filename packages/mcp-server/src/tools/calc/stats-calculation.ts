@@ -1,7 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
 import { Generations, Pokemon } from "@smogon/calc";
 import {
+  nameInputSchema,
   MAX_STAT_POINT_TOTAL,
   evsSchema,
 } from "@ai-rotom/shared";
@@ -24,8 +24,8 @@ const TOOL_DESCRIPTION =
   + "ポケモンチャンピオンズの計算式に対応。";
 
 const statsCalcInputSchema = {
-  name: z.string().describe("ポケモン名（日本語 or 英語）"),
-  nature: z.string().optional().describe("性格名（省略時: まじめ）"),
+  name: nameInputSchema.describe("ポケモン名（日本語 or 英語）"),
+  nature: nameInputSchema.optional().describe("性格名（省略時: まじめ）"),
   evs: evsSchema
     .optional()
     .describe("能力ポイント(SP)。各ステ 0-32、合計 0-66。省略時は全 0 (無振り)。"),

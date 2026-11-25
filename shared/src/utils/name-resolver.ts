@@ -1,3 +1,5 @@
+import { MAX_NAME_LENGTH } from "../schemas/party.js";
+
 export interface NameEntry {
   ja: string;
   en: string;
@@ -41,8 +43,13 @@ export class NameResolver {
   }
 
   suggestSimilar(jaName: string, maxResults: number = 3): string[] {
-    const candidates: { name: string; distance: number }[] = [];
     const normalizedInput = normalizeJapaneseName(jaName);
+    // NFKC で文字数が増える入力があるため、比較に使う正規化後の長さで判定する。
+    if (normalizedInput.length > MAX_NAME_LENGTH) {
+      return [];
+    }
+
+    const candidates: { name: string; distance: number }[] = [];
 
     for (const name of this.jaNames) {
       const distance = levenshteinDistance(

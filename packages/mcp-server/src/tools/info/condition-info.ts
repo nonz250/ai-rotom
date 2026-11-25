@@ -1,5 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
+import { nameInputSchema } from "@ai-rotom/shared";
 import type { ConditionEntry } from "../../data-store.js";
 import { championsConditions } from "../../data-store.js";
 import { withHint } from "../../tool-response-hint.js";
@@ -24,8 +25,7 @@ const inputSchema = {
     .describe(
       "絞り込むカテゴリ（weather: 天候 / terrain: フィールド / status: 状態異常 / sideCondition: サイド効果）。省略時は全カテゴリ。",
     ),
-  name: z
-    .string()
+  name: nameInputSchema
     .optional()
     .describe("絞り込む条件名（日本語 or 英語）。省略時は全件。"),
 };

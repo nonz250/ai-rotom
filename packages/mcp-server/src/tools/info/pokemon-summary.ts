@@ -1,8 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
 import { Generations, Pokemon } from "@smogon/calc";
 import type { TypeName } from "@smogon/calc/dist/data/interface";
-import { calculateTypeEffectiveness } from "@ai-rotom/shared";
+import { nameInputSchema, calculateTypeEffectiveness } from "@ai-rotom/shared";
 import {
   championsLearnsets,
   championsTypes,
@@ -40,7 +39,7 @@ const TOOL_DESCRIPTION =
   + "対戦での役割把握や初期分析に使用する。ポケモンチャンピオンズ対応。";
 
 const inputSchema = {
-  name: z.string().describe("ポケモン名（日本語 or 英語）"),
+  name: nameInputSchema.describe("ポケモン名（日本語 or 英語）"),
 };
 
 interface BasicProfile {

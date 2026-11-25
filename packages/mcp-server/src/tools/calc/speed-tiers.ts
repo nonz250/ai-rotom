@@ -1,7 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { Generations, Pokemon } from "@smogon/calc";
-import { MAX_STAT_POINT_PER_STAT } from "@ai-rotom/shared";
+import { nameInputSchema, MAX_STAT_POINT_PER_STAT } from "@ai-rotom/shared";
 import {
   championsPokemon,
   pokemonById,
@@ -41,8 +41,7 @@ const rangeSchema = z
   .describe("実数値 (finalSpeed) の範囲フィルタ");
 
 const inputSchema = {
-  around: z
-    .string()
+  around: nameInputSchema
     .optional()
     .describe(
       `指定ポケモン付近(±${AROUND_WINDOW})の素早さラインのみを返す。`,

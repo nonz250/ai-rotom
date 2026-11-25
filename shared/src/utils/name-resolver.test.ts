@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { NameResolver } from "./name-resolver";
+import { MAX_NAME_LENGTH } from "../schemas/party";
 import type { NameEntry } from "./name-resolver";
 
 const TEST_ENTRIES: NameEntry[] = [
@@ -56,6 +57,28 @@ describe("NameResolver", () => {
     it("should return empty for completely different input", () => {
       const suggestions = resolver.suggestSimilar("あいうえおかきくけこさしすせそ");
       expect(suggestions).toHaveLength(0);
+    });
+
+    it("正規化後の長さが名前の最大文字数ちょうどの入力には候補を返す", () => {
+      const atLimit = "あ".repeat(MAX_NAME_LENGTH);
+      const longNameResolver = new NameResolver([{ ja: atLimit, en: "AtLimit" }]);
+      expect(longNameResolver.suggestSimilar(atLimit)).toEqual([atLimit]);
+    });
+
+    it("正規化後の長さが名前の最大文字数を超える入力には候補を返さない", () => {
+      const overLimit = "あ".repeat(MAX_NAME_LENGTH + 1);
+      const longNameResolver = new NameResolver([{ ja: overLimit, en: "OverLimit" }]);
+      expect(longNameResolver.suggestSimilar(overLimit)).toEqual([]);
+    });
+
+    it("正規化で最大文字数を超える入力には、正規化前が最大文字数以内でも候補を返さない", () => {
+      const expandingChar = "㍿";
+      const expandedLength = expandingChar.normalize("NFKC").length;
+      const input = expandingChar.repeat(Math.ceil((MAX_NAME_LENGTH + 1) / expandedLength));
+      const normalized = input.normalize("NFKC");
+      const expandingResolver = new NameResolver([{ ja: normalized, en: "Expanded" }]);
+      expect(input.length).toBeLessThanOrEqual(MAX_NAME_LENGTH);
+      expect(expandingResolver.suggestSimilar(input)).toEqual([]);
     });
   });
 

@@ -1,5 +1,5 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
+import { nameInputSchema } from "@ai-rotom/shared";
 import type { MoveCategory } from "../../data-store.js";
 import { movesById, toDataId } from "../../data-store.js";
 import { moveNameResolver } from "../../name-resolvers.js";
@@ -10,7 +10,7 @@ const TOOL_DESCRIPTION =
   "ポケモンの技の詳細情報（タイプ・威力・命中率・分類・優先度・効果説明）を取得する。対戦で使う技の仕様を確認したいときに使用する。ポケモンチャンピオンズ対応。";
 
 const inputSchema = {
-  name: z.string().describe("技名（日本語 or 英語）"),
+  name: nameInputSchema.describe("技名（日本語 or 英語）"),
 };
 
 /**
