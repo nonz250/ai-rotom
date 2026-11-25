@@ -24,13 +24,13 @@ MCP ツールの実装。責務別にサブディレクトリで分けている�
 ### 1. ファイル作成（`tools/<subdir>/foo.ts`）
 
 ```ts
-import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { nameInputSchema } from "@ai-rotom/shared";
 import { pokemonNameResolver } from "../../name-resolvers.js";
 import { pokemonById, toDataId } from "../../data-store.js";
 import { toErrorResponse, withHint } from "../../tool-response-hint.js";
 
-const inputSchema = { name: z.string() };
+const inputSchema = { name: nameInputSchema };
 
 export function registerFooTool(server: McpServer): void {
   server.registerTool(
@@ -59,6 +59,9 @@ export function registerFooTool(server: McpServer): void {
 ### 2. 共通パターン
 
 - **入力検証**: Zod スキーマで（`@ai-rotom/shared` の既存スキーマ `pokemonSchema` 等を活用）
+  - 文字列・配列・record には必ず上限を付ける。リモート版は 1 リクエストの CPU 時間に上限があり、入力の大きさがそのまま処理時間とメモリに響くため
+  - 名前の文字列は `nameInputSchema`、パーティは `.min(MIN_PARTY_MEMBERS).max(MAX_PARTY_MEMBERS)` を使う。`z.string()` のまま受けない。名前が見つからないと全候補との編集距離を計算するため
+  - 引数全体の要素数は `core-server.ts` の `MAX_TOOL_INPUT_ELEMENTS` で SDK が先に打ち切る。これより大きな正当入力を持つツールを足すなら、値の根拠と合わせて見直す
 - **名前解決**: `name-resolvers.ts` の `NameResolver` 経由
   - 類似名サジェスト: `resolver.suggestSimilar(name, 3)` を使い、エラーメッセージに含める
 - **ダメ計**: `calc/damage-calculator.ts` が export する共有インスタンス `damageCalculator` を import する（`new DamageCalculatorAdapter(...)` を各ツールで個別に生成しない）:
