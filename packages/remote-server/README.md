@@ -32,7 +32,7 @@ npm run deploy
 
 ## 認証なしで公開する
 
-`ALLOW_ANONYMOUS` を `"true"` にすると、トークンを確かめずにすべてのリクエストを受け付けます。公開している ai-rotom の公式サーバーはこの設定で動かしています。`"true"` 以外の値や未設定のときは、今までどおり `AUTH_TOKEN` で認証します。
+`ALLOW_ANONYMOUS` を `true` にすると、トークンを確かめずにすべてのリクエストを受け付けます。公開している ai-rotom の公式サーバーはこの設定で動かしています。値は前後の空白を除き、大文字と小文字を区別せずに比べます。文字列の `"true"` でも真偽値の `true` でも同じです。それ以外の値や未設定のときは、今までどおり `AUTH_TOKEN` で認証します。
 
 ```bash
 npm run deploy -- --var ALLOW_ANONYMOUS:true   # packages/remote-server で実行する
