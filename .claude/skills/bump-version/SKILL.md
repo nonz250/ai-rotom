@@ -1,6 +1,7 @@
 ---
 name: bump-version
 description: npm で公開する mcp-server（@nonz250/ai-rotom）の版を上げ、GitHub Release を作って npm への公開とリモート版のデプロイまでを進める。ユーザーが「バージョンを上げて」「版上げ」「bump version」「リリースして」「1.5.0 を出して」「npm に公開して」と言ったときに使用する。
+argument-hint: "[X.Y.Z]"
 ---
 
 # mcp-server の版上げとリリース
@@ -9,7 +10,7 @@ description: npm で公開する mcp-server（@nonz250/ai-rotom）の版を上�
 
 ## 1. 上げる版を決める
 
-上げる版はユーザーが決める。指定がなければ、今の版と前のタグからマージされた PR を見せて聞く。上げ幅を提案しない。
+上げる版はユーザーが決める。引数で渡された版は `$ARGUMENTS` で、これを使う。空なら、今の版と前のタグからマージされた PR を見せて聞く。上げ幅を提案しない。
 
 ```bash
 node -p "require('./packages/mcp-server/package.json').version"
@@ -17,7 +18,7 @@ gh release list --limit 1
 gh pr list --state merged --base main --search "merged:>$(gh release view --json publishedAt -q .publishedAt)" --json number,title -q '.[] | "#\(.number) \(.title)"'
 ```
 
-`X.Y.Z` の形で、今の版より大きいことを確かめる。タグに `v` は付けない。
+`X.Y.Z` の形で、今の版より大きいことを確かめる。引数に `v` が付いていたら外す。タグにも `v` は付けない。
 
 ## 2. 版を書き換える
 
