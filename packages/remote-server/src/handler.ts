@@ -12,6 +12,10 @@ import { buildRemoteServerInstructions } from "./instructions.js";
 export type RequestHandler = (request: Request) => Promise<Response>;
 
 const MCP_PATH = "/mcp";
+
+const INSECURE_PROTOCOL = "http:";
+/** 手元で動かすときだけ、TLS なしの http を受け付けるホスト名。 */
+const LOOPBACK_HOSTNAMES: readonly string[] = ["localhost", "127.0.0.1", "[::1]"];
 const BEARER_PATTERN = /^bearer\s+(.+)$/i;
 
 const BYTES_PER_KIBIBYTE = 1024;
@@ -36,6 +40,7 @@ const RESPONSE_HEADERS: Readonly<Record<string, string>> = {
 
 const HTTP_STATUS_BAD_REQUEST = 400;
 const HTTP_STATUS_UNAUTHORIZED = 401;
+const HTTP_STATUS_FORBIDDEN = 403;
 const HTTP_STATUS_NOT_FOUND = 404;
 const HTTP_STATUS_METHOD_NOT_ALLOWED = 405;
 const HTTP_STATUS_PAYLOAD_TOO_LARGE = 413;
@@ -166,7 +171,13 @@ function withResponseHeaders(response: Response): Response {
 }
 
 async function handleRequest(request: Request, config: RemoteServerConfig): Promise<Response> {
-  const pathToken = parseMcpPath(new URL(request.url).pathname);
+  const url = new URL(request.url);
+  // 平文で届いたトークンは途中で読まれうる。手元での確認だけは TLS なしでも通す。
+  if (url.protocol === INSECURE_PROTOCOL && !LOOPBACK_HOSTNAMES.includes(url.hostname)) {
+    return textResponse(HTTP_STATUS_FORBIDDEN, "HTTPS is required");
+  }
+
+  const pathToken = parseMcpPath(url.pathname);
   if (pathToken === undefined) {
     return textResponse(HTTP_STATUS_NOT_FOUND, "Not Found");
   }

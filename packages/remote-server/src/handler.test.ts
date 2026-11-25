@@ -207,6 +207,47 @@ describe("handleRequest の応答ヘッダー", () => {
   });
 });
 
+describe("handleRequest の HTTPS の要求", () => {
+  function toolsListAt(origin: string): Request {
+    return new Request(`${origin}/mcp`, {
+      method: "POST",
+      headers: { ...MCP_HEADERS, ...BEARER },
+      body: rpc("tools/list"),
+    });
+  }
+
+  it("http で届いたリクエストは 403 で拒否する", async () => {
+    for (const origin of [
+      "http://ai-rotom.example.workers.dev",
+      "http://localhost.example.com",
+      "http://192.168.0.1:8787",
+    ]) {
+      const res = await handleRequest(toolsListAt(origin), ENV);
+      expect(res.status).toBe(403);
+    }
+  });
+
+  it("手元のループバックのホストなら http でも処理する", async () => {
+    for (const origin of ["http://localhost:8787", "http://127.0.0.1:8787", "http://[::1]:8787"]) {
+      const res = await handleRequest(toolsListAt(origin), ENV);
+      expect(res.status).toBe(200);
+    }
+  });
+
+  it("https ならホストを問わず処理する", async () => {
+    const res = await handleRequest(toolsListAt(ORIGIN), ENV);
+    expect(res.status).toBe(200);
+  });
+
+  it("http を拒否するときは認証より先に拒否する", async () => {
+    const res = await handleRequest(
+      new Request("http://ai-rotom.example.workers.dev/mcp", { method: "POST", body: "{}" }),
+      ENV,
+    );
+    expect(res.status).toBe(403);
+  });
+});
+
 describe("handleRequest のルーティング", () => {
   it("MCP 以外のパスは 404 を返す", async () => {
     for (const path of ["/", "/mcpx", `/mcp/${TOKEN}/extra`]) {
