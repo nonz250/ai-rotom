@@ -58,8 +58,6 @@ e.g.) `analyze_party_weakness` が呼ばれ、各タイプを弱点に持つメ�
 
 ChatGPT、Claude、Gemini、Muse などのチャットのアプリや web 版から、インストールなしで使えます。アプリに ai-rotom を「コネクタ」として追加すると、チャットでポケモンのことを聞いたときに、AI が ai-rotom のデータを調べて答えるようになります。
 
-### AI に追加の手順を聞く
-
 使いたいアプリのチャットに、次の文章をそのまま貼り付けて送ってください。AI が、そのアプリでの追加の手順を 1 つずつ案内します。
 
 ```
@@ -69,18 +67,40 @@ https://raw.githubusercontent.com/nonz250/ai-rotom/main/packages/remote-server/d
 
 AI が URL を開けないと答えたときは、[手順書](./packages/remote-server/docs/connect-prompt.md)の中身をコピーして貼り付けてください。
 
-### 自分で追加する
-
-アプリの設定にある「コネクタ」や「カスタムコネクタ」の画面から、次の内容で追加します。画面の場所はアプリによって違います。
+自分で追加するときは、アプリの設定にある「コネクタ」や「カスタムコネクタ」の画面から、次の内容で追加します。画面の場所はアプリによって違い、アプリやプランによっては追加できないこともあります。
 
 - 名前は `ai-rotom`
 - URL は `https://ai-rotom.nonz250.workers.dev/mcp`。末尾の `/mcp` まで入れます
 - 認証は「なし」
 - 通信方式を選ぶ欄があれば「Streamable HTTP」か「HTTP」を選びます。「SSE」は選びません
 
-アプリやプランによっては、コネクタを追加できないことがあります。
+## CLI 版での接続方法
 
-### 気をつけること
+Claude Code や Codex などのコマンドラインで動く AI エージェントでは、ai-rotom を手元のパソコンで動かして使えます。パーティの保存を含め、すべての機能を制限なしで使えます。Node.js 24 以上が必要です。
+
+```bash
+# Claude Code
+claude mcp add ai-rotom -- npx -y @nonz250/ai-rotom
+
+# Codex
+codex mcp add ai-rotom -- npx -y @nonz250/ai-rotom
+```
+
+ほかの MCP クライアントでは、`npx -y @nonz250/ai-rotom` を標準入出力でつなぐ MCP サーバーとして登録します。
+
+手元で動かさずに、クイックスタートと同じ公開サーバーにつなぐこともできます。使えない機能と 1 日の上限は「[サーバー利用時の注意事項](#サーバー利用時の注意事項)」と同じです。リクエスト数は、接続元のアドレスごとに 60 秒あたり 60 件までです。ブラウザの中で動く MCP クライアントからはつなげません。
+
+```bash
+# Claude Code
+claude mcp add --transport http ai-rotom https://ai-rotom.nonz250.workers.dev/mcp
+
+# Codex
+codex mcp add ai-rotom --url https://ai-rotom.nonz250.workers.dev/mcp
+```
+
+公開サーバーと同じものを自分の Cloudflare アカウントに立てる方法は、[packages/remote-server/README.md](./packages/remote-server/README.md) にまとめています。
+
+## サーバー利用時の注意事項
 
 無料で公開しているサーバーなので、次の制限があります。
 
@@ -88,41 +108,6 @@ AI が URL を開けないと答えたときは、[手順書](./packages/remote-
 - ダメージ計算や選出の分析の一部では、自分のポケモンの技を伝える必要があります。相手のポケモンの技は伝えなくても大丈夫です
 - 短い時間にたくさん使うと、しばらく待つよう求められます。この上限は、同じアプリを使っている人全員で分け合っています
 - 1 日の利用が全体で多いと、上限に達して、次の日本時間 9 時まで使えなくなることがあります
-
-## CLI ツールで接続するには
-
-コマンドラインで動く AI エージェントでは、ai-rotom を手元のパソコンで動かして使えます。パーティの保存を含め、すべての機能を制限なしで使えます。Node.js 24 以上が必要です。
-
-### Claude Code
-
-```bash
-claude mcp add ai-rotom -- npx -y @nonz250/ai-rotom
-```
-
-### Codex
-
-```bash
-codex mcp add ai-rotom -- npx -y @nonz250/ai-rotom
-```
-
-### ほかの MCP クライアント
-
-次のコマンドを、標準入出力でつなぐ MCP サーバーとして登録します。
-
-```bash
-npx -y @nonz250/ai-rotom
-```
-
-### 公開しているサーバーにつなぐ
-
-手元で動かさずに、チャットのアプリと同じ公開サーバーにつなぐこともできます。使えない機能と 1 日の上限は「[気をつけること](#気をつけること)」と同じです。リクエスト数は、接続元のアドレスごとに 60 秒あたり 60 件までです。ブラウザの中で動く MCP クライアントからはつなげません。
-
-```bash
-claude mcp add --transport http ai-rotom https://ai-rotom.nonz250.workers.dev/mcp
-codex mcp add ai-rotom --url https://ai-rotom.nonz250.workers.dev/mcp
-```
-
-公開サーバーと同じものを自分の Cloudflare アカウントに立てる方法は、[packages/remote-server/README.md](./packages/remote-server/README.md) にまとめています。
 
 ## 利用可能な MCP ツール
 
