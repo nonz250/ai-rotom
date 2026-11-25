@@ -3,7 +3,7 @@ import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/
 import { MAX_MOVES_PER_MEMBER } from "@ai-rotom/shared";
 import { buildRemoteServerInstructions } from "./instructions";
 import { loadConfig, type ConfigSource } from "./config";
-import { createRequestHandler } from "./handler";
+import { createRequestHandler, type RateLimiter } from "./handler";
 
 /** 環境変数から設定を読んでハンドラーに渡す、各サービスのエントリと同じ流れで呼ぶ。 */
 function handleRequest(request: Request, env: ConfigSource): Promise<Response> {
@@ -204,6 +204,109 @@ describe("handleRequest の応答ヘッダー", () => {
       expect(res.status).toBe(status);
       expectNoStoreAndNoReferrer(res);
     }
+  });
+});
+
+describe("handleRequest のレート制限", () => {
+  const RETRY_AFTER_SECONDS = 60;
+
+  /** allowed の値を返し、渡されたキーを記録する制限の代わり。 */
+  function fakeLimiter(allowed: boolean): RateLimiter & { keys: string[] } {
+    const keys: string[] = [];
+    return {
+      keys,
+      retryAfterSeconds: RETRY_AFTER_SECONDS,
+      async allow(key) {
+        keys.push(key);
+        return allowed;
+      },
+    };
+  }
+
+  function handleWithLimiter(
+    request: Request,
+    limiter: RateLimiter,
+    env: ConfigSource = ENV,
+  ): Promise<Response> {
+    return createRequestHandler(loadConfig(env), limiter)(request);
+  }
+
+  it("上限に収まっていれば MCP の処理まで進める", async () => {
+    const limiter = fakeLimiter(true);
+    const res = await handleWithLimiter(mcpRequest("/mcp", rpc("tools/list"), BEARER), limiter);
+
+    expect(res.status).toBe(200);
+    expect(limiter.keys).toHaveLength(1);
+  });
+
+  it("上限に達していれば 429 と Retry-After を返し、no-store と no-referrer も付ける", async () => {
+    const res = await handleWithLimiter(
+      mcpRequest("/mcp", rpc("tools/list"), BEARER),
+      fakeLimiter(false),
+    );
+
+    expect(res.status).toBe(429);
+    expect(res.headers.get("retry-after")).toBe(String(RETRY_AFTER_SECONDS));
+    expect(res.headers.get("cache-control")).toBe("no-store");
+    expect(res.headers.get("referrer-policy")).toBe("no-referrer");
+    expect(await res.text()).toBe("Too Many Requests");
+  });
+
+  it("上限に達していれば本文が不正でも 429 を返し、MCP SDK に渡さない", async () => {
+    const spy = vi.spyOn(WebStandardStreamableHTTPServerTransport.prototype, "handleRequest");
+    const res = await handleWithLimiter(mcpRequest("/mcp", "{", BEARER), fakeLimiter(false));
+
+    expect(res.status).toBe(429);
+    expect(spy).not.toHaveBeenCalled();
+    spy.mockRestore();
+  });
+
+  it("認証を通らないリクエストやルーティングで弾くリクエストは数えない", async () => {
+    const cases: [Request, ConfigSource, number][] = [
+      [mcpRequest("/mcp", rpc("tools/list")), ENV, 401],
+      [mcpRequest("/mcp", rpc("tools/list"), { authorization: "Bearer wrong" }), ENV, 401],
+      [mcpRequest("/", rpc("tools/list"), BEARER), ENV, 404],
+      [mcpRequest("/mcp", rpc("tools/list"), BEARER), {}, 503],
+      [
+        new Request("http://ai-rotom.example.workers.dev/mcp", {
+          method: "POST",
+          headers: { ...MCP_HEADERS, ...BEARER },
+          body: rpc("tools/list"),
+        }),
+        ENV,
+        403,
+      ],
+    ];
+    for (const [request, env, status] of cases) {
+      const limiter = fakeLimiter(false);
+      const res = await handleWithLimiter(request, limiter, env);
+      expect(res.status).toBe(status);
+      expect(limiter.keys).toHaveLength(0);
+    }
+  });
+
+  it("キーにはトークンを含めず、Bearer とパスのどちらで送っても同じキーで数える", async () => {
+    const limiter = fakeLimiter(true);
+    await handleWithLimiter(mcpRequest("/mcp", rpc("tools/list"), BEARER), limiter);
+    await handleWithLimiter(mcpRequest(`/mcp/${TOKEN}`, rpc("tools/list")), limiter);
+
+    const [bearerKey, pathKey] = limiter.keys;
+    expect(bearerKey).toBe(pathKey);
+    expect(bearerKey).not.toContain(TOKEN);
+    expect(TOKEN).not.toContain(bearerKey);
+  });
+
+  it("トークンが変わればキーも変わる", async () => {
+    const otherToken = "f".repeat(TOKEN.length);
+    const limiter = fakeLimiter(true);
+    await handleWithLimiter(mcpRequest("/mcp", rpc("tools/list"), BEARER), limiter);
+    await handleWithLimiter(
+      mcpRequest("/mcp", rpc("tools/list"), { authorization: `Bearer ${otherToken}` }),
+      limiter,
+      { AUTH_TOKEN: otherToken },
+    );
+
+    expect(limiter.keys[0]).not.toBe(limiter.keys[1]);
   });
 });
 
