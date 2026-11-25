@@ -1,0 +1,16 @@
+{
+  "name": "ai-rotom",
+  "short_name": "ai-rotom",
+  "description": "AI と一緒にポケモンバトルを楽しもう",
+  "lang": "ja",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#0c1b2c",
+  "theme_color": "#0c1b2c",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

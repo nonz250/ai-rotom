@@ -3,7 +3,8 @@
   "private": true,
   "workspaces": [
     "packages/mcp-server",
-    "packages/remote-server"
+    "packages/remote-server",
+    "packages/site"
   ],
   "scripts": {
     "build": "npm run build --workspaces --if-present",

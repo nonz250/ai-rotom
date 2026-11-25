@@ -1,0 +1,52 @@
+---
+import "../styles/global.css";
+
+const title = "ai-rotom | AI と一緒にポケモンバトルを楽しもう";
+const description =
+  "ポケモンチャンピオンズの対戦アドバイザー。ChatGPT や Claude などのチャットのアプリに追加すると、AI が種族値・ダメージ計算・素早さ・パーティ分析のデータを調べてから答えるようになります。インストールはいりません。";
+const shareDescription =
+  "ポケモンチャンピオンズの対戦アドバイザー。チャットのアプリに追加すると、AI がダメージ計算や素早さのデータを調べてから答えます。";
+const site = Astro.site ?? new URL("https://ai-rotom.nonz250.workers.dev");
+const canonical = new URL("/", site).href;
+const ogImage = new URL("/og.png", site).href;
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0c1b2c" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ai-rotom" />
+    <meta property="og:locale" content="ja_JP" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={shareDescription} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="ai-rotom のロゴと「AI と一緒にポケモンバトルを楽しもう」の文字、カバルドンの対策を答える会話の例"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap"
+    />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

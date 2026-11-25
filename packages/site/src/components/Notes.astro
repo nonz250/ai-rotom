@@ -1,0 +1,23 @@
+---
+// README の「サーバー利用時の注意事項」と同じ内容にそろえる
+const notes = [
+  "パーティを保存しておく機能と、テキストからパーティを取り込む機能は使えません。分析を頼むたびに、パーティのポケモンを伝えてください。",
+  "ダメージ計算や選出の分析の一部では、自分のポケモンの技を伝える必要があります。相手のポケモンの技は伝えなくても大丈夫です。",
+  "短い時間にたくさん使うと、しばらく待つよう求められます。この上限は、同じアプリを使っている人全員で分け合っています。",
+  "1 日の利用が全体で多いと、上限に達して、次の日本時間 9 時まで使えなくなることがあります。",
+];
+---
+
+<section class="block" id="notes">
+  <div class="wrap">
+    <h2>サーバー利用時の注意事項</h2>
+    <p class="intro">無料で公開しているサーバーなので、次の制限があります。</p>
+    <ul class="notes">{notes.map((note) => <li>{note}</li>)}</ul>
+  </div>
+</section>
+
+<style>
+  .notes { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); max-width: 46em; }
+  .notes li { padding: 14px 0 14px 28px; border-bottom: 1px solid var(--line); position: relative; }
+  .notes li::before { content: "!"; position: absolute; left: 4px; top: 14px; font-family: var(--font-display); color: var(--accent); }
+</style>

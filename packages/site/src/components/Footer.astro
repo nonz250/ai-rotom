@@ -1,0 +1,48 @@
+---
+const GITHUB_URL = "https://github.com/nonz250/ai-rotom";
+---
+
+<footer class="site-foot">
+  <div class="wrap">
+    <div>
+      <h2>著作権・商標</h2>
+      <p>ai-rotom はポケモンのファンメイドツールです。ポケモンに関する著作権・商標権はすべて権利者に帰属します。</p>
+      <ul>
+        <li>© Nintendo / Creatures Inc. / GAME FREAK Inc.</li>
+        <li>© Pokémon.</li>
+        <li>
+          「ポケットモンスター」「ポケモン」「Pokémon」および関連する名称・ロゴは、任天堂株式会社、株式会社クリーチャーズ、株式会社ゲームフリーク、株式会社ポケモンの商標または登録商標です。
+        </li>
+      </ul>
+      <p>本ツールはポケモンの公式商品ではなく、上記の各社は関与していません。対戦研究と個人利用を目的とし、商用を目的とするものではありません。</p>
+    </div>
+    <div class="stack">
+      <div>
+        <h2>ソースコード</h2>
+        <p class="respect">
+          本プロジェクトのソースコードは下記「ライセンス」セクションのとおり MIT License で配布されますが、利用・改変・再配布に際してはポケモンに関する著作権・商標権を最大限尊重してください。
+        </p>
+        <p>ソースコードは <a href={GITHUB_URL}>GitHub</a> で公開しています。不具合の報告や、データの追加・修正の PR を歓迎します。</p>
+      </div>
+      <div>
+        <h2>ライセンス</h2>
+        <p>本プロジェクトのソースコードは MIT License で提供されます。ただし、ポケモンに関する権利は MIT License の対象ではなく、各権利者に帰属します。</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-foot { background: var(--navy); border-top: 1px solid var(--navy-line); }
+  .site-foot a { color: var(--navy-link); }
+  .wrap { padding-block: 40px 56px; display: grid; grid-template-columns: 1.3fr 1fr; gap: 32px; font-size: 0.85rem; color: var(--navy-muted); }
+  .wrap > * { min-width: 0; }
+  h2 { font-size: 0.95rem; color: var(--navy-ink); margin: 0 0 8px; font-weight: 700; }
+  p, ul { margin: 0 0 10px; }
+  ul { padding-left: 1.2em; }
+  .respect { color: var(--navy-ink); font-weight: 700; }
+  .stack { display: grid; gap: 18px; align-content: start; }
+  @media (max-width: 820px) {
+    .wrap { grid-template-columns: 1fr; }
+  }
+</style>
