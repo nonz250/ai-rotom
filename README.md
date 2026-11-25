@@ -90,11 +90,17 @@ https://ai-rotom.nonz250.workers.dev/mcp
 claude mcp add --transport http ai-rotom https://ai-rotom.nonz250.workers.dev/mcp
 ```
 
+ChatGPT、Claude、Gemini、Muse などのチャットのアプリや web 版では、[packages/remote-server/docs/connect-prompt.md](./packages/remote-server/docs/connect-prompt.md) を読ませると、コネクタの追加から使えるようになるまでを案内してくれます。ファイルの中身を貼り付けるか、次の URL を渡してください。
+
+```
+https://raw.githubusercontent.com/nonz250/ai-rotom/main/packages/remote-server/docs/connect-prompt.md
+```
+
 stdio 版と比べて、次の違いがあります。
 
 - `save_party` などのパーティ保存系のツールは使えません。パーティは分析ツールに毎回引数で渡します
 - 全技ダメ計・6v6 ダメ計・対面分析・選出分析では、自分側のポケモンの技構成の指定が必須です。相手側は省略できます
-- 接続元ごとに、60 秒あたりのリクエスト数に上限があります。超えると、しばらく待つよう求めるエラーを返します
+- 接続元ごとに、60 秒あたりのリクエスト数に上限があります。超えると、しばらく待つよう求めるエラーを返します。Muse や claude.ai のように、クライアントの会社のサーバーからつなぐクライアントでは、同じクライアントの利用者でこの枠を分け合います
 - ブラウザから直接つなぐクライアントには対応していません
 - 無料の枠で動かしているので、1 日の利用が多いと、その日のうちは使えなくなることがあります
 
