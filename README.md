@@ -90,6 +90,13 @@ npm run deploy
 - ブラウザから直接つなぐクライアントには対応していません。CORS のプリフライトに応答しないためです
 - Workers の無料プランは 1 リクエストあたりの CPU 時間が 10 ms までです。そのためリモート版では、全技ダメ計・6v6 ダメ計・対面分析・選出分析で、自分側のポケモンの技構成の指定が必須です。指定しないとエラーを返します。相手側の技構成は必須ではありません。AI クライアントには技構成を指定して呼ぶよう案内します
 - 技構成を必須にするかは `packages/remote-server/wrangler.toml` の `REQUIRE_MOVES` で切り替えられます。有料プランなど CPU 時間に余裕がある環境では `"false"` にすると、stdio 版と同じく技構成を省略できます。ダッシュボードで変えた値はデプロイのたびに `wrangler.toml` の値で上書きされるので、このファイルで変えてください
+- 対応する MCP のプロトコルの版は、同梱している MCP SDK が扱う版に従います。複数のメッセージを配列でまとめて送るバッチには対応していません
+
+#### トークンの扱い
+
+- トークンは `openssl rand -hex 32` などで作った、32 文字以上のランダムな値にしてください。32 文字に満たないトークンでは、すべてのリクエストを 503 で拒否します。ローカルでの確認に使ったトークンを本番に流用しないでください
+- トークンを入れ替えるときは、`npx wrangler secret put AUTH_TOKEN` で新しい値を設定し、登録しているクライアントのヘッダーや URL も新しい値に書き換えます
+- `/mcp/<トークン>` の URL は、トークンと同じく秘密の値として扱ってください。Workers Logs や `wrangler tail` を有効にしていると、リクエストの URL がログに残ります。ログを見られる人と保存の設定を確かめてください
 
 #### ローカルで動作確認する
 
@@ -112,11 +119,19 @@ claude mcp add --transport http ai-rotom-local http://localhost:8787/mcp \
 
 確認が終わったら `claude mcp remove ai-rotom-local` で外します。
 
+リモート版は、`localhost` などの手元のホスト以外から http で届いたリクエストを 403 で拒否します。手元の Workers ランタイムをトンネルなどで外に公開するときは、`npx wrangler dev --local-protocol https` で起動して https で転送し、本番と同じくランダムなトークンを使ってください。
+
 #### Cloudflare 以外のサービスで動かす
 
 リモート版の本体は、`packages/remote-server/src/handler.ts` の `createRequestHandler` にまとめていて、実行環境に依存しません。Cloudflare Workers 用のエントリは、その上に置いた薄いアダプターです。
 
 ほかのサービスで動かすときは `packages/remote-server/src/platforms/` にエントリを足し、サービスの環境変数を `loadConfig` に渡して得た設定で `createRequestHandler` を呼びます。Web 標準の `Request` を受けて `Response` を返す形のサービスなら、この方法で動かせます。動作を確かめているのは、今のところ Cloudflare Workers だけです。
+
+ほかのサービスに移すときは、次の点も確かめてください。
+
+- TLS で受けてください。ハンドラーはリクエストの URL が http なら拒否するので、手前で TLS を外す構成でも、クライアントから見た https の URL をハンドラーに渡します
+- ハンドラーも本文を 64 KiB までに制限しますが、本文の大きさの上限は手前のサービスやプロキシでもかけてください
+- 受け付ける Origin と Host を、手前のサービスやプロキシで絞ってください
 
 ## 利用可能な MCP ツール
 
