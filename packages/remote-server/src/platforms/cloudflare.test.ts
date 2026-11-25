@@ -26,4 +26,40 @@ describe("Cloudflare Workers のエントリ", () => {
     const res = await worker.fetch(toolsList(TOKEN), {});
     expect(res.status).toBe(503);
   });
+
+  function fakeBinding(success: boolean) {
+    const calls: { key: string }[] = [];
+    return {
+      calls,
+      async limit(options: { key: string }) {
+        calls.push(options);
+        return { success };
+      },
+    };
+  }
+
+  it("env の RATE_LIMITER が許せば処理し、トークンを含まないキーだけを渡す", async () => {
+    const binding = fakeBinding(true);
+    const res = await worker.fetch(toolsList(TOKEN), { AUTH_TOKEN: TOKEN, RATE_LIMITER: binding });
+
+    expect(res.status).toBe(200);
+    expect(binding.calls).toHaveLength(1);
+    expect(Object.keys(binding.calls[0])).toEqual(["key"]);
+    expect(binding.calls[0].key).not.toContain(TOKEN);
+  });
+
+  it("env の RATE_LIMITER が拒めば 429 と、wrangler.toml の期間と同じ 60 秒の Retry-After を返す", async () => {
+    const res = await worker.fetch(toolsList(TOKEN), {
+      AUTH_TOKEN: TOKEN,
+      RATE_LIMITER: fakeBinding(false),
+    });
+
+    expect(res.status).toBe(429);
+    expect(res.headers.get("retry-after")).toBe("60");
+  });
+
+  it("env に RATE_LIMITER がなければ制限せずに処理する", async () => {
+    const res = await worker.fetch(toolsList(TOKEN), { AUTH_TOKEN: TOKEN });
+    expect(res.status).toBe(200);
+  });
 });
