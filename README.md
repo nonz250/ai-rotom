@@ -15,7 +15,7 @@ ChatGPT や Claude などのチャットのアプリに追加すると、AI が 
 
 ## ドキュメント
 
-- [ai-rotom.nonz250.workers.dev](https://ai-rotom.nonz250.workers.dev/)
+https://ai-rotom.nonz250.workers.dev/
 
 ## 著作権・商標
 
