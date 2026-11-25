@@ -268,6 +268,7 @@ describe("handleRequest のレート制限", () => {
       [mcpRequest("/", rpc("tools/list"), BEARER), ENV, 404],
       [mcpRequest("/mcp", rpc("tools/list"), BEARER), {}, 503],
       [mcpRequest("/mcp", rpc("tools/list"), { ...BEARER, origin: ORIGIN }), ENV, 403],
+      [mcpRequest("/mcp", rpc("tools/list"), BEARER), { ...ENV, ALLOWED_HOSTS: "other.example" }, 403],
       [
         new Request("http://ai-rotom.example.workers.dev/mcp", {
           method: "POST",
@@ -347,6 +348,69 @@ describe("handleRequest の HTTPS の要求", () => {
     const res = await handleRequest(
       new Request("http://ai-rotom.example.workers.dev/mcp", { method: "POST", body: "{}" }),
       ENV,
+    );
+    expect(res.status).toBe(403);
+  });
+});
+
+describe("handleRequest の ALLOWED_HOSTS", () => {
+  function toolsListAt(origin: string): Request {
+    return new Request(`${origin}/mcp`, {
+      method: "POST",
+      headers: { ...MCP_HEADERS, ...BEARER },
+      body: rpc("tools/list"),
+    });
+  }
+
+  it("未設定ならどのホスト名でも処理する", async () => {
+    for (const origin of [ORIGIN, "https://other.example"]) {
+      const res = await handleRequest(toolsListAt(origin), ENV);
+      expect(res.status).toBe(200);
+    }
+  });
+
+  it("一覧にあるホスト名なら、大文字小文字を問わず処理する", async () => {
+    const env = { ...ENV, ALLOWED_HOSTS: "other.example, AI-ROTOM.example.workers.dev" };
+    for (const origin of [ORIGIN, "https://Ai-Rotom.Example.Workers.Dev"]) {
+      const res = await handleRequest(toolsListAt(origin), env);
+      expect(res.status).toBe(200);
+    }
+  });
+
+  it("一覧にないホスト名は、正しいトークンでも 403 で拒否する", async () => {
+    const env = { ...ENV, ALLOWED_HOSTS: "ai-rotom.example.workers.dev" };
+    for (const origin of [
+      "https://evil.example",
+      "https://sub.ai-rotom.example.workers.dev",
+      "https://ai-rotom.example.workers.dev.evil.example",
+    ]) {
+      const res = await handleRequest(toolsListAt(origin), env);
+      expect(res.status).toBe(403);
+      expect(res.headers.get("cache-control")).toBe("no-store");
+      expect(res.headers.get("referrer-policy")).toBe("no-referrer");
+    }
+  });
+
+  it("リクエストのポートは無視してホスト名だけで比べる", async () => {
+    const env = { ...ENV, ALLOWED_HOSTS: "ai-rotom.example.workers.dev,localhost" };
+    for (const origin of ["https://ai-rotom.example.workers.dev:8443", "http://localhost:8787"]) {
+      const res = await handleRequest(toolsListAt(origin), env);
+      expect(res.status).toBe(200);
+    }
+  });
+
+  it("ポート付きで書いた要素はホスト名と一致しない", async () => {
+    const res = await handleRequest(toolsListAt("http://localhost:8787"), {
+      ...ENV,
+      ALLOWED_HOSTS: "localhost:8787",
+    });
+    expect(res.status).toBe(403);
+  });
+
+  it("ホスト名を拒否するときは認証より先に拒否する", async () => {
+    const res = await handleRequest(
+      new Request("https://evil.example/mcp", { method: "POST", body: rpc("tools/list") }),
+      { ...ENV, ALLOWED_HOSTS: "ai-rotom.example.workers.dev" },
     );
     expect(res.status).toBe(403);
   });

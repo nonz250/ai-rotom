@@ -42,4 +42,29 @@ describe("loadConfig", () => {
       expect(loadConfig({ REQUIRE_MOVES: value }).requireMoves).toBe(true);
     }
   });
+
+  it("ALLOWED_HOSTS が未設定・文字列以外ならホスト名を確かめない", () => {
+    for (const source of [{}, { ALLOWED_HOSTS: 1 }, { ALLOWED_HOSTS: true }]) {
+      expect(loadConfig(source).allowedHosts).toBeUndefined();
+    }
+  });
+
+  it("ALLOWED_HOSTS をカンマで区切り、前後の空白を除いて小文字にそろえる", () => {
+    expect(
+      loadConfig({ ALLOWED_HOSTS: " Ai-Rotom.Example.workers.dev , mcp.example.com" }).allowedHosts,
+    ).toEqual(["ai-rotom.example.workers.dev", "mcp.example.com"]);
+  });
+
+  it("ALLOWED_HOSTS の空の要素は無視する", () => {
+    expect(loadConfig({ ALLOWED_HOSTS: ",a.example,, ,b.example," }).allowedHosts).toEqual([
+      "a.example",
+      "b.example",
+    ]);
+  });
+
+  it("ALLOWED_HOSTS にホスト名が 1 つもなければ未設定として扱う", () => {
+    for (const value of ["", " ", ",", " , ,"]) {
+      expect(loadConfig({ ALLOWED_HOSTS: value }).allowedHosts).toBeUndefined();
+    }
+  });
 });
