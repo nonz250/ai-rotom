@@ -713,3 +713,150 @@ describe("handleRequest の REQUIRE_MOVES", () => {
     }
   });
 });
+
+describe("handleRequest の認証なしの受け付け", () => {
+  const ANONYMOUS_ENV = { ALLOW_ANONYMOUS: "true" };
+  const CLIENT_ADDRESS = "203.0.113.7";
+
+  /** allowed の値を返し、渡されたキーを記録する制限の代わり。 */
+  function fakeLimiter(allowed = true): RateLimiter & { keys: string[] } {
+    const keys: string[] = [];
+    return {
+      keys,
+      retryAfterSeconds: 60,
+      async allow(key) {
+        keys.push(key);
+        return allowed;
+      },
+    };
+  }
+
+  function handleAnonymous(
+    request: Request,
+    limiter?: RateLimiter,
+    address: string | null = CLIENT_ADDRESS,
+  ): Promise<Response> {
+    return createRequestHandler(loadConfig(ANONYMOUS_ENV), limiter, () => address)(request);
+  }
+
+  async function keyFor(address: string): Promise<string> {
+    const limiter = fakeLimiter();
+    await handleAnonymous(mcpRequest("/mcp", rpc("tools/list")), limiter, address);
+    expect(limiter.keys).toHaveLength(1);
+    return limiter.keys[0];
+  }
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("トークンなしで MCP の処理まで進める", async () => {
+    const res = await handleAnonymous(mcpRequest("/mcp", rpc("tools/list")));
+    expect(res.status).toBe(200);
+  });
+
+  it("AUTH_TOKEN が未設定でも 503 にしない", async () => {
+    const res = await createRequestHandler(loadConfig({ ALLOW_ANONYMOUS: "true", AUTH_TOKEN: "" }))(
+      mcpRequest("/mcp", rpc("tools/list")),
+    );
+    expect(res.status).toBe(200);
+  });
+
+  it("authorization ヘッダーが付いていても受け付け、MCP SDK には渡さない", async () => {
+    const spy = vi.spyOn(WebStandardStreamableHTTPServerTransport.prototype, "handleRequest");
+    const res = await handleAnonymous(
+      mcpRequest("/mcp", rpc("tools/list"), { authorization: "Bearer anything" }),
+    );
+
+    expect(res.status).toBe(200);
+    expect(spy.mock.calls[0][0].headers.has("authorization")).toBe(false);
+  });
+
+  it("パスにトークンを入れる URL は 404 を返す", async () => {
+    const res = await handleAnonymous(mcpRequest(`/mcp/${TOKEN}`, rpc("tools/list")));
+    expect(res.status).toBe(404);
+  });
+
+  it("Origin 付きと、手元以外への http は認証なしでも拒否する", async () => {
+    const withOrigin = await handleAnonymous(
+      mcpRequest("/mcp", rpc("tools/list"), { origin: ORIGIN }),
+    );
+    const insecure = await handleAnonymous(
+      new Request("http://ai-rotom.example.workers.dev/mcp", {
+        method: "POST",
+        headers: MCP_HEADERS,
+        body: rpc("tools/list"),
+      }),
+    );
+
+    expect(withOrigin.status).toBe(403);
+    expect(insecure.status).toBe(403);
+  });
+
+  it("上限に達していれば 429 を返す", async () => {
+    const res = await handleAnonymous(mcpRequest("/mcp", rpc("tools/list")), fakeLimiter(false));
+    expect(res.status).toBe(429);
+  });
+
+  it("接続元のアドレスごとに数え、キーにアドレスそのものを含めない", async () => {
+    const key = await keyFor(CLIENT_ADDRESS);
+
+    expect(await keyFor(CLIENT_ADDRESS)).toBe(key);
+    expect(await keyFor("203.0.113.8")).not.toBe(key);
+    expect(key).not.toContain(CLIENT_ADDRESS);
+  });
+
+  it("IPv6 は先頭 64 ビットが同じなら同じキーで数える", async () => {
+    const key = await keyFor("2001:db8:1:2:aaaa:bbbb:cccc:dddd");
+
+    expect(await keyFor("2001:db8:1:2::1")).toBe(key);
+    expect(await keyFor("2001:0DB8:0001:0002:0:0:0:ffff")).toBe(key);
+    expect(await keyFor("2001:db8:1:3::1")).not.toBe(key);
+  });
+
+  it("IPv4 射影の IPv6 アドレスは IPv4 アドレスと同じキーで数える", async () => {
+    const key = await keyFor(CLIENT_ADDRESS);
+
+    expect(await keyFor(`::ffff:${CLIENT_ADDRESS}`)).toBe(key);
+    expect(await keyFor(`0:0:0:0:0:FFFF:${CLIENT_ADDRESS}`)).toBe(key);
+  });
+
+  it("NAT64 のように IPv4 の表記を含むほかの IPv6 アドレスは、IPv4 ではなく先頭 64 ビットで数える", async () => {
+    const key = await keyFor(`64:ff9b::${CLIENT_ADDRESS}`);
+
+    expect(key).not.toBe(await keyFor(CLIENT_ADDRESS));
+    expect(await keyFor("64:ff9b::1")).toBe(key);
+  });
+
+  it("制限があるのに接続元のアドレスがわからなければ、数えずに 503 を返す", async () => {
+    const limiter = fakeLimiter();
+    const res = await handleAnonymous(mcpRequest("/mcp", rpc("tools/list")), limiter, null);
+
+    expect(res.status).toBe(503);
+    expect(limiter.keys).toHaveLength(0);
+  });
+
+  it("制限がなければ、接続元のアドレスがわからなくても受け付ける", async () => {
+    const res = await handleAnonymous(mcpRequest("/mcp", rpc("tools/list")), undefined, null);
+    expect(res.status).toBe(200);
+  });
+});
+
+describe("handleRequest の認証ありのときの接続元のアドレス", () => {
+  it("認証を求めるときは、接続元のアドレスがわからなくても 503 にせずトークンで数える", async () => {
+    const keys: string[] = [];
+    const limiter: RateLimiter = {
+      retryAfterSeconds: 60,
+      async allow(key) {
+        keys.push(key);
+        return true;
+      },
+    };
+    const res = await createRequestHandler(loadConfig(ENV), limiter, () => null)(
+      mcpRequest("/mcp", rpc("tools/list"), BEARER),
+    );
+
+    expect(res.status).toBe(200);
+    expect(keys).toHaveLength(1);
+  });
+});
