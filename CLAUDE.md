@@ -158,6 +158,13 @@ TS6059 エラーにならないようにしている。
 - リモート版の `AUTH_TOKEN` は Cloudflare 側の secret のまま置き、CI には渡さない
 - フォークからの PR に Secrets を渡さないため、`pull_request_target` でデプロイを走らせない
 
+ワークフローは `build` と `deploy` の 2 つのジョブに分ける。依存パッケージやテストのコードが動くあいだは Secrets がなく、上げるのは検査したバンドルそのものになるようにするため。
+
+- `build` ジョブは Environment も Secrets も持たない。タグの確認・型検査・テスト・バンドル・`scripts/verify-worker-bundle.sh` を行い、検査済みのバンドルを artifact に、各ファイルの SHA-256 をジョブの出力に残す
+- `deploy` ジョブだけが Environment `cloudflare-workers` に入る。artifact を SHA-256 と照合し、記録にないファイルがないことも確かめてから `wrangler deploy --no-bundle --config wrangler.toml` で上げる。ソースから組み立て直さない
+- `deploy` ジョブが入れるのは lockfile で固定した remote-server の依存、つまり wrangler だけにする
+- npm のインストールは `--ignore-scripts` で行う。インストール時スクリプトがなくてもバンドルとデプロイが通ることは確かめてある
+
 ### publish 後のチェックリスト
 
 1. `npm view @nonz250/ai-rotom@<version> version` で registry 反映を確認
