@@ -1,6 +1,6 @@
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
 import { createCoreServer } from "@ai-rotom/mcp-core";
-import type { RemoteServerConfig } from "./config.js";
+import { MIN_AUTH_TOKEN_LENGTH, type RemoteServerConfig } from "./config.js";
 import { buildRemoteServerInstructions } from "./instructions.js";
 
 /** Web 標準の Request を受けて Response を返す関数。多くの Workers 系サービスがこの形でリクエストを渡す。 */
@@ -83,10 +83,13 @@ async function handleRequest(request: Request, config: RemoteServerConfig): Prom
     return textResponse(HTTP_STATUS_NOT_FOUND, "Not Found");
   }
 
-  // トークン未設定のまま公開されても、誰でも呼べる状態にはしない。
+  // トークン未設定や推測しやすい短いトークンのまま公開されても、誰でも呼べる状態にはしない。
   const expected = config.authToken;
   if (expected === undefined) {
-    return textResponse(HTTP_STATUS_SERVICE_UNAVAILABLE, "AUTH_TOKEN is not configured");
+    return textResponse(
+      HTTP_STATUS_SERVICE_UNAVAILABLE,
+      `AUTH_TOKEN must be a random value of at least ${MIN_AUTH_TOKEN_LENGTH} characters`,
+    );
   }
   const provided = pathToken ?? bearerToken(request);
   if (provided === null || !timingSafeEqual(provided, expected)) {

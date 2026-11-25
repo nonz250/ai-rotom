@@ -1,1 +1,2 @@
-AUTH_TOKEN=local-dev-token
+# 32 文字以上のランダムな値にする。openssl rand -hex 32 の出力を貼り付ける
+AUTH_TOKEN=

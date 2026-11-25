@@ -97,14 +97,17 @@ npm run deploy
 
 ```bash
 cp packages/remote-server/.dev.vars.example packages/remote-server/.dev.vars
-npm run worker:dev    # http://localhost:8787/mcp で待ち受ける
+openssl rand -hex 32    # 出力を .dev.vars の AUTH_TOKEN= の後ろに貼り付ける
+npm run worker:dev      # http://localhost:8787/mcp で待ち受ける
 ```
+
+`AUTH_TOKEN` が空のときや 32 文字に満たないときは、すべてのリクエストを 503 で拒否します。
 
 別のターミナルで Claude Code に登録します。トークンは `.dev.vars` の `AUTH_TOKEN` です。
 
 ```bash
 claude mcp add --transport http ai-rotom-local http://localhost:8787/mcp \
-  --header "Authorization: Bearer local-dev-token"
+  --header "Authorization: Bearer <.dev.vars の AUTH_TOKEN>"
 ```
 
 確認が終わったら `claude mcp remove ai-rotom-local` で外します。

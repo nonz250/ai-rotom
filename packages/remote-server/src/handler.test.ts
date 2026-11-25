@@ -9,7 +9,7 @@ function handleRequest(request: Request, env: ConfigSource): Promise<Response> {
   return createRequestHandler(loadConfig(env))(request);
 }
 
-const TOKEN = "test-token";
+const TOKEN = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
 const ENV = { AUTH_TOKEN: TOKEN };
 const ORIGIN = "https://ai-rotom.example.workers.dev";
 
@@ -72,7 +72,7 @@ describe("handleRequest の認証", () => {
   });
 
   it("パスのトークンは URL デコードしてから照合する", async () => {
-    const token = "a b+c";
+    const token = `a b+c${TOKEN}`;
     const res = await handleRequest(
       mcpRequest(`/mcp/${encodeURIComponent(token)}`, rpc("tools/list")),
       { AUTH_TOKEN: token },
@@ -96,6 +96,16 @@ describe("handleRequest の認証", () => {
   it("サーバーにトークンが設定されていなければ、どのリクエストも 503 で拒否する", async () => {
     for (const env of [{}, { AUTH_TOKEN: "" }]) {
       const res = await handleRequest(mcpRequest("/mcp", rpc("tools/list"), BEARER), env);
+      expect(res.status).toBe(503);
+    }
+  });
+
+  it("サーバーのトークンが短すぎると、そのトークンを送っても 503 で拒否する", async () => {
+    for (const token of ["a".repeat(31), "local-dev-token"]) {
+      const res = await handleRequest(
+        mcpRequest("/mcp", rpc("tools/list"), { authorization: `Bearer ${token}` }),
+        { AUTH_TOKEN: token },
+      );
       expect(res.status).toBe(503);
     }
   });
