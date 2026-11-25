@@ -67,4 +67,16 @@ describe("loadConfig", () => {
       expect(loadConfig({ ALLOWED_HOSTS: value }).allowedHosts).toBeUndefined();
     }
   });
+
+  it("ALLOW_ANONYMOUS が true なら、文字列でも真偽値でも認証なしで受け付ける", () => {
+    for (const value of ["true", " TRUE ", true]) {
+      expect(loadConfig({ ALLOW_ANONYMOUS: value }).allowAnonymous).toBe(true);
+    }
+  });
+
+  it("ALLOW_ANONYMOUS が未設定や true 以外なら認証を求める", () => {
+    for (const source of [{}, { ALLOW_ANONYMOUS: "" }, { ALLOW_ANONYMOUS: "false" }, { ALLOW_ANONYMOUS: "yes" }, { ALLOW_ANONYMOUS: 1 }]) {
+      expect(loadConfig(source).allowAnonymous).toBe(false);
+    }
+  });
 });
