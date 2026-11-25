@@ -1,72 +1,23 @@
 # data/champions/
 
-ポケモンチャンピオンズのマスターデータ。
+ポケモンチャンピオンズのマスターデータ。各エントリの型は shared の `types/` と mcp-server の `data-store.ts` にあり、JSON を編集したら型と合わせる。
 
-## 位置付け
+## データが食い違うとき
 
-- 攻略サイトと突合済みの正データ
-- mcp-server から `@data/*` alias で参照される
-- 将来の api-server / web-ui からも共有する資産
+実ゲームの画面、攻略サイト、`@smogon/calc` Gen 0 の順に優先する。
 
-## ファイル構成
+## 編集の決まり
 
-| ファイル | 役割 | 件数目安 |
-|---|---|---|
-| `pokemon.json` | ポケモン (種族値・タイプ・特性・重さ) | 358 |
-| `abilities.json` | 特性 (英日名 + 効果説明) | 233 |
-| `items.json` | 持ち物 (メガストーン情報含む) | 166 |
-| `moves.json` | 技 (威力・命中・PP・タイプ・フラグ等) | 540 |
-| `learnsets.json` | ポケモン ID → 技 ID 配列 | 259 species |
-| `natures.json` | 性格 (plus / minus) | 25 |
-| `types.json` | タイプの日英マッピング | 18 |
-| `conditions.json` | 天候 / フィールド / 状態異常 / 壁 | 4 カテゴリ |
+- id は `toID` と同じく小文字英数字だけにする。`"Charizard-Mega-X"` は `"charizardmegax"` になる
+- アポストロフィは半角 `'` にそろえる。calc 側が U+2019 を使う名前でも、`toID` が記号を落とすので計算には響かない
+- 日本語名は全角英数字と全角中点で書く。フォルムの接尾辞だけは例外で、pokemon.json は半角の `メガリザードンX`、items.json のメガストーンは全角の `リザードナイトＸ` にし、既存のエントリに合わせる
+- `nameJa` は攻略サイトに日本語名があれば必ず入れる。わからないときだけ `null` にする
+- ファイルをまたぐ参照は、参照先にエントリがあるようにする。進化先・フォルム・特性・メガストーン・learnset のキーと技 ID が対象
+- `moves.json` にエントリを足すときは、末尾に id 昇順のブロックとして追記する。全体を並べ替えると差分が膨らむ
 
-## 優先順位（データが食い違う場合）
+## `@smogon/calc` との関係
 
-1. **実ゲーム画面**（最優先）
-2. **攻略サイト**（このリポジトリが基準にしているソース）
-3. `@smogon/calc` Gen 0 (Champions)
-
-## スキーマ
-
-各エントリの型は `@ai-rotom/shared` の `types/pokemon.ts` および
-mcp-server の `data-store.ts` に定義されている。JSON を編集する際は
-これらの型と整合を取ること。
-
-## 編集時の注意
-
-- **id 命名規則**: `toID` 相当（小文字英数字のみ、記号・空白除去）
-  例: `"Charizard-Mega-X"` → `"charizardmegax"`、`"Acid Spray"` → `"acidspray"`
-- **アポストロフィ**: 半角 `'` を使う（例: `Farfetch'd` / `King's Rock`）。calc 側が U+2019 を使う名前でも半角に正規化する（`toID` が記号を落とすため計算への影響は無い）
-- **日本語名の表記**: 全角英数字（例: `ＤＤラリアット`、`１０まんボルト`）と
-  漢字 + 全角中点（例: `ひけん・ちえなみ`）を採用。ただしフォルム接尾辞は例外で、
-  pokemon.json は半角（メガリザードンX / メガルカリオZ）、items.json のメガストーン名は
-  全角（リザードナイトＸ / ルカリオナイトＺ）とし、既存エントリの表記に合わせる
-- **nameJa**: 攻略サイトに日本語名があるものは必ず入れる。不明な場合のみ `null` 可
-- **重複禁止**: 同一 id は 1 エントリのみ
-- **相互参照の整合性**:
-  - `pokemon.baseSpecies` / `pokemon.otherFormes` → `pokemon.json` に対応エントリが存在
-  - `pokemon.abilities` → `abilities.json` に対応エントリが存在
-  - `items.megaStone` / `items.megaEvolves` → `pokemon.json` に対応エントリが存在
-  - `learnsets` のキー → `pokemon.json` の id に存在
-  - `learnsets` の技 ID → `moves.json` に存在
-- **`moves.json` の追記順**: エントリ追加は末尾に id 昇順のブロックとして追記し、既存行を並び替えない（全体ソートすると差分が膨らむため）
-
-## `@smogon/calc` との同期
-
-- `@smogon/calc` Gen 0 にあって攻略サイトに無いエントリ（戦闘中フォーム等）は
-  `pokemon.json` から削除する（攻略サイトの粒度に揃える）
-- 攻略サイトのデータを正として訂正する場合は、scripts の再生成ではなく
-  **直接 JSON を編集**する（scripts は削除済み）
-- `moves.json` に技を追加するときは `@smogon/calc` Gen 0 の技リストに存在するか
-  必ず確認する。Gen 0 に無い技はダメージ計算が例外にならず **0 ダメージを黙って返す**
-  （species と違い move overrides はアダプタ未配線のため）
-- `items.json` に持ち物を追加するときも `@smogon/calc` Gen 0 の持ち物リストに存在するか
-  必ず確認する。Gen 0 に無い持ち物は、防御側に持たせるとダメージ計算が
-  持ち物の種類を問わず TypeError で落ちる
-
-## 仕様差分の取り扱い
-
-- メガシンカの特性・種族値は攻略サイト準拠で上書き済み
-- 実行時は pokemon.json の値を `@smogon/calc` に overrides で注入するため、
-  計算にも正しく反映される（`PokemonEntryProvider` 経由）
+- 攻略サイトの値で訂正するときは JSON を直接編集する。生成スクリプトは残していない
+- `@smogon/calc` Gen 0 にあって攻略サイトにない戦闘中のフォームなどは、pokemon.json に入れない
+- 技を足すときは Gen 0 の技リストにあるかを確かめる。ないと例外にならず、0 ダメージを黙って返す。技は species と違い overrides を注入していないため
+- 持ち物を足すときも Gen 0 の持ち物リストにあるかを確かめる。ないものを防御側に持たせると、ダメージ計算が TypeError で落ちる
