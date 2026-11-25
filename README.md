@@ -90,6 +90,12 @@ https://ai-rotom.nonz250.workers.dev/mcp
 claude mcp add --transport http ai-rotom https://ai-rotom.nonz250.workers.dev/mcp
 ```
 
+登録は AI エージェントに任せることもできます。Muse や Claude、Codex に [packages/remote-server/docs/connect-prompt.md](./packages/remote-server/docs/connect-prompt.md) を読ませると、登録から接続の確認まで進めてくれます。ファイルの中身を貼り付けるか、次の URL を渡してください。
+
+```
+https://raw.githubusercontent.com/nonz250/ai-rotom/main/packages/remote-server/docs/connect-prompt.md
+```
+
 stdio 版と比べて、次の違いがあります。
 
 - `save_party` などのパーティ保存系のツールは使えません。パーティは分析ツールに毎回引数で渡します
