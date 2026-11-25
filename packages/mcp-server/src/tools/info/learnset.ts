@@ -2,7 +2,8 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { nameInputSchema } from "@ai-rotom/shared";
 import { championsLearnsets, movesById, toDataId } from "../../data-store.js";
 import { pokemonNameResolver } from "../../name-resolvers.js";
-import { withHint } from "../../tool-response-hint.js";
+import { toErrorResponse, withHint } from "../../tool-response-hint.js";
+import { UserFacingError } from "@ai-rotom/shared";
 
 const TOOL_NAME = "get_learnset";
 const TOOL_DESCRIPTION =
@@ -45,7 +46,7 @@ function resolvePokemonNameEn(input: string): string {
   const suggestions = pokemonNameResolver.suggestSimilar(input);
   const suggestionMessage =
     suggestions.length > 0 ? ` もしかして: ${suggestions.join(", ")}` : "";
-  throw new Error(`ポケモン「${input}」が見つかりません。${suggestionMessage}`);
+  throw new UserFacingError(`ポケモン「${input}」が見つかりません。${suggestionMessage}`);
 }
 
 /**
@@ -68,7 +69,7 @@ export function registerLearnsetTool(server: McpServer): void {
       const moveIds = championsLearnsets[pokemonId];
 
       if (moveIds === undefined) {
-        throw new Error(
+        throw new UserFacingError(
           `ポケモン「${args.name}」のチャンピオンズ向け learnset データが見つかりません。`,
         );
       }
@@ -84,14 +85,7 @@ export function registerLearnsetTool(server: McpServer): void {
 
       return withHint({ type: "text" as const, text: JSON.stringify(output) });
     } catch (error: unknown) {
-      const message =
-        error instanceof Error ? error.message : "不明なエラーが発生しました";
-      return {
-        content: [
-          { type: "text" as const, text: JSON.stringify({ error: message }) },
-        ],
-        isError: true,
-      };
+      return toErrorResponse(error);
     }
   });
 }

@@ -2,7 +2,8 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { nameInputSchema } from "@ai-rotom/shared";
 import { itemsById, toDataId } from "../../data-store.js";
 import { itemNameResolver } from "../../name-resolvers.js";
-import { withHint } from "../../tool-response-hint.js";
+import { toErrorResponse, withHint } from "../../tool-response-hint.js";
+import { UserFacingError } from "@ai-rotom/shared";
 
 const TOOL_NAME = "get_item_info";
 const TOOL_DESCRIPTION =
@@ -41,7 +42,7 @@ function resolveItemNameEn(input: string): string {
   const suggestions = itemNameResolver.suggestSimilar(input);
   const suggestionMessage =
     suggestions.length > 0 ? ` もしかして: ${suggestions.join(", ")}` : "";
-  throw new Error(`持ち物「${input}」が見つかりません。${suggestionMessage}`);
+  throw new UserFacingError(`持ち物「${input}」が見つかりません。${suggestionMessage}`);
 }
 
 export function registerItemInfoTool(server: McpServer): void {
@@ -52,7 +53,7 @@ export function registerItemInfoTool(server: McpServer): void {
       const entry = itemsById.get(itemId);
 
       if (entry === undefined) {
-        throw new Error(
+        throw new UserFacingError(
           `持ち物「${args.name}」はチャンピオンズでは使用できません。`,
         );
       }
@@ -71,14 +72,7 @@ export function registerItemInfoTool(server: McpServer): void {
 
       return withHint({ type: "text" as const, text: JSON.stringify(output) });
     } catch (error: unknown) {
-      const message =
-        error instanceof Error ? error.message : "不明なエラーが発生しました";
-      return {
-        content: [
-          { type: "text" as const, text: JSON.stringify({ error: message }) },
-        ],
-        isError: true,
-      };
+      return toErrorResponse(error);
     }
   });
 }

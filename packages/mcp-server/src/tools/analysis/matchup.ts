@@ -18,7 +18,7 @@ import { movesById } from "../../data-store.js";
 import { pokemonNameResolver, moveNameResolver } from "../../name-resolvers.js";
 import { damageCalculator } from "../../calc/damage-calculator.js";
 import { candidateMoveIds } from "../../calc/candidate-moves.js";
-import { withHint } from "../../tool-response-hint.js";
+import { toErrorResponse, withHint } from "../../tool-response-hint.js";
 import {
   assertMovesSpecified,
   MOVES_OPTIONAL,
@@ -175,19 +175,7 @@ export function registerMatchupTool(
 
         return withHint({ type: "text" as const, text: JSON.stringify(output) });
       } catch (error: unknown) {
-        const message =
-          error instanceof Error
-            ? error.message
-            : "不明なエラーが発生しました";
-        return {
-          content: [
-            {
-              type: "text" as const,
-              text: JSON.stringify({ error: message }),
-            },
-          ],
-          isError: true,
-        };
+        return toErrorResponse(error);
       }
     },
   );

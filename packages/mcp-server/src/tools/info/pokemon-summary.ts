@@ -1,7 +1,11 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { Generations, Pokemon } from "@smogon/calc";
 import type { TypeName } from "@smogon/calc/dist/data/interface";
-import { nameInputSchema, calculateTypeEffectiveness } from "@ai-rotom/shared";
+import {
+  nameInputSchema,
+  calculateTypeEffectiveness,
+  UserFacingError,
+} from "@ai-rotom/shared";
 import {
   championsLearnsets,
   championsTypes,
@@ -16,7 +20,7 @@ import {
   abilityNameResolver,
   pokemonNameResolver,
 } from "../../name-resolvers.js";
-import { withHint } from "../../tool-response-hint.js";
+import { toErrorResponse, withHint } from "../../tool-response-hint.js";
 
 const CHAMPIONS_GEN_NUM = 0;
 
@@ -109,14 +113,14 @@ function resolvePokemonEntry(name: string): PokemonEntry {
     const suggestions = pokemonNameResolver.suggestSimilar(name);
     const suggestionMessage
       = suggestions.length > 0 ? ` もしかして: ${suggestions.join(", ")}` : "";
-    throw new Error(
+    throw new UserFacingError(
       `ポケモン「${name}」が見つかりません。${suggestionMessage}`,
     );
   }
 
   const entry = pokemonById.get(toDataId(englishName));
   if (entry === undefined) {
-    throw new Error(`ポケモン「${name}」のデータが見つかりません。`);
+    throw new UserFacingError(`ポケモン「${name}」のデータが見つかりません。`);
   }
   return entry;
 }
@@ -327,14 +331,7 @@ export function registerPokemonSummaryTool(server: McpServer): void {
 
       return withHint({ type: "text" as const, text: JSON.stringify(output) });
     } catch (error: unknown) {
-      const message
-        = error instanceof Error ? error.message : "不明なエラーが発生しました";
-      return {
-        content: [
-          { type: "text" as const, text: JSON.stringify({ error: message }) },
-        ],
-        isError: true,
-      };
+      return toErrorResponse(error);
     }
   });
 }

@@ -8,6 +8,7 @@ import {
   calculateTypeEffectiveness,
   pokemonSchema,
   WEAKNESS_THRESHOLD,
+  UserFacingError,
 } from "@ai-rotom/shared";
 import type { TypeName } from "@smogon/calc/dist/data/interface";
 import type { TypeMultiplier } from "@ai-rotom/shared";
@@ -16,7 +17,7 @@ import {
   pokemonNameResolver,
 } from "../../name-resolvers.js";
 import { pokemonById, toDataId } from "../../data-store.js";
-import { withHint } from "../../tool-response-hint.js";
+import { toErrorResponse, withHint } from "../../tool-response-hint.js";
 
 const CHAMPIONS_GEN_NUM = 0;
 
@@ -71,7 +72,7 @@ function resolvePokemonName(name: string): string {
   const suggestions = pokemonNameResolver.suggestSimilar(name);
   const suggestionMessage =
     suggestions.length > 0 ? ` もしかして: ${suggestions.join(", ")}` : "";
-  throw new Error(`ポケモン「${name}」が見つかりません。${suggestionMessage}`);
+  throw new UserFacingError(`ポケモン「${name}」が見つかりません。${suggestionMessage}`);
 }
 
 /**
@@ -146,7 +147,7 @@ export function registerPartyAnalysisTool(server: McpServer): void {
           const entry = pokemonById.get(toDataId(nameEn));
 
           if (entry === undefined) {
-            throw new Error(
+            throw new UserFacingError(
               `ポケモン「${member.name}」のデータが見つかりません。`,
             );
           }
@@ -195,19 +196,7 @@ export function registerPartyAnalysisTool(server: McpServer): void {
 
         return withHint({ type: "text" as const, text: JSON.stringify(output) });
       } catch (error: unknown) {
-        const message =
-          error instanceof Error
-            ? error.message
-            : "不明なエラーが発生しました";
-        return {
-          content: [
-            {
-              type: "text" as const,
-              text: JSON.stringify({ error: message }),
-            },
-          ],
-          isError: true,
-        };
+        return toErrorResponse(error);
       }
     },
   );

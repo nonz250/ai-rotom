@@ -11,6 +11,7 @@ import { dirname, join } from "node:path";
 import {
   CURRENT_PARTY_SCHEMA_VERSION,
   partiesFileSchema,
+  UserFacingError,
 } from "@ai-rotom/shared";
 import type { PartiesFile } from "@ai-rotom/shared";
 
@@ -32,7 +33,7 @@ const TEMP_SUFFIX_BYTES = 8;
 export function resolvePartiesFilePath(): string {
   const home = homedir();
   if (home === "" || home === undefined || home === null) {
-    throw new Error(
+    throw new UserFacingError(
       "ホームディレクトリが解決できませんでした。$HOME 環境変数を確認してください。",
     );
   }
@@ -60,7 +61,7 @@ export function loadPartiesFile(filePath: string = resolvePartiesFilePath()): Pa
     parsed = JSON.parse(raw);
   } catch (error: unknown) {
     const cause = error instanceof Error ? error.message : String(error);
-    throw new Error(
+    throw new UserFacingError(
       `パーティファイル (${filePath}) の JSON パースに失敗しました: ${cause}`,
     );
   }
@@ -70,13 +71,13 @@ export function loadPartiesFile(filePath: string = resolvePartiesFilePath()): Pa
     const issues = result.error.issues
       .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
       .join("; ");
-    throw new Error(
+    throw new UserFacingError(
       `パーティファイル (${filePath}) のスキーマ検証に失敗しました: ${issues}`,
     );
   }
 
   if (result.data.schemaVersion !== CURRENT_PARTY_SCHEMA_VERSION) {
-    throw new Error(
+    throw new UserFacingError(
       `未対応の schemaVersion (${result.data.schemaVersion}) です。現行は ${CURRENT_PARTY_SCHEMA_VERSION} です。`,
     );
   }
@@ -140,5 +141,5 @@ function wrapIoError(prefix: string, error: unknown): Error {
     isNodeErrnoException(error) && error.code !== undefined
       ? ` [${error.code}]`
       : "";
-  return new Error(`${prefix}${code}: ${message}`);
+  return new UserFacingError(`${prefix}${code}: ${message}`);
 }

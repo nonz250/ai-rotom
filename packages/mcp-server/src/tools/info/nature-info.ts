@@ -2,7 +2,8 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { nameInputSchema } from "@ai-rotom/shared";
 import { naturesById, toDataId } from "../../data-store.js";
 import { natureNameResolver } from "../../name-resolvers.js";
-import { withHint } from "../../tool-response-hint.js";
+import { toErrorResponse, withHint } from "../../tool-response-hint.js";
+import { UserFacingError } from "@ai-rotom/shared";
 
 const TOOL_NAME = "get_nature_info";
 const TOOL_DESCRIPTION =
@@ -39,7 +40,7 @@ function resolveNatureNameEn(input: string): string {
   const suggestions = natureNameResolver.suggestSimilar(input);
   const suggestionMessage =
     suggestions.length > 0 ? ` もしかして: ${suggestions.join(", ")}` : "";
-  throw new Error(`性格「${input}」が見つかりません。${suggestionMessage}`);
+  throw new UserFacingError(`性格「${input}」が見つかりません。${suggestionMessage}`);
 }
 
 export function registerNatureInfoTool(server: McpServer): void {
@@ -49,7 +50,7 @@ export function registerNatureInfoTool(server: McpServer): void {
       const entry = naturesById.get(toDataId(englishName));
 
       if (entry === undefined) {
-        throw new Error(
+        throw new UserFacingError(
           `性格「${args.name}」はチャンピオンズでは使用できません。`,
         );
       }
@@ -63,14 +64,7 @@ export function registerNatureInfoTool(server: McpServer): void {
 
       return withHint({ type: "text" as const, text: JSON.stringify(output) });
     } catch (error: unknown) {
-      const message =
-        error instanceof Error ? error.message : "不明なエラーが発生しました";
-      return {
-        content: [
-          { type: "text" as const, text: JSON.stringify({ error: message }) },
-        ],
-        isError: true,
-      };
+      return toErrorResponse(error);
     }
   });
 }

@@ -10,6 +10,7 @@ import {
   calculateTypeEffectiveness,
   pokemonSchema,
   type PokemonInput,
+  UserFacingError,
 } from "@ai-rotom/shared";
 import {
   championsLearnsets,
@@ -28,7 +29,7 @@ import {
   moveNameResolver,
   pokemonNameResolver,
 } from "../../name-resolvers.js";
-import { withHint } from "../../tool-response-hint.js";
+import { toErrorResponse, withHint } from "../../tool-response-hint.js";
 
 const CHAMPIONS_GEN_NUM = 0;
 
@@ -162,7 +163,7 @@ function resolveMoveEnglishName(name: string): string {
   const suggestions = moveNameResolver.suggestSimilar(name);
   const suggestionMessage =
     suggestions.length > 0 ? ` もしかして: ${suggestions.join(", ")}` : "";
-  throw new Error(`技「${name}」が見つかりません。${suggestionMessage}`);
+  throw new UserFacingError(`技「${name}」が見つかりません。${suggestionMessage}`);
 }
 
 /**
@@ -233,14 +234,14 @@ function resolvePokemonEntry(name: string): PokemonEntry {
     const suggestions = pokemonNameResolver.suggestSimilar(name);
     const suggestionMessage =
       suggestions.length > 0 ? ` もしかして: ${suggestions.join(", ")}` : "";
-    throw new Error(
+    throw new UserFacingError(
       `ポケモン「${name}」が見つかりません。${suggestionMessage}`,
     );
   }
 
   const entry = pokemonById.get(toDataId(englishName));
   if (entry === undefined) {
-    throw new Error(`ポケモン「${name}」のデータが見つかりません。`);
+    throw new UserFacingError(`ポケモン「${name}」のデータが見つかりません。`);
   }
   return entry;
 }
@@ -536,14 +537,7 @@ export function registerPartyCoverageTool(server: McpServer): void {
 
       return withHint({ type: "text" as const, text: JSON.stringify(output) });
     } catch (error: unknown) {
-      const message =
-        error instanceof Error ? error.message : "不明なエラーが発生しました";
-      return {
-        content: [
-          { type: "text" as const, text: JSON.stringify({ error: message }) },
-        ],
-        isError: true,
-      };
+      return toErrorResponse(error);
     }
   });
 }

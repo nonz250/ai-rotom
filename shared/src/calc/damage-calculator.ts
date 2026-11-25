@@ -23,6 +23,7 @@ import type {
   DamageCalcResult,
   PokemonInput,
 } from "./types.js";
+import { UserFacingError } from "../errors/user-facing-error.js";
 
 const CHAMPIONS_GEN_NUM = 0;
 const DEFAULT_NATURE_EN = "Serious";
@@ -375,7 +376,7 @@ export class DamageCalculatorAdapter {
     const resolved = moves.map((name) => {
       const englishName = resolveNameWithFallback(this.resolvers.move, name, "技");
       if (gen.moves.get(toID(englishName)) === undefined) {
-        throw new Error(
+        throw new UserFacingError(
           `技「${name}」は計算エンジンが未対応のため計算できません。技構成から外して呼び出してください。`,
         );
       }

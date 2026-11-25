@@ -38,6 +38,7 @@
 | `schemas/` | Zod 入力スキーマ（`PokemonInput`, `StatsInput` 等） |
 | `analysis/` | タイプ相性・実数値計算・素早さ比較の純関数 |
 | `calc/` | ダメージ計算エンジン（DI 対応の Facade + ビルダー） |
+| `errors/` | `UserFacingError`。メッセージをツールの呼び出し元に返してよい例外 |
 
 ## 新規モジュール追加時のルール
 

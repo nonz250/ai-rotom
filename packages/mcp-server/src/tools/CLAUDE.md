@@ -71,7 +71,8 @@ export function registerFooTool(server: McpServer): void {
 - 攻撃側の技構成を省略すると習得技すべてを計算するツールは、`MovesRequirement` を受け取り `assertMovesSpecified` を呼ぶ。Workers 版では moves が必須になる
 - ポケモン名ごとに技を受け取る `moves` 引数は shared の `movesByPokemonSchema` で受ける。匹数・技数・名前の文字数の上限はこのスキーマが持つ
 - 複数技のダメ計結果は `summarizeMoveDamages` で要約して返す。乱数配列を全技ぶん返すと AI のコンテキストを圧迫するため、乱数の内訳は単発のダメ計でだけ返す
-- **エラー応答**: `{ content: [...], isError: true }` + `JSON.stringify({ error })`
+- エラー応答は `toErrorResponse` で組み立て、`isError` を自前で書かない
+- AI クライアントに伝える文面は `@ai-rotom/shared` の `UserFacingError` で投げる。それ以外の例外は文面を返さず、固定の文面に置き換わる
 - **成功応答**: `JSON.stringify(data)` をテキストで返す
 
 ### 3. `core-server.ts` に登録

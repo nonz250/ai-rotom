@@ -4,13 +4,14 @@ import {
   nameInputSchema,
   MAX_STAT_POINT_TOTAL,
   evsSchema,
+  UserFacingError,
 } from "@ai-rotom/shared";
 import {
   pokemonNameResolver,
   natureNameResolver,
 } from "../../name-resolvers.js";
 import { pokemonById, toDataId, type BaseStats } from "../../data-store.js";
-import { withHint } from "../../tool-response-hint.js";
+import { toErrorResponse, withHint } from "../../tool-response-hint.js";
 
 const CHAMPIONS_GEN_NUM = 0;
 const DEFAULT_NATURE_EN = "Serious";
@@ -61,7 +62,7 @@ function resolvePokemonName(name: string): string {
   const suggestions = pokemonNameResolver.suggestSimilar(name);
   const suggestionMessage =
     suggestions.length > 0 ? ` もしかして: ${suggestions.join(", ")}` : "";
-  throw new Error(`ポケモン「${name}」が見つかりません。${suggestionMessage}`);
+  throw new UserFacingError(`ポケモン「${name}」が見つかりません。${suggestionMessage}`);
 }
 
 /**
@@ -84,7 +85,7 @@ function resolveNatureName(nature: string | undefined): string {
   const suggestions = natureNameResolver.suggestSimilar(nature);
   const suggestionMessage =
     suggestions.length > 0 ? ` もしかして: ${suggestions.join(", ")}` : "";
-  throw new Error(`性格「${nature}」が見つかりません。${suggestionMessage}`);
+  throw new UserFacingError(`性格「${nature}」が見つかりません。${suggestionMessage}`);
 }
 
 export function registerStatsCalculationTool(server: McpServer): void {
@@ -100,7 +101,7 @@ export function registerStatsCalculationTool(server: McpServer): void {
         const entry = pokemonById.get(toDataId(nameEn));
 
         if (entry === undefined) {
-          throw new Error(
+          throw new UserFacingError(
             `ポケモン「${args.name}」のデータが見つかりません。`,
           );
         }
@@ -156,19 +157,7 @@ export function registerStatsCalculationTool(server: McpServer): void {
 
         return withHint({ type: "text" as const, text: JSON.stringify(output) });
       } catch (error: unknown) {
-        const message =
-          error instanceof Error
-            ? error.message
-            : "不明なエラーが発生しました";
-        return {
-          content: [
-            {
-              type: "text" as const,
-              text: JSON.stringify({ error: message }),
-            },
-          ],
-          isError: true,
-        };
+        return toErrorResponse(error);
       }
     },
   );

@@ -7,6 +7,7 @@ import {
   MAX_PARTY_NAME_LENGTH,
   MIN_PARTY_MEMBERS,
   partySchema,
+  UserFacingError,
 } from "@ai-rotom/shared";
 import type { Party, PartiesFile, PartyMember } from "@ai-rotom/shared";
 import { NameResolver } from "@ai-rotom/shared";
@@ -111,7 +112,7 @@ function assertKnownName(
   const suggestions = resolver.suggestSimilar(name, 3);
   const suggestionMessage =
     suggestions.length > 0 ? ` もしかして: ${suggestions.join(", ")}` : "";
-  throw new Error(
+  throw new UserFacingError(
     `ブロック ${blockNumber}: ${label}「${name}」が見つかりません。${suggestionMessage}`,
   );
 }
@@ -157,12 +158,12 @@ export function runImportPartyFromText(
 
   const blocks = splitPokesolTextBlocks(input.text);
   if (blocks.length < MIN_PARTY_MEMBERS) {
-    throw new Error(
+    throw new UserFacingError(
       `パーティには ${MIN_PARTY_MEMBERS} 匹以上を含めてください (検出: ${blocks.length} 匹)。`,
     );
   }
   if (blocks.length > MAX_PARTY_MEMBERS) {
-    throw new Error(
+    throw new UserFacingError(
       `パーティには ${MAX_PARTY_MEMBERS} 匹までしか含められません (検出: ${blocks.length} 匹)。`,
     );
   }
@@ -176,7 +177,7 @@ export function runImportPartyFromText(
       parsed = parse(block);
     } catch (error: unknown) {
       const reason = error instanceof Error ? error.message : String(error);
-      throw new Error(
+      throw new UserFacingError(
         `ブロック ${blockNumber} のパースに失敗しました: ${reason}`,
       );
     }
@@ -203,7 +204,10 @@ export function runImportPartyFromText(
   }
 
   // 最終的にスキーマ全体を検証してから永続化する (SP 合計 / メンバー数 / 技数 等の二重防御)。
-  partySchema.parse(party);
+  const validation = partySchema.safeParse(party);
+  if (!validation.success) {
+    throw new UserFacingError(validation.error.message);
+  }
 
   const nextParties = [...file.parties];
   if (existingIndex >= 0) {

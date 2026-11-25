@@ -13,7 +13,8 @@ import {
   type BaseStats,
   type PokemonEntry,
 } from "../../data-store.js";
-import { withHint } from "../../tool-response-hint.js";
+import { toErrorResponse, withHint } from "../../tool-response-hint.js";
+import { UserFacingError } from "@ai-rotom/shared";
 
 const DEFAULT_SEARCH_LIMIT = 20;
 
@@ -98,7 +99,7 @@ function resolvePokemonName(name: string): string {
   const suggestions = pokemonNameResolver.suggestSimilar(name);
   const suggestionMessage =
     suggestions.length > 0 ? ` もしかして: ${suggestions.join(", ")}` : "";
-  throw new Error(`ポケモン「${name}」が見つかりません。${suggestionMessage}`);
+  throw new UserFacingError(`ポケモン「${name}」が見つかりません。${suggestionMessage}`);
 }
 
 /**
@@ -190,36 +191,14 @@ export function registerPokemonInfoTools(server: McpServer): void {
         const entry = pokemonById.get(toDataId(englishName));
 
         if (entry === undefined) {
-          return {
-            content: [
-              {
-                type: "text" as const,
-                text: JSON.stringify({
-                  error: `ポケモン「${args.name}」のデータが見つかりません。`,
-                }),
-              },
-            ],
-            isError: true,
-          };
+          throw new UserFacingError(`ポケモン「${args.name}」のデータが見つかりません。`);
         }
 
         const result = buildPokemonInfoResult(entry);
 
         return withHint({ type: "text" as const, text: JSON.stringify(result) });
       } catch (error: unknown) {
-        const message =
-          error instanceof Error
-            ? error.message
-            : "不明なエラーが発生しました";
-        return {
-          content: [
-            {
-              type: "text" as const,
-              text: JSON.stringify({ error: message }),
-            },
-          ],
-          isError: true,
-        };
+        return toErrorResponse(error);
       }
     },
   );
@@ -257,17 +236,7 @@ export function registerPokemonInfoTools(server: McpServer): void {
         if (args.type !== undefined) {
           typeFilterEn = resolveTypeName(args.type);
           if (typeFilterEn === undefined) {
-            return {
-              content: [
-                {
-                  type: "text" as const,
-                  text: JSON.stringify({
-                    error: `タイプ「${args.type}」が見つかりません。`,
-                  }),
-                },
-              ],
-              isError: true,
-            };
+            throw new UserFacingError(`タイプ「${args.type}」が見つかりません。`);
           }
         }
 
@@ -318,19 +287,7 @@ export function registerPokemonInfoTools(server: McpServer): void {
 
         return withHint({ type: "text" as const, text: JSON.stringify(results) });
       } catch (error: unknown) {
-        const message =
-          error instanceof Error
-            ? error.message
-            : "不明なエラーが発生しました";
-        return {
-          content: [
-            {
-              type: "text" as const,
-              text: JSON.stringify({ error: message }),
-            },
-          ],
-          isError: true,
-        };
+        return toErrorResponse(error);
       }
     },
   );

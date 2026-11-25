@@ -1,5 +1,6 @@
 import { parse, type PokesolTextParseReult } from "@pokesol/pokesol-text-parser-ts";
 import type { EvsInput, PartyMember } from "@ai-rotom/shared";
+import { UserFacingError } from "@ai-rotom/shared";
 
 /** ポケソルテキストで性格を省略した場合のデフォルト。 */
 export const DEFAULT_NATURE_NAME = "まじめ";
@@ -32,7 +33,7 @@ export function parsePokesolTextMultiple(
       results.push(parse(block));
     } catch (error: unknown) {
       const reason = error instanceof Error ? error.message : String(error);
-      throw new Error(
+      throw new UserFacingError(
         `ブロック ${index + 1} のパースに失敗しました: ${reason}`,
       );
     }
@@ -57,7 +58,7 @@ export function mapPokesolResultToPartyMember(
   const warnings: string[] = [];
 
   if (result.pokemonName === null || result.pokemonName === "") {
-    throw new Error(
+    throw new UserFacingError(
       `ブロック ${blockNumber}: ポケモン名が読み取れませんでした。`,
     );
   }
