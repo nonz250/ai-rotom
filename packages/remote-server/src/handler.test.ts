@@ -267,6 +267,7 @@ describe("handleRequest のレート制限", () => {
       [mcpRequest("/mcp", rpc("tools/list"), { authorization: "Bearer wrong" }), ENV, 401],
       [mcpRequest("/", rpc("tools/list"), BEARER), ENV, 404],
       [mcpRequest("/mcp", rpc("tools/list"), BEARER), {}, 503],
+      [mcpRequest("/mcp", rpc("tools/list"), { ...BEARER, origin: ORIGIN }), ENV, 403],
       [
         new Request("http://ai-rotom.example.workers.dev/mcp", {
           method: "POST",
@@ -348,6 +349,33 @@ describe("handleRequest の HTTPS の要求", () => {
       ENV,
     );
     expect(res.status).toBe(403);
+  });
+});
+
+describe("handleRequest の Origin の拒否", () => {
+  it("Origin ヘッダーが付いたリクエストは、正しいトークンでも 403 で拒否する", async () => {
+    for (const origin of [ORIGIN, "https://evil.example", "null", ""]) {
+      const res = await handleRequest(
+        mcpRequest("/mcp", rpc("tools/list"), { ...BEARER, origin }),
+        ENV,
+      );
+      expect(res.status).toBe(403);
+      expect(res.headers.get("cache-control")).toBe("no-store");
+      expect(res.headers.get("referrer-policy")).toBe("no-referrer");
+    }
+  });
+
+  it("Origin を拒否するときは認証より先に拒否する", async () => {
+    const res = await handleRequest(
+      mcpRequest("/mcp", rpc("tools/list"), { origin: "https://evil.example" }),
+      ENV,
+    );
+    expect(res.status).toBe(403);
+  });
+
+  it("Origin ヘッダーがなければ処理する", async () => {
+    const res = await handleRequest(mcpRequest("/mcp", rpc("tools/list"), BEARER), ENV);
+    expect(res.status).toBe(200);
   });
 });
 

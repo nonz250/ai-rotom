@@ -204,6 +204,12 @@ async function handleRequest(
     return textResponse(HTTP_STATUS_FORBIDDEN, "HTTPS is required");
   }
 
+  // ブラウザには対応しないので、Origin の値を許可リストで絞らず、付いていれば `null` でも拒否する。
+  // サーバー側で動く MCP クライアントは Origin を付けない。
+  if (request.headers.has("origin")) {
+    return textResponse(HTTP_STATUS_FORBIDDEN, "Requests from browsers are not supported");
+  }
+
   const pathToken = parseMcpPath(url.pathname);
   if (pathToken === undefined) {
     return textResponse(HTTP_STATUS_NOT_FOUND, "Not Found");
