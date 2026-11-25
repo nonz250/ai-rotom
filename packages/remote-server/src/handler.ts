@@ -1,4 +1,9 @@
+import {
+  readRequestBody,
+  requestBodyTooLargeMessage,
+} from "@modelcontextprotocol/sdk/server/requestBody.js";
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
+import { ErrorCode } from "@modelcontextprotocol/sdk/types.js";
 import { createCoreServer } from "@ai-rotom/mcp-core";
 import { MIN_AUTH_TOKEN_LENGTH, type RemoteServerConfig } from "./config.js";
 import { buildRemoteServerInstructions } from "./instructions.js";
@@ -17,13 +22,22 @@ const BYTES_PER_KIBIBYTE = 1024;
 const MAX_REQUEST_BODY_KIBIBYTES = 64;
 const MAX_REQUEST_BODY_BYTES = MAX_REQUEST_BODY_KIBIBYTES * BYTES_PER_KIBIBYTE;
 
+/** MCP SDK がリクエスト本文の上限超過に使うのと同じ、実装定義のサーバーエラーのコード。 */
+const JSON_RPC_SERVER_ERROR = -32000;
+
+const HTTP_STATUS_BAD_REQUEST = 400;
 const HTTP_STATUS_UNAUTHORIZED = 401;
 const HTTP_STATUS_NOT_FOUND = 404;
 const HTTP_STATUS_METHOD_NOT_ALLOWED = 405;
+const HTTP_STATUS_PAYLOAD_TOO_LARGE = 413;
 const HTTP_STATUS_SERVICE_UNAVAILABLE = 503;
 
 function textResponse(status: number, body: string, headers?: HeadersInit): Response {
   return new Response(body, { status, headers });
+}
+
+function jsonRpcErrorResponse(status: number, code: number, message: string): Response {
+  return Response.json({ jsonrpc: "2.0", error: { code, message }, id: null }, { status });
 }
 
 const TOKEN_DIGEST_ALGORITHM = "SHA-256";
@@ -73,18 +87,51 @@ function bearerToken(request: Request): string | null {
   return match === null ? null : match[1];
 }
 
+/** 本文を上限まで読んで JSON としてパースする。受け付けられない本文ならエラーの応答を返す。 */
+async function readJsonRpcMessage(request: Request): Promise<{ message: unknown } | Response> {
+  let message: unknown;
+  try {
+    const body = await readRequestBody(request, MAX_REQUEST_BODY_BYTES);
+    if (body.tooLarge) {
+      return jsonRpcErrorResponse(
+        HTTP_STATUS_PAYLOAD_TOO_LARGE,
+        JSON_RPC_SERVER_ERROR,
+        requestBodyTooLargeMessage(MAX_REQUEST_BODY_BYTES),
+      );
+    }
+    message = JSON.parse(body.text);
+  } catch {
+    return jsonRpcErrorResponse(HTTP_STATUS_BAD_REQUEST, ErrorCode.ParseError, "Parse error: Invalid JSON");
+  }
+  if (Array.isArray(message)) {
+    return jsonRpcErrorResponse(
+      HTTP_STATUS_BAD_REQUEST,
+      ErrorCode.InvalidRequest,
+      "Invalid Request: Batch requests are not supported",
+    );
+  }
+  return { message };
+}
+
 async function handleMcp(request: Request, requireMoves: boolean): Promise<Response> {
+  // SDK はバッチを 1 リクエストで最大 100 件まで処理してしまう。バッチかどうかは本文を
+  // パースしないとわからないため、SDK に任せずここで読む。パース済みの本文を渡すと SDK は
+  // 本文の上限を確かめないので、上限もここで確かめる。
+  const read = await readJsonRpcMessage(request);
+  if (read instanceof Response) {
+    return read;
+  }
+
   const server = createCoreServer(buildRemoteServerInstructions(requireMoves), { requireMoves });
   // セッションを持たないので、リクエストごとにサーバーとトランスポートを作って捨てる。
   // SSE で返すとストリームが閉じるまでサーバーを生かす必要があるため、JSON で返させる。
   const transport = new WebStandardStreamableHTTPServerTransport({
     sessionIdGenerator: undefined,
     enableJsonResponse: true,
-    maxRequestBodySize: MAX_REQUEST_BODY_BYTES,
   });
   await server.connect(transport);
   try {
-    return await transport.handleRequest(request);
+    return await transport.handleRequest(request, { parsedBody: read.message });
   } finally {
     await server.close();
   }

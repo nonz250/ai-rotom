@@ -169,6 +169,54 @@ describe("handleRequest のリクエスト本文の上限", () => {
       ENV,
     );
     expect(res.status).toBe(413);
+    expect((await res.json()).error.code).toBe(-32000);
+  });
+});
+
+describe("handleRequest の JSON-RPC バッチ", () => {
+  async function postBody(body: string): Promise<Response> {
+    return handleRequest(mcpRequest("/mcp", body, BEARER), ENV);
+  }
+
+  it("1 件だけのバッチも 400 と Invalid Request のエラーで拒否する", async () => {
+    const res = await postBody(`[${rpc("tools/list")}]`);
+    const body = await res.json();
+
+    expect(res.status).toBe(400);
+    expect(body).toMatchObject({ jsonrpc: "2.0", id: null, error: { code: -32600 } });
+  });
+
+  it("複数件のバッチはどれも実行せずに 400 で拒否する", async () => {
+    const call = JSON.stringify({
+      jsonrpc: "2.0",
+      id: 2,
+      method: "tools/call",
+      params: { name: "get_pokemon_info", arguments: { name: "ガブリアス" } },
+    });
+    const res = await postBody(`[${rpc("tools/list")},${call}]`);
+    const body = await res.json();
+
+    expect(res.status).toBe(400);
+    expect(Array.isArray(body)).toBe(false);
+    expect(body.error.code).toBe(-32600);
+  });
+
+  it("空のバッチも 400 で拒否する", async () => {
+    const res = await postBody("[]");
+    expect(res.status).toBe(400);
+    expect((await res.json()).error.code).toBe(-32600);
+  });
+
+  it("JSON として読めない本文は 400 と Parse error を返す", async () => {
+    const res = await postBody("{");
+    expect(res.status).toBe(400);
+    expect((await res.json()).error.code).toBe(-32700);
+  });
+
+  it("1 件のメッセージはこれまでどおり処理する", async () => {
+    const res = await postBody(rpc("tools/list"));
+    expect(res.status).toBe(200);
+    expect((await res.json()).result.tools.length).toBeGreaterThan(0);
   });
 });
 
