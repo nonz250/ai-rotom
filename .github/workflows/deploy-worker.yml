@@ -17,6 +17,8 @@ jobs:
   build:
     name: Build and verify worker bundle
     runs-on: ubuntu-latest
+    outputs:
+      bundle-manifest: ${{ steps.checksums.outputs.manifest }}
     # フォークではデプロイ先の Secrets がなく失敗するだけなので、本リポジトリに限る。
     # workflow_dispatch は main ブランチからのみ許可する（誤ブランチでのデプロイを防ぐ）
     if: >
@@ -71,6 +73,18 @@ jobs:
       - name: Verify worker bundle has no Node.js built-in imports
         run: bash scripts/verify-worker-bundle.sh
 
+      - name: Record worker bundle checksums
+        id: checksums
+        working-directory: packages/remote-server/.wrangler/bundle
+        run: |
+          find . -type f -print0 | LC_ALL=C sort -z | xargs -0 sha256sum > "$RUNNER_TEMP/worker-bundle.sha256"
+          cat "$RUNNER_TEMP/worker-bundle.sha256"
+          {
+            echo "manifest<<EOF_WORKER_BUNDLE_SHA256"
+            cat "$RUNNER_TEMP/worker-bundle.sha256"
+            echo "EOF_WORKER_BUNDLE_SHA256"
+          } >> "$GITHUB_OUTPUT"
+
       - name: Upload verified worker bundle
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
@@ -112,6 +126,20 @@ jobs:
         with:
           name: worker-bundle
           path: ${{ runner.temp }}/worker-bundle
+
+      # artifact の中に置いたハッシュでは artifact ごと差し替えられたときに気づけないので、build ジョブの出力と照らし合わせる。
+      # --no-bundle の wrangler は入口と同じディレクトリの .js も追加のモジュールとして上げるので、記録にないファイルがないことも確かめる
+      - name: Verify worker bundle checksums
+        working-directory: ${{ runner.temp }}/worker-bundle
+        env:
+          MANIFEST: ${{ needs.build.outputs.bundle-manifest }}
+        run: |
+          printf '%s\n' "$MANIFEST" > "$RUNNER_TEMP/worker-bundle.sha256"
+          sha256sum --check --strict "$RUNNER_TEMP/worker-bundle.sha256"
+          if ! diff <(find . -type f | LC_ALL=C sort) <(cut -d ' ' -f 3- "$RUNNER_TEMP/worker-bundle.sha256"); then
+            echo "::error::worker bundle contains files that the build job did not verify"
+            exit 1
+          fi
 
       # --config を省くと、wrangler は入口のファイルの位置から設定を探すので wrangler.toml の名前や互換日付が読まれない
       - name: Deploy
