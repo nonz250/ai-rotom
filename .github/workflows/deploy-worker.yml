@@ -90,6 +90,7 @@ jobs:
         with:
           name: worker-bundle
           path: packages/remote-server/.wrangler/bundle/
+          include-hidden-files: true
           if-no-files-found: error
           retention-days: 1
 
