@@ -1,8 +1,13 @@
 # ai-rotom
 
-ポケモンバトルアドバイザー。
+ポケモンチャンピオンズの対戦アドバイザーです。
 
-Claude Code, Codex などの AI Agent から MCP ツールとして呼び出し、 ポケモンの種族値・技データ・タイプ相性・ダメージ計算・パーティ分析・選出判断に利用できます。
+Claude Code や Codex などの AI エージェントから MCP ツールとして呼び出し、種族値・技データ・タイプ相性の確認、ダメージ計算、パーティ分析、選出の判断材料づくりに使えます。
+
+- ダメージ計算を、1 対 1 の単発・全技・6v6 の 3 つの粒度で行えます
+- パーティの弱点や攻撃範囲、2 つのパーティの違いを分析できます
+- 対面や選出の判断に使うデータをまとめて取り出せます。最終的な判断は AI が行います
+- 入力は日本語でも英語でも受け付けます
 
 ## 著作権・商標
 
@@ -37,25 +42,29 @@ Claude Code, Codex などの AI Agent から MCP ツールとして呼び出し�
 本プロジェクトのソースコードは [MIT License](./LICENSE) で提供されます。
 ただし前述のとおり、ポケモンに関する権利は MIT License の対象ではなく、各権利者に帰属します。
 
+## 使用例
+
+AI クライアントに以下のように聞くと、内部でツールが自動で呼ばれます。
+
+> 「カバルドンの対策候補を教えて」
+
+e.g.) `search_pokemon_by_type_effectiveness` でカバルドンの弱点タイプ（みず/くさ/こおり）の攻撃技を覚えるポケモンが検索され、AI が選んだ候補ごとに `analyze_matchup` で双方向のダメ計・素早さ比較・先制技が取得されます。受け型か速攻型かといった対策方針の判断は AI が行います。必要に応じてカバルドンの技構成や行動をプロンプトに入力し、あくび受けループに対する対策の検討をしてください。
+
+> 「リザードン、ギャラドス、ピカチュウの 3 体パーティに足りないタイプ耐性は？」
+
+e.g.) `analyze_party_weakness` が呼ばれ、各タイプを弱点に持つメンバー数（`teamWeaknesses`）と抜群を取れないタイプ（`uncoveredTypes`）を返します。致命性の判断は AI が文脈で行います。
+
 ## クイックスタート
 
-### 前提
-
-- Node.js >= 24
-
-### 動作確認
+Node.js 24 以上が必要です。
 
 ```bash
 npx -y @nonz250/ai-rotom
 ```
 
-標準入出力で MCP プロトコルが動くため、実運用は下記の MCP クライアント経由で行います。
-
-## MCP クライアント設定
+標準入出力で MCP プロトコルを話すので、実際には MCP クライアントに登録して使います。
 
 ### Claude Code
-
-プロジェクトまたはユーザー設定に追加。
 
 ```bash
 claude mcp add ai-rotom -- npx -y @nonz250/ai-rotom
@@ -63,86 +72,33 @@ claude mcp add ai-rotom -- npx -y @nonz250/ai-rotom
 
 ### Codex
 
-プロジェクトまたはユーザー設定に追加。
-
 ```bash
 codex mcp add ai-rotom -- npx -y @nonz250/ai-rotom
 ```
 
-### リモート MCP サーバーとして公開する (Cloudflare Workers)
+## リモート MCP サーバーで使う
 
-Muse のカスタムコネクタのように手元で MCP サーバーを起動できないクライアントからは、Cloudflare Workers に置いたリモート MCP サーバーとしてつなげます。リポジトリを clone して、自分の Cloudflare アカウントにデプロイします。
+Muse のカスタムコネクタのように、手元で MCP サーバーを起動できないクライアントからは、公開しているリモート MCP サーバーにつなげます。認証はいりません。
 
-```bash
-npm ci
-cd packages/remote-server
-npx wrangler login
-openssl rand -hex 32            # 認証トークンを作る
-npx wrangler secret put AUTH_TOKEN   # 作ったトークンを貼り付ける
-npm run deploy
+```
+https://ai-rotom.nonz250.workers.dev/mcp
 ```
 
-デプロイ後は `https://ai-rotom.<サブドメイン>.workers.dev/mcp` を MCP サーバーの URL として登録し、`Authorization: Bearer <トークン>` ヘッダーを付けて呼びます。ヘッダーを設定できないクライアントでは `https://ai-rotom.<サブドメイン>.workers.dev/mcp/<トークン>` も使えます。この形はトークンが URL に含まれ、アクセスログなどに残るので、ヘッダーを使えるならそちらを選んでください。
+クライアントのコネクタや MCP サーバーの設定に、この URL を登録してください。Claude Code では次のように登録します。
 
-リモート版には次の制約があります。
+```bash
+claude mcp add --transport http ai-rotom https://ai-rotom.nonz250.workers.dev/mcp
+```
+
+stdio 版と比べて、次の違いがあります。
 
 - `save_party` などのパーティ保存系のツールは使えません。パーティは分析ツールに毎回引数で渡します
-- ブラウザから直接つなぐクライアントには対応していません。`Origin` ヘッダーが付いたリクエストは、値によらず 403 で拒否します。サーバー側で動く MCP クライアントは `Origin` を付けないので、そのままつなげます
-- Workers の無料プランは 1 リクエストあたりの CPU 時間が 10 ms までです。そのためリモート版では、全技ダメ計・6v6 ダメ計・対面分析・選出分析で、自分側のポケモンの技構成の指定が必須です。指定しないとエラーを返します。相手側の技構成は必須ではありません。AI クライアントには技構成を指定して呼ぶよう案内します
-- 技構成を必須にするかは `packages/remote-server/wrangler.toml` の `REQUIRE_MOVES` で切り替えられます。有料プランなど CPU 時間に余裕がある環境では `"false"` にすると、stdio 版と同じく技構成を省略できます。ダッシュボードで変えた値はデプロイのたびに `wrangler.toml` の値で上書きされるので、このファイルで変えてください
-- 対応する MCP のプロトコルの版は、同梱している MCP SDK が扱う版に従います。複数のメッセージを配列でまとめて送るバッチには対応していません
-- 認証を通ったリクエストは、トークンごとに 60 秒あたり 60 件までです。超えると 429 を返します。上限は `packages/remote-server/wrangler.toml` の `[[ratelimits]]` の `limit` で変えられます。数え方は Cloudflare のロケーションごとの近似なので、上限を少し超えて通ることがあります
+- 全技ダメ計・6v6 ダメ計・対面分析・選出分析では、自分側のポケモンの技構成の指定が必須です。相手側は省略できます
+- 接続元ごとに、60 秒あたりのリクエスト数に上限があります。超えると、しばらく待つよう求めるエラーを返します
+- ブラウザから直接つなぐクライアントには対応していません
+- 無料の枠で動かしているので、1 日の利用が多いと、その日のうちは使えなくなることがあります
 
-#### 受け付けるホスト名を絞る
-
-`packages/remote-server/wrangler.toml` の `[vars]` に `ALLOWED_HOSTS` をカンマ区切りで書くと、それ以外のホスト名で届いたリクエストを 403 で拒否します。ポートは書かず、ホスト名だけを並べます。未設定のときはホスト名を確かめません。
-
-```toml
-ALLOWED_HOSTS = "ai-rotom.<サブドメイン>.workers.dev"
-```
-
-ダッシュボードで設定した値はデプロイのたびに消えるので、`wrangler.toml` に書いてください。`wrangler.toml` に書いたまま手元で確かめるときは、`npx wrangler dev --var ALLOWED_HOSTS:localhost` のように手元のホスト名で上書きします。
-
-#### トークンの扱い
-
-- トークンは `openssl rand -hex 32` などで作った、32 文字以上のランダムな値にしてください。32 文字に満たないトークンでは、すべてのリクエストを 503 で拒否します。ローカルでの確認に使ったトークンを本番に流用しないでください
-- トークンを入れ替えるときは、`npx wrangler secret put AUTH_TOKEN` で新しい値を設定し、登録しているクライアントのヘッダーや URL も新しい値に書き換えます
-- `/mcp/<トークン>` の URL は、トークンと同じく秘密の値として扱ってください。Workers Logs や `wrangler tail` を有効にしていると、リクエストの URL がログに残ります。ログを見られる人と保存の設定を確かめてください
-
-#### ローカルで動作確認する
-
-デプロイ前に、手元の Workers ランタイムでリモート版を起動して MCP クライアントからつなげます。
-
-```bash
-cp packages/remote-server/.dev.vars.example packages/remote-server/.dev.vars
-openssl rand -hex 32    # 出力を .dev.vars の AUTH_TOKEN= の後ろに貼り付ける
-npm run worker:dev      # http://localhost:8787/mcp で待ち受ける
-```
-
-`AUTH_TOKEN` が空のときや 32 文字に満たないときは、すべてのリクエストを 503 で拒否します。
-
-別のターミナルで Claude Code に登録します。トークンは `.dev.vars` の `AUTH_TOKEN` です。
-
-```bash
-claude mcp add --transport http ai-rotom-local http://localhost:8787/mcp \
-  --header "Authorization: Bearer <.dev.vars の AUTH_TOKEN>"
-```
-
-確認が終わったら `claude mcp remove ai-rotom-local` で外します。
-
-リモート版は、`localhost` などの手元のホスト以外から http で届いたリクエストを 403 で拒否します。手元の Workers ランタイムをトンネルなどで外に公開するときは、`npx wrangler dev --local-protocol https` で起動して https で転送し、本番と同じくランダムなトークンを使ってください。
-
-#### Cloudflare 以外のサービスで動かす
-
-リモート版の本体は、`packages/remote-server/src/handler.ts` の `createRequestHandler` にまとめていて、実行環境に依存しません。Cloudflare Workers 用のエントリは、その上に置いた薄いアダプターです。
-
-ほかのサービスで動かすときは `packages/remote-server/src/platforms/` にエントリを足し、サービスの環境変数を `loadConfig` に渡して得た設定で `createRequestHandler` を呼びます。Web 標準の `Request` を受けて `Response` を返す形のサービスなら、この方法で動かせます。動作を確かめているのは、今のところ Cloudflare Workers だけです。
-
-ほかのサービスに移すときは、次の点も確かめてください。
-
-- TLS で受けてください。ハンドラーはリクエストの URL が http なら拒否するので、手前で TLS を外す構成でも、クライアントから見た https の URL をハンドラーに渡します
-- ハンドラーも本文を 64 KiB までに制限しますが、本文の大きさの上限は手前のサービスやプロキシでもかけてください
-- 受け付けるホスト名は `ALLOWED_HOSTS` で絞れます。ハンドラーはリクエストの URL のホスト名で比べるので、手前のサービスやプロキシは、クライアントがつないだホスト名を URL に入れて渡してください
+自分の Cloudflare アカウントにリモート MCP サーバーを立てる方法は、[packages/remote-server/README.md](./packages/remote-server/README.md) にまとめています。
 
 ## 利用可能な MCP ツール
 
@@ -190,6 +146,7 @@ claude mcp add --transport http ai-rotom-local http://localhost:8787/mcp \
 | `analyze_party_weakness` | パーティ弱点分析 |
 | `analyze_party_coverage` | パーティ攻撃カバレッジ分析 |
 | `analyze_selection` | 6v6 選出判断一括分析 |
+| `compare_parties` | 2 つのパーティの統計差分（メンバー・タイプ・弱点・カバレッジ・素早さ・種族値合計） |
 
 ### パーティ永続化
 
@@ -201,35 +158,7 @@ claude mcp add --transport http ai-rotom-local http://localhost:8787/mcp \
 | `load_party` | 保存済みパーティを 1 件取得 |
 | `list_parties` | 保存済みパーティのサマリ一覧 |
 | `delete_party` | 保存済みパーティを削除 |
-
-## 使用例
-
-AI クライアントに以下のように聞くと、内部でツールが自動で呼ばれます。
-
-> 「カバルドンの対策候補を教えて」
-
-e.g.) `search_pokemon_by_type_effectiveness` でカバルドンの弱点タイプ（みず/くさ/こおり）の攻撃技を覚えるポケモンが検索され、AI が選んだ候補ごとに `analyze_matchup` で双方向のダメ計・素早さ比較・先制技が取得されます。受け型か速攻型かといった対策方針の判断は AI が行います。必要に応じてカバルドンの技構成や行動をプロンプトに入力し、あくび受けループに対する対策の検討をしてください。
-
-> 「リザードン、ギャラドス、ピカチュウの 3 体パーティに足りないタイプ耐性は？」
-
-e.g.) `analyze_party_weakness` が呼ばれ、各タイプを弱点に持つメンバー数（`teamWeaknesses`）と抜群を取れないタイプ（`uncoveredTypes`）を返します。致命性の判断は AI が文脈で行います。
-
-## 既知の制限
-
-- **一部ポケモン未登録**: ゲーム本編に登場するポケモンのうち、データとして未登録のものがあります（例: 一部の伝説・地域フォルム等）。順次対応予定。
-- **一部の特性はダメージ計算に反映されません**: 計算エンジンが未対応の特性があり、効果がダメージ計算結果に含まれません。get_ability_info で効果を確認したうえで結果を解釈してください。
-- **一部の持ち物はダメージ計算に反映されません**: 計算エンジンが未対応の持ち物があります。get_item_info で効果を確認したうえで結果を解釈してください。
-- **型推定は未対応**: 相手の型（性格・持ち物・SP 配分）は明示指定するか、複数型を試行して検証する形になります。
-- **メタゲーム情報は持ちません**: 使用率・流行型等の統計データは扱わないため、AI クライアント側の知識と組み合わせたり、WEB検索をさせて利用してください。
-
-## 開発者向け
-
-開発・コントリビュート方法・データ編集指針は [`CLAUDE.md`](./CLAUDE.md) を参照してください。
-
-### コントリビュート
-
-- バグ修正・機能追加の PR 大歓迎です
-- データの追加・修正も歓迎します
+| `import_party_from_text` | ポケソル形式のテキストからパーティを取り込んで保存 |
 
 ## トラブルシューティング
 
@@ -243,3 +172,10 @@ e.g.) `analyze_party_weakness` が呼ばれ、各タイプを弱点に持つメ�
 
 - 従来の EV（252 等）を渡していないか確認してください
 - ポケモンチャンピオンズ仕様では **各ステ 0-32 / 合計 0-66** です
+
+## コントリビュート
+
+開発の方針とコードの約束は [`CLAUDE.md`](./CLAUDE.md) を参照してください。
+
+- バグ修正・機能追加の PR 大歓迎です！
+- データの追加・修正も歓迎します！

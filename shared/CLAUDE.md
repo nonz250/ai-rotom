@@ -1,74 +1,20 @@
 # shared/
 
-ポケチャン対戦ロジックの再利用可能なコアライブラリ。
+ポケチャンの対戦ロジック。依存の向きとランタイム依存の制限はルートの CLAUDE.md の「パッケージの境界」に従う。
 
-## 位置付け
+## モジュールを足すとき
 
-- mcp-server から `@ai-rotom/shared` alias で参照される
-- **`package.json` を持たない単純ソースディレクトリ**
-- 将来 api-server / web-ui が追加されても alias を共有するだけで再利用可能
+- 外から使う型と関数は `src/index.ts` から export する。mcp-server は alias でこの入口だけを参照する
+- テストで JSON などの具象データを import しない。shared はデータを持たず DI で受けるので、必要ならモックを作る
 
-## 厳守する原則
+## 既存の計算を使う
 
-### 依存方向
+タイプ相性は `calculateTypeEffectiveness`、実数値は `calculateStatValue`、素早さの比較は `compareSpeed`、ダメ計は `DamageCalculatorAdapter` にまとめてある。ツールで同じ計算が要るときは書き起こさずにこれを使う。結果がずれると、ツールごとに数値が食い違う。
 
-- **shared は mcp-server に依存してはならない**（逆方向のみ許可）
-- mcp-server 固有の型・データ・モジュール（`data-store.ts` / JSON 等）を
-  import しない
-- 具象データが必要な場合は **dependency injection で受ける**
-  （例: `PokemonEntryProvider`, `LearnsetProvider`）
+## 全技ダメ計の候補技は Adapter が決める
 
-### ランタイム依存
+`calculateAllMoves` は攻撃側の `moves` があればその技だけ、なければ `LearnsetProvider` の習得技を計算する。呼び出し側で結果を習得技に絞り直さない。learnset が未整備のフォルムは、mcp-server の `learnsetProvider` が元のポケモンの習得技で補う。
 
-- `@smogon/calc`（Gen 0 Champions 計算エンジン）と `zod` のみ許容
-- それ以外の外部ライブラリは追加しない
+## 日本語名は NameResolver で照合する
 
-### 型依存
-
-- `@smogon/calc` の型を `import type { ... }` で引き込むのは OK
-- ただしランタイム参照は `@smogon/calc` と `zod` 以外にしない
-
-## ディレクトリ構成
-
-| ディレクトリ | 役割 |
-|---|---|
-| `constants/` | `DEFAULT_LEVEL`, `MAX_IV`, `MAX_STAT_POINT_*`, 性格補正倍率 等 |
-| `utils/` | `NameResolver`（日英名変換クラス） |
-| `types/` | `PokemonEntry`, `PokemonEntryProvider`, `BaseStats` 等 |
-| `schemas/` | Zod 入力スキーマ（`PokemonInput`, `StatsInput` 等） |
-| `analysis/` | タイプ相性・実数値計算・素早さ比較の純関数 |
-| `calc/` | ダメージ計算エンジン（DI 対応の Facade + ビルダー） |
-| `errors/` | `UserFacingError`。メッセージをツールの呼び出し元に返してよい例外 |
-
-## 新規モジュール追加時のルール
-
-- 新規サブディレクトリを作る場合は `src/index.ts` に re-export を追加
-- mcp-server 側から参照する型・関数は必ず `index.ts` から export する
-- テストは同階層に `*.test.ts`（コロケーション）
-- テスト内で具象データ（JSON 等）を import しない。必要ならモックを作る
-- マジックナンバー禁止（`constants/champions.ts` の named constant を使う）
-
-## 既存ロジックの重複を避ける
-
-共通処理は既に以下に集約されている:
-
-- `analysis/type-matchup.ts`: `calculateTypeEffectiveness(gen, attackingType, defenderTypes)`
-- `analysis/stat-calculator.ts`: `calculateStatValue(stat, baseStat, sp, plus, minus)`
-- `analysis/speed-comparator.ts`: `compareSpeed(a, b)`
-- `calc/damage-calculator.ts`: `DamageCalculatorAdapter`
-- `utils/name-resolver.ts`: `NameResolver`
-
-新しい tool で同じ計算が必要なら、**まずここを使う**。新規に書き起こさない。
-
-### 全技ダメ計の候補技は Adapter が決める
-
-`calculateAllMoves` は攻撃側の `moves` 指定があればその技だけ、なければ
-`LearnsetProvider` の習得技だけを計算する。呼び出し側で結果を習得技に絞り直さない。
-learnset 未整備のフォルム（メガシンカ等）は mcp-server の `learnsetProvider` が
-元のポケモンの習得技で補う。それでも空集合なら全技が候補になる。
-
-### 日本語名は NameResolver 経由で照合する
-
-データ上の日本語名は全角英数字（`１０まんボルト`）と半角英数字（`メガリザードンX`）が
-混在している。`NameResolver` は NFKC 正規化して照合するので、`nameJa === input` の
-ような直接比較で名前を引かない。
+データの日本語名は全角英数字の `１０まんボルト` と半角英数字の `メガリザードンX` が混在している。`NameResolver` は NFKC で正規化して照合するので、`nameJa === input` のような直接比較で名前を引かない。
