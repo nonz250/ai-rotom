@@ -37,6 +37,7 @@ function mcpRequest(
 }
 
 const BEARER = { authorization: `Bearer ${TOKEN}` };
+const MAX_REQUEST_BODY_BYTES = 64 * 1024;
 const INITIALIZE = rpc("initialize", {
   protocolVersion: "2025-06-18",
   capabilities: {},
@@ -170,6 +171,42 @@ describe("handleRequest が MCP SDK に渡すリクエスト", () => {
   });
 });
 
+describe("handleRequest の応答ヘッダー", () => {
+  function expectNoStoreAndNoReferrer(res: Response): void {
+    expect(res.headers.get("cache-control")).toBe("no-store");
+    expect(res.headers.get("referrer-policy")).toBe("no-referrer");
+  }
+
+  it("MCP の処理結果の応答に付ける", async () => {
+    const res = await handleRequest(mcpRequest("/mcp", rpc("tools/list"), BEARER), ENV);
+    expect(res.status).toBe(200);
+    expectNoStoreAndNoReferrer(res);
+  });
+
+  it("通知だけを受けた 202 の応答にも付ける", async () => {
+    const notification = JSON.stringify({ jsonrpc: "2.0", method: "notifications/initialized" });
+    const res = await handleRequest(mcpRequest("/mcp", notification, BEARER), ENV);
+    expect(res.status).toBe(202);
+    expectNoStoreAndNoReferrer(res);
+  });
+
+  it("拒否するときの応答にも付ける", async () => {
+    const cases: [Request, Record<string, string>, number][] = [
+      [mcpRequest("/mcp", "[]", BEARER), ENV, 400],
+      [mcpRequest("/mcp", rpc("tools/list")), ENV, 401],
+      [mcpRequest("/", rpc("tools/list"), BEARER), ENV, 404],
+      [mcpRequest("/mcp", "", BEARER, "GET"), ENV, 405],
+      [mcpRequest("/mcp", " ".repeat(MAX_REQUEST_BODY_BYTES + 1), BEARER), ENV, 413],
+      [mcpRequest("/mcp", rpc("tools/list"), BEARER), {}, 503],
+    ];
+    for (const [request, env, status] of cases) {
+      const res = await handleRequest(request, env);
+      expect(res.status).toBe(status);
+      expectNoStoreAndNoReferrer(res);
+    }
+  });
+});
+
 describe("handleRequest のルーティング", () => {
   it("MCP 以外のパスは 404 を返す", async () => {
     for (const path of ["/", "/mcpx", `/mcp/${TOKEN}/extra`]) {
@@ -188,7 +225,6 @@ describe("handleRequest のルーティング", () => {
 });
 
 describe("handleRequest のリクエスト本文の上限", () => {
-  const MAX_REQUEST_BODY_BYTES = 64 * 1024;
 
   function paddedToolsList(bytes: number): string {
     const body = rpc("tools/list");

@@ -25,6 +25,15 @@ const MAX_REQUEST_BODY_BYTES = MAX_REQUEST_BODY_KIBIBYTES * BYTES_PER_KIBIBYTE;
 /** MCP SDK がリクエスト本文の上限超過に使うのと同じ、実装定義のサーバーエラーのコード。 */
 const JSON_RPC_SERVER_ERROR = -32000;
 
+/**
+ * すべての応答に付けるヘッダー。応答にはツールの結果やエラーが入るので、途中の
+ * キャッシュに残さない。パスにトークンを入れる URL が Referer で外に出ないようにする。
+ */
+const RESPONSE_HEADERS: Readonly<Record<string, string>> = {
+  "cache-control": "no-store",
+  "referrer-policy": "no-referrer",
+};
+
 const HTTP_STATUS_BAD_REQUEST = 400;
 const HTTP_STATUS_UNAUTHORIZED = 401;
 const HTTP_STATUS_NOT_FOUND = 404;
@@ -147,6 +156,15 @@ async function handleMcp(request: Request, requireMoves: boolean): Promise<Respo
   }
 }
 
+function withResponseHeaders(response: Response): Response {
+  // SDK が作った応答のヘッダーは書き換えられるとは限らないので、作り直してから付ける。
+  const result = new Response(response.body, response);
+  for (const [name, value] of Object.entries(RESPONSE_HEADERS)) {
+    result.headers.set(name, value);
+  }
+  return result;
+}
+
 async function handleRequest(request: Request, config: RemoteServerConfig): Promise<Response> {
   const pathToken = parseMcpPath(new URL(request.url).pathname);
   if (pathToken === undefined) {
@@ -180,5 +198,5 @@ async function handleRequest(request: Request, config: RemoteServerConfig): Prom
  * 実行環境に依存する処理は含まないので、各サービスのエントリから設定を渡して使う。
  */
 export function createRequestHandler(config: RemoteServerConfig): RequestHandler {
-  return (request) => handleRequest(request, config);
+  return async (request) => withResponseHeaders(await handleRequest(request, config));
 }
