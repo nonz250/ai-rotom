@@ -3,7 +3,7 @@ import { nameInputSchema } from "@ai-rotom/shared";
 import type { MoveCategory } from "../../data-store.js";
 import { movesById, toDataId } from "../../data-store.js";
 import { moveNameResolver } from "../../name-resolvers.js";
-import { withHint } from "../../tool-response-hint.js";
+import { toErrorResponse, withHint } from "../../tool-response-hint.js";
 
 const TOOL_NAME = "get_move_info";
 const TOOL_DESCRIPTION =
@@ -94,14 +94,7 @@ export function registerMoveInfoTool(server: McpServer): void {
 
       return withHint({ type: "text" as const, text: JSON.stringify(output) });
     } catch (error: unknown) {
-      const message =
-        error instanceof Error ? error.message : "不明なエラーが発生しました";
-      return {
-        content: [
-          { type: "text" as const, text: JSON.stringify({ error: message }) },
-        ],
-        isError: true,
-      };
+      return toErrorResponse(error);
     }
   });
 }

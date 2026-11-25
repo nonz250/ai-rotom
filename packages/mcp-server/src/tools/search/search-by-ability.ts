@@ -6,7 +6,7 @@ import {
   toDataId,
 } from "../../data-store.js";
 import { abilityNameResolver } from "../../name-resolvers.js";
-import { withHint } from "../../tool-response-hint.js";
+import { toErrorResponse, withHint } from "../../tool-response-hint.js";
 
 const TOOL_NAME = "search_pokemon_by_ability";
 const TOOL_DESCRIPTION =
@@ -96,14 +96,7 @@ export function registerSearchByAbilityTool(server: McpServer): void {
 
       return withHint({ type: "text" as const, text: JSON.stringify(output) });
     } catch (error: unknown) {
-      const message =
-        error instanceof Error ? error.message : "不明なエラーが発生しました";
-      return {
-        content: [
-          { type: "text" as const, text: JSON.stringify({ error: message }) },
-        ],
-        isError: true,
-      };
+      return toErrorResponse(error);
     }
   });
 }

@@ -2,7 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { nameInputSchema } from "@ai-rotom/shared";
 import { itemsById, toDataId } from "../../data-store.js";
 import { itemNameResolver } from "../../name-resolvers.js";
-import { withHint } from "../../tool-response-hint.js";
+import { toErrorResponse, withHint } from "../../tool-response-hint.js";
 
 const TOOL_NAME = "get_item_info";
 const TOOL_DESCRIPTION =
@@ -71,14 +71,7 @@ export function registerItemInfoTool(server: McpServer): void {
 
       return withHint({ type: "text" as const, text: JSON.stringify(output) });
     } catch (error: unknown) {
-      const message =
-        error instanceof Error ? error.message : "不明なエラーが発生しました";
-      return {
-        content: [
-          { type: "text" as const, text: JSON.stringify({ error: message }) },
-        ],
-        isError: true,
-      };
+      return toErrorResponse(error);
     }
   });
 }

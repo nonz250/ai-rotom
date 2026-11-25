@@ -168,4 +168,16 @@ describe("hint import coverage", () => {
 
     expect(filesUsingDirectConstant).toEqual([]);
   });
+
+  it("ツールの実装ファイルはエラー応答を自前で組み立てず toErrorResponse を通す", () => {
+    const toolsDir = join(import.meta.dirname, "tools");
+    const toolFiles = listToolImplFiles(toolsDir);
+
+    const filesComposingErrorResponse = toolFiles.filter((file) => {
+      const content = readFileSync(file, "utf-8");
+      return /\bisError\b/.test(content);
+    });
+
+    expect(filesComposingErrorResponse).toEqual([]);
+  });
 });

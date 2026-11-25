@@ -13,7 +13,7 @@ import {
   type BaseStats,
   type PokemonEntry,
 } from "../../data-store.js";
-import { withHint } from "../../tool-response-hint.js";
+import { toErrorResponse, withHint } from "../../tool-response-hint.js";
 
 const DEFAULT_SEARCH_LIMIT = 20;
 
@@ -190,36 +190,14 @@ export function registerPokemonInfoTools(server: McpServer): void {
         const entry = pokemonById.get(toDataId(englishName));
 
         if (entry === undefined) {
-          return {
-            content: [
-              {
-                type: "text" as const,
-                text: JSON.stringify({
-                  error: `ポケモン「${args.name}」のデータが見つかりません。`,
-                }),
-              },
-            ],
-            isError: true,
-          };
+          throw new Error(`ポケモン「${args.name}」のデータが見つかりません。`);
         }
 
         const result = buildPokemonInfoResult(entry);
 
         return withHint({ type: "text" as const, text: JSON.stringify(result) });
       } catch (error: unknown) {
-        const message =
-          error instanceof Error
-            ? error.message
-            : "不明なエラーが発生しました";
-        return {
-          content: [
-            {
-              type: "text" as const,
-              text: JSON.stringify({ error: message }),
-            },
-          ],
-          isError: true,
-        };
+        return toErrorResponse(error);
       }
     },
   );
@@ -257,17 +235,7 @@ export function registerPokemonInfoTools(server: McpServer): void {
         if (args.type !== undefined) {
           typeFilterEn = resolveTypeName(args.type);
           if (typeFilterEn === undefined) {
-            return {
-              content: [
-                {
-                  type: "text" as const,
-                  text: JSON.stringify({
-                    error: `タイプ「${args.type}」が見つかりません。`,
-                  }),
-                },
-              ],
-              isError: true,
-            };
+            throw new Error(`タイプ「${args.type}」が見つかりません。`);
           }
         }
 
@@ -318,19 +286,7 @@ export function registerPokemonInfoTools(server: McpServer): void {
 
         return withHint({ type: "text" as const, text: JSON.stringify(results) });
       } catch (error: unknown) {
-        const message =
-          error instanceof Error
-            ? error.message
-            : "不明なエラーが発生しました";
-        return {
-          content: [
-            {
-              type: "text" as const,
-              text: JSON.stringify({ error: message }),
-            },
-          ],
-          isError: true,
-        };
+        return toErrorResponse(error);
       }
     },
   );

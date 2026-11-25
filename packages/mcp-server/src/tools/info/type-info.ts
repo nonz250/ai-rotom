@@ -3,7 +3,7 @@ import { Generations } from "@smogon/calc";
 import type { TypeName } from "@smogon/calc/dist/data/interface";
 import { nameInputSchema, calculateTypeEffectiveness } from "@ai-rotom/shared";
 import { championsTypes, typesById } from "../../data-store.js";
-import { withHint } from "../../tool-response-hint.js";
+import { toErrorResponse, withHint } from "../../tool-response-hint.js";
 
 const CHAMPIONS_GEN_NUM = 0;
 
@@ -109,14 +109,7 @@ export function registerTypeInfoTool(server: McpServer): void {
 
       return withHint({ type: "text" as const, text: JSON.stringify(output) });
     } catch (error: unknown) {
-      const message =
-        error instanceof Error ? error.message : "不明なエラーが発生しました";
-      return {
-        content: [
-          { type: "text" as const, text: JSON.stringify({ error: message }) },
-        ],
-        isError: true,
-      };
+      return toErrorResponse(error);
     }
   });
 }

@@ -28,7 +28,7 @@ import {
   moveNameResolver,
   pokemonNameResolver,
 } from "../../name-resolvers.js";
-import { withHint } from "../../tool-response-hint.js";
+import { toErrorResponse, withHint } from "../../tool-response-hint.js";
 
 const CHAMPIONS_GEN_NUM = 0;
 
@@ -536,14 +536,7 @@ export function registerPartyCoverageTool(server: McpServer): void {
 
       return withHint({ type: "text" as const, text: JSON.stringify(output) });
     } catch (error: unknown) {
-      const message =
-        error instanceof Error ? error.message : "不明なエラーが発生しました";
-      return {
-        content: [
-          { type: "text" as const, text: JSON.stringify({ error: message }) },
-        ],
-        isError: true,
-      };
+      return toErrorResponse(error);
     }
   });
 }

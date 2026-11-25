@@ -16,7 +16,7 @@ import type { MoveCategory } from "../../data-store.js";
 import { movesById, toDataId } from "../../data-store.js";
 import { moveNameResolver } from "../../name-resolvers.js";
 import { damageCalculator } from "../../calc/damage-calculator.js";
-import { withHint } from "../../tool-response-hint.js";
+import { toErrorResponse, withHint } from "../../tool-response-hint.js";
 
 /** 探索に使う SP 候補ステップ（細かさ）。4 きざみで枝刈り → hit したら 1 きざみで微調整 */
 const SP_COARSE_STEP = 4;
@@ -353,14 +353,7 @@ export function registerDamageRangeTool(server: McpServer): void {
 
       return withHint({ type: "text" as const, text: JSON.stringify(output) });
     } catch (error: unknown) {
-      const message =
-        error instanceof Error ? error.message : "不明なエラーが発生しました";
-      return {
-        content: [
-          { type: "text" as const, text: JSON.stringify({ error: message }) },
-        ],
-        isError: true,
-      };
+      return toErrorResponse(error);
     }
   });
 }
