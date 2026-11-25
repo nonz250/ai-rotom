@@ -15,17 +15,26 @@ argument-hint: "[X.Y.Z]"
 ```bash
 node -p "require('./packages/mcp-server/package.json').version"
 gh release list --limit 1
-gh pr list --state merged --base main --search "merged:>$(gh release view --json publishedAt -q .publishedAt)" --json number,title -q '.[] | "#\(.number) \(.title)"'
+gh pr list --state merged --base main --limit 200 --search "merged:>$(gh release view --json publishedAt -q .publishedAt)" --json number,title -q '.[] | "#\(.number) \(.title)"'
 ```
+
+一覧が 200 件ちょうどなら、それより前の PR が切れているので、そのことをユーザーに伝える。
 
 `X.Y.Z` の形で、今の版より大きいことを確かめる。引数に `v` が付いていたら外す。タグにも `v` は付けない。
 
 ## 2. 版を書き換える
 
-main から topic ブランチを切り、次の 3 か所を同じ版にする。
+main を最新にしてから topic ブランチを切る。ほかの topic ブランチから切ると、そのブランチの未マージのコミットが版上げの PR に混ざる。ブランチ名は `bump-version-X.Y.Z` とし、個人の命名の決まりがあればそれに従う。以降の `<repo>` はリポジトリのパスに置き換える。
 
 ```bash
-git pcheckout bump-version-X.Y.Z
+git -C <repo> switch main
+git -C <repo> pull --ff-only
+git -C <repo> switch -c bump-version-X.Y.Z
+```
+
+次の 3 か所を同じ版にする。
+
+```bash
 npm version X.Y.Z --workspace=@nonz250/ai-rotom --no-git-tag-version --ignore-scripts
 ```
 
@@ -34,8 +43,8 @@ npm version X.Y.Z --workspace=@nonz250/ai-rotom --no-git-tag-version --ignore-sc
 `package-lock.json` の差分が mcp-server の `version` の 1 行だけであることを確かめる。integrity などほかの行が変わっていたら、先に進まずユーザーに伝える。
 
 ```bash
-git diff --stat
-git diff package-lock.json
+git -C <repo> diff --stat
+git -C <repo> diff package-lock.json
 npm test
 ```
 
@@ -45,21 +54,19 @@ npm test
 
 ## 4. Release を下書きで作る
 
-PR がマージされたら、マージコミットを指して Release を下書きで作る。デプロイのワークフローはタグのコミットが main にあることを確かめるので、main のコミットを指す。
+PR がマージされたら、その PR のマージコミットを指して Release を下書きで作る。手元の main の先頭を指すと、まだ push していないコミットや、版上げの後にマージされた PR まで含めてしまう。
 
 ```bash
-git -C . switch main && git -C . pull --ff-only
-gh release create X.Y.Z --draft --title X.Y.Z --target "$(git -C . rev-parse HEAD)" --generate-notes
+gh release create X.Y.Z --draft --title X.Y.Z --target "$(gh pr view <PR 番号> --json mergeCommit -q .mergeCommit.oid)" --generate-notes
 ```
 
 前の版から破壊的変更があるときは、自動で作られた一覧の上に `## Breaking Changes` を足し、該当する PR と利用者が何をすればよいかを書く。書き方は過去の Release にそろえる。
 
 ```bash
-gh release view X.Y.Z --json body -q .body > "$CLAUDE_JOB_DIR/tmp/release-X.Y.Z.md"
-gh release edit X.Y.Z --notes-file "$CLAUDE_JOB_DIR/tmp/release-X.Y.Z.md"
+mkdir -p "${CLAUDE_JOB_DIR:-/tmp}/tmp"
+gh release view X.Y.Z --json body -q .body > "${CLAUDE_JOB_DIR:-/tmp}/tmp/release-X.Y.Z.md"
+gh release edit X.Y.Z --notes-file "${CLAUDE_JOB_DIR:-/tmp}/tmp/release-X.Y.Z.md"
 ```
-
-`CLAUDE_JOB_DIR` がない環境では `/tmp` を使う。
 
 ## 5. 公開する
 
@@ -74,15 +81,15 @@ gh release edit X.Y.Z --draft=false
 - `publish.yml` が npm に公開する
 - `deploy-worker.yml` がリモート版をデプロイする
 
-それぞれの run を探し、`run_in_background` で完了を待つ。
+それぞれの run を探し、`run_in_background` で完了を待つ。公開の直後はまだ run が作られていないことがあり、そのまま一覧の先頭を取ると前の版の run を見てしまう。release で動いた run は `headBranch` がタグ名になるので、X.Y.Z の run が出てくるまで探し直す。
 
 ```bash
-gh run list --workflow publish.yml --event release --limit 1 --json databaseId,status
-gh run list --workflow deploy-worker.yml --event release --limit 1 --json databaseId,status
+gh run list --workflow publish.yml --event release --json databaseId,headBranch,status -q '.[] | select(.headBranch == "X.Y.Z")'
+gh run list --workflow deploy-worker.yml --event release --json databaseId,headBranch,status -q '.[] | select(.headBranch == "X.Y.Z")'
 gh run watch <run-id> --exit-status
 ```
 
-run が waiting のまま進まないときは、その状態をユーザーに伝えて待つ。失敗したら、ログの要点をユーザーに伝える。勝手に再実行しない。
+run が進まないときは、その状態をユーザーに伝えて待つ。失敗したら、ログの要点をユーザーに伝える。勝手に再実行しない。
 
 ## 6. 結果を確かめる
 
