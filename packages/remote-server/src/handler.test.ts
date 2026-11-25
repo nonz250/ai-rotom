@@ -147,6 +147,31 @@ describe("handleRequest のルーティング", () => {
   });
 });
 
+describe("handleRequest のリクエスト本文の上限", () => {
+  const MAX_REQUEST_BODY_BYTES = 64 * 1024;
+
+  function paddedToolsList(bytes: number): string {
+    const body = rpc("tools/list");
+    return body + " ".repeat(bytes - body.length);
+  }
+
+  it("ちょうど 64 KiB の本文は受け付ける", async () => {
+    const res = await handleRequest(
+      mcpRequest("/mcp", paddedToolsList(MAX_REQUEST_BODY_BYTES), BEARER),
+      ENV,
+    );
+    expect(res.status).toBe(200);
+  });
+
+  it("64 KiB を 1 バイトでも超える本文は 413 を返す", async () => {
+    const res = await handleRequest(
+      mcpRequest("/mcp", paddedToolsList(MAX_REQUEST_BODY_BYTES + 1), BEARER),
+      ENV,
+    );
+    expect(res.status).toBe(413);
+  });
+});
+
 describe("handleRequest の MCP 応答", () => {
   it("initialize にリモート版の instructions を返す", async () => {
     const res = await handleRequest(mcpRequest("/mcp", INITIALIZE, BEARER), ENV);

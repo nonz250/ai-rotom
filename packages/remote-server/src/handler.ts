@@ -9,6 +9,14 @@ export type RequestHandler = (request: Request) => Promise<Response>;
 const MCP_PATH = "/mcp";
 const BEARER_PATTERN = /^bearer\s+(.+)$/i;
 
+const BYTES_PER_KIBIBYTE = 1024;
+/**
+ * リクエスト本文の上限。正規のリクエストで最も大きい、育成情報と技構成をすべて書いた
+ * 6 対 6 の選出分析でも 15 KiB ほどなので、4 倍余裕を持たせた。
+ */
+const MAX_REQUEST_BODY_KIBIBYTES = 64;
+const MAX_REQUEST_BODY_BYTES = MAX_REQUEST_BODY_KIBIBYTES * BYTES_PER_KIBIBYTE;
+
 const HTTP_STATUS_UNAUTHORIZED = 401;
 const HTTP_STATUS_NOT_FOUND = 404;
 const HTTP_STATUS_METHOD_NOT_ALLOWED = 405;
@@ -72,6 +80,7 @@ async function handleMcp(request: Request, requireMoves: boolean): Promise<Respo
   const transport = new WebStandardStreamableHTTPServerTransport({
     sessionIdGenerator: undefined,
     enableJsonResponse: true,
+    maxRequestBodySize: MAX_REQUEST_BODY_BYTES,
   });
   await server.connect(transport);
   try {
