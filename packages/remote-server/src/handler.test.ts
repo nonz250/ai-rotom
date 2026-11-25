@@ -1,4 +1,5 @@
-import { describe, it, expect } from "vitest";
+import { afterEach, describe, it, expect, vi } from "vitest";
+import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
 import { MAX_MOVES_PER_MEMBER } from "@ai-rotom/shared";
 import { buildRemoteServerInstructions } from "./instructions";
 import { loadConfig, type ConfigSource } from "./config";
@@ -9,7 +10,7 @@ function handleRequest(request: Request, env: ConfigSource): Promise<Response> {
   return createRequestHandler(loadConfig(env))(request);
 }
 
-const TOKEN = "test-token";
+const TOKEN = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
 const ENV = { AUTH_TOKEN: TOKEN };
 const ORIGIN = "https://ai-rotom.example.workers.dev";
 
@@ -36,6 +37,7 @@ function mcpRequest(
 }
 
 const BEARER = { authorization: `Bearer ${TOKEN}` };
+const MAX_REQUEST_BODY_BYTES = 64 * 1024;
 const INITIALIZE = rpc("initialize", {
   protocolVersion: "2025-06-18",
   capabilities: {},
@@ -72,7 +74,7 @@ describe("handleRequest の認証", () => {
   });
 
   it("パスのトークンは URL デコードしてから照合する", async () => {
-    const token = "a b+c";
+    const token = `a b+c${TOKEN}`;
     const res = await handleRequest(
       mcpRequest(`/mcp/${encodeURIComponent(token)}`, rpc("tools/list")),
       { AUTH_TOKEN: token },
@@ -83,6 +85,25 @@ describe("handleRequest の認証", () => {
   it("デコードできないパスは 404 を返す", async () => {
     const res = await handleRequest(mcpRequest("/mcp/%E0%A4%A", rpc("tools/list")), ENV);
     expect(res.status).toBe(404);
+  });
+
+  it("長さの違うトークンは、前方が一致していても延長されていても 401 を返す", async () => {
+    for (const token of [TOKEN.slice(0, -1), `${TOKEN}0`, `${TOKEN}${TOKEN}`, "x"]) {
+      const res = await handleRequest(
+        mcpRequest("/mcp", rpc("tools/list"), { authorization: `Bearer ${token}` }),
+        ENV,
+      );
+      expect(res.status).toBe(401);
+    }
+  });
+
+  it("同じ長さで最後の 1 文字だけ違うトークンは 401 を返す", async () => {
+    const token = `${TOKEN.slice(0, -1)}${TOKEN.endsWith("0") ? "1" : "0"}`;
+    const res = await handleRequest(
+      mcpRequest("/mcp", rpc("tools/list"), { authorization: `Bearer ${token}` }),
+      ENV,
+    );
+    expect(res.status).toBe(401);
   });
 
   it("トークンの前方一致では通さない", async () => {
@@ -98,6 +119,132 @@ describe("handleRequest の認証", () => {
       const res = await handleRequest(mcpRequest("/mcp", rpc("tools/list"), BEARER), env);
       expect(res.status).toBe(503);
     }
+  });
+
+  it("サーバーのトークンが短すぎると、そのトークンを送っても 503 で拒否する", async () => {
+    for (const token of ["a".repeat(31), "local-dev-token"]) {
+      const res = await handleRequest(
+        mcpRequest("/mcp", rpc("tools/list"), { authorization: `Bearer ${token}` }),
+        { AUTH_TOKEN: token },
+      );
+      expect(res.status).toBe(503);
+    }
+  });
+});
+
+describe("handleRequest が MCP SDK に渡すリクエスト", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  async function requestSeenBySdk(request: Request): Promise<Request> {
+    const spy = vi.spyOn(WebStandardStreamableHTTPServerTransport.prototype, "handleRequest");
+    const res = await handleRequest(request, ENV);
+    expect(res.status).toBe(200);
+    expect(spy).toHaveBeenCalledTimes(1);
+    return spy.mock.calls[0][0];
+  }
+
+  it("Bearer で認証したときは authorization ヘッダーを渡さない", async () => {
+    const seen = await requestSeenBySdk(mcpRequest("/mcp", rpc("tools/list"), BEARER));
+
+    expect(seen.headers.has("authorization")).toBe(false);
+    expect(new URL(seen.url).pathname).toBe("/mcp");
+  });
+
+  it("パスで認証したときは、トークンとクエリを除いた /mcp の URL で渡す", async () => {
+    const seen = await requestSeenBySdk(mcpRequest(`/mcp/${TOKEN}?x=1`, rpc("tools/list")));
+
+    expect(seen.url).toBe(`${ORIGIN}/mcp`);
+    expect(seen.url).not.toContain(TOKEN);
+  });
+
+  it("MCP の処理に要るヘッダーはそのまま渡す", async () => {
+    const seen = await requestSeenBySdk(
+      mcpRequest("/mcp", rpc("tools/list"), { ...BEARER, "mcp-protocol-version": "2025-06-18" }),
+    );
+
+    expect(seen.method).toBe("POST");
+    expect(seen.headers.get("accept")).toBe(MCP_HEADERS.accept);
+    expect(seen.headers.get("content-type")).toBe(MCP_HEADERS["content-type"]);
+    expect(seen.headers.get("mcp-protocol-version")).toBe("2025-06-18");
+  });
+});
+
+describe("handleRequest の応答ヘッダー", () => {
+  function expectNoStoreAndNoReferrer(res: Response): void {
+    expect(res.headers.get("cache-control")).toBe("no-store");
+    expect(res.headers.get("referrer-policy")).toBe("no-referrer");
+  }
+
+  it("MCP の処理結果の応答に付ける", async () => {
+    const res = await handleRequest(mcpRequest("/mcp", rpc("tools/list"), BEARER), ENV);
+    expect(res.status).toBe(200);
+    expectNoStoreAndNoReferrer(res);
+  });
+
+  it("通知だけを受けた 202 の応答にも付ける", async () => {
+    const notification = JSON.stringify({ jsonrpc: "2.0", method: "notifications/initialized" });
+    const res = await handleRequest(mcpRequest("/mcp", notification, BEARER), ENV);
+    expect(res.status).toBe(202);
+    expectNoStoreAndNoReferrer(res);
+  });
+
+  it("拒否するときの応答にも付ける", async () => {
+    const cases: [Request, Record<string, string>, number][] = [
+      [mcpRequest("/mcp", "[]", BEARER), ENV, 400],
+      [mcpRequest("/mcp", rpc("tools/list")), ENV, 401],
+      [mcpRequest("/", rpc("tools/list"), BEARER), ENV, 404],
+      [mcpRequest("/mcp", "", BEARER, "GET"), ENV, 405],
+      [mcpRequest("/mcp", " ".repeat(MAX_REQUEST_BODY_BYTES + 1), BEARER), ENV, 413],
+      [mcpRequest("/mcp", rpc("tools/list"), BEARER), {}, 503],
+    ];
+    for (const [request, env, status] of cases) {
+      const res = await handleRequest(request, env);
+      expect(res.status).toBe(status);
+      expectNoStoreAndNoReferrer(res);
+    }
+  });
+});
+
+describe("handleRequest の HTTPS の要求", () => {
+  function toolsListAt(origin: string): Request {
+    return new Request(`${origin}/mcp`, {
+      method: "POST",
+      headers: { ...MCP_HEADERS, ...BEARER },
+      body: rpc("tools/list"),
+    });
+  }
+
+  it("http で届いたリクエストは 403 で拒否する", async () => {
+    for (const origin of [
+      "http://ai-rotom.example.workers.dev",
+      "http://localhost.example.com",
+      "http://192.168.0.1:8787",
+    ]) {
+      const res = await handleRequest(toolsListAt(origin), ENV);
+      expect(res.status).toBe(403);
+    }
+  });
+
+  it("手元のループバックのホストなら http でも処理する", async () => {
+    for (const origin of ["http://localhost:8787", "http://127.0.0.1:8787", "http://[::1]:8787"]) {
+      const res = await handleRequest(toolsListAt(origin), ENV);
+      expect(res.status).toBe(200);
+    }
+  });
+
+  it("https ならホストを問わず処理する", async () => {
+    const res = await handleRequest(toolsListAt(ORIGIN), ENV);
+    expect(res.status).toBe(200);
+  });
+
+  it("http を拒否するときは認証より先に拒否する", async () => {
+    const res = await handleRequest(
+      new Request("http://ai-rotom.example.workers.dev/mcp", { method: "POST", body: "{}" }),
+      ENV,
+    );
+    expect(res.status).toBe(403);
   });
 });
 
@@ -115,6 +262,78 @@ describe("handleRequest のルーティング", () => {
       expect(res.status).toBe(405);
       expect(res.headers.get("allow")).toBe("POST");
     }
+  });
+});
+
+describe("handleRequest のリクエスト本文の上限", () => {
+
+  function paddedToolsList(bytes: number): string {
+    const body = rpc("tools/list");
+    return body + " ".repeat(bytes - body.length);
+  }
+
+  it("ちょうど 64 KiB の本文は受け付ける", async () => {
+    const res = await handleRequest(
+      mcpRequest("/mcp", paddedToolsList(MAX_REQUEST_BODY_BYTES), BEARER),
+      ENV,
+    );
+    expect(res.status).toBe(200);
+  });
+
+  it("64 KiB を 1 バイトでも超える本文は 413 を返す", async () => {
+    const res = await handleRequest(
+      mcpRequest("/mcp", paddedToolsList(MAX_REQUEST_BODY_BYTES + 1), BEARER),
+      ENV,
+    );
+    expect(res.status).toBe(413);
+    expect((await res.json()).error.code).toBe(-32000);
+  });
+});
+
+describe("handleRequest の JSON-RPC バッチ", () => {
+  async function postBody(body: string): Promise<Response> {
+    return handleRequest(mcpRequest("/mcp", body, BEARER), ENV);
+  }
+
+  it("1 件だけのバッチも 400 と Invalid Request のエラーで拒否する", async () => {
+    const res = await postBody(`[${rpc("tools/list")}]`);
+    const body = await res.json();
+
+    expect(res.status).toBe(400);
+    expect(body).toMatchObject({ jsonrpc: "2.0", id: null, error: { code: -32600 } });
+  });
+
+  it("複数件のバッチはどれも実行せずに 400 で拒否する", async () => {
+    const call = JSON.stringify({
+      jsonrpc: "2.0",
+      id: 2,
+      method: "tools/call",
+      params: { name: "get_pokemon_info", arguments: { name: "ガブリアス" } },
+    });
+    const res = await postBody(`[${rpc("tools/list")},${call}]`);
+    const body = await res.json();
+
+    expect(res.status).toBe(400);
+    expect(Array.isArray(body)).toBe(false);
+    expect(body.error.code).toBe(-32600);
+  });
+
+  it("空のバッチも 400 で拒否する", async () => {
+    const res = await postBody("[]");
+    expect(res.status).toBe(400);
+    expect((await res.json()).error.code).toBe(-32600);
+  });
+
+  it("JSON として読めない本文は 400 と Parse error を返す", async () => {
+    const res = await postBody("{");
+    expect(res.status).toBe(400);
+    expect((await res.json()).error.code).toBe(-32700);
+  });
+
+  it("1 件のメッセージはこれまでどおり処理する", async () => {
+    const res = await postBody(rpc("tools/list"));
+    expect(res.status).toBe(200);
+    expect((await res.json()).result.tools.length).toBeGreaterThan(0);
   });
 });
 

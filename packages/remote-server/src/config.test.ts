@@ -2,14 +2,29 @@ import { describe, it, expect } from "vitest";
 import { loadConfig } from "./config";
 
 describe("loadConfig", () => {
+  const TOKEN = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
+
   it("AUTH_TOKEN を認証トークンとして読む", () => {
-    expect(loadConfig({ AUTH_TOKEN: "secret" }).authToken).toBe("secret");
+    expect(loadConfig({ AUTH_TOKEN: TOKEN }).authToken).toBe(TOKEN);
   });
 
   it("AUTH_TOKEN が未設定・空文字・文字列以外なら認証トークンなしとして扱う", () => {
     for (const source of [{}, { AUTH_TOKEN: "" }, { AUTH_TOKEN: 123 }]) {
       expect(loadConfig(source).authToken).toBeUndefined();
     }
+  });
+
+  it("AUTH_TOKEN がちょうど 32 文字なら認証トークンとして読む", () => {
+    const token = "a".repeat(32);
+    expect(loadConfig({ AUTH_TOKEN: token }).authToken).toBe(token);
+  });
+
+  it("AUTH_TOKEN が 31 文字なら認証トークンなしとして扱う", () => {
+    expect(loadConfig({ AUTH_TOKEN: "a".repeat(31) }).authToken).toBeUndefined();
+  });
+
+  it("以前ローカル開発用に案内していたトークンは認証トークンとして使わない", () => {
+    expect(loadConfig({ AUTH_TOKEN: "local-dev-token" }).authToken).toBeUndefined();
   });
 
   it("REQUIRE_MOVES が未設定なら技構成を必須にする", () => {

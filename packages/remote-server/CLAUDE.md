@@ -14,6 +14,10 @@ mcp-server の core（パーティ保存系を除くツール）をリモート 
 
 - mcp-server から使うのは `@ai-rotom/mcp-core` に出したものだけにする
 - 認証は環境変数 `AUTH_TOKEN` との照合。Cloudflare では wrangler secret で設定する。未設定なら全リクエストを拒否する
+- `AUTH_TOKEN` が 32 文字に満たなければ未設定と同じく拒否する。共有トークン 1 つで守っているので、推測できる短い値で公開されるよりは止める
+- トークンは SHA-256 のダイジェスト同士で比べる。長さの違いで早く返すと応答時間から長さが漏れるため。Workers の `crypto.subtle.timingSafeEqual` は他のサービスにないので使わない
+- 認証を通ったら、`authorization` ヘッダーを除きパスを `/mcp` に戻したリクエストを SDK に渡す。SDK は URL とヘッダーをツールの処理まで渡すので、トークンをそこへ広げない
+- 本文はハンドラーで読み、配列で届く JSON-RPC のバッチを 400 で拒否してから、パース済みの値を SDK に渡す。バッチは 1 リクエストで最大 100 件を処理させられ、1 回の CPU 時間の上限と噛み合わない。パース済みの値を渡すと SDK の `maxRequestBodySize` は効かないので、本文の上限はハンドラーで確かめる
 - `tsconfig.json` は Node の型を読まず、`WebWorker` の lib だけで型検査する。`Buffer` や `process` など Workers にないグローバルを型検査で弾くためで、`types: ["node"]` を足さない
 
 ## 制約

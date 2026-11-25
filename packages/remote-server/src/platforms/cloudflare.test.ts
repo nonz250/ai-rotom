@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import worker from "./cloudflare";
 
 const ORIGIN = "https://ai-rotom.example.workers.dev";
+const TOKEN = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
 
 function toolsList(token: string): Request {
   return new Request(`${ORIGIN}/mcp`, {
@@ -17,12 +18,12 @@ function toolsList(token: string): Request {
 
 describe("Cloudflare Workers のエントリ", () => {
   it("env の AUTH_TOKEN で認証してリクエストを処理する", async () => {
-    const res = await worker.fetch(toolsList("secret"), { AUTH_TOKEN: "secret" });
+    const res = await worker.fetch(toolsList(TOKEN), { AUTH_TOKEN: TOKEN });
     expect(res.status).toBe(200);
   });
 
   it("env に AUTH_TOKEN がなければ 503 で拒否する", async () => {
-    const res = await worker.fetch(toolsList("secret"), {});
+    const res = await worker.fetch(toolsList(TOKEN), {});
     expect(res.status).toBe(503);
   });
 });
