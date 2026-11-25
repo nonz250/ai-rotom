@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, it, expect } from "vitest";
+import { UserFacingError } from "@ai-rotom/shared";
 import {
   TOOL_RESPONSE_HINT_CONTENT,
   TOOL_RESPONSE_HINT_TEXT,
@@ -102,26 +103,50 @@ describe("toTextResponse", () => {
 });
 
 describe("toErrorResponse", () => {
-  it("wraps an Error message into isError: true response without hint", () => {
-    // エラー時はノイズ回避のため hint を付けない仕様を固定化する。
-    const result = toErrorResponse(new Error("boom"));
+  const GENERIC_ERROR_MESSAGE = "ツールの実行中に予期しないエラーが発生しました。";
+
+  function errorTextOf(result: ReturnType<typeof toErrorResponse>): string {
+    return result.content[0]!.text;
+  }
+
+  it("UserFacingError は文面をそのまま hint なしの isError 応答で返す", () => {
+    const message = "ポケモン「リザードソ」が見つかりません。 もしかして: リザードン";
+    const result = toErrorResponse(new UserFacingError(message));
+
     expect(result.isError).toBe(true);
     expect(result.content).toEqual([
-      { type: "text", text: JSON.stringify({ error: "boom" }) },
+      { type: "text", text: JSON.stringify({ error: message }) },
     ]);
     expect(result.content).not.toContainEqual(TOOL_RESPONSE_HINT_CONTENT);
   });
 
-  it("falls back to a generic message for non-Error throws", () => {
-    // throw "string" のようなケースでも安全に文字列化されることを保証。
-    const result = toErrorResponse("oops");
+  it("TypeError の文面は返さず固定の文面を返す", () => {
+    const result = toErrorResponse(
+      new TypeError("Cannot read properties of undefined (reading 'baseStats')"),
+    );
+
     expect(result.isError).toBe(true);
-    expect(result.content).toEqual([
-      {
-        type: "text",
-        text: JSON.stringify({ error: "不明なエラーが発生しました" }),
-      },
-    ]);
+    expect(errorTextOf(result)).toBe(
+      JSON.stringify({ error: GENERIC_ERROR_MESSAGE }),
+    );
+  });
+
+  it("ライブラリが投げた素の Error の文面は返さず固定の文面を返す", () => {
+    const result = toErrorResponse(new Error("internal failure in engine"));
+
+    expect(result.isError).toBe(true);
+    expect(errorTextOf(result)).toBe(
+      JSON.stringify({ error: GENERIC_ERROR_MESSAGE }),
+    );
+  });
+
+  it("Error 以外の値が投げられても固定の文面を返す", () => {
+    const result = toErrorResponse("oops");
+
+    expect(result.isError).toBe(true);
+    expect(errorTextOf(result)).toBe(
+      JSON.stringify({ error: GENERIC_ERROR_MESSAGE }),
+    );
   });
 });
 

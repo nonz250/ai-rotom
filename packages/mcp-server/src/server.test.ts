@@ -1,7 +1,8 @@
-import { describe, it, expect } from "vitest";
+import { afterEach, describe, it, expect, vi } from "vitest";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { damageCalculator } from "./calc/damage-calculator";
 import { createCoreServer } from "./core-server";
 import { CORE_INSTRUCTIONS, SERVER_INSTRUCTIONS } from "./instructions";
 import { createServer } from "./server";
@@ -74,5 +75,70 @@ describe("createServer", () => {
   it("パーティ保存の使い方を含む instructions を返す", async () => {
     const instructions = await withClient(createServer(), async (client) => client.getInstructions());
     expect(instructions).toBe(SERVER_INSTRUCTIONS);
+  });
+});
+
+describe("ツールのエラー応答", () => {
+  const GENERIC_ERROR_MESSAGE = "ツールの実行中に予期しないエラーが発生しました。";
+  const DAMAGE_SINGLE_ARGS = {
+    attacker: { name: "ガブリアス" },
+    defender: { name: "リザードン" },
+    moveName: "じしん",
+  };
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  async function callToolError(
+    name: string,
+    args: Record<string, unknown>,
+  ): Promise<{ isError: unknown; error: unknown }> {
+    const result = await withClient(createCoreServer(CORE_INSTRUCTIONS), (client) =>
+      client.callTool({ name, arguments: args }),
+    );
+    const [first] = result.content as { type: string; text: string }[];
+    return { isError: result.isError, error: (JSON.parse(first!.text) as { error: unknown }).error };
+  }
+
+  it("存在しないポケモン名を渡すと、候補を添えた文面をそのまま返す", async () => {
+    const { isError, error } = await callToolError("get_pokemon_info", { name: "リザードソ" });
+
+    expect(isError).toBe(true);
+    expect(error).toEqual(expect.stringContaining("ポケモン「リザードソ」が見つかりません。"));
+    expect(error).toEqual(expect.stringContaining("もしかして"));
+    expect(error).toEqual(expect.stringContaining("リザードン"));
+  });
+
+  it("ダメ計エンジン内の名前解決で見つからない技名は、文面をそのまま返す", async () => {
+    const { isError, error } = await callToolError("calculate_damage_single", {
+      ...DAMAGE_SINGLE_ARGS,
+      moveName: "じしんじしん",
+    });
+
+    expect(isError).toBe(true);
+    expect(error).toEqual(expect.stringContaining("技「じしんじしん」が見つかりません。"));
+  });
+
+  it("ダメ計エンジンが TypeError を投げても、その文面は返さず固定の文面を返す", async () => {
+    vi.spyOn(damageCalculator, "calculate").mockImplementation(() => {
+      throw new TypeError("Cannot read properties of undefined (reading 'species')");
+    });
+
+    const { isError, error } = await callToolError("calculate_damage_single", DAMAGE_SINGLE_ARGS);
+
+    expect(isError).toBe(true);
+    expect(error).toBe(GENERIC_ERROR_MESSAGE);
+  });
+
+  it("ダメ計エンジンが Error 以外の値を投げても固定の文面を返す", async () => {
+    vi.spyOn(damageCalculator, "calculate").mockImplementation(() => {
+      throw "engine exploded";
+    });
+
+    const { isError, error } = await callToolError("calculate_damage_single", DAMAGE_SINGLE_ARGS);
+
+    expect(isError).toBe(true);
+    expect(error).toBe(GENERIC_ERROR_MESSAGE);
   });
 });

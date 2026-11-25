@@ -1,3 +1,5 @@
+import { UserFacingError } from "@ai-rotom/shared";
+
 /** すべての MCP ツール成功レスポンスの末尾に付与する誘導テキスト。
  * 会話末尾の attention に残しやすい位置で AI クライアントに次手のツール呼び出しを促す。
  * 命令調 (「呼ぶこと」「答えず」) はプロンプトインジェクション検出にフラグされやすく
@@ -35,13 +37,21 @@ export function toTextResponse(value: unknown) {
   return withHint({ type: "text" as const, text: JSON.stringify(value) });
 }
 
+/** UserFacingError 以外の例外のときに、元の文面の代わりに返す文面。 */
+export const UNEXPECTED_ERROR_MESSAGE =
+  "ツールの実行中に予期しないエラーが発生しました。";
+
 /**
  * エラー応答 (isError: true) を組み立てるヘルパー。
  * エラー時はノイズになるため hint は付けない (仕様)。
+ * 元の文面を返すのは UserFacingError だけにする。それ以外の例外の文面には
+ * ライブラリ内部の事情が含まれうるため、固定の文面に置き換える。
  */
 export function toErrorResponse(error: unknown) {
+  // 握りつぶした例外をログにも出さない。文面やスタックには呼び出し元の入力が
+  // 含まれうるうえ、例外の型名だけでは原因の調査に役立たないため。
   const message =
-    error instanceof Error ? error.message : "不明なエラーが発生しました";
+    error instanceof UserFacingError ? error.message : UNEXPECTED_ERROR_MESSAGE;
   return {
     content: [
       { type: "text" as const, text: JSON.stringify({ error: message }) },
