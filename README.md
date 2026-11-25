@@ -81,13 +81,13 @@ codex mcp add ai-rotom -- npx -y @nonz250/ai-rotom
 Muse のカスタムコネクタのように、手元で MCP サーバーを起動できないクライアントからは、公開しているリモート MCP サーバーにつなげます。認証はいりません。
 
 ```
-https://ai-rotom.hosaka-non-work.workers.dev/mcp
+https://ai-rotom.nonz250.workers.dev/mcp
 ```
 
 クライアントのコネクタや MCP サーバーの設定に、この URL を登録してください。Claude Code では次のように登録します。
 
 ```bash
-claude mcp add --transport http ai-rotom https://ai-rotom.hosaka-non-work.workers.dev/mcp
+claude mcp add --transport http ai-rotom https://ai-rotom.nonz250.workers.dev/mcp
 ```
 
 stdio 版と比べて、次の違いがあります。
