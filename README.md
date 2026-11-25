@@ -133,8 +133,6 @@ Muse のカスタムコネクタのように、手元で MCP サーバーを起�
 <details>
 <summary>デプロイ手順</summary>
 
-Muse のカスタムコネクタのように手元で MCP サーバーを起動できないクライアントからは、Cloudflare Workers に置いたリモート MCP サーバーとしてつなげます。リポジトリを clone して、自分の Cloudflare アカウントにデプロイします。
-
 ```bash
 npm ci
 cd packages/remote-server
