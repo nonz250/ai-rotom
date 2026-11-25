@@ -154,17 +154,8 @@ TS6059 エラーにならないようにしている。
 `.github/workflows/deploy-worker.yml` が、正式リリースの公開時と main からの手動実行時に、このリポジトリのリモート版を Cloudflare Workers にデプロイする。プレリリースではデプロイしない。リリース時は、タグが package.json の版と一致し、main のコミットを指していることを確かめてからデプロイする。
 
 - Cloudflare の API トークンとアカウント ID は、GitHub の Environment `cloudflare-workers` の Secrets（`CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID`）にだけ置く。npm 公開用の `production` とは分ける
-- `cloudflare-workers` と `production` はどちらも nonz250 の承認がないとジョブが進まず、管理者でも承認を飛ばせない。`cloudflare-workers` に入れるのは main ブランチと `*.*.*` に合うタグからの実行だけ
-- API トークンは `token-for-gha` という名前のカスタムトークン。権限は Account › Workers Scripts › Edit と Account › Account Settings › Read の 2 つだけで、対象はこのアカウントだけに絞り、有効期限を付ける
 - リモート版の `AUTH_TOKEN` は Cloudflare 側の secret のまま置き、CI には渡さない
 - フォークからの PR に Secrets を渡さないため、`pull_request_target` でデプロイを走らせない
-
-`token-for-gha` は有効期限が切れる前に次の手順で差し替える。
-
-1. Cloudflare ダッシュボードの My Profile › API Tokens で、新しい有効期限を付けて roll するか、同じ権限と有効期限で作り直す
-2. `gh secret set CLOUDFLARE_API_TOKEN --env cloudflare-workers --repo nonz250/ai-rotom` を実行し、新しい値を対話入力で登録する。値をチャットや issue に貼らない
-3. main からデプロイのワークフローを手動実行し、承認してデプロイが通ることを確かめる
-4. 作り直した場合は、デプロイが通ってから古いトークンを削除する
 
 ワークフローは `build` と `deploy` の 2 つのジョブに分ける。依存パッケージやテストのコードが動くあいだは Secrets がなく、上げるのは検査したバンドルそのものになるようにするため。
 
@@ -182,6 +173,15 @@ TS6059 エラーにならないようにしている。
    npm deprecate @nonz250/ai-rotom@<broken-version> "<message>"
    ```
 4. GitHub Release に修正内容と関連バージョン情報を記載
+
+## IMPORTANT: センシティブ情報を書かない
+
+パブリックリポジトリなので、CLAUDE.md・README・コード・コミットメッセージ・PR・Issue に次を書かない。
+
+- トークン・API キー・パスワード・アカウント ID・デプロイ先のサブドメインなどの値
+- それらに関わる運用の情報。どのトークンにどの権限があるか、誰が承認するか、環境の保護設定、トークンの差し替え手順など、攻撃の手がかりになるもの
+
+運用の情報はメンテナーの手元で管理する。設定ファイルに書く値はプレースホルダーにする。
 
 ## IMPORTANT: 外部サービス名の取り扱い
 
