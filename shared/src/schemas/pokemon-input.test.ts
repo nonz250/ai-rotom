@@ -1,6 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { MAX_MOVES_PER_MEMBER, MAX_NAME_LENGTH } from "./party";
-import { conditionsSchema, pokemonSchema, pokemonWithMovesSchema } from "./pokemon-input";
+import { MAX_MOVES_PER_MEMBER, MAX_NAME_LENGTH, MAX_PARTY_MEMBERS } from "./party";
+import {
+  conditionsSchema,
+  movesByPokemonSchema,
+  pokemonSchema,
+  pokemonWithMovesSchema,
+} from "./pokemon-input";
 
 const MOVE_NAMES = ["じしん", "げきりん", "ストーンエッジ", "つるぎのまい", "ほのおのキバ"];
 
@@ -65,5 +70,45 @@ describe("conditionsSchema の文字列項目", () => {
 
   it.each(CONDITIONS_STRING_FIELDS)("%s は最大文字数を超えると拒否する", (field) => {
     expect(conditionsSchema.safeParse({ [field]: NAME_OVER_LIMIT }).success).toBe(false);
+  });
+});
+
+function movesForPokemonCount(count: number): Record<string, string[]> {
+  return Object.fromEntries(Array.from({ length: count }, (_, index) => [`ポケモン${index}`, ["じしん"]]));
+}
+
+describe("movesByPokemonSchema", () => {
+  it("技を指定するポケモンは 6 匹まで受け付ける", () => {
+    expect(movesByPokemonSchema.safeParse(movesForPokemonCount(MAX_PARTY_MEMBERS)).success).toBe(true);
+  });
+
+  it("技を指定するポケモンが 7 匹以上なら拒否する", () => {
+    expect(movesByPokemonSchema.safeParse(movesForPokemonCount(MAX_PARTY_MEMBERS + 1)).success).toBe(false);
+  });
+
+  it("ポケモン名のキーは最大文字数まで受け付け、超えると拒否する", () => {
+    expect(movesByPokemonSchema.safeParse({ [NAME_AT_LIMIT]: ["じしん"] }).success).toBe(true);
+    expect(movesByPokemonSchema.safeParse({ [NAME_OVER_LIMIT]: ["じしん"] }).success).toBe(false);
+  });
+
+  it("1 匹あたりの技は 4 個まで受け付け、5 個以上なら拒否する", () => {
+    const atLimit = MOVE_NAMES.slice(0, MAX_MOVES_PER_MEMBER);
+    const overLimit = MOVE_NAMES.slice(0, MAX_MOVES_PER_MEMBER + 1);
+    expect(movesByPokemonSchema.safeParse({ ガブリアス: atLimit }).success).toBe(true);
+    expect(movesByPokemonSchema.safeParse({ ガブリアス: overLimit }).success).toBe(false);
+  });
+
+  it("技が多すぎるポケモンの名前をエラーメッセージで示す", () => {
+    const overLimit = MOVE_NAMES.slice(0, MAX_MOVES_PER_MEMBER + 1);
+    const result = movesByPokemonSchema.safeParse({ ガブリアス: overLimit, サーフゴー: ["ゴールドラッシュ"] });
+    expect(result.success).toBe(false);
+    const messages = result.error?.issues.map((issue) => issue.message).join("\n") ?? "";
+    expect(messages).toContain("ガブリアス");
+    expect(messages).not.toContain("サーフゴー");
+  });
+
+  it("技名は最大文字数まで受け付け、超えると拒否する", () => {
+    expect(movesByPokemonSchema.safeParse({ ガブリアス: [NAME_AT_LIMIT] }).success).toBe(true);
+    expect(movesByPokemonSchema.safeParse({ ガブリアス: [NAME_OVER_LIMIT] }).success).toBe(false);
   });
 });

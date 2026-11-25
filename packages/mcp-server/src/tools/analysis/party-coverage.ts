@@ -5,6 +5,7 @@ import type { TypeName } from "@smogon/calc/dist/data/interface";
 import {
   MAX_PARTY_MEMBERS,
   MIN_PARTY_MEMBERS,
+  movesByPokemonSchema,
   applyOffensiveTypeOverride,
   calculateTypeEffectiveness,
   pokemonSchema,
@@ -64,8 +65,7 @@ const inputSchema = {
     .min(MIN_PARTY_MEMBERS)
     .max(MAX_PARTY_MEMBERS)
     .describe("自分のパーティ（moves 未指定時は learnset 内の全攻撃技を候補にする）"),
-  moves: z
-    .record(z.string(), z.array(z.string()))
+  moves: movesByPokemonSchema
     .optional()
     .describe(
       "ポケモン名（日本語 or 英語）をキーに技名配列を値とする map。"

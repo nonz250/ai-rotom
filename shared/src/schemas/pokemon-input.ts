@@ -5,7 +5,7 @@ import {
   type BoostsInput,
   type EvsInput,
 } from "./stats.js";
-import { MAX_MOVES_PER_MEMBER, MAX_NAME_LENGTH } from "./party.js";
+import { MAX_MOVES_PER_MEMBER, MAX_NAME_LENGTH, MAX_PARTY_MEMBERS } from "./party.js";
 
 /**
  * ポケモン入力の型。各ツールの入力で共通利用する。
@@ -39,6 +39,37 @@ export type ConditionsInput = {
  */
 export const nameInputSchema = z.string().max(MAX_NAME_LENGTH);
 
+const moveNameInputSchema = z.string().min(1).max(MAX_NAME_LENGTH);
+
+/**
+ * 1 匹分の技構成の入力スキーマ。
+ */
+const movesInputSchema = z.array(moveNameInputSchema).max(MAX_MOVES_PER_MEMBER, {
+  message: `技は ${MAX_MOVES_PER_MEMBER} 個までです。`,
+});
+
+/**
+ * ポケモン名をキーに技構成を値とする入力スキーマ。
+ */
+export const movesByPokemonSchema = z
+  .record(nameInputSchema, z.array(moveNameInputSchema))
+  .refine((movesByPokemon) => Object.keys(movesByPokemon).length <= MAX_PARTY_MEMBERS, {
+    message: `技を指定できるポケモンは ${MAX_PARTY_MEMBERS} 匹までです。`,
+  })
+  // 値の配列に max を掛けず全体で見るのは、どのポケモンの指定が多すぎるかをメッセージで示すため。
+  .superRefine((movesByPokemon, ctx) => {
+    const exceeded = Object.entries(movesByPokemon)
+      .filter(([, moves]) => moves.length > MAX_MOVES_PER_MEMBER)
+      .map(([pokemonName]) => pokemonName);
+    if (exceeded.length === 0) {
+      return;
+    }
+    ctx.addIssue({
+      code: "custom",
+      message: `技は 1 体につき ${MAX_MOVES_PER_MEMBER} つまで指定できます。moves 引数の ${exceeded.join("、")} の技を ${MAX_MOVES_PER_MEMBER} つ以内にして呼び直してください。`,
+    });
+  });
+
 const pokemonFields = {
   name: nameInputSchema.describe("ポケモン名（日本語 or 英語）"),
   nature: nameInputSchema.optional().describe("性格名（省略時: まじめ）"),
@@ -64,11 +95,7 @@ export const pokemonSchema: z.ZodType<PokemonInput> = z.object(pokemonFields);
  */
 export const pokemonWithMovesSchema: z.ZodType<PokemonInput> = z.object({
   ...pokemonFields,
-  moves: z
-    .array(z.string().min(1).max(MAX_NAME_LENGTH))
-    .max(MAX_MOVES_PER_MEMBER, {
-      message: `技は ${MAX_MOVES_PER_MEMBER} 個までです。`,
-    })
+  moves: movesInputSchema
     .optional()
     .describe(
       "技構成（日本語 or 英語、最大 4）。攻撃側として全技計算するときは指定した技だけを計算する。省略時は習得技すべてで計算する。",

@@ -5,6 +5,7 @@ import type { TypeName } from "@smogon/calc/dist/data/interface";
 import {
   MAX_PARTY_MEMBERS,
   MIN_PARTY_MEMBERS,
+  movesByPokemonSchema,
   DamageCalculatorAdapter,
   calculateTypeEffectiveness,
   compareSpeed,
@@ -55,8 +56,7 @@ const inputSchema = {
   battleFormat: z
     .enum(battleFormatValues)
     .describe("対戦形式（シングル: singles / ダブル: doubles）"),
-  moves: z
-    .record(z.string(), z.array(z.string()))
+  moves: movesByPokemonSchema
     .optional()
     .describe(
       "ポケモン名（日本語 or 英語）ごとに候補技を指定する。指定がなければ myParty 各メンバーの moves、それもなければ習得技すべてで計算する。",

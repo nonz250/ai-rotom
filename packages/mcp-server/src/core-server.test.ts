@@ -2,6 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import {
+  MAX_MOVES_PER_MEMBER,
   MAX_NAME_LENGTH,
   MAX_PARTY_MEMBERS,
   MAX_PARTY_NAME_LENGTH,
@@ -131,6 +132,55 @@ describe("createCoreServer のパーティの人数", () => {
 
   it.each(PARTY_ARGUMENTS)("%s の %s は空のパーティを入力検証で拒否する", async (tool, field, _member, rest) => {
     const outcome = await callTool(tool, { ...rest, [field]: [] });
+    expect(outcome.isError).toBe(true);
+    expect(outcome.text).toContain(INPUT_VALIDATION_ERROR);
+  });
+});
+
+const MOVE_NAMES = ["じしん", "げきりん", "ストーンエッジ", "つるぎのまい", "ほのおのキバ"];
+
+function movesForPokemonCount(count: number): Record<string, string[]> {
+  return Object.fromEntries(Array.from({ length: count }, (_, index) => [`ポケモン${index}`, ["じしん"]]));
+}
+
+const MOVES_MAP_ARGUMENTS: [string, Record<string, unknown>][] = [
+  ["analyze_selection", { myParty: [ATTACKER], opponentParty: [DEFENDER], battleFormat: "singles" }],
+  ["analyze_party_coverage", { myParty: [ATTACKER] }],
+];
+
+describe("createCoreServer のポケモンごとの技指定", () => {
+  it.each(MOVES_MAP_ARGUMENTS)("%s は 1 匹あたり 4 個までの技を受け付ける", async (tool, rest) => {
+    const moves = { ガブリアス: MOVE_NAMES.slice(0, MAX_MOVES_PER_MEMBER) };
+    const outcome = await callTool(tool, { ...rest, moves });
+    expect(outcome.isError).toBe(false);
+  });
+
+  it.each(MOVES_MAP_ARGUMENTS)("%s は技構成を必須にしない設定でも 5 個以上の技を入力検証で拒否する", async (tool, rest) => {
+    const moves = { ガブリアス: MOVE_NAMES.slice(0, MAX_MOVES_PER_MEMBER + 1) };
+    const outcome = await callTool(tool, { ...rest, moves });
+    expect(outcome.isError).toBe(true);
+    expect(outcome.text).toContain(INPUT_VALIDATION_ERROR);
+  });
+
+  it.each(MOVES_MAP_ARGUMENTS)("%s は 6 匹分までの技指定を入力検証で通す", async (tool, rest) => {
+    const outcome = await callTool(tool, { ...rest, moves: movesForPokemonCount(MAX_PARTY_MEMBERS) });
+    expect(outcome.text).not.toContain(INPUT_VALIDATION_ERROR);
+  });
+
+  it.each(MOVES_MAP_ARGUMENTS)("%s は 7 匹分以上の技指定を入力検証で拒否する", async (tool, rest) => {
+    const outcome = await callTool(tool, { ...rest, moves: movesForPokemonCount(MAX_PARTY_MEMBERS + 1) });
+    expect(outcome.isError).toBe(true);
+    expect(outcome.text).toContain(INPUT_VALIDATION_ERROR);
+  });
+
+  it.each(MOVES_MAP_ARGUMENTS)("%s は最大文字数を超えるポケモン名のキーを入力検証で拒否する", async (tool, rest) => {
+    const outcome = await callTool(tool, { ...rest, moves: { [NAME_OVER_LIMIT]: ["じしん"] } });
+    expect(outcome.isError).toBe(true);
+    expect(outcome.text).toContain(INPUT_VALIDATION_ERROR);
+  });
+
+  it.each(MOVES_MAP_ARGUMENTS)("%s は最大文字数を超える技名を入力検証で拒否する", async (tool, rest) => {
+    const outcome = await callTool(tool, { ...rest, moves: { ガブリアス: [NAME_OVER_LIMIT] } });
     expect(outcome.isError).toBe(true);
     expect(outcome.text).toContain(INPUT_VALIDATION_ERROR);
   });
