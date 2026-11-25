@@ -815,7 +815,17 @@ describe("handleRequest の認証なしの受け付け", () => {
   });
 
   it("IPv4 射影の IPv6 アドレスは IPv4 アドレスと同じキーで数える", async () => {
-    expect(await keyFor(`::ffff:${CLIENT_ADDRESS}`)).toBe(await keyFor(CLIENT_ADDRESS));
+    const key = await keyFor(CLIENT_ADDRESS);
+
+    expect(await keyFor(`::ffff:${CLIENT_ADDRESS}`)).toBe(key);
+    expect(await keyFor(`0:0:0:0:0:FFFF:${CLIENT_ADDRESS}`)).toBe(key);
+  });
+
+  it("NAT64 のように IPv4 の表記を含むほかの IPv6 アドレスは、IPv4 ではなく先頭 64 ビットで数える", async () => {
+    const key = await keyFor(`64:ff9b::${CLIENT_ADDRESS}`);
+
+    expect(key).not.toBe(await keyFor(CLIENT_ADDRESS));
+    expect(await keyFor("64:ff9b::1")).toBe(key);
   });
 
   it("制限があるのに接続元のアドレスがわからなければ、数えずに 503 を返す", async () => {

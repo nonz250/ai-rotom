@@ -101,6 +101,10 @@ function rateLimitKey(tokenDigest: Uint8Array): string {
 const IPV6_SEPARATOR = ":";
 const IPV6_COMPRESSION = "::";
 const IPV4_SEPARATOR = ".";
+/** IPv4 のアドレスを IPv6 で表した形の接頭辞。この形だけは IPv4 の接続元として数える。 */
+const IPV4_MAPPED_PREFIXES: readonly string[] = ["::ffff:", "0:0:0:0:0:ffff:"];
+/** IPv6 の末尾に書いた IPv4 の表記が占める、16 ビットの区切りの数。 */
+const EMBEDDED_IPV4_HEXTETS = ["0", "0"];
 const IPV6_HEXTETS = 8;
 /** IPv6 で数える単位の、先頭の 16 ビットの区切りの数。64 ビットで、1 つの回線に割り当てられる大きさ。 */
 const IPV6_NETWORK_HEXTETS = 4;
@@ -114,13 +118,16 @@ function clientNetwork(address: string): string {
   if (!normalized.includes(IPV6_SEPARATOR)) {
     return normalized;
   }
-  const last = normalized.slice(normalized.lastIndexOf(IPV6_SEPARATOR) + 1);
-  if (last.includes(IPV4_SEPARATOR)) {
-    return last;
+  const mappedPrefix = IPV4_MAPPED_PREFIXES.find((prefix) => normalized.startsWith(prefix));
+  if (mappedPrefix !== undefined && normalized.slice(mappedPrefix.length).includes(IPV4_SEPARATOR)) {
+    return normalized.slice(mappedPrefix.length);
   }
   const [head, tail] = normalized.split(IPV6_COMPRESSION);
   const headHextets = head === "" ? [] : head.split(IPV6_SEPARATOR);
-  const tailHextets = tail === undefined || tail === "" ? [] : tail.split(IPV6_SEPARATOR);
+  // NAT64 などの末尾の IPv4 の表記は先頭 64 ビットにかからないので、区切りの数だけそろえる。
+  const tailHextets = (tail === undefined || tail === "" ? [] : tail.split(IPV6_SEPARATOR)).flatMap(
+    (hextet) => (hextet.includes(IPV4_SEPARATOR) ? EMBEDDED_IPV4_HEXTETS : [hextet]),
+  );
   const omitted =
     tail === undefined ? 0 : IPV6_HEXTETS - headHextets.length - tailHextets.length;
   const hextets = [...headHextets, ...Array<string>(omitted).fill("0"), ...tailHextets];
