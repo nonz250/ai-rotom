@@ -7,7 +7,7 @@ import {
   MAX_PARTY_MEMBERS,
   MAX_PARTY_NAME_LENGTH,
 } from "@ai-rotom/shared";
-import { createCoreServer } from "./core-server";
+import { createCoreServer, MAX_TOOL_INPUT_ELEMENTS } from "./core-server";
 import { CORE_INSTRUCTIONS } from "./instructions";
 
 const INPUT_VALIDATION_ERROR = "Input validation error";
@@ -183,5 +183,58 @@ describe("createCoreServer のポケモンごとの技指定", () => {
     const outcome = await callTool(tool, { ...rest, moves: { ガブリアス: [NAME_OVER_LIMIT] } });
     expect(outcome.isError).toBe(true);
     expect(outcome.text).toContain(INPUT_VALIDATION_ERROR);
+  });
+});
+
+const FULL_BUILD_STATS = { hp: 2, atk: 32, def: 0, spa: 0, spd: 0, spe: 32 };
+const NEUTRAL_BOOSTS = { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
+
+const FULL_BUILD_MEMBERS: [string, string, string[]][] = [
+  ["ガブリアス", "すながくれ", ["ギガインパクト", "はかいこうせん", "りゅうせいぐん", "すてみタックル"]],
+  ["サーフゴー", "おうごんのからだ", ["きあいパンチ", "ギガインパクト", "はかいこうせん", "てっていこうせん"]],
+  ["カイリュー", "せいしんりょく", ["きあいパンチ", "ギガインパクト", "はかいこうせん", "りゅうせいぐん"]],
+  ["ドドゲザン", "まけんき", ["ギガインパクト", "はかいこうせん", "てっていこうせん", "きあいだま"]],
+  ["アーマーガア", "プレッシャー", ["ギガインパクト", "はかいこうせん", "ゴッドバード", "てっていこうせん"]],
+  ["リザードン", "もうか", ["ブラストバーン", "きあいパンチ", "ギガインパクト", "はかいこうせん"]],
+];
+
+function fullBuild(name: string, ability: string): Record<string, unknown> {
+  return {
+    name,
+    nature: "いじっぱり",
+    evs: FULL_BUILD_STATS,
+    ability,
+    item: "いのちのたま",
+    boosts: NEUTRAL_BOOSTS,
+    status: "",
+  };
+}
+
+function paddedTypeInfoArgs(elementCount: number): Record<string, unknown> {
+  const args: Record<string, unknown> = { type: "ほのお", padding: [] };
+  args.padding = Array.from({ length: elementCount - Object.keys(args).length }, () => 0);
+  return args;
+}
+
+describe("createCoreServer の引数の要素数", () => {
+  it("全項目を指定した 6v6 の選出分析は要素数の上限に掛からない", async () => {
+    const outcome = await callTool("analyze_selection", {
+      myParty: FULL_BUILD_MEMBERS.map(([name, ability, moves]) => ({ ...fullBuild(name, ability), moves })),
+      opponentParty: FULL_BUILD_MEMBERS.map(([name, ability]) => fullBuild(name, ability)),
+      battleFormat: "singles",
+      moves: Object.fromEntries(FULL_BUILD_MEMBERS.map(([name, , moves]) => [name, moves])),
+    });
+    expect(outcome.isError).toBe(false);
+  });
+
+  it("要素数が上限ちょうどの引数は受け付ける", async () => {
+    const outcome = await callTool("get_type_info", paddedTypeInfoArgs(MAX_TOOL_INPUT_ELEMENTS));
+    expect(outcome.isError).toBe(false);
+  });
+
+  it("要素数が上限を超える引数は拒否する", async () => {
+    const outcome = await callTool("get_type_info", paddedTypeInfoArgs(MAX_TOOL_INPUT_ELEMENTS + 1));
+    expect(outcome.isError).toBe(true);
+    expect(outcome.text).toContain(`more than the maximum of ${MAX_TOOL_INPUT_ELEMENTS} elements`);
   });
 });
