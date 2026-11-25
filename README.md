@@ -2,7 +2,7 @@
 
 ポケモンチャンピオンズの対戦アドバイザーです。
 
-Claude Code や Codex などの AI エージェントから MCP ツールとして呼び出し、種族値・技データ・タイプ相性の確認、ダメージ計算、パーティ分析、選出の判断材料づくりに使えます。
+ChatGPT や Claude などのチャットのアプリに追加すると、AI が ai-rotom のデータを調べながら、種族値・技データ・タイプ相性の確認、ダメージ計算、パーティ分析、選出の相談に答えるようになります。Claude Code や Codex などの AI エージェントからも使えます。
 
 - ダメージ計算を、1 対 1 の単発・全技・6v6 の 3 つの粒度で行えます
 - パーティの弱点や攻撃範囲、2 つのパーティの違いを分析できます
@@ -56,55 +56,58 @@ e.g.) `analyze_party_weakness` が呼ばれ、各タイプを弱点に持つメ�
 
 ## クイックスタート
 
-Node.js 24 以上が必要です。
+ChatGPT、Claude、Gemini、Muse などのチャットのアプリや web 版から、インストールなしで使えます。アプリに ai-rotom を「コネクタ」として追加すると、チャットでポケモンのことを聞いたときに、AI が ai-rotom のデータを調べて答えるようになります。
 
-```bash
-npx -y @nonz250/ai-rotom
-```
-
-標準入出力で MCP プロトコルを話すので、実際には MCP クライアントに登録して使います。
-
-### Claude Code
-
-```bash
-claude mcp add ai-rotom -- npx -y @nonz250/ai-rotom
-```
-
-### Codex
-
-```bash
-codex mcp add ai-rotom -- npx -y @nonz250/ai-rotom
-```
-
-## リモート MCP サーバーで使う
-
-Muse のカスタムコネクタのように、手元で MCP サーバーを起動できないクライアントからは、公開しているリモート MCP サーバーにつなげます。認証はいりません。
+使いたいアプリのチャットに、次の文章をそのまま貼り付けて送ってください。AI が、そのアプリでの追加の手順を 1 つずつ案内します。
 
 ```
-https://ai-rotom.nonz250.workers.dev/mcp
-```
-
-クライアントのコネクタや MCP サーバーの設定に、この URL を登録してください。Claude Code では次のように登録します。
-
-```bash
-claude mcp add --transport http ai-rotom https://ai-rotom.nonz250.workers.dev/mcp
-```
-
-ChatGPT、Claude、Gemini、Muse などのチャットのアプリや web 版では、[packages/remote-server/docs/connect-prompt.md](./packages/remote-server/docs/connect-prompt.md) を読ませると、コネクタの追加から使えるようになるまでを案内してくれます。ファイルの中身を貼り付けるか、次の URL を渡してください。
-
-```
+次の手順書を読んで、このアプリに ai-rotom を追加する方法を案内してください。
 https://raw.githubusercontent.com/nonz250/ai-rotom/main/packages/remote-server/docs/connect-prompt.md
 ```
 
-stdio 版と比べて、次の違いがあります。
+AI が URL を開けないと答えたときは、[手順書](./packages/remote-server/docs/connect-prompt.md)の中身をコピーして貼り付けてください。
 
-- `save_party` などのパーティ保存系のツールは使えません。パーティは分析ツールに毎回引数で渡します
-- 全技ダメ計・6v6 ダメ計・対面分析・選出分析では、自分側のポケモンの技構成の指定が必須です。相手側は省略できます
-- 接続元ごとに、60 秒あたりのリクエスト数に上限があります。超えると、しばらく待つよう求めるエラーを返します。Muse や claude.ai のように、クライアントの会社のサーバーからつなぐクライアントでは、同じクライアントの利用者でこの枠を分け合います
-- ブラウザから直接つなぐクライアントには対応していません
-- 無料の枠で動かしているので、1 日の利用が多いと、その日のうちは使えなくなることがあります
+自分で追加するときは、アプリの設定にある「コネクタ」や「カスタムコネクタ」の画面から、次の内容で追加します。画面の場所はアプリによって違い、アプリやプランによっては追加できないこともあります。
 
-自分の Cloudflare アカウントにリモート MCP サーバーを立てる方法は、[packages/remote-server/README.md](./packages/remote-server/README.md) にまとめています。
+- 名前は `ai-rotom`
+- URL は `https://ai-rotom.nonz250.workers.dev/mcp`。末尾の `/mcp` まで入れます
+- 認証は「なし」
+- 通信方式を選ぶ欄があれば「Streamable HTTP」か「HTTP」を選びます。「SSE」は選びません
+
+## CLI 版での接続方法
+
+Claude Code や Codex などのコマンドラインで動く AI エージェントでは、ai-rotom を手元のパソコンで動かして使えます。パーティの保存を含め、すべての機能を制限なしで使えます。Node.js 24 以上が必要です。
+
+```bash
+# Claude Code
+claude mcp add ai-rotom -- npx -y @nonz250/ai-rotom
+
+# Codex
+codex mcp add ai-rotom -- npx -y @nonz250/ai-rotom
+```
+
+ほかの MCP クライアントでは、`npx -y @nonz250/ai-rotom` を標準入出力でつなぐ MCP サーバーとして登録します。
+
+手元で動かさずに、クイックスタートと同じ公開サーバーにつなぐこともできます。使えない機能と 1 日の上限は「[サーバー利用時の注意事項](#サーバー利用時の注意事項)」と同じです。リクエスト数は、接続元のアドレスごとに 60 秒あたり 60 件までです。ブラウザの中で動く MCP クライアントからはつなげません。
+
+```bash
+# Claude Code
+claude mcp add --transport http ai-rotom https://ai-rotom.nonz250.workers.dev/mcp
+
+# Codex
+codex mcp add ai-rotom --url https://ai-rotom.nonz250.workers.dev/mcp
+```
+
+公開サーバーと同じものを自分の Cloudflare アカウントに立てる方法は、[packages/remote-server/README.md](./packages/remote-server/README.md) にまとめています。
+
+## サーバー利用時の注意事項
+
+無料で公開しているサーバーなので、次の制限があります。
+
+- パーティを保存しておく機能と、テキストからパーティを取り込む機能は使えません。分析を頼むたびに、パーティのポケモンを伝えてください
+- ダメージ計算や選出の分析の一部では、自分のポケモンの技を伝える必要があります。相手のポケモンの技は伝えなくても大丈夫です
+- 短い時間にたくさん使うと、しばらく待つよう求められます。この上限は、同じアプリを使っている人全員で分け合っています
+- 1 日の利用が全体で多いと、上限に達して、次の日本時間 9 時まで使えなくなることがあります
 
 ## 利用可能な MCP ツール
 
