@@ -85,6 +85,25 @@ describe("handleRequest の認証", () => {
     expect(res.status).toBe(404);
   });
 
+  it("長さの違うトークンは、前方が一致していても延長されていても 401 を返す", async () => {
+    for (const token of [TOKEN.slice(0, -1), `${TOKEN}0`, `${TOKEN}${TOKEN}`, "x"]) {
+      const res = await handleRequest(
+        mcpRequest("/mcp", rpc("tools/list"), { authorization: `Bearer ${token}` }),
+        ENV,
+      );
+      expect(res.status).toBe(401);
+    }
+  });
+
+  it("同じ長さで最後の 1 文字だけ違うトークンは 401 を返す", async () => {
+    const token = `${TOKEN.slice(0, -1)}${TOKEN.endsWith("0") ? "1" : "0"}`;
+    const res = await handleRequest(
+      mcpRequest("/mcp", rpc("tools/list"), { authorization: `Bearer ${token}` }),
+      ENV,
+    );
+    expect(res.status).toBe(401);
+  });
+
   it("トークンの前方一致では通さない", async () => {
     const res = await handleRequest(
       mcpRequest(`/mcp/${TOKEN.slice(0, -1)}`, rpc("tools/list")),

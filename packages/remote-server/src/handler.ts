@@ -18,13 +18,17 @@ function textResponse(status: number, body: string, headers?: HeadersInit): Resp
   return new Response(body, { status, headers });
 }
 
-function timingSafeEqual(a: string, b: string): boolean {
-  const encoder = new TextEncoder();
-  const left = encoder.encode(a);
-  const right = encoder.encode(b);
-  if (left.length !== right.length) {
-    return false;
-  }
+const TOKEN_DIGEST_ALGORITHM = "SHA-256";
+
+async function digest(value: string): Promise<Uint8Array> {
+  const data = new TextEncoder().encode(value);
+  return new Uint8Array(await crypto.subtle.digest(TOKEN_DIGEST_ALGORITHM, data));
+}
+
+async function tokensMatch(provided: string, expected: string): Promise<boolean> {
+  // 長さの違うトークンで早く返すと、比べる時間から長さが漏れる。ハッシュにそろえてから比べる。
+  // Workers の crypto.subtle.timingSafeEqual は Web 標準にないので、他のサービスでも動く形で比べる。
+  const [left, right] = await Promise.all([digest(provided), digest(expected)]);
   let diff = 0;
   for (let i = 0; i < left.length; i++) {
     diff |= left[i] ^ right[i];
@@ -92,7 +96,7 @@ async function handleRequest(request: Request, config: RemoteServerConfig): Prom
     );
   }
   const provided = pathToken ?? bearerToken(request);
-  if (provided === null || !timingSafeEqual(provided, expected)) {
+  if (provided === null || !(await tokensMatch(provided, expected))) {
     return textResponse(HTTP_STATUS_UNAUTHORIZED, "Unauthorized");
   }
 
