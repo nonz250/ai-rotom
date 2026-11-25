@@ -95,7 +95,7 @@ registerFooTool(server);
 
 ### 5. ドキュメント
 
-ルートの `/CLAUDE.md` の MCP ツール一覧に追記する。
+README.md の「利用可能な MCP ツール」に追記する。
 
 ## 既存ツールのリファクタ時の注意
 
