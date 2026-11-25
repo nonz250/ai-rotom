@@ -9,6 +9,7 @@ import {
   MAX_PARTY_NAME_LENGTH,
   MIN_PARTY_MEMBERS,
   evsSchema,
+  UserFacingError,
 } from "@ai-rotom/shared";
 import type { Party, PartiesFile, PartyMember } from "@ai-rotom/shared";
 import {
@@ -216,7 +217,7 @@ export function registerPartyTools(
         const file = storeIO.load();
         const party = file.parties.find((p) => p.name === args.name);
         if (party === undefined) {
-          throw new Error(
+          throw new UserFacingError(
             `パーティ「${args.name}」が見つかりません。list_parties で一覧を確認してください。`,
           );
         }
@@ -251,7 +252,7 @@ export function registerPartyTools(
         const file = storeIO.load();
         const nextParties = file.parties.filter((p) => p.name !== args.name);
         if (nextParties.length === file.parties.length) {
-          throw new Error(
+          throw new UserFacingError(
             `パーティ「${args.name}」が見つかりません。`,
           );
         }

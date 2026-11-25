@@ -12,6 +12,7 @@ import {
   pokemonSchema,
   type NumericStats,
   type PokemonInput,
+  UserFacingError,
 } from "@ai-rotom/shared";
 import {
   championsTypes,
@@ -143,14 +144,14 @@ function resolvePokemonEntry(name: string): PokemonEntry {
     const suggestions = pokemonNameResolver.suggestSimilar(name);
     const suggestionMessage =
       suggestions.length > 0 ? ` もしかして: ${suggestions.join(", ")}` : "";
-    throw new Error(
+    throw new UserFacingError(
       `ポケモン「${name}」が見つかりません。${suggestionMessage}`,
     );
   }
 
   const entry = pokemonById.get(toDataId(englishName));
   if (entry === undefined) {
-    throw new Error(`ポケモン「${name}」のデータが見つかりません。`);
+    throw new UserFacingError(`ポケモン「${name}」のデータが見つかりません。`);
   }
   return entry;
 }
@@ -175,7 +176,7 @@ function resolveNatureName(nature: string | undefined): string {
   const suggestions = natureNameResolver.suggestSimilar(nature);
   const suggestionMessage =
     suggestions.length > 0 ? ` もしかして: ${suggestions.join(", ")}` : "";
-  throw new Error(`性格「${nature}」が見つかりません。${suggestionMessage}`);
+  throw new UserFacingError(`性格「${nature}」が見つかりません。${suggestionMessage}`);
 }
 
 /**

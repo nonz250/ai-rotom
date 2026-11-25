@@ -9,6 +9,7 @@ import {
 } from "../../data-store.js";
 import { moveNameResolver } from "../../name-resolvers.js";
 import { toErrorResponse, withHint } from "../../tool-response-hint.js";
+import { UserFacingError } from "@ai-rotom/shared";
 
 const TOOL_NAME = "search_pokemon_by_move";
 const TOOL_DESCRIPTION =
@@ -55,7 +56,7 @@ function resolveMoveNameEn(input: string): string {
   const suggestions = moveNameResolver.suggestSimilar(input);
   const suggestionMessage =
     suggestions.length > 0 ? ` もしかして: ${suggestions.join(", ")}` : "";
-  throw new Error(`技「${input}」が見つかりません。${suggestionMessage}`);
+  throw new UserFacingError(`技「${input}」が見つかりません。${suggestionMessage}`);
 }
 
 export function registerSearchByMoveTool(server: McpServer): void {
@@ -66,7 +67,7 @@ export function registerSearchByMoveTool(server: McpServer): void {
       const moveEntry = movesById.get(moveId);
 
       if (moveEntry === undefined) {
-        throw new Error(
+        throw new UserFacingError(
           `技「${args.moveName}」はチャンピオンズでは使用できません。`,
         );
       }

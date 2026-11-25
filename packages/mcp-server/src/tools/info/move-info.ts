@@ -4,6 +4,7 @@ import type { MoveCategory } from "../../data-store.js";
 import { movesById, toDataId } from "../../data-store.js";
 import { moveNameResolver } from "../../name-resolvers.js";
 import { toErrorResponse, withHint } from "../../tool-response-hint.js";
+import { UserFacingError } from "@ai-rotom/shared";
 
 const TOOL_NAME = "get_move_info";
 const TOOL_DESCRIPTION =
@@ -50,7 +51,7 @@ function resolveMoveNameEn(input: string): string {
   const suggestions = moveNameResolver.suggestSimilar(input);
   const suggestionMessage =
     suggestions.length > 0 ? ` もしかして: ${suggestions.join(", ")}` : "";
-  throw new Error(`技「${input}」が見つかりません。${suggestionMessage}`);
+  throw new UserFacingError(`技「${input}」が見つかりません。${suggestionMessage}`);
 }
 
 /**
@@ -71,7 +72,7 @@ export function registerMoveInfoTool(server: McpServer): void {
       const entry = movesById.get(moveId);
 
       if (entry === undefined) {
-        throw new Error(
+        throw new UserFacingError(
           `技「${args.name}」はチャンピオンズでは使用できません。`,
         );
       }

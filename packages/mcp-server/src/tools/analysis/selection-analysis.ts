@@ -17,6 +17,7 @@ import {
   type DamageCalcResult,
   type PriorityMoveInfo,
   type SpeedComparison,
+  UserFacingError,
 } from "@ai-rotom/shared";
 import {
   movesById,
@@ -183,7 +184,7 @@ function resolveMovesMap(
       pokemonNameResolver.toEnglish(pokemonName) ??
       (pokemonNameResolver.hasEnglishName(pokemonName) ? pokemonName : null);
     if (englishName === null) {
-      throw new Error(
+      throw new UserFacingError(
         `moves に指定したポケモン「${pokemonName}」が見つかりません。`,
       );
     }

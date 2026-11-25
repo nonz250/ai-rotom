@@ -1,7 +1,11 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { Generations } from "@smogon/calc";
 import type { TypeName } from "@smogon/calc/dist/data/interface";
-import { nameInputSchema, calculateTypeEffectiveness } from "@ai-rotom/shared";
+import {
+  nameInputSchema,
+  calculateTypeEffectiveness,
+  UserFacingError,
+} from "@ai-rotom/shared";
 import {
   championsLearnsets,
   championsPokemon,
@@ -94,7 +98,7 @@ function resolveTypeNameEn(input: string): string {
     }
   }
 
-  throw new Error(`タイプ「${input}」が見つかりません。`);
+  throw new UserFacingError(`タイプ「${input}」が見つかりません。`);
 }
 
 /**
@@ -146,7 +150,7 @@ export function registerSearchByTypeEffectivenessTool(server: McpServer): void {
         || args.weakToType !== undefined
         || args.hasAttackingType !== undefined;
       if (!hasAnyCondition) {
-        throw new Error(
+        throw new UserFacingError(
           "少なくとも 1 つの条件 (resistsType / immuneToType / weakToType / hasAttackingType) を指定してください。",
         );
       }

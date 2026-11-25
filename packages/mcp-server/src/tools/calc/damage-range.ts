@@ -6,6 +6,7 @@ import {
   MAX_STAT_POINT_TOTAL,
   conditionsSchema,
   pokemonSchema,
+  UserFacingError,
 } from "@ai-rotom/shared";
 import type {
   ConditionsInput,
@@ -279,13 +280,13 @@ export function registerDamageRangeTool(server: McpServer): void {
           suggestions.length > 0
             ? ` もしかして: ${suggestions.join(", ")}`
             : "";
-        throw new Error(
+        throw new UserFacingError(
           `技「${args.moveName}」が見つかりません。${suggestionMessage}`,
         );
       }
       const moveEntry = movesById.get(toDataId(moveEn));
       if (moveEntry === undefined) {
-        throw new Error(
+        throw new UserFacingError(
           `技「${args.moveName}」はチャンピオンズでは使用できません。`,
         );
       }

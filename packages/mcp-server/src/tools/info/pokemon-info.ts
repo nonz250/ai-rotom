@@ -14,6 +14,7 @@ import {
   type PokemonEntry,
 } from "../../data-store.js";
 import { toErrorResponse, withHint } from "../../tool-response-hint.js";
+import { UserFacingError } from "@ai-rotom/shared";
 
 const DEFAULT_SEARCH_LIMIT = 20;
 
@@ -98,7 +99,7 @@ function resolvePokemonName(name: string): string {
   const suggestions = pokemonNameResolver.suggestSimilar(name);
   const suggestionMessage =
     suggestions.length > 0 ? ` もしかして: ${suggestions.join(", ")}` : "";
-  throw new Error(`ポケモン「${name}」が見つかりません。${suggestionMessage}`);
+  throw new UserFacingError(`ポケモン「${name}」が見つかりません。${suggestionMessage}`);
 }
 
 /**
@@ -190,7 +191,7 @@ export function registerPokemonInfoTools(server: McpServer): void {
         const entry = pokemonById.get(toDataId(englishName));
 
         if (entry === undefined) {
-          throw new Error(`ポケモン「${args.name}」のデータが見つかりません。`);
+          throw new UserFacingError(`ポケモン「${args.name}」のデータが見つかりません。`);
         }
 
         const result = buildPokemonInfoResult(entry);
@@ -235,7 +236,7 @@ export function registerPokemonInfoTools(server: McpServer): void {
         if (args.type !== undefined) {
           typeFilterEn = resolveTypeName(args.type);
           if (typeFilterEn === undefined) {
-            throw new Error(`タイプ「${args.type}」が見つかりません。`);
+            throw new UserFacingError(`タイプ「${args.type}」が見つかりません。`);
           }
         }
 

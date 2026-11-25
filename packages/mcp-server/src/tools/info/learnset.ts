@@ -3,6 +3,7 @@ import { nameInputSchema } from "@ai-rotom/shared";
 import { championsLearnsets, movesById, toDataId } from "../../data-store.js";
 import { pokemonNameResolver } from "../../name-resolvers.js";
 import { toErrorResponse, withHint } from "../../tool-response-hint.js";
+import { UserFacingError } from "@ai-rotom/shared";
 
 const TOOL_NAME = "get_learnset";
 const TOOL_DESCRIPTION =
@@ -45,7 +46,7 @@ function resolvePokemonNameEn(input: string): string {
   const suggestions = pokemonNameResolver.suggestSimilar(input);
   const suggestionMessage =
     suggestions.length > 0 ? ` もしかして: ${suggestions.join(", ")}` : "";
-  throw new Error(`ポケモン「${input}」が見つかりません。${suggestionMessage}`);
+  throw new UserFacingError(`ポケモン「${input}」が見つかりません。${suggestionMessage}`);
 }
 
 /**
@@ -68,7 +69,7 @@ export function registerLearnsetTool(server: McpServer): void {
       const moveIds = championsLearnsets[pokemonId];
 
       if (moveIds === undefined) {
-        throw new Error(
+        throw new UserFacingError(
           `ポケモン「${args.name}」のチャンピオンズ向け learnset データが見つかりません。`,
         );
       }

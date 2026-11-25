@@ -1,4 +1,5 @@
 import type { NameResolver } from "../../utils/name-resolver.js";
+import { UserFacingError } from "../../errors/user-facing-error.js";
 
 /**
  * 日本語名または英語名を受け取り、対応する英語名に変換する。
@@ -23,7 +24,7 @@ export function resolveNameWithFallback(
     suggestions.length > 0
       ? ` もしかして: ${suggestions.join(", ")}`
       : "";
-  throw new Error(
+  throw new UserFacingError(
     `${label}「${name}」が見つかりません。${suggestionMessage}`,
   );
 }

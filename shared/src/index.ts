@@ -1,5 +1,6 @@
 export { NameResolver } from "./utils/name-resolver";
 export type { NameEntry } from "./utils/name-resolver";
+export { UserFacingError } from "./errors/user-facing-error";
 export * from "./constants/champions";
 export * from "./analysis/type-matchup";
 export * from "./analysis/stat-calculator";

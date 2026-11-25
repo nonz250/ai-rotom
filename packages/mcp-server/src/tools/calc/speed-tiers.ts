@@ -1,7 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { Generations, Pokemon } from "@smogon/calc";
-import { nameInputSchema, MAX_STAT_POINT_PER_STAT } from "@ai-rotom/shared";
+import { nameInputSchema, MAX_STAT_POINT_PER_STAT, UserFacingError } from "@ai-rotom/shared";
 import {
   championsPokemon,
   pokemonById,
@@ -105,14 +105,14 @@ function resolvePokemonEntry(name: string): PokemonEntry {
     const suggestions = pokemonNameResolver.suggestSimilar(name);
     const suggestionMessage =
       suggestions.length > 0 ? ` もしかして: ${suggestions.join(", ")}` : "";
-    throw new Error(
+    throw new UserFacingError(
       `ポケモン「${name}」が見つかりません。${suggestionMessage}`,
     );
   }
 
   const entry = pokemonById.get(toDataId(englishName));
   if (entry === undefined) {
-    throw new Error(`ポケモン「${name}」のデータが見つかりません。`);
+    throw new UserFacingError(`ポケモン「${name}」のデータが見つかりません。`);
   }
   return entry;
 }
