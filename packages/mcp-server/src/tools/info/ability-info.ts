@@ -1,5 +1,5 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
+import { nameInputSchema } from "@ai-rotom/shared";
 import { abilitiesById, toDataId } from "../../data-store.js";
 import { abilityNameResolver } from "../../name-resolvers.js";
 import { withHint } from "../../tool-response-hint.js";
@@ -9,7 +9,7 @@ const TOOL_DESCRIPTION =
   "ポケモンの特性の詳細情報（効果説明）を取得する。ポケモンチャンピオンズで使える特性のみ返す。対戦でポケモンの特性を理解したいときに使用する。";
 
 const inputSchema = {
-  name: z.string().describe("特性名（日本語 or 英語）"),
+  name: nameInputSchema.describe("特性名（日本語 or 英語）"),
 };
 
 /**

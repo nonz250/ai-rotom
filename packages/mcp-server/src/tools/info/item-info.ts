@@ -1,5 +1,5 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
+import { nameInputSchema } from "@ai-rotom/shared";
 import { itemsById, toDataId } from "../../data-store.js";
 import { itemNameResolver } from "../../name-resolvers.js";
 import { withHint } from "../../tool-response-hint.js";
@@ -9,7 +9,7 @@ const TOOL_DESCRIPTION =
   "ポケモンの持ち物（アイテム）の詳細情報（効果説明、メガストーン情報）を取得する。ポケモンチャンピオンズで使える持ち物のみ返す。パーティ構築で持ち物を選ぶ際に使用する。";
 
 const inputSchema = {
-  name: z.string().describe("持ち物名（日本語 or 英語）"),
+  name: nameInputSchema.describe("持ち物名（日本語 or 英語）"),
 };
 
 /**

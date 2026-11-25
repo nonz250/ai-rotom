@@ -6,6 +6,7 @@ import {
   collectPartyResistanceTypes,
   collectPartyWeaknessTypes,
   computeNumericStats,
+  MAX_PARTY_NAME_LENGTH,
   pokemonSchema,
   type NumericStats,
   type PokemonInput,
@@ -39,8 +40,8 @@ const TOOL_DESCRIPTION =
 
 const labelsSchema = z
   .object({
-    partyA: z.string().optional(),
-    partyB: z.string().optional(),
+    partyA: z.string().max(MAX_PARTY_NAME_LENGTH).optional(),
+    partyB: z.string().max(MAX_PARTY_NAME_LENGTH).optional(),
   })
   .optional()
   .describe("表示用ラベル (例: { partyA: '現行', partyB: '改修案' })");

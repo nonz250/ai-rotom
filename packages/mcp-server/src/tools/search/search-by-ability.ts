@@ -1,5 +1,5 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
+import { nameInputSchema } from "@ai-rotom/shared";
 import {
   abilitiesById,
   championsPokemon,
@@ -13,7 +13,7 @@ const TOOL_DESCRIPTION =
   "特定の特性を持つポケモンを逆引き検索する。いかく・もうか等の特性を持つポケモンを絞り込みたい場合に使用する。ポケモンチャンピオンズ対応。";
 
 const inputSchema = {
-  abilityName: z.string().describe("特性名（日本語 or 英語）"),
+  abilityName: nameInputSchema.describe("特性名（日本語 or 英語）"),
 };
 
 export interface AbilitySearchResultAbility {

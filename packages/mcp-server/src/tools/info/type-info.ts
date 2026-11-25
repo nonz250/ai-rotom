@@ -1,8 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
 import { Generations } from "@smogon/calc";
 import type { TypeName } from "@smogon/calc/dist/data/interface";
-import { calculateTypeEffectiveness } from "@ai-rotom/shared";
+import { nameInputSchema, calculateTypeEffectiveness } from "@ai-rotom/shared";
 import { championsTypes, typesById } from "../../data-store.js";
 import { withHint } from "../../tool-response-hint.js";
 
@@ -13,7 +12,7 @@ const TOOL_DESCRIPTION =
   "ポケモンのタイプの相性情報（攻撃時・防御時の倍率）を取得する。対戦でタイプ相性を確認したいときに使用する。ポケモンチャンピオンズ対応。";
 
 const inputSchema = {
-  type: z.string().describe("タイプ名（日本語 or 英語、例: 'ほのお'、'Fire'）"),
+  type: nameInputSchema.describe("タイプ名（日本語 or 英語、例: 'ほのお'、'Fire'）"),
 };
 
 /**

@@ -1,5 +1,5 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
+import { nameInputSchema } from "@ai-rotom/shared";
 import type { MoveCategory } from "../../data-store.js";
 import {
   championsLearnsets,
@@ -15,7 +15,7 @@ const TOOL_DESCRIPTION =
   "特定の技を覚えるポケモンを逆引き検索する。ステルスロックなど特定の技を覚えさせたい場合の候補ポケモン探しに使用する。ポケモンチャンピオンズ対応。";
 
 const inputSchema = {
-  moveName: z.string().describe("技名（日本語 or 英語）"),
+  moveName: nameInputSchema.describe("技名（日本語 or 英語）"),
 };
 
 export interface MoveSearchResultMove {

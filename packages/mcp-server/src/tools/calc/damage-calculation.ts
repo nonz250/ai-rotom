@@ -1,6 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import {
+  nameInputSchema,
   conditionsSchema,
   pokemonSchema,
   pokemonWithMovesSchema,
@@ -22,7 +23,7 @@ import {
 const damageCalcInputSchema = {
   attacker: pokemonSchema.describe("攻撃側ポケモン"),
   defender: pokemonSchema.describe("防御側ポケモン"),
-  moveName: z.string().describe("技名（日本語 or 英語）"),
+  moveName: nameInputSchema.describe("技名（日本語 or 英語）"),
   conditions: conditionsSchema.optional().describe("バトル条件"),
 };
 

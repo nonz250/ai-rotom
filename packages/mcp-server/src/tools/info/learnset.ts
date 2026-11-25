@@ -1,5 +1,5 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
+import { nameInputSchema } from "@ai-rotom/shared";
 import { championsLearnsets, movesById, toDataId } from "../../data-store.js";
 import { pokemonNameResolver } from "../../name-resolvers.js";
 import { withHint } from "../../tool-response-hint.js";
@@ -12,7 +12,7 @@ const TOOL_DESCRIPTION =
   + "パーティ構築や技構成の検討に使用する。";
 
 const inputSchema = {
-  name: z.string().describe("ポケモン名（日本語 or 英語）"),
+  name: nameInputSchema.describe("ポケモン名（日本語 or 英語）"),
 };
 
 /**
