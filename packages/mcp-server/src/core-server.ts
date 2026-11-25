@@ -23,7 +23,7 @@ import { registerStatsCalculationTool } from "./tools/calc/stats-calculation.js"
 import { registerTypeInfoTool } from "./tools/info/type-info.js";
 
 const SERVER_NAME = "ai-rotom";
-const SERVER_VERSION = "0.0.1";
+const SERVER_VERSION = "1.4.0";
 
 /**
  * 1 回のツール呼び出しで受け付ける引数の要素数 (配列の要素とオブジェクトのメンバーの合計) の上限。
