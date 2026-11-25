@@ -21,7 +21,7 @@ codex mcp add ai-rotom -- npx -y @nonz250/ai-rotom</pre>
       </div>
       <div>
         <h3>公開サーバーにつなぐ</h3>
-        <p>チャットのアプリと同じサーバーです。注意事項の制限がかかります。</p>
+        <p>チャットのアプリと同じサーバーです。使えない機能と 1 日の上限は注意事項と同じです。リクエスト数は接続元のアドレスごとに 60 秒あたり 60 件までで、ブラウザの中で動く MCP クライアントからはつなげません。</p>
         <pre class="code"><span class="c"># Claude Code</span>
 claude mcp add --transport http ai-rotom \
   {SERVER_URL}

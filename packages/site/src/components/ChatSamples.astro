@@ -47,7 +47,7 @@ const samples: Sample[] = [
       {samples.map((_, i) => <button type="button" aria-label={`例 ${i + 1}`} aria-current={String(i === 0)}></button>)}
     </div>
   </div>
-  <div class="slides" aria-live="polite">
+  <div class="slides" aria-live="off">
     {
       samples.map((sample, i) => (
         <div class="slide" data-active={String(i === 0)}>
@@ -87,9 +87,21 @@ const samples: Sample[] = [
       slides.forEach((slide, i) => (slide.dataset.active = String(i === current)));
       dots.forEach((dot, i) => dot.setAttribute("aria-current", String(i === current)));
     };
-    dots.forEach((dot, i) => dot.addEventListener("click", () => show(i)));
-    box.addEventListener("mouseenter", () => (paused = true));
-    box.addEventListener("mouseleave", () => (paused = false));
+    const slidesRegion = box.querySelector<HTMLElement>(".slides");
+    // 自動で切り替えるたびに読み上げると、ほかの場所を読んでいる人の邪魔になる。押して切り替えたときだけ読み上げる
+    dots.forEach((dot, i) =>
+      dot.addEventListener("click", () => {
+        slidesRegion?.setAttribute("aria-live", "polite");
+        show(i);
+      }),
+    );
+    // タッチでは pointerleave が次に別の場所を触るまで来ないので、マウスのときだけ止める
+    box.addEventListener("pointerenter", (event) => {
+      if (event.pointerType === "mouse") paused = true;
+    });
+    box.addEventListener("pointerleave", (event) => {
+      if (event.pointerType === "mouse") paused = false;
+    });
     box.addEventListener("focusin", () => (paused = true));
     box.addEventListener("focusout", () => (paused = false));
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
