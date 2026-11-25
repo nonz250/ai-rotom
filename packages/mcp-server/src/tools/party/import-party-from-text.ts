@@ -204,7 +204,10 @@ export function runImportPartyFromText(
   }
 
   // 最終的にスキーマ全体を検証してから永続化する (SP 合計 / メンバー数 / 技数 等の二重防御)。
-  partySchema.parse(party);
+  const validation = partySchema.safeParse(party);
+  if (!validation.success) {
+    throw new UserFacingError(validation.error.message);
+  }
 
   const nextParties = [...file.parties];
   if (existingIndex >= 0) {
