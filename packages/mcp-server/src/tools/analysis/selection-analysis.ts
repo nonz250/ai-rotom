@@ -3,6 +3,8 @@ import { z } from "zod";
 import { Generations } from "@smogon/calc";
 import type { TypeName } from "@smogon/calc/dist/data/interface";
 import {
+  MAX_PARTY_MEMBERS,
+  MIN_PARTY_MEMBERS,
   DamageCalculatorAdapter,
   calculateTypeEffectiveness,
   compareSpeed,
@@ -40,8 +42,16 @@ const TOOL_DESCRIPTION =
 const battleFormatValues = ["singles", "doubles"] as const;
 
 const inputSchema = {
-  myParty: z.array(pokemonWithMovesSchema).describe("自分のパーティ"),
-  opponentParty: z.array(pokemonSchema).describe("相手のパーティ"),
+  myParty: z
+    .array(pokemonWithMovesSchema)
+    .min(MIN_PARTY_MEMBERS)
+    .max(MAX_PARTY_MEMBERS)
+    .describe("自分のパーティ"),
+  opponentParty: z
+    .array(pokemonSchema)
+    .min(MIN_PARTY_MEMBERS)
+    .max(MAX_PARTY_MEMBERS)
+    .describe("相手のパーティ"),
   battleFormat: z
     .enum(battleFormatValues)
     .describe("対戦形式（シングル: singles / ダブル: doubles）"),

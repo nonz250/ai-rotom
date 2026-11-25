@@ -2,6 +2,8 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { Generations } from "@smogon/calc";
 import {
+  MAX_PARTY_MEMBERS,
+  MIN_PARTY_MEMBERS,
   classifyPokemonTypeMatchups,
   calculateTypeEffectiveness,
   pokemonSchema,
@@ -23,7 +25,11 @@ const TOOL_DESCRIPTION =
   "パーティ各メンバーのタイプ相性データを集計する。どのタイプが何匹の弱点か（teamWeaknesses）、どのタイプに抜群を取れないか（uncoveredTypes）を返す。致命性の判断は AI が文脈で行う前提。ポケモンチャンピオンズ対応。";
 
 const partyAnalysisInputSchema = {
-  party: z.array(pokemonSchema).describe("パーティメンバー"),
+  party: z
+    .array(pokemonSchema)
+    .min(MIN_PARTY_MEMBERS)
+    .max(MAX_PARTY_MEMBERS)
+    .describe("パーティメンバー"),
 };
 
 /** ???タイプは計算対象から除外するためのマーカー */

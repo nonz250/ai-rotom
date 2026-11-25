@@ -1,7 +1,11 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
-import { MAX_NAME_LENGTH, MAX_PARTY_NAME_LENGTH } from "@ai-rotom/shared";
+import {
+  MAX_NAME_LENGTH,
+  MAX_PARTY_MEMBERS,
+  MAX_PARTY_NAME_LENGTH,
+} from "@ai-rotom/shared";
 import { createCoreServer } from "./core-server";
 import { CORE_INSTRUCTIONS } from "./instructions";
 
@@ -86,6 +90,47 @@ describe("compare_parties の labels", () => {
 
   it.each(["partyA", "partyB"])("%s はパーティ名の最大文字数を超えると入力検証で拒否する", async (label) => {
     const outcome = await callTool("compare_parties", { ...parties, labels: { [label]: LABEL_OVER_LIMIT } });
+    expect(outcome.isError).toBe(true);
+    expect(outcome.text).toContain(INPUT_VALIDATION_ERROR);
+  });
+});
+
+const ATTACKER_WITH_MOVES = { name: "ガブリアス", moves: ["じしん", "げきりん", "ストーンエッジ", "つるぎのまい"] };
+
+function party(member: Record<string, unknown>, size: number): Record<string, unknown>[] {
+  return Array.from({ length: size }, () => member);
+}
+
+const PARTY_ARGUMENTS: [string, string, Record<string, unknown>, Record<string, unknown>][] = [
+  ["calculate_damage_party_matchup", "myParty", ATTACKER_WITH_MOVES, { opponentParty: [DEFENDER] }],
+  ["calculate_damage_party_matchup", "opponentParty", DEFENDER, { myParty: [ATTACKER_WITH_MOVES] }],
+  ["analyze_selection", "myParty", ATTACKER_WITH_MOVES, { opponentParty: [DEFENDER], battleFormat: "singles" }],
+  [
+    "analyze_selection",
+    "opponentParty",
+    DEFENDER,
+    { myParty: [ATTACKER_WITH_MOVES], battleFormat: "singles" },
+  ],
+  ["analyze_party_weakness", "party", ATTACKER, {}],
+  ["analyze_party_coverage", "myParty", ATTACKER, {}],
+  ["compare_parties", "partyA", ATTACKER, { partyB: [DEFENDER] }],
+  ["compare_parties", "partyB", DEFENDER, { partyA: [ATTACKER] }],
+];
+
+describe("createCoreServer のパーティの人数", () => {
+  it.each(PARTY_ARGUMENTS)("%s の %s は 6 匹まで受け付ける", async (tool, field, member, rest) => {
+    const outcome = await callTool(tool, { ...rest, [field]: party(member, MAX_PARTY_MEMBERS) });
+    expect(outcome.isError).toBe(false);
+  });
+
+  it.each(PARTY_ARGUMENTS)("%s の %s は 7 匹以上を入力検証で拒否する", async (tool, field, member, rest) => {
+    const outcome = await callTool(tool, { ...rest, [field]: party(member, MAX_PARTY_MEMBERS + 1) });
+    expect(outcome.isError).toBe(true);
+    expect(outcome.text).toContain(INPUT_VALIDATION_ERROR);
+  });
+
+  it.each(PARTY_ARGUMENTS)("%s の %s は空のパーティを入力検証で拒否する", async (tool, field, _member, rest) => {
+    const outcome = await callTool(tool, { ...rest, [field]: [] });
     expect(outcome.isError).toBe(true);
     expect(outcome.text).toContain(INPUT_VALIDATION_ERROR);
   });
