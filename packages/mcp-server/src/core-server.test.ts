@@ -9,6 +9,7 @@ import {
 } from "@ai-rotom/shared";
 import { createCoreServer, MAX_TOOL_INPUT_ELEMENTS } from "./core-server";
 import { CORE_INSTRUCTIONS } from "./instructions";
+import packageJson from "../package.json";
 
 const INPUT_VALIDATION_ERROR = "Input validation error";
 
@@ -67,6 +68,12 @@ const NAME_ARGUMENTS: [string, string, Record<string, unknown>][] = [
   ["calculate_damage_single", "moveName", { attacker: ATTACKER, defender: DEFENDER }],
   ["analyze_damage_range", "moveName", { attacker: ATTACKER, defender: DEFENDER }],
 ];
+
+describe("createCoreServer のサーバー情報", () => {
+  it("初期化で返す版が npm に公開する package.json の版と一致する", () => {
+    expect(client.getServerVersion()?.version).toBe(packageJson.version);
+  });
+});
 
 describe("createCoreServer の名前の入力", () => {
   it.each(NAME_ARGUMENTS)("%s の %s は最大文字数まで入力検証を通る", async (tool, field, rest) => {

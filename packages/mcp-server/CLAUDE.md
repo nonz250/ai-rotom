@@ -6,6 +6,10 @@ npm で配布する stdio 版の MCP サーバー。shared のロジックに `d
 
 パーティ保存系のツール `tools/party/` は `server.ts` にだけ登録し、`core-server.ts` から import しない。ファイルに書き込むので、core に混ざるとファイルを持たないリモート版で動かなくなる。
 
+## 名乗る版
+
+`core-server.ts` の `SERVER_VERSION` は、初期化でクライアントに名乗る版。利用者から報告を受けたときに、どの版が答えたのかを切り分ける手がかりになる。`package.json` の版と手でそろえ、ずれると `core-server.test.ts` が落ちる。
+
 ## データの読み込み
 
 JSON は `data-store.ts` だけが import し、型と id から引く Map をそこで作る。名前から引く `NameResolver` は `name-resolvers.ts` に置く。ツールは JSON を直接 import せず、この 2 つから受け取る。Map をツールごとに作ると、リモート版でリクエストのたびに作り直しになる。
