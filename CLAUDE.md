@@ -48,6 +48,13 @@ README の「著作権・商標」と「ライセンス」の章は、移動も�
 - alias の paths は `tsconfig.base.json` に集約し、各パッケージは extends するだけにする。新しいパッケージを足すときに alias を書き直さずに済む
 - mcp-server の `tsconfig.json` は `rootDir: "../.."` にしている。alias で shared や data のファイルがプログラムに入っても TS6059 にならないようにするため
 
+## 版とリリース
+
+- リポジトリの版は、npm に公開する mcp-server の版だけにする。タグと Release も同じ番号にし、`v` を付けない。公開とデプロイのワークフローが、タグと `packages/mcp-server/package.json` の版の一致を確かめるため
+- remote-server と site は版を持たない。利用者が版を選べず、番号を読む人がいないため
+- Release を正式に公開すると、npm への公開とリモート版のデプロイが一緒に動く。版上げからデプロイまでは `bump-version` の skill の手順で進める
+- 手動のデプロイは main をそのまま上げる。サイトだけを直すつもりでも、まだリリースしていない Worker の変更が一緒に出る
+
 ## リモート版のデプロイ
 
 - `packages/remote-server` は、利用者が自分のアカウントにデプロイする。npm の公開物には含めない
