@@ -531,7 +531,7 @@
     "basePower": 60,
     "accuracy": 100,
     "pp": 12,
-    "priority": 0,
+    "priority": -4,
     "target": "normal",
     "flags": [
       "contact",
@@ -627,7 +627,7 @@
     "basePower": 120,
     "accuracy": 100,
     "pp": 8,
-    "priority": 0,
+    "priority": -3,
     "target": "normal",
     "flags": [
       "bullet",
@@ -1347,7 +1347,7 @@
     "basePower": 60,
     "accuracy": 90,
     "pp": 12,
-    "priority": 0,
+    "priority": -6,
     "target": "normal",
     "flags": [
       "contact",
@@ -1625,7 +1625,7 @@
     "basePower": 0,
     "accuracy": 100,
     "pp": 20,
-    "priority": 0,
+    "priority": -5,
     "target": "scripted",
     "flags": [
       "contact",
@@ -2234,7 +2234,7 @@
     "basePower": 60,
     "accuracy": 90,
     "pp": 12,
-    "priority": 0,
+    "priority": -6,
     "target": "normal",
     "flags": [
       "contact",
@@ -3364,7 +3364,7 @@
     "basePower": 150,
     "accuracy": 100,
     "pp": 20,
-    "priority": 0,
+    "priority": -3,
     "target": "normal",
     "flags": [
       "contact",
@@ -5411,7 +5411,7 @@
     "basePower": 0,
     "accuracy": 100,
     "pp": 20,
-    "priority": 0,
+    "priority": -5,
     "target": "scripted",
     "flags": [
       "failmefirst",
@@ -6832,7 +6832,7 @@
     "basePower": 0,
     "accuracy": true,
     "pp": 20,
-    "priority": 0,
+    "priority": -6,
     "target": "normal",
     "flags": [
       "allyanim",
@@ -9219,7 +9219,7 @@
     "basePower": 0,
     "accuracy": true,
     "pp": 8,
-    "priority": 0,
+    "priority": -7,
     "target": "all",
     "flags": [
       "metronome",
@@ -9592,7 +9592,7 @@
     "basePower": 0,
     "accuracy": true,
     "pp": 20,
-    "priority": 0,
+    "priority": -6,
     "target": "normal",
     "flags": [
       "allyanim",
