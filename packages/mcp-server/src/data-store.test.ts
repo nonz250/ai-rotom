@@ -119,6 +119,30 @@ describe("マスターデータの不変条件", () => {
     });
   });
 
+  describe("moves.json の優先度", () => {
+    const expectedNegativePriorities: Record<string, number> = {
+      focuspunch: -3,
+      beakblast: -3,
+      avalanche: -4,
+      counter: -5,
+      mirrorcoat: -5,
+      circlethrow: -6,
+      dragontail: -6,
+      roar: -6,
+      whirlwind: -6,
+      trickroom: -7,
+    };
+
+    it.each(Object.entries(expectedNegativePriorities))(
+      "後攻技 %s の priority が %i になっている",
+      (moveId, expected) => {
+        const move = championsMoves.find((m) => m.id === moveId);
+
+        expect(move?.priority).toBe(expected);
+      },
+    );
+  });
+
   describe("learnsets の相互参照", () => {
     it("learnsets のキーが pokemon.json の id に実在する", () => {
       const pokemonIds = new Set(championsPokemon.map((p) => p.id));
